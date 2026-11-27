@@ -1,240 +1,371 @@
-<h1 align="center">NerveCenter</h1>
+# CLI Proxy API
 
-<p align="center">
-  new-api / sub2api 中转站账号管理中心：多站点的余额、API Key、用量、分组倍率和提醒，放在一个控制台里。
-</p>
+English | [中文](README_CN.md) | [日本語](README_JA.md)
 
-<p align="center">
-  <a href="https://nvcenter.cc"><img alt="Website: nvcenter.cc" src="https://img.shields.io/badge/website-nvcenter.cc-6366f1"></a>
-  <img alt="Supported panels: new-api and sub2api" src="https://img.shields.io/badge/panels-new--api%20%7C%20sub2api-0ea5e9">
-  <a href="https://t.me/NerverCenter_bot"><img alt="Telegram bot: @NerverCenter_bot" src="https://img.shields.io/badge/Telegram-%40NerverCenter__bot-26a5e4?logo=telegram&logoColor=white"></a>
-  <img alt="Closed source, showcase only" src="https://img.shields.io/badge/source-closed%2C%20showcase%20only-64748b">
-</p>
+If you want to use CLIProxyAPI on your desktop, we recommend our [EasyCLIProxyAPI](https://github.com/router-for-me/EasyCLIProxyAPI) desktop client. It provides a graphical configuration UI, automatic updates, system tray integration, and one-click start/stop for the CLIProxyAPI service.
 
-<p align="center">
-  <a href="https://nvcenter.cc">在线使用</a> ·
-  <a href="https://nvcenter.cc/intro">产品介绍</a> ·
-  <a href="docs/product-intro.zh.md">完整介绍（文档）</a> ·
-  <a href="#english">English</a>
-</p>
+CLIProxyAPI is a proxy server that provides OpenAI/Gemini/Claude/Codex/Grok compatible API interfaces for CLI.
 
-<p align="center">
-  <img src="docs/images/hero-zh.jpg" alt="NerveCenter 首页首屏：标语“所有中转站账号汇入一个神经中枢”，旁边是用示例数据的控制台预览，列出总余额、渠道数、Key 数和各站点的倍率、余额与状态">
-</p>
-
-> [!NOTE]
-> 本仓库只包含产品介绍、几张网站截图和一小部分网页前端代码，用于展示，不是完整源码，也无法单独构建运行。NerveCenter 服务本身不开源。
-
-## 适合谁
-
-- **中转站站长**：手上有一串上游账号，每个面板都要单独登录。查余额要一个个点开，Key 散在各处，倍率调了不知道，余额见底往往是用户报错才发现。
-- **在多个中转站都有账号的用户**：想知道同一个模型在哪个站最便宜、最稳。
-
-你在某个 new-api 或 sub2api 面板上的一个账号，在这里叫一个“渠道”。接进来以后，余额、Key、调用记录和分组倍率由 NerveCenter 定时同步。
-
-## 多站点总览：余额、Key 和用量
-
-<p align="center">
-  <img src="docs/images/overview.png" width="755" alt="两张功能卡片：余额总览（总余额与消耗、消耗曲线和余额趋势、需要处理的渠道）和密钥管理（新建、修改、停用、删除上游 Key，所有 Key 汇总一页）">
-</p>
-
-- **中控台**：当前工作区所有渠道的总余额、今日和近 7 天消耗、近 14 天消耗曲线、30 天余额趋势、近 7 天热门模型，也可以按平台分开看。
-- **需要处理**：需重新授权、余额不足、凭据即将过期、同步出错、上游故障的渠道集中列出，点进去就能处理。
-- **API Key 管理**：不登录面板也能新建、修改、停用、重新启用、删除上游 Key。所有 Key 汇总在一页，可以按渠道、平台、状态、分组筛选，并显示每把 Key 所在分组的倍率。
-- **用量日志**：按天、按模型统计请求数和费用，逐条调用明细（模型、密钥、分组、输入/输出 token、费用、耗时），筛选结果可导出为 CSV 或 NDJSON。
-
-## 倍率、模型比价与提醒
-
-<p align="center">
-  <img src="docs/images/pricing-alerts.jpg" alt="六张功能卡片：用量与日志、倍率与价格、渠道简报与健康、模型比价、通知提醒、Telegram 机器人">
-</p>
-
-- **倍率与价格**：只列你能用的分组，显示你本人实际适用的倍率。模型价格统一换算成每 1M token 的输入价和输出价，按次计费的显示每次价格，各个站点同一口径。
-- **渠道简报**：面板本身不保留倍率和模型的变更历史，NerveCenter 默认每 10 分钟比对一次分组倍率、每 30 分钟比对一次模型列表，涨价、降价、新分组、分组下线、模型上下架都记在近 7、30、90 天的时间线里。
-- **健康数据**：读取面板自己统计的成功率、平均耗时、首字耗时、输出速度（sub2api 读取渠道监控数据）。不用你的 Key 发测试请求，不产生费用。
-- **模型比价**：同一个模型，在你各个渠道上的价格（站点模型价 × 你在这个渠道的分组倍率）和稳定性放在一起比，每类模型挑出最便宜、最稳、最划算的渠道，可排序、筛选、导出 CSV。
-- **通知提醒**：余额预警、渠道异常、倍率与模型变化、安全提醒和平台公告进站内消息中心，也可以推送到 Telegram 或 Webhook（带 HMAC-SHA256 签名）。每一项都能单独开关，余额提醒线自己定。倍率、分组和模型的变化检测到后几秒内推送。
-
-简报里的几条记录（示例）：
-
-```text
-今天   涨价    default 分组倍率上调 ×1 → ×1.2
-昨天   新分组  新增分组 vip
-昨天   上架    vip 分组上架 3 个模型
-```
-
-## 怎么接入一个中转站
-
-<p align="center">
-  <img src="docs/images/binding.jpg" alt="三步接入示意：注册账号、添加渠道、集中查看与告警；右侧是多个示例站点连到中心的示意图">
-</p>
-
-添加渠道时粘贴面板地址，系统会识别它是 new-api 还是 sub2api，识别不出来可以手动选。
-
-接入的难点在于面板只认浏览器里的登录，而登录往往带验证码。所以登录始终由你本人完成，有三种办法，添加渠道时页面上会列出当前开放的几种（开放哪几种由站点运营方决定）：
-
-- **从浏览器复制登录（F12，默认）**：在你自己的浏览器里正常登录面板，验证码照常完成，再按页面上的图文教程把登录凭据复制过来。不用装任何东西。
-  - **new-api**：推荐“一行命令 + 面板密码”，在面板标签页的控制台运行一行命令，输入一次面板密码，自动生成访问令牌（180 天后过期，到时重新授权）。也可以复制 Cookie，或在面板里手动创建访问令牌。
-  - **sub2api**：在面板标签页的控制台运行一行命令复制登录凭据，然后立刻清除网站数据，再粘贴回来。
-- **浏览器扩展**：在你自己的浏览器里登录面板，由 NerveCenter Connector 扩展把登录交给我们。站内直接下载 zip，解压后手动加载（不在应用商店里），用一次性配对码和账号配对一次即可，之后不用再填服务器地址。只支持 Chrome、Edge 这类 Chromium 浏览器。适合要接入好几个面板的人。
-- **云浏览器**：在我们服务器上的临时浏览器里打开面板自己的登录页，你照常登录、完成验证码，我们只保存登录后的会话。本机什么都不用装。这台浏览器用完即弃，同时在用的数量有限。注意：云浏览器里不能用第三方账号登录（如“用 Google 登录”），这种账号请用前两种方式。
-
-三种方式保存下来的东西是一样的，接入之后没有区别。
-
-添加时可以选“仅自己”或“团队共享”。首次同步一般要一两分钟，还会回溯一段历史用量。每个渠道接入后会逐项检测面板能力，每天复检一次；面板没有某项功能时会直接说明原因，不会莫名报错。
-
-<details>
-<summary><b>支持的面板与限制</b></summary>
-
-- 支持 new-api（以及能识别出的改版面板）和 sub2api。其他面板会提示“该地址上没有找到支持的面板”。
-- 云浏览器里不能用第三方账号登录（如“用 Google 登录”）；浏览器扩展需手动加载，不在 Chrome 应用商店里，只支持 Chromium 浏览器。
-- 无法代你完成通行密钥（Passkey）验证。只能用通行密钥验证的 new-api 账号用不了“一行命令”，请改用复制 Cookie 或手动创建访问令牌。
-- 部分 sub2api 站点会把登录和 IP、浏览器绑定，复制过来的登录可能被站点撤销，这时需要重新授权。
-- 健康数据只在较新版本的 new-api，或开了渠道监控的 sub2api 上才有。
-- 有的面板限制日志的查询跨度，更早的历史可能回溯不全，页面上会注明。
-- 用量导出单次最多 10 万行。
-- 本站暂未开通邮件，不能通过邮件找回密码或关闭两步验证。
-
-</details>
-
-## 安全
-
-<p align="center">
-  <img src="docs/images/security.png" width="568" alt="两张安全卡片：信封加密（上游凭据与 Key 明文先用主密钥封装再入库）和全程审计（敏感操作先写审计再返回结果）">
-</p>
-
-- **凭据加密**：上游凭据和查看过的 Key 明文，入库前都用主密钥加密封装；每条上游凭据有自己的数据密钥，用 AES-256-GCM 加密。
-- **管理员也看不到**：平台管理员看不到你的上游凭据。管理员如需查看某把 Key 的明文，只能逐把查看，要先通过两步验证，每次都记入审计。
-- **全程审计**：绑定渠道、查看明文、调整权限等敏感操作，先写审计再返回结果，审计不记录任何令牌和密码。查看明文有频率限制，默认还会给你发安全提醒。
-- **密码不经过我们**：“一行命令”里的面板密码只发给面板本身，不经过 NerveCenter；sub2api 的复制命令只把登录信息复制到你的剪贴板。
-- **账号安全**：账号密码只保存 argon2id 哈希。两步验证附带 10 个一次性恢复码；可以查看每台登录设备、单独让它退出；登录、改密码等记录都在安全动态里。没有手机时，[两步验证工具](https://nvcenter.cc/tools/2fa)在你的浏览器里算出验证码，密钥不发送、不保存。
-
-从面板复制出来的登录凭据，作用和你本人登录一样。只把它粘贴到你信任的 NerveCenter。
-
-## 手机上也能用
+You can access the following providers locally and with multiple CLI accounts through any OpenAI (including Responses), Gemini (including Interactions), or Claude-compatible client or SDK.
 
 <table>
-<tr>
-<td width="300" valign="top">
-<img src="docs/images/mobile.jpg" width="280" alt="手机浏览器里的 NerveCenter 首页：标语、注册按钮和控制台预览">
-</td>
-<td valign="top">
-
-网站适配手机屏幕，出门在外也能打开查看。
-
-不方便开网页时，用官方 Telegram 机器人 [@NerverCenter_bot](https://t.me/NerverCenter_bot)：
-
-- **连接**：在“通知设置 → 推送渠道”点“连接 Telegram”，扫码或点链接后按“开始”。连接码 10 分钟内有效，只能用一次。
-- **查看**：发送 `/menu`，点按钮查看余额总览、我的渠道、今日用量、倍率变化。
-- **管理 Key**：分步新建（名称、分组、额度、有效期）；停用、删除、查看完整密钥都要先确认，完整密钥过一会儿自动删除。
-- **推送设置**：余额预警、渠道异常、倍率与分组、新模型、安全提醒、平台公告，六个开关。
-
-机器人只响应私聊，权限和你在网站上登录时一样。
-
-</td>
-</tr>
+<tbody>
+    <tr>
+        <th align="center" width="100">Provider</th>
+        <th align="center">Description</th>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://www.kimi.com/code/?aff=cliproxyapi"><img src="./assets/logo/kimi.svg" alt="Kimi" width="28" height="28" /></a></td>
+        <td>Kimi series models (Kimi K3.1 Pro, K3.1 Pro Highspeed, K3, K2.8 Preview, etc.). <a href="https://platform.kimi.ai/docs/guide/kimi-k3-quickstart">Kimi K3</a> is Moonshot AI’s previous-generation flagship and the world’s first open 3T-class model. With 2.8 trillion parameters, native vision, and a 1-million-token context window, K3 is built for long-horizon coding, knowledge work, and reasoning. CLIProxyAPI supports Kimi through OAuth or compatible API interfaces. Try a <strong>Kimi Code plan</strong> (<a href="https://www.kimi.com/code?aff=cliproxyapi">中文站</a> | <a href="https://www.kimi.ai/code?aff=cliproxyapi">Global</a>), or get an <strong>API key</strong> from the Kimi Open Platform (<a href="https://platform.kimi.com?track_id=track-f15622e7182046baa22ca35e006e13a7&aff=cliproxyapi">中文站</a> | <a href="https://platform.kimi.ai?track_id=track-8a28e4b291d84f62af2fccc3e7a21cb3&aff=cliproxyapi">Global</a>). Thanks to Kimi for supporting CLIProxyAPI and the open-source community!</td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://developers.openai.com/api/docs/models"><img src="./assets/logo/openai.svg" alt="OpenAI" width="28" height="28" /></a></td>
+        <td>OpenAI GPT-6 models (GPT-6 Astra, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna), including access through Codex OAuth. Astra is the flagship for complex reasoning and coding, Sol balances capability and cost, Terra focuses on visual reasoning and computer use, and Luna handles focused, high-volume work.</td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://www.anthropic.com/claude/fable"><img src="./assets/logo/claude.svg" alt="Anthropic" width="28" height="28" /></a></td>
+        <td>Anthropic Claude models (Claude Fable 5.1, Claude Opus 5.5, Claude Sonnet 5.5, Claude Haiku 5.5). Fable 5.1 is built for ambitious, long-running coding and knowledge work; Opus 5.5 brings strong agentic coding at a lower cost.</td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://antigravity.google/"><img src="./assets/logo/antigravity.svg" alt="Antigravity" width="28" height="28" /></a></td>
+        <td>Google Gemini models include Gemini 4 Argon and Gemini 3.8 Flash. CLIProxyAPI supports Gemini API, AI Studio, Vertex AI, Gemini CLI, and Antigravity accounts; model availability varies by channel. Gemini 3.8 Flash is Google's latest Flash model for long-horizon software engineering and agentic workflows. Antigravity's <a href="https://antigravity.google/docs/models/">official model availability</a> lists Claude Sonnet 5.5 (thinking) and Claude Opus 5.5 (thinking) for Google AI Pro (non-trial), Google AI Ultra, and Enterprise.</td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://docs.x.ai/developers/grok-4-7"><img src="./assets/logo/xai.svg" alt="xAI" width="28" height="28" /></a></td>
+        <td>xAI Grok models (Grok 4.7, Grok 4.7 Build Fast, etc.). Grok 4.7 is SpaceXAI's latest model for coding, agentic tasks, and knowledge work.</td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://dev.meta.ai/docs/overview"><img src="./assets/logo/meta.svg" alt="Meta" width="28" height="28" /></a></td>
+        <td>Meta Muse models (Muse Wonder Full, Muse Wonder, Muse Spark 1.3, etc.). CLIProxyAPI supports Muse Code accounts through Meta login and Meta Model API keys, with Muse Spark 1.3 for coding and agentic workflows. Meta has announced Muse Wonder for Meta Model API and Muse Code, and Muse Wonder Full for Muse Code subscribers.</td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://devin.ai/cli">Devin</a></td>
+        <td>Devin models (SWE-2, SWE-2 Flash, GPT-6 Astra, Claude Fable 5.1, etc.). Connect a Devin account with <code>--devin-login</code> to route the models available to that account.</td>
+    </tr>
+</tbody>
 </table>
 
-## 团队与自动化
 
-- **工作区**：渠道和成员放在工作区里，可以新建多个，在顶部随时切换。
-- **邀请与角色**：按邮箱邀请，角色有管理员、操作员、只读成员。渠道可以设为“仅自己”或“团队共享”，管理密钥、查看明文等权限单独授予。所有者和管理员可以查看审计日志。
-- **个人 API 令牌**：给脚本和自动化工具用。权限按需勾选（只读、管理密钥、查看密钥明文、触发同步、修改渠道名称），有效期 1 到 365 天或永不过期。令牌能做的永远不超过你本人，也不能绑定或删除渠道、管理成员、改密码和两步验证。
-- **问题反馈**：在网站上提交问题，随时看到是否采纳和处理进度。
+## Sponsor
 
-## 三步上手
+[![https://www.packyapi.com/register?aff=cliproxyapi](./assets/packycode-en.png)](https://www.packyapi.com/register?aff=cliproxyapi)
 
-1. **注册**：打开 [nvcenter.cc](https://nvcenter.cc)，用邮箱注册，注册后直接进入你的工作区。
-2. **添加第一个渠道**：“渠道 → 添加渠道”，粘贴面板地址，点“识别站点”，按页面上的步骤复制登录，点“连接”。
-3. **看中控台**：一两分钟后，余额、Key 和用量就会出现。顺手设一条余额提醒线、连上 Telegram，再开两步验证，把恢复码存好。
+Thanks to PackyCode for sponsoring this project!
 
-## 完整产品介绍
+PackyCode is a reliable and efficient API relay service provider, offering relay services for Claude Code, Codex, Gemini, and more.
 
-每项功能的细节、限制和常见问题，在网站的[产品介绍页](https://nvcenter.cc/intro)和本仓库的 [docs/product-intro.zh.md](docs/product-intro.zh.md) 里（English: [docs/product-intro.en.md](docs/product-intro.en.md)）。
+PackyCode provides special discounts for our software users: register using <a href="https://www.packyapi.com/register?aff=cliproxyapi">this link</a> and enter the "cliproxyapi" promo code during recharge to get 10% off.
 
-<p align="center">
-  <img src="docs/images/intro-page.jpg" alt="nvcenter.cc 产品介绍页：左侧目录，右侧是“为什么做它”和“它能帮你做什么”">
-</p>
+---
 
-## 本仓库包含什么
+<table>
+<tbody>
+<tr>
+<td width="180"><a href="https://www.aicodemirror.ai/register?invitecode=TJNAIF"><img src="./assets/aicodemirror.png" alt="AICodeMirror" width="150"></a></td>
+<td>Thanks to AICodeMirror for sponsoring this project! AICodeMirror provides official high-stability relay services for Claude Code / Codex / Gemini, with enterprise-grade concurrency, fast invoicing, and 24/7 dedicated technical support. Claude Code / Codex / Gemini official channels at 38% / 2% / 9% of original price, with extra discounts on top-ups! AICodeMirror offers special benefits for CLIProxyAPI users: register via <a href="https://www.aicodemirror.ai/register?invitecode=TJNAIF">this link</a> to enjoy 20% off your first top-up, and enterprise customers can get up to 25% off!</td>
+</tr>
+<tr>
+<td width="180"><a href="https://apikey.fan/register?aff=CLIProxyAPI"><img src="./assets/apikey.png" alt="APIKEY.FUN" width="150"></a></td>
+<td>Thanks to APIKEY.FUN for sponsoring this project! APIKEY.FUN is a professional enterprise-grade AI relay platform dedicated to providing stable, efficient, and low-cost AI model API access for enterprises and individual developers. The platform supports popular mainstream models such as Claude, OpenAI, and Gemini, with prices as low as 7% of the official price. Register through this project's <a href="https://apikey.fan/register?aff=CLIProxyAPI">exclusive link</a> to enjoy a special <b>permanent 5% top-up discount</b>.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://api.fenno.ai/s/9LRu"><img src="./assets/fennoai.png" alt="Fenno.ai" width="150"></a></td>
+<td>Thanks to <strong>Fenno.ai</strong> for sponsoring this project! Fenno.ai is an API relay service for coding, with a focus on Codex. It brings coding models such as GPT, Claude, and Grok together under one API key, supports both OpenAI and Anthropic protocols, and works directly with popular coding tools such as Codex, Claude Code, Cline, and OpenCode. It supports B2B settlement and invoicing for entities in China and abroad. <strong>New users can <a href="https://api.fenno.ai/s/9LRu">try $50 in credits for $1.99</a>. Earn up to 20% referral commission: the more friends you refer, the more you can earn.</strong></td>
+</tr>
+<tr>
+<td width="180"><a href="https://s.qiniu.com/7zUJri"><img src="./assets/qiniucloud.png" alt="Qiniu Cloud AI" width="150"></a></td>
+<td>Thanks to <strong>Qiniu Cloud</strong> for sponsoring this project! Qiniu Cloud (02567.HK) operates an enterprise-grade MaaS platform that provides one-stop access to 150+ leading global models. It supports protocols from major model providers and processes text, images, audio, video, and files, serving more than 1.8 million enterprise developers. <strong>New enterprise users can claim 20 million free tokens. As part of the year-end promotion, new users can <a href="https://www.qiniu.com/ai/free-models/conatus-2026?utm_source=CLIProxyAPI&amp;utm_medium=oss&amp;utm_campaign=comatus_202611&amp;utm_content=readme">get up to 1 billion free tokens per day</a>.</strong></td>
+</tr>
+<tr>
+<td width="180"><a href="https://cubence.com/signup?code=CLIPROXYAPI&source=cpa"><img src="./assets/cubence.png" alt="Cubence" width="150"></a></td>
+<td>Thanks to Cubence for sponsoring this project! Cubence is a reliable and efficient API relay service provider, offering relay services for Claude Code, Codex, Gemini, and more. Cubence provides special discounts for our software users: register using <a href="https://cubence.com/signup?code=CLIPROXYAPI&source=cpa">this link</a> and enter the "CLIPROXYAPI" promo code during recharge to get 10% off.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://bestproxy.com/?keyword=ayh7otlb"><img src="./assets/bestproxy.png" alt="Bestproxy" width="150"></a></td>
+<td>Bestproxy provides high-purity residential IPs with dedicated one-IP-per-account support. 🟡Residential Proxy - &#36;0.5/GB；🟡Static Residential Proxy - Starting at &#36;3/IP；🟡Unlimited Residential Proxy - Starting at &#36;67/Day.  ✅<a href="https://bestproxy.com/?keyword=ayh7otlb">Get Free Trial.</a></td>
+</tr>
+<tr>
+<td width="180"><a href="https://www.swiftproxy.net/?code=PR67S9A95"><img src="./assets/swiftproxy.png" alt="Swiftproxy" width="150"></a></td>
+<td>Swiftproxy provides 90M+ clean residential IPs across 220+ locations, supporting HTTP(S)/SOCKS5, IP rotation, Sticky Sessions, and precise location targeting. It helps AI API tools and automation workflows access online services reliably from different locations, making it ideal for API requests, web access, data collection, and location-based testing. Residential proxies from &#36;0.7/GB. Free testing is available, with 10% off using code PROXY90. <a href="https://www.swiftproxy.net/?code=PR67S9A95">Try Swiftproxy Now</a></td>
+</tr>
+<tr>
+<td width="180"><a href="https://www.rapidproxy.io/?code=KHM9B6E6M"><img src="./assets/rapidproxy.png" alt="RapidProxy" width="150"></a></td>
+<td><a href="https://www.rapidproxy.io/?code=KHM9B6E6M">RapidProxy</a> is a high-performance proxy provider built for automation and multi-account operations, offering clean residential proxies and native static ISP IPs. With 90M+ residential IPs worldwide, smart rotation, stable sessions, and high-concurrency support, RapidProxy is ideal for web scraping, browser automation, social media account management, e-commerce operations, bulk account registration, and more. Residential proxies start at just &#36;0.55/GB, with traffic that never expires. Use code RAPID10 for 10% off, and <a href="https://www.rapidproxy.io/?code=KHM9B6E6M">start your free trial today.</a></td>
+</tr>
+<tr>
+<td width="180"><a href="https://pateway.ai/?ch=jjvdb"><img src="./assets/patewayai.png" alt="PatewayAI" width="150"></a></td>
+<td>PatewayAI is an API relay service provider for experienced AI developers, with full support for the Claude and Codex model families. All models come from high-quality official channels, with no dilution or counterfeiting, and transparent, verifiable billing details. Economy mode starts at just 5% of the official price. Register through <a href="https://pateway.ai/?ch=jjvdb">this link</a> to receive trial credits and participate in occasional promotions for free credits. The platform also supports enterprise-grade concurrency, a dedicated management dashboard, formal contracts and invoices, and two-way referral rewards of up to &#36;150.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://kedaya.ai/register?aff=824X8RAHCYXM"><img src="./assets/kedaya.jpg" alt="kedaya.ai" width="150"></a></td>
+<td>kedaya.ai is a stable and efficient AI model API relay service provider, covering leading models including Claude, GPT, Gemini, Grok, Antigravity, and DeepSeek. It supports native OpenAI (including Responses), Anthropic, and Gemini protocols, enabling seamless integration with clients such as CLIProxyAPI, Claude Code, Codex, Gemini CLI, and Grok CLI. OpenAI and Grok model prices can be as low as 0.1% of official rates! <a href="https://kedaya.ai/register?aff=824X8RAHCYXM">Exclusive registration link</a>.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://xcode.best/register?aff=OuDv"><img src="./assets/xcode.gif" alt="Xcode" width="150"></a></td>
+<td>
+    🥚 <b>[Freebie Alert!] Register & submit a ticket with code to grab $5 free credit + 15% OFF first top-up!</b><br>
+    🚀 <b>More than just API routing — an all-in-one Web workspace:</b> Enjoy Web chat, AI image generation, video creation, and automated workflows right out of the box without any frontend setup.<br>
+    ⚡ <b>All mainstream models supported:</b> High-speed routing for Claude, GPT, Gemini, DeepSeek, and more.<br>
+    🛡️ <b>Reliable guarantees:</b> Hassle-free refunds | Official invoicing | B2B & individual billing | High-availability customer support ready to help!<br><br>
+    👉 Xcode VIP Portal: <a href="https://xcode.best/register?aff=OuDv">https://xcode.best</a><br>
+    💬 Ticket Code: <code>CLIProxyAPI</code> (Submit a ticket to claim your credits instantly)
+  </td>
+</tr>
+<tr>
+<td width="180"><a href="https://x.com/chenju_ai"><img src="./assets/chenju.png" alt="Chenju" width="150"></a></td>
+<td>Thanks to <a href="https://x.com/chenju_ai">陈局 (Chenju)</a> for sponsoring this project! Probably the only slot here that won't ask you to sign up — no signup link, no promo code. Just raising a glass to the maintainers, because good open source deserves to be paid for. Come shoot the breeze on X: <a href="https://x.com/chenju_ai">@chenju_ai</a></td>
+</tr>
+<tr>
+<td width="180"><a href="https://www.deepsiderapi.com/?utm_source=CLIProxyAPI"><img src="./assets/deepsiderapi.png" alt="DeepSider API" width="150"></a></td>
+<td>Access leading AI models like GPT, Claude, Gemini, and DeepSeek—all in one place. We connect through official channels from major providers, with no shared account pools or reverse engineering. Save up to 71% compared with official rates. Track your usage in real time with transparent billing, and access AI at a lower cost. <a href="https://www.deepsiderapi.com/?utm_source=CLIProxyAPI">Try DeepSider API</a>.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://origincoder.com/"><img src="./assets/origincoder.png" alt="OriginCoder" width="150"></a></td>
+<td><strong><a href="https://origincoder.com">OriginCoder</a> is an enterprise-grade AI gateway designed for low latency, reliability, and high concurrency.</strong> <strong>We build and operate our Claude Max and GPT Pro account pools entirely in-house. Pools that maintain full model performance are priced at 30–40% of official rates, and we publish each pool’s performance status in real time.</strong> Access <strong>GPT, Claude, Grok, Gemini-4-Carbon, DeepSeek, and other leading AI models</strong> through coding tools such as <strong>Claude Code and Codex</strong>. Use it for <strong>AI chat, coding assistance, image generation, and video generation</strong>. We operate overseas in compliance with local regulations and have <strong>served more than 15,000 customers since launching in August 2025</strong>. Our pricing is transparent, with <strong>no overage fees and top-ups starting at CNY 10</strong>. We keep the service running smoothly during peak hours through <strong>24/7 monitoring, redundant account pools, and automatic failover between nodes</strong>. <a href="https://origincoder.com/monitor">Check our service status</a>. <strong>We protect your privacy by not storing conversation content.</strong> We support <strong>business payments and invoicing</strong>. Our support team <strong>responds within 3 minutes</strong>, and our technical team is available <strong>24/7</strong>. Users in mainland China can connect through our <a href="https://cn.origincoder.com">China-optimized gateway</a>.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://visioncoder.cn/"><img src="./assets/visioncoder.svg" alt="VisionCoder" width="150"></a></td>
+<td><strong><a href="https://visioncoder.cn/">VisionCoder</a> | China’s OpenRouter — one API for leading Chinese and global AI models.</strong> Access <strong>DeepSeek, Qwen, Kimi, GLM, GPT, Claude, Gemini, and Grok</strong>, with intelligent routing across suppliers and automatic failover. <strong>Failed requests are free, pricing is public, and every charge can be verified.</strong> Works with coding tools such as Claude Code and Codex, with <strong><a href="https://visioncoder.cn/me/keys">one-click import into CC Switch and WorkBuddy</a></strong>. Teams can purchase centrally, assign subscription packages by seat, and reclaim them for reassignment, with business bank transfers and invoicing supported. <strong>Supplier applications are open: list your model endpoints and earn traffic based on quality. Monthly settlement to business bank accounts, itemized usage records, and customer billing and invoicing handled by VisionCoder.</strong> Join the <a href="https://visioncoder.cn/challenge">VibeCoding Challenge</a> for <strong>CNY 2,350 in top-up credits per round</strong>, including <strong>CNY 1,000 in top-up credits for first place</strong>.</td>
+</tr>
+<tr>
+<td width="180"><a href="https://api.10dianai.com/sign-up?aff=M7Gn"><img src="./assets/10dian-api.png" alt="10dian-API" width="150"></a></td>
+<td><strong>10dian-API</strong><br>One key to call on AI from around the world!<br>10dian-API brings leading AI models and protocols together in one API that works with popular clients. Independent developers, AI enthusiasts, and teams get the same access, including stable connections for high volumes of concurrent requests. Prices are low, billing multipliers are public, and you get the model you choose without substitutions. The service accepts multiple top-up methods and can also pay for popular AI subscriptions on your behalf.<br>👉 <a href="https://api.10dianai.com/sign-up?aff=M7Gn">Sign up</a></td>
+</tr>
+</tbody>
+</table>
 
-```
-docs/product-intro.zh.md          完整产品介绍（中文）
-docs/product-intro.en.md          Full product introduction (English)
-docs/images/                      README 用到的网站截图
-web/src/pages/Landing.tsx         首页
-web/src/pages/Intro.tsx           产品介绍页
-web/src/components/landing/       首页插图、控制台预览和功能介绍
-web/src/components/ui.tsx         通用界面组件
-web/src/lib/messages.landing.ts   首页文案（中英）
-web/src/index.css                 全局样式
-```
+## Overview
 
-前端使用 React、TypeScript 和 Tailwind CSS。这些文件引用了未公开的模块，无法单独构建。
+- OpenAI/Gemini/Claude/Grok compatible API endpoints for CLI models
+- OpenAI Codex support (GPT models) via OAuth login
+- Claude Code support via OAuth login
+- Grok Build support via OAuth login
+- Streaming, non-streaming, and WebSocket responses where supported
+- Function calling/tools support
+- Multimodal input support (text and images)
+- Multiple accounts with round-robin load balancing (Gemini, OpenAI, Claude, Grok)
+- Simple CLI authentication flows (Gemini, OpenAI, Claude, Grok)
+- Generative Language API Key support
+- AI Studio Build multi-account load balancing
+- Claude Code multi-account load balancing
+- OpenAI Codex multi-account load balancing
+- Grok Build multi-account load balancing
+- OpenAI-compatible upstream providers via config (e.g., OpenRouter)
+- Reusable Go SDK for embedding the proxy (see `docs/sdk-usage.md`)
 
-## 链接
+## Getting Started
 
-- 网站：https://nvcenter.cc
-- 产品介绍：https://nvcenter.cc/intro
-- 两步验证工具（没有手机时使用，验证码只在浏览器里计算）：https://nvcenter.cc/tools/2fa
-- Telegram 机器人：https://t.me/NerverCenter_bot
+CLIProxyAPI Guides: [https://help.router-for.me/](https://help.router-for.me/)
 
-## English
+[Claude Code with a Codex backend](examples/claude-code-codex/README.md): optional visible progress, classifier routing, image-tool pass-through, and latency diagnostics.
 
-<p align="center">
-  <img src="docs/images/hero-en.jpg" alt="NerveCenter home page in English: the headline “Every AI relay account, one nerve center” next to a console preview with sample data showing total balance, channels, keys, and each site's ratio, balance and status">
-</p>
+## Management API
 
-NerveCenter brings your accounts on many **new-api** and **sub2api** relay panels (中转站) into one console: balances, upstream API keys, usage logs, group ratios (倍率), model price comparison and alerts. It is built for relay-site owners with many upstream accounts, and for anyone with accounts on several sites. Each connected account is a "channel", synced on a schedule.
+see [MANAGEMENT_API.md](https://help.router-for.me/management/api)
 
-### Multi-site overview
+Open `/management/amazonquick` on your server to manage Amazon Quick sign-in, imports, quota, and proxies. See the [management page guide](docs/amazonquick.md#management-page).
 
-- Total balance, today's and 7-day spend, spend and balance trends, and top models across every channel.
-- A "needs attention" list: re-authorisation needed, low balance, credentials about to expire, sync errors, upstream faults.
-- Create, edit, disable, re-enable and delete upstream API keys without signing in to each panel; filter all keys by channel, platform, status and group.
-- Usage logs by day and by model with per-call detail, exportable as CSV or NDJSON.
+## Usage Statistics
 
-### Ratios, price comparison and alerts
+Since v6.10.0, CLIProxyAPI and [CPAMC](https://github.com/router-for-me/Cli-Proxy-API-Management-Center) no longer ship built-in usage statistics. If you need usage statistics, use:
 
-- Only the groups you can use, at the ratio that applies to you; model prices in USD per 1M input and output tokens, the same way on every site.
-- A timeline of ratio, group and model changes (by default ratios are compared every 10 minutes, model lists every 30), since panels keep no history of their own.
-- Panel health (success rate, latency) read from the panel's own statistics. No test requests with your keys, no cost.
-- Model price comparison: each model's price on each of your channels, with your own group ratio applied, next to its stability.
-- Alerts in the in-app inbox, on Telegram or by HMAC-SHA256-signed webhook, each switchable on its own.
+### [CPA Usage Keeper](https://github.com/Willxup/cpa-usage-keeper)
 
-### Connecting a panel
+Standalone persistence and visualization service for CLIProxyAPI, with periodic data sync, SQLite storage, aggregate APIs, and a built-in dashboard for usage and statistics.
 
-Paste the panel address and NerveCenter detects new-api or sub2api. You always sign in yourself, captcha and all, in one of three ways; the add page lists whichever the site has open.
+### [CPA-Manager-Plus](https://github.com/seakee/CPA-Manager-Plus)
 
-- **Copy the sign-in from your browser (F12, the default)** — sign in to the panel in your own browser, then copy the sign-in over following the illustrated steps. Nothing to install. On new-api the recommended route is one console command plus your panel password, which creates an access token; the password goes only to the panel.
-- **Browser extension** — sign in to the panel in your own browser and the NerveCenter Connector extension hands the sign-in over. Downloaded from the site and loaded unpacked (not in the Chrome Web Store), paired to your account once with a one-time code. Chromium browsers only.
-- **Cloud browser** — the panel's own sign-in page opens in a throwaway browser on our server. You sign in as usual and we keep only the resulting session. Third-party sign-in ("continue with Google") does not work there; use one of the other two for such an account.
+A self-hosted CLIProxyAPI management console and observability dashboard, available as a lightweight drop-in panel or a full Manager Server with persistent analytics. Manage OAuth credentials, AI providers, client API keys, model aliases, plugins, and CPA settings in one interface. SQLite-backed request history enables live monitoring, failure diagnosis, and token, latency, and estimated-cost breakdowns by model, provider, account, key, and channel. Supports editable model prices and one-click price sync, alongside Codex and xAI quota checks, reset information, account-health inspection, and controlled recovery actions. Deploy via Docker or cross-platform native packages, with data stored locally.
 
-All three store the same thing, and a channel behaves the same once connected. Other panel software is not supported.
+### [Oh-My-CPA](https://github.com/WizisCool/oh-my-cpa)
 
-### Security
+Web console for CLIProxyAPI v8+, built on `shadcn/ui` with a modern UI/UX, fluid motion, and desktop and mobile layouts. Centralizes providers, OAuth, visual routing, and built-in plugins, with comprehensive request records (latency, TTFT, tokens, diagnostics, and model substitutions), live routing, multi-dimensional pricing analytics, quota window warmup and forecasting, and Agent/MCP tools. Protected by AES-GCM encryption and automatic config backups, supporting direct binary runs, Docker deployment, and one-click OMC/CPA updates.
 
-- Upstream credentials and revealed keys are sealed under a master key before they are stored; each credential has its own AES-256-GCM data key.
-- Platform admins cannot see your upstream credentials. An admin can reveal a key only one at a time, after two-step verification, and every reveal is audited.
-- Sensitive actions are recorded in the audit log before their result goes out.
-- Account passwords are stored only as argon2id hashes. Two-step verification with recovery codes, device sign-out, team workspaces with roles, and scoped personal API tokens.
+## SDK Docs
 
-### On your phone
+- Usage: [docs/sdk-usage.md](docs/sdk-usage.md)
+- Advanced (executors & translators): [docs/sdk-advanced.md](docs/sdk-advanced.md)
+- Access: [docs/sdk-access.md](docs/sdk-access.md)
+- Watcher: [docs/sdk-watcher.md](docs/sdk-watcher.md)
+- Custom Provider Example: `examples/custom-provider`
 
-The site fits a phone screen, and the official Telegram bot [@NerverCenter_bot](https://t.me/NerverCenter_bot) shows balances, channels, today's usage and ratio changes, manages keys with confirmation steps, and lets you choose which alerts it sends.
+## Contributing
 
-### Getting started
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Sign up at [nvcenter.cc](https://nvcenter.cc) with your email.
-2. Add a channel: paste the panel address and follow the steps on the page.
-3. In a minute or two your balances, keys and usage appear on the dashboard. Set a balance alert, connect Telegram and turn on two-step verification.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Full details: [docs/product-intro.en.md](docs/product-intro.en.md) (English) · [docs/product-intro.zh.md](docs/product-intro.zh.md) (中文) · https://nvcenter.cc/intro
+## Who is with us?
 
-This repository holds only the product introduction, a few screenshots of the site and a small excerpt of the web front end, for reference. It isn't the full source and doesn't build on its own. NerveCenter is a closed-source service: https://nvcenter.cc
+Those projects are based on CLIProxyAPI:
 
-## 版权 / Copyright
+### [vibeproxy](https://github.com/automazeio/vibeproxy)
 
-© NerveCenter. 保留所有权利。本仓库代码仅供展示，未授予开源许可。详见 [LICENSE](LICENSE)。
+Native macOS menu bar app to use your Claude Code & ChatGPT subscriptions with AI coding tools - no API keys needed
 
-All rights reserved. The code here is shown for reference only; no open-source licence is granted. See [LICENSE](LICENSE).
+### [Subtitle Translator](https://github.com/VjayC/SRT-Subtitle-Translator-Validator)
+
+A cross-platform desktop and web app to translate and validate SRT subtitles using your existing LLM subscriptions (Gemini, ChatGPT, Claude, etc.) via CLIProxyAPI - no API keys needed.
+
+### [CCS (Claude Code Switch)](https://github.com/kaitranntt/ccs)
+
+CLI wrapper for instant switching between multiple Claude accounts and alternative models (Gemini, Codex, Antigravity) via CLIProxyAPI OAuth - no API keys needed
+
+### [Quotio](https://github.com/nguyenphutrong/quotio)
+
+Native macOS menu bar app that unifies Claude, Gemini, OpenAI, and Antigravity subscriptions with real-time quota tracking and smart auto-failover for AI coding tools like Claude Code, OpenCode, and Droid - no API keys needed.
+
+### [ProxyPilot](https://github.com/Finesssee/ProxyPilot)
+
+Windows-native CLIProxyAPI fork with TUI, system tray, and multi-provider OAuth for AI coding tools - no API keys needed.
+
+### [CPA-XXX Panel](https://github.com/ferretgeek/CPA-X)
+
+A lightweight web admin panel for CLIProxyAPI with health checks, resource monitoring, real-time logs, auto-update, request statistics and pricing display. Supports one-click installation and systemd service.
+
+### [CLIProxyAPI Tray](https://github.com/kitephp/CLIProxyAPI_Tray)
+
+A Windows tray application implemented using PowerShell scripts, without relying on any third-party libraries. The main features include: automatic creation of shortcuts, silent running, password management, channel switching (Main / Plus), and automatic downloading and updating.
+
+### [霖君](https://github.com/wangdabaoqq/LinJun)
+
+霖君 is a cross-platform desktop application for managing AI programming assistants, supporting macOS, Windows, and Linux systems. Unified management of Claude Code, Gemini, OpenAI Codex, and other AI coding tools, with local proxy for multi-account quota tracking and one-click configuration.
+
+### [CLIProxyAPI Dashboard](https://github.com/itsmylife44/cliproxyapi-dashboard)
+
+A modern web-based management dashboard for CLIProxyAPI built with Next.js, React, and PostgreSQL. Features real-time log streaming, structured configuration editing, API key management, OAuth provider integration for Claude/Gemini/Codex, usage analytics, container management, and config sync with OpenCode via companion plugin - no manual YAML editing needed.
+
+### [All API Hub](https://github.com/qixing-jk/all-api-hub)
+
+Browser extension for one-stop management of New API-compatible relay site accounts, featuring balance and usage dashboards, auto check-in, one-click key export to common apps, in-page API availability testing, and channel/model sync and redirection. It integrates with CLIProxyAPI through the Management API for one-click provider import and config sync.
+
+### [Shadow AI](https://github.com/HEUDavid/shadow-ai)
+
+Shadow AI is an AI assistant tool designed specifically for restricted environments. It provides a stealthy operation
+mode without windows or traces, and enables cross-device AI Q&A interaction and control via the local area network (
+LAN). Essentially, it is an automated collaboration layer of "screen/audio capture + AI inference + low-friction delivery",
+helping users to immersively use AI assistants across applications on controlled devices or in restricted environments.
+
+### [ProxyPal](https://github.com/buddingnewinsights/proxypal)
+
+Cross-platform desktop app (macOS, Windows, Linux) wrapping CLIProxyAPI with a native GUI. Connects Claude, ChatGPT, Gemini, GitHub Copilot, and custom OpenAI-compatible endpoints with usage analytics, request monitoring, and auto-configuration for popular coding tools - no API keys needed.
+
+### [CLIProxyAPI Quota Inspector](https://github.com/AllenReder/CLIProxyAPI-Quota-Inspector)
+
+Ready-to-use cross-platform quota inspector for CLIProxyAPI, supporting per-account codex 5h/7d quota windows, plan-based sorting, status coloring, and multi-account summary analytics.
+
+### [CLIProxy Pool Watch](https://github.com/murasame612/CLIProxyPoolWidget)
+
+Native macOS SwiftUI app for monitoring ChatGPT/Codex account quotas in CLIProxyAPI pools. Displays account availability, Plus-base capacity, 5-hour and weekly quota bars, plan weights, and restore forecasts through the Management API.
+
+### [Panopticon](https://github.com/eltmon/panopticon-cli)
+
+Multi-agent orchestration for AI coding assistants. Runs CLIProxyAPI as a local sidecar so its agents can drive GPT models through a ChatGPT subscription, pointing Claude Code at an Anthropic-compatible endpoint with no OpenAI API key required.
+
+### [Tunnel Agent](https://github.com/Villoh/tunnel-agent)
+
+Windows desktop UI that manages CLIProxyAPI and Perplexity WebUI Scraper from a single interface, inspired by Quotio and VibeProxy. Connect OAuth providers (Claude, Gemini, Codex, Kimi, Antigravity), custom API keys, and Perplexity session accounts, then point any coding agent at the local endpoint.
+
+### [Quotio Desktop](https://github.com/xiaocoss/quotio-desktop)
+
+Cross-platform (Tauri) port of Quotio for Windows, macOS and Linux. Manages a pool of AI accounts (Codex, Claude Code, GitHub Copilot, Gemini, Antigravity, Kiro, Cursor, Trae, GLM) through CLIProxyAPI, with per-account 5-hour/weekly quota bars, Codex rate-limit reset credits with one-click reset, smart scheduling, usage statistics, and multi-instance Codex — no API keys needed.
+
+### [Universal Chat Provider](https://github.com/maxdewald/vscode-universal-chat-provider)
+
+VS Code extension that brings your Claude, ChatGPT/Codex, Antigravity, Grok, and Kimi subscriptions into GitHub Copilot Chat as native language models — and can power your Git commit messages, chat titles, and summaries too. Runs CLIProxyAPI in a fully managed background lifecycle (download, verify, supervise) shared across all windows, so it's zero-setup. No API keys needed, just OAuth.
+
+### [CPA-Tray-Powershell](https://github.com/ztzpro/CPA-Tray-Powershell.git)
+
+A PowerShell-based Windows system tray launcher for CLIProxyAPI. It supports running in the background without a console window, opening the management page, keeping the backend running after the management window closes, and reopening the page from the tray. It also supports checking for CLIProxyAPI updates on startup, SHA-256 verification with rollback, one-click CLIProxyAPI restart and update, PID-validated process management, and safe service shutdown.
+
+### [Grok Search MCP](https://github.com/MapleMapleCat/Grok_Search_Mcp)
+
+An HTTP-only Model Context Protocol server that uses a CLIProxyAPI deployment to provide Grok-powered real-time web search, X/Twitter search, and model discovery to MCP clients. It adds MCP transport, client API-key management, quotas, usage tracking, and a web administration panel.
+
+### [AIUsage](https://github.com/sylearn/AIUsage)
+
+Native macOS SwiftUI dashboard for AI subscriptions and coding proxies. It manages official CLIProxyAPI releases end to end (download, verify, supervise, update, and roll back), unifies OAuth accounts and live models, and connects one gateway to Codex, Claude Code/Science, OpenCode, or OpenAI/Anthropic/Gemini clients, with optional LAN access.
+
+### [Claude Dialects](https://github.com/stefandevo/claude-dialects)
+
+Run multiple native-feeling Claude Code commands, each powered by a different model (Codex, GLM, Kimi, Gemini, Grok, MiniMax, DeepSeek, Cursor, Copilot, Claude). Every dialect launches the real Claude Code interface with its own isolated config, history, ports, and an embedded CLIProxyAPI instance linked through the Go SDK — no separate proxy install. macOS only. Learn more at [claude-dialects.cc](https://claude-dialects.cc/).
+
+### [WebBrain](https://github.com/webbrain-one/webbrain)
+
+Browser agent that can connect to CLIProxyAPI's local OpenAI-compatible endpoint as a model provider. See WebBrain's independent [setup, security, and account-risk guide](https://webbrain.one/docs/easy-cli-proxy/) for using CLIProxyAPI through EasyCLIProxyAPI.
+
+### [Infinitus](https://github.com/deathemperor/infinitus)
+
+Native macOS menu bar app that runs a fleet of Claude accounts through CLIProxyAPI's Management API (claude-swap and 9Router too): 5h / 7d / per-model quota gauges, switch / hold / star from the popup, a run-rate forecast of when each window runs out, and an iPhone companion that mirrors it all - no API keys needed.
+
+### [PiCloud](https://github.com/cookerpapa/pi-cloud)
+
+Self-hosted coding-agent platform built on the Pi SDK, with a web UI, concurrent subagents, and CubeSandbox KVM workspaces. Uses CLIProxyAPI as its provider gateway, keeping provider credentials outside the guest workspaces.
+
+### [cc-status-line](https://github.com/kinka/cc-status-line)
+
+Claude Code status line for CLIProxyAPI: per-account Codex / Grok / Antigravity / Claude quotas (5h / 7d / weekly) and reset countdown for the current instance. Picks the CPA instance from `ANTHROPIC_BASE_URL` and reads quotas through the Management API.
+
+### [CLIProxy Quota Tray](https://github.com/ZYHUO/CLIProxy-Quota-Tray)
+
+Cross-platform Electron tray dashboard for CLIProxyAPI. Shows the real OAuth quota windows per account across ChatGPT/Codex, Claude, Gemini/Antigravity, Grok, Kimi and Cursor, estimates usage-queue cost, and tracks OpenAI/Claude service status. Dark terminal-style UI; runs on Windows and Linux.
+
+### [panel4cliproxyapi](https://github.com/yaanlaan/panel4cliproxyapi)
+
+A modern, responsive web dashboard and management console for CLIProxyAPI built with React and Tailwind CSS. Features multi-provider OAuth login with LAN redirect assistance, visual zero-YAML configuration, real-time traffic analytics charts, client API key management, core version checking & hot-reloading, and a live SSE streaming playground.
+
+### [sub2api](https://github.com/PlaygrndLabs/sub2api)
+
+A Cloudflare-based LLM gateway and proxy server: CLIProxyAPI deployed to Cloudflare Workers + Containers in one click. Logins and config persist in R2, the dashboard sits behind a password, and API calls are refused until a client API key exists.
+
+### [Hermes CLIProxyAPI Provider](https://github.com/duu261/hermes-cliproxyapi-provider)
+
+Model-provider plugin for [Hermes Agent](https://github.com/NousResearch/hermes-agent) that registers one Hermes provider per CLIProxyAPI provider, each on the wire its executor accepts (Anthropic Messages, Responses or Chat Completions), with context windows and reasoning levels read from CLIProxyAPI. Optional read-only Management API pass for exact provider grouping. A companion plugin adds a `/cpa` chat command for each pool's account health and, on request, each account's live quota. Listed in the [Hermes plugin catalog](https://hermes-agent.nousresearch.com/docs/plugins): `hermes plugins install cliproxyapi-provider` and `hermes plugins install cpa-status`.
+
+### [Ebb](https://github.com/lucasnsaraujo/ebb)
+
+Native macOS menu bar app for CLIProxyAPI pools. It shows how much of the pool's Claude, Codex and other providers' 5-hour and weekly limits is left and when it comes back, and sets each login's routing weight through the Management API so the accounts drain evenly.
+
+### [Nia Live Demo](https://github.com/nia-teams/nia-live-demo)
+
+Real-time full-duplex voice companion with a live, interactive SVG/HTML canvas. It combines two CLIProxyAPI capabilities: the Codex GPT-Live 1.1 media relay (`gpt-live-1-codex`, WebRTC + Sideband) for voice with instant barge-in, and `ultrafast` Responses (`gpt-6.1-sol` / `gpt-6-astra`) for drawing and editing the canvas while you talk.
+
+### [Hyphantria](https://hyphantria.com)
+
+Native macOS schematic and PCB design app with AI-assisted component creation, reference-design adoption, and joint placement and routing optimisation. Natively supports CLIProxyAPI for connecting its AI-assisted features to your AI providers.
+
+> [!NOTE]  
+> If you developed a project based on CLIProxyAPI, please open a PR to add it to this list.
+
+## More choices
+
+Those projects are ports of CLIProxyAPI or inspired by it:
+
+### [9Router](https://github.com/decolua/9router)
+
+A Next.js implementation inspired by CLIProxyAPI, easy to install and use, built from scratch with format translation (OpenAI/Claude/Gemini/Ollama), combo system with auto-fallback, multi-account management with exponential backoff, a Next.js web dashboard, and support for CLI tools (Cursor, Claude Code, Cline, RooCode) - no API keys needed.
+
+### [OmniRoute](https://github.com/diegosouzapw/OmniRoute)
+
+Never stop coding. Smart routing to FREE & low-cost AI models with automatic fallback.
+
+OmniRoute is an AI gateway for multi-provider LLMs: an OpenAI-compatible endpoint with smart routing, load balancing, retries, and fallbacks. Add policies, rate limits, caching, and observability for reliable, cost-aware inference.
+
+### [Codex Switch](https://github.com/9ycrooked/CodexSwitch)
+
+This is a tool built with Tauri 2 + Vue 3 for managing multiple OpenAI Codex desktop accounts. Switch between saved ChatGPT/Codex certification profiles, check 5-hour and weekly quota usage in real time, verify token health, view active account details, and import or save auth.json files without manual copying.
+
+### [cliproxy-rs](https://github.com/vayungodara/cliproxy-rs)
+
+A Rust port of CLIProxyAPI that reads the same `config.yaml` and auth files and serves the same routes and v8 Management API, so you can switch between the two in either direction. Ships as a single binary with the management dashboard built in (per-account 5-hour and weekly quota view, account sign-in, client setup guides), and adds an opt-in `soonest-reset` routing strategy that spends the account whose weekly window resets first.
+
+> [!NOTE]  
+> If you have developed a port of CLIProxyAPI or a project inspired by it, please open a PR to add it to this list.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

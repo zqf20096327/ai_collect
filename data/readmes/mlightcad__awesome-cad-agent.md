@@ -439,6 +439,23 @@ Key Features
 - Recorded, replayable agent sessions with full tool-call transcripts
 - Editor collaboration workflow for viewport picks and cell references
 
+#### Anatomy
+
+https://github.com/wheresryan22/anatomy
+
+An agent skill that explains a technical idea by building it as a working, interactive isometric figure of a machine or mechanism.
+
+Key Features
+
+- Agent Skill for Claude Code, Antigravity, OpenCode, Codex, and MiniMax Code
+- Isometric SVG figures assembled from dozens of small, individually shaded, depth-sorted parts
+- Optional WebGL shaders for flames, exhaust, water, caustics, and lamp light
+- Experimental 3D mode for parts that turn, flex, and break away in true 3D
+- Geometry audit, headless-Chrome screenshots, and line-end checks for self-verification
+- Output as standalone HTML, a single SVG, React/Next.js components, or A4 PDF sheets
+
+Note: Anatomy produces presentation-ready isometric engineering illustrations rather than native CAD geometry; it provides no CAD kernel and no STEP/DXF import or export.
+
 #### Blender Agent Skills (EL4CTEO)
 
 https://github.com/EL4CTEO/blender-skills

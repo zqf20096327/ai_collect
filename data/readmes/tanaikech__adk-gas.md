@@ -51,12 +51,12 @@ At the core of GASADK is the **LlmAgent**, powered by the **Planner-Executor-Syn
 
 ---
 
-## ⚙️ GASADK Workflow Architecture
+## ⚙️ GASADK Workflow Architecture (v2.1.0)
 
-The execution lifecycle of `LlmAgent` is rigorously compartmentalized. The diagram below details the exact chronological flow from the moment `agent.run()` is invoked to the final synthesized response.
+The execution lifecycle of `LlmAgent` is rigorously compartmentalized to survive Google Apps Script's 6-minute limit and 9KB `PropertiesService` cap. The diagram below reflects **GASADK v2.1.0**, including the Hooks lifecycle, **Hybrid Direct Mode**, **Official Google Workspace MCP** integration with handshake caching, **HITL `suspend`/`resume`** with compressed chunked state persistence, and cumulative token quota safeguards.
 
 ```mermaid
-graph TD
+flowchart TD
     %% Styling Definitions
     classDef userReq fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
     classDef core fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
@@ -64,96 +64,118 @@ graph TD
     classDef external fill:#bfb,stroke:#333,stroke-width:2px,color:#000;
     classDef decision fill:#ff9,stroke:#333,stroke-width:2px,color:#000;
     classDef safeguard fill:#f66,stroke:#333,stroke-width:2px,color:#000;
+    classDef hook fill:#d5f5e3,stroke:#1e8449,stroke-width:2px,color:#000;
 
-    %% Nodes
+    %% Entry & Initialization
     Start(["User: agent.run(prompt)"])
-    InitCaps["Initialize Capabilities<br>(Tools, MCP, A2A, Skills)"]
-    InjectTime["Inject Temporal Context<br>System Time Anchor"]
-    Planner["LLM: Planner Phase<br>Generate DAG & JSON Schema"]
+    PreHooks["Hooks: SessionStart -> PreCompress (maxHistoryChars) -> BeforeAgent"]
+    InitCaps["Initialize & Cache Capabilities<br/>(Native Tools, MCP Cache, A2A Cards, Skills)"]
+    ToolSelHook["Hook: BeforeToolSelection<br/>(Filter / Whitelist Capabilities)"]
 
-    FastTrackDec{"requires_<br>capabilities<br>== false?"}
-    SchemaDec{"outputSchema<br>defined?"}
-    ReturnDirect(["Return direct_answer<br>Execution Bypassed"])
+    %% External Ecosystems
+    WorkspaceMCP[("Google Workspace MCP<br/>& Custom MCP Servers")]
+    A2A_Registry[("A2A Servers / Cards")]
+    GDrive[("Google Drive Skills")]
+    PropStore[("PropertiesService<br/>gzip + 8KB Chunks")]
 
+    %% Mode Branch (v2.1.0)
+    DirectDec{"executionMode ==<br/>direct / auto<br/>(Native/MCP only)?"}
+    DirectReAct["Hybrid Direct Mode (Single-Loop ReAct)<br/>Gemini 4 Hydrogen (2 LLM Calls)<br/>BeforeTool / AfterTool / guardDestructiveMcpTools"]
+
+    %% Planner Path (Default)
+    Planner["LLM: Planner Phase (thinkingLevel: LOW)<br/>Temporal Anchor + Same-Server MCP Consolidation"]
+    FastTrackDec{"requires_capabilities<br/>== false?"}
+    SchemaDec{"outputSchema<br/>defined?"}
+    ReturnDirect(["Return direct_answer<br/>Execution Bypassed"])
+
+    %% DAG Execution Loop
     PopTask["Pop Task from planQueue"]
-    CheckTime{"Elapsed Time ><br>timeoutMs<br>(280s)?"}
-    TimeoutAbort["Trigger Safe Abort<br>Stop Queue"]
+    CheckTime{"Elapsed > timeoutMs<br/>(280s) or Token Quota<br/>Exceeded?"}
+    TimeoutAbort["Safe Abort -> Partial Synthesis"]
+    InjectContext["Inject Capped dependentResults<br/>(Max 8,000 chars)"]
 
-    InjectContext["Inject 'depends_on'<br>Context to Prompt"]
-    ExecRouter{"Capability<br>Type?"}
+    %% HITL & BeforeTool
+    BeforeTool["Hook: BeforeTool<br/>(allow / deny / suspend)"]
+    HitlSuspend["saveState() (gzip + 8KB Chunks)<br/>Throw SUSPENDED"]
+    HitlResume(["User: agent.resume(sessionId, decision)<br/>loadState() -> deleteState()"])
 
-    ExecMCP["MCP Server Client"]
-    ExecA2A["A2A Server Client"]
+    %% Capability Router & Retry Guard
+    ExecRouter{"Capability Type?"}
+    ExecMCP["MCP Server Client<br/>(Cached Handshake, SSE, 403-JSON,<br/>Strict Schema Whitelist, Token Telemetry)"]
+    ExecA2A["A2A Server Client<br/>(Direct RPC, thoughtSignature)"]
     ExecSkill["Agent Skill LLM Call"]
-    ExecNative["Native Function Calling"]
+    ExecNative["Native / Built-in Tools"]
 
-    CheckErr{"Execution<br>Error?"}
-    Truncate["Payload Truncation<br>> maxResultLength"]
+    CheckErr{"Execution Error?<br/>(Bounded Retry + Inner Timeout)"}
+    Truncate["Payload Truncation & Hook: AfterTool"]
     SaveResult["Save to taskResults"]
+    CheckEmpty{"planQueue Empty?"}
+    CheckReplan{"replanCount < maxReplans?"}
+    DropQueue["Discard Remaining Queue"]
+    Replanner["LLM: Dynamic Re-Planner"]
 
-    CheckEmpty{"planQueue<br>Empty?"}
-    CheckReplan{"replanCount <<br>maxReplans?"}
-    DropQueue["Discard Remaining DAG"]
-    Replanner["LLM: Dynamic Re-Planner<br>Avoid Failed Method"]
-
-    SynthPhase["LLM: Final Synthesis<br>Analyze Gathered Data"]
+    %% Synthesis & Post Hooks
+    SynthPhase["LLM: Final Synthesis<br/>(models/gemini-4-hydrogen, !part.thought)"]
+    PostHooks["Hooks: AfterAgent -> SessionEnd<br/>Update Clean Chat History"]
     End(["Return Final Answer"])
 
-    A2A_Registry[("A2A App")]
-    MCP_Servers[("MCP Servers")]
-    GDrive[("Google Drive")]
-
-    %% Edges
-    Start --> InitCaps
+    %% Flow Connections
+    Start --> PreHooks --> InitCaps --> ToolSelHook --> DirectDec
+    InitCaps -. "tools/list + Cache" .-> WorkspaceMCP
     InitCaps -. "Fetch Agent Cards" .-> A2A_Registry
-    InitCaps -. "tools/list Request" .-> MCP_Servers
-    InitCaps -. "Read .md Skills" .-> GDrive
+    InitCaps -. "Read SKILL.md" .-> GDrive
 
-    InitCaps --> InjectTime --> Planner
-    Planner --> FastTrackDec
+    %% Direct Mode Branch
+    DirectDec -- "Yes" --> DirectReAct
+    DirectReAct -. "tools/call" .-> WorkspaceMCP
+    DirectReAct --> PostHooks
 
+    %% Planner Branch
+    DirectDec -- "No (Default: planner)" --> Planner --> FastTrackDec
     FastTrackDec -- "Yes (Fast-Track)" --> SchemaDec
-    SchemaDec -- "No (Raw output fine)" --> ReturnDirect
+    SchemaDec -- "No" --> ReturnDirect --> PostHooks
     SchemaDec -- "Yes (Intercept)" --> SynthPhase
 
-    FastTrackDec -- "No (Capabilities required)" --> PopTask
+    FastTrackDec -- "No" --> PopTask --> CheckTime
+    CheckTime -- "Exceeded" --> TimeoutAbort --> SynthPhase
+    CheckTime -- "Safe" --> InjectContext --> BeforeTool
 
-    PopTask --> CheckTime
-    CheckTime -- "Timeout Exceeded" --> TimeoutAbort
-    TimeoutAbort --> SynthPhase
-
-    CheckTime -- "Safe" --> InjectContext
-    InjectContext --> ExecRouter
+    BeforeTool -- "suspend (HITL)" --> HitlSuspend -. "Persist" .-> PropStore
+    PropStore -. "Restore" .-> HitlResume --> PopTask
+    BeforeTool -- "deny" --> CheckReplan
+    BeforeTool -- "allow" --> ExecRouter
 
     ExecRouter -- "MCP Server" --> ExecMCP
     ExecRouter -- "A2A Server" --> ExecA2A
     ExecRouter -- "Agent Skill" --> ExecSkill
     ExecRouter -- "Native/Built-in" --> ExecNative
 
+    ExecMCP -. "tools/call" .-> WorkspaceMCP
+    ExecA2A -. "JSON-RPC" .-> A2A_Registry
+
     ExecMCP --> CheckErr
     ExecA2A --> CheckErr
     ExecSkill --> CheckErr
     ExecNative --> CheckErr
 
-    CheckErr -- "Success" --> Truncate --> SaveResult
-    SaveResult --> CheckEmpty
+    CheckErr -- "Success" --> Truncate --> SaveResult --> CheckEmpty
     CheckEmpty -- "No" --> PopTask
     CheckEmpty -- "Yes" --> SynthPhase
 
-    CheckErr -- "Failed" --> CheckReplan
-    CheckReplan -- "Yes (Can Replan)" --> DropQueue --> Replanner
-    Replanner --> PopTask
-    CheckReplan -- "No (Max Replans)" --> SaveResult
+    CheckErr -- "Failed (Retries Exhausted)" --> CheckReplan
+    CheckReplan -- "Yes" --> DropQueue --> Replanner --> PopTask
+    CheckReplan -- "No" --> SynthPhase
 
-    SynthPhase --> End
+    SynthPhase --> PostHooks --> End
 
     %% Assign Classes
-    class Start,ReturnDirect,End userReq;
-    class InitCaps,InjectTime,PopTask,InjectContext,ExecNative,SaveResult core;
-    class Planner,ExecSkill,Replanner,SynthPhase llm;
-    class ExecMCP,ExecA2A,A2A_Registry,MCP_Servers,GDrive external;
-    class FastTrackDec,SchemaDec,CheckTime,ExecRouter,CheckErr,CheckEmpty,CheckReplan decision;
-    class TimeoutAbort,Truncate,DropQueue safeguard;
+    class Start,ReturnDirect,End,HitlResume userReq;
+    class InitCaps,PopTask,InjectContext,ExecNative,SaveResult core;
+    class Planner,DirectReAct,ExecSkill,Replanner,SynthPhase llm;
+    class ExecMCP,ExecA2A,WorkspaceMCP,A2A_Registry,GDrive,PropStore external;
+    class DirectDec,FastTrackDec,SchemaDec,CheckTime,ExecRouter,CheckErr,CheckEmpty,CheckReplan decision;
+    class TimeoutAbort,Truncate,DropQueue,HitlSuspend safeguard;
+    class PreHooks,ToolSelHook,BeforeTool,PostHooks hook;
 ```
 
 ---
@@ -163,11 +185,11 @@ graph TD
 GASADK acts as a universal adapter, normalizing disparate protocols into a unified schema for the Planner.
 
 - **Native Tools**: Wrap standard Google Apps Script functions directly into the capability schema.
-- **MCP Servers**: Native integration to dynamically discover (`tools/list`) and invoke tools on external servers using the Model Context Protocol.
+- **MCP Servers**: Native integration to dynamically discover (`tools/list`) and invoke tools on external servers using the Model Context Protocol — including official **Google Workspace MCP Servers** (`drivemcp.googleapis.com`, `gmailmcp.googleapis.com`, etc.) with Streamable HTTP, SSE, and `ToolAnnotations` safety guards.
 - **A2A Servers**: Cross-agent communication. Fetch remote Agent Cards and utilize other autonomous agents as local tools via the Agent-to-Agent protocol.
 - **Sub-Agents**: Nest instances of `LlmAgent` locally. Delegate complex cognitive sub-tasks without corrupting the main orchestrator's context.
 - **Agent Skills**: Dynamically load behavioral skills stored as Markdown (`.md`) files inside Google Drive. A native GAS hack for distributed, RAG-like prompt injection.
-- **Built-in Tools**: Comes equipped with a Python `CodeExecutor` and native `GoogleSearch` capabilities.
+- **Built-in Tools**: Comes equipped with Python `CodeExecutor`, native `GoogleSearch`, `UrlContext`, and `FileSearch` RAG capabilities.
 
 ---
 
@@ -177,7 +199,7 @@ GASADK integrates multiple high-performance GAS libraries under the hood. You ca
 
 GASADK is constructed by the following scripts.
 
-- [GADADK](https://github.com/tanaikech/adk-gas)
+- [GASADK](https://github.com/tanaikech/adk-gas)
 - [GeminiWithFiles](https://github.com/tanaikech/GeminiWithFiles)
 - [A2AApp](https://github.com/tanaikech/A2AApp)
 - [MCPApp](https://github.com/tanaikech/MCPApp)
@@ -200,7 +222,7 @@ const { LlmAgent, MCPA2Aserver, FileSearch } = GASADK;
 
 **All objects are the class objects.**
 
-You can also directly use `GeminiWithFiles`, `A2AApp`, and `MCPApp` like `const { LlmAgent, GeminiWithFiles, MCPA2Aserver, FileSearch, GeminiWithFiles, A2AApp, MCPApp } = GASADK`.
+You can also directly use `GeminiWithFiles`, `A2AApp`, `MCPApp`, and `GasHookManager` like `const { LlmAgent, GeminiWithFiles, MCPA2Aserver, FileSearch, A2AApp, MCPApp, GasHookManager } = GASADK;`.
 
 ### Option 2: Copy & Paste Directly
 
@@ -208,7 +230,7 @@ If you want to directly use GASADK by including all scripts in a Google Apps Scr
 
 [https://github.com/tanaikech/adk-gas/blob/master/dist/GASADK.js](https://github.com/tanaikech/adk-gas/blob/master/dist/GASADK.js)
 
-In this case, you can directly use the class objects. So, you are not required to set `const { LlmAgent, GeminiWithFiles, MCPA2Aserver, FileSearch, GeminiWithFiles, A2AApp, MCPApp } = GASADK`.
+In this case, you can directly use the class objects without destructuring `GASADK`.
 
 ---
 
@@ -221,17 +243,26 @@ The `new LlmAgent(config)` constructor accepts an extensive configuration object
 | `apiKey`                 | String        | **Yes**  | Your Gemini API Key.                                                                                                 |
 | `name`                   | String        |    No    | Internal name of the agent. Defaults to `"Agent"`.                                                                   |
 | `description`            | String        |    No    | Agent description. Critical for parent orchestrators utilizing Sub-Agents.                                           |
-| `model`                  | String        |    No    | The Gemini model. Defaults to `"models/gemini-3.1-flash-lite"`.                                                     |
+| `model`                  | String        |    No    | The Gemini model. Defaults to `"models/gemini-4-hydrogen"` (v2.1.0+).                                                |
 | `instruction`            | String/Object |    No    | Global system instruction. Supports `{var_name}` interpolation.                                                      |
 | `state`                  | Object        |    No    | Key-value mapping for dynamic state variables. Replaces `{var_name}`.                                                |
 | `tools`                  | Array         |    No    | Array of native GAS functions mapped to the tool schema.                                                             |
-| `mcpServers`             | Array         |    No    | Array of external MCP Server URLs or JSON objects (for custom server routing) for dynamic capability discovery.      |
-| `a2aServerAgentCardURLs` | Array         |    No    | Array of remote Agent Card URLs or JSON objects (for custom server routing) for A2A collaboration.                     |
-| `a2aServerAgentCardJSONs`| Array         |    No    | Array of local pre-fetched Agent Card JSON objects (supports custom name aliases) to bypass HTTP card retrieval.      |
+| `mcpServers`             | Array         |    No    | Array of external MCP Server URLs or JSON objects (including official Google Workspace MCP servers).                 |
+| `a2aServerAgentCardURLs` | Array         |    No    | Array of remote Agent Card URLs or JSON objects (for custom server routing) for A2A collaboration.                   |
+| `a2aServerAgentCardJSONs`| Array         |    No    | Array of local pre-fetched Agent Card JSON objects (supports custom name aliases) to bypass HTTP card retrieval.     |
 | `subAgents`              | Array         |    No    | Array of child `LlmAgent` instances for hierarchical delegation.                                                     |
 | `skillFolderId`          | String        |    No    | Google Drive Folder ID containing `.md` files for Agent Skills.                                                      |
 | `codeExecutor`           | Object        |    No    | Configuration object to enable Python execution Built-in capabilities.                                               |
 | `googleSearch`           | Object        |    No    | Configuration object to enable the Built-in Google Search tool.                                                      |
+| `urlContext`             | Object        |    No    | Configuration object to enable Built-in URL Context retrieval.                                                       |
+| `fileSearch`             | Object        |    No    | Configuration object to enable Built-in File Search (managed RAG).                                                   |
+| `generateContentConfig`  | Object        |    No    | Custom Gemini `generationConfig` (e.g., `thinkingConfig: { thinkingLevel: "LOW" \| "MEDIUM" \| "HIGH" \| "XHIGH" }`).|
+| `hooks`                  | Array         |    No    | Array of lifecycle hook definitions (`gas_function`, `function`, `webhook`, `command`) for `GasHookManager`.         |
+| `executionMode`          | String        |    No    | `"planner"` (default), `"direct"` (single-loop ReAct for Native/MCP, ~3.5x faster), or `"auto"` (v2.1.0+).           |
+| `guardDestructiveMcpTools` | Boolean     |    No    | When `true`, blocks MCP tools annotated with `destructiveHint: true` or `readOnlyHint: false` in Direct Mode.        |
+| `maxHistoryChars`        | Number        |    No    | Sliding-window character cap for `PreCompress` automatic history trimming. Defaults to `0` (disabled).               |
+| `useParametersJsonSchema`| Boolean       |    No    | Opt-in to emit `parametersJsonSchema` instead of sanitized OpenAPI `parameters` on `v1beta`. Defaults to `false`.    |
+| `maxTokensPerSession`    | Number        |    No    | Strict per-session token budget safeguard (includes `MCPApp` internal calls and thinking tokens).                    |
 | `maxReplans`             | Number        |    No    | Maximum dynamic Re-Plan attempts on execution failure. Defaults to `2`.                                              |
 | `timeoutMs`              | Number        |    No    | Milliseconds before triggering a forced abort to evade the GAS 6-minute kill switch. Defaults to `280000` (280s).    |
 | `maxResultLength`        | Number        |    No    | Maximum allowed string length per execution before truncation. Prevents payload crashes. Defaults to `20000`.        |
@@ -331,6 +362,12 @@ const agent = new LlmAgent({
   Retrieves the current conversation history.
 - `getAgentInf()`  
   An introspection tool that returns an array of all internally normalized capabilities (from Native tools, MCP, A2A, and Skills) bound to the agent.
+- `getLogs()`  
+  Returns the accumulated execution log entries for the current session.
+- `saveState()` / `loadState(sessionId)` / `deleteState(sessionId)` / `resume(sessionId, decision, approvedArgs, logCallback)`  
+  Human-in-the-Loop (HITL) persistence and resumption methods. In v2.1.0+, states exceeding 8KB UTF-8 are automatically gzip-compressed and chunked across `PropertiesService`, and `deleteState()` removes all chunks cleanly.
+- `LlmAgent.createWorkspaceMcpServers(services, options)` *(Static, v2.1.0+)*  
+  Builds official Google Workspace MCP Server configurations (`["drive", "gmail", "docs", "sheets", "slides", "calendar", "chat"]`) with `{ mode: "v1" | "v1self", token }`.
 
 ---
 
@@ -353,7 +390,7 @@ function test_quickstart() {
   const agent = new LlmAgent({
     apiKey: API_KEY,
     name: "HelperAgent",
-    model: "models/gemini-3.1-flash-lite",
+    model: "models/gemini-4-hydrogen",
     instruction: "You are a helpful AI assistant.",
   });
 
@@ -390,6 +427,7 @@ const { LlmAgent } = GASADK;
 function test_subagents() {
   const properties = PropertiesService.getScriptProperties();
   const API_KEY = properties.getProperty("GEMINI_API_KEY");
+  const MODEL_NAME = "models/gemini-4-hydrogen";
 
   const translator = new LlmAgent({
     apiKey: API_KEY,
@@ -427,9 +465,10 @@ Agent Skills are used.
 // Remove destructuring if you copied the scripts directly.
 const { LlmAgent } = GASADK;
 
-function test_subagents() {
+function test_agent_skills() {
   const properties = PropertiesService.getScriptProperties();
   const API_KEY = properties.getProperty("GEMINI_API_KEY");
+  const MODEL_NAME = "models/gemini-4-hydrogen";
 
   console.log("Setting up temporary Agent Skills directory...");
   const tempFolder = DriveApp.createFolder(
@@ -538,7 +577,7 @@ const WEB_APPS_URL =
 
 const object = {
   apiKey: API_KEY,
-  model: "models/gemini-3.1-flash-lite",
+  model: "models/gemini-4-hydrogen",
   accessKey: "sample",
 };
 
@@ -668,7 +707,7 @@ function test_chat_history() {
   const agent = new LlmAgent({
     apiKey: API_KEY,
     name: "ChattyAgent",
-    model: "models/gemini-3.1-flash-lite",
+    model: "models/gemini-4-hydrogen",
   }).setServices({ lock: LockService.getScriptLock(), properties: properties });
 
   // 1. Manually seed/restore conversation history
@@ -693,11 +732,133 @@ By combining **GASADK** with the **GoogleApiApp** library, you can build a state
 For the full implementation script and a beginner-friendly setup guide, see:
 👉 **[Google API MCP Server Sample & Setup Guide](https://github.com/tanaikech/adk-gas/tree/master/samples/googleapiapp-mcp-server)**
 
+### 8. Using Official Google Workspace MCP Servers (GA — November 2026)
+
+Google's official hosted **Google Workspace MCP servers** are now **Generally Available (GA)** ([Official Google Workspace Updates Announcement](https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html)). With **GASADK v2.1.0+**, you can connect Google Apps Script directly to Google's remote Workspace MCP servers using `ScriptApp.getOAuthToken()` without deploying any proxy server.
+
+#### Available Official Google Workspace MCP Endpoints
+
+| Workspace Product | Primary Endpoint (`/mcp/v1`) | Self-Mode Fallback (`/mcp/v1self`) | Required GCP Services |
+| :--- | :--- | :--- | :--- |
+| **Google Drive** | `https://drivemcp.googleapis.com/mcp/v1` | `https://drivemcp.googleapis.com/mcp/v1self` | `drive.googleapis.com`, `drivemcp.googleapis.com` |
+| **Gmail** | `https://gmailmcp.googleapis.com/mcp/v1` | `https://gmailmcp.googleapis.com/mcp/v1self` | `gmail.googleapis.com`, `gmailmcp.googleapis.com` |
+| **Google Calendar** | `https://calendarmcp.googleapis.com/mcp/v1` | `https://calendarmcp.googleapis.com/mcp/v1self` | `calendar-json.googleapis.com`, `calendarmcp.googleapis.com` |
+| **Google Docs** | `https://docsmcp.googleapis.com/mcp/v1` | `https://docsmcp.googleapis.com/mcp/v1self` | `docs.googleapis.com`, `docsmcp.googleapis.com` |
+| **Google Sheets** | `https://sheetsmcp.googleapis.com/mcp/v1` | `https://sheetsmcp.googleapis.com/mcp/v1self` | `sheets.googleapis.com`, `sheetsmcp.googleapis.com` |
+| **Google Slides** | `https://slidesmcp.googleapis.com/mcp/v1` | `https://slidesmcp.googleapis.com/mcp/v1self` | `slides.googleapis.com`, `slidesmcp.googleapis.com` |
+| **Google Chat** | `https://chatmcp.googleapis.com/mcp/v1` | `https://chatmcp.googleapis.com/mcp/v1self` | `chat.googleapis.com`, `chatmcp.googleapis.com` |
+| **Google Tasks** | `https://tasksmcp.googleapis.com/mcp/v1` | `https://tasksmcp.googleapis.com/mcp/v1self` | `tasks.googleapis.com`, `tasksmcp.googleapis.com` |
+| **Universal Search** | `https://workspacemcp.googleapis.com/mcp/v1` | — | `workspacemcp.googleapis.com` |
+
+> [!NOTE]
+> - **Usage Tiers**: Google Cloud projects receive the **Standard Tier** automatically at **no cost** (no billing account required, up to **5,000 requests/day per project per product** across GA Workspace MCP servers). High-volume production workloads can upgrade to the **Scaled Tier** by linking a Google Cloud Billing account.
+> - **`/mcp/v1` vs `/mcp/v1self`**: `/mcp/v1` exposes the full toolset (supporting server-driven HITL form elicitation). For headless or non-interactive clients that do not implement form-mode elicitation UIs, `/mcp/v1self` provides a self-mode fallback toolset.
+> - **Workspace Admin Controls**: For Google Workspace organization accounts, administrators can govern OAuth Client IDs, audit logs, DLP policies, and approval workflows under **Admin Console → Security → API Controls**.
+
+#### Step-by-Step Installation & Setup Guide
+
+1. **Create a GAS Project & Add the GASADK Library**
+   - Open [script.google.com](https://script.google.com/) and create a new Apps Script project.
+   - Click **Libraries (+)**, enter Script ID `1w2mwhWQd4_6rom-UBRPD8gayBoqGH_87awSBVqGI8DdaQI_pOeSuGYDu`, select the latest version (**v2.1.0+**), and set the Identifier to `GASADK`.
+   - Under **Project Settings → Script Properties**, add `GEMINI_API_KEY` with your Gemini API key.
+
+2. **Link Your Apps Script Project to a Standard Google Cloud Project**
+   - Default Apps Script Cloud projects cannot manually enable `*mcp.googleapis.com` services. You must link a **Standard Google Cloud Project** ([Official Guide](https://developers.google.com/apps-script/guides/cloud-platform-projects)):
+     1. In the Apps Script editor, open **Project Settings** (gear icon).
+     2. Under **Google Cloud Project**, click **Change project**.
+     3. Enter your standard Google Cloud **Project Number** and click **Set project**.
+     *(Note: Switching to a standard GCP project is irreversible and requires re-authorizing the script.)*
+
+3. **Enable Both the Workspace API and the MCP Service in Google Cloud**
+   - Enable **both** the underlying Workspace API and its companion MCP service on the linked standard Google Cloud project:
+     ```bash
+     # Example for Google Drive MCP Server
+     gcloud services enable --project=YOUR_PROJECT_ID \
+       drive.googleapis.com \
+       drivemcp.googleapis.com
+     ```
+   - Or via **Google Cloud Console → APIs & Services → Library**: search for and enable both **Google Drive API** (`drive.googleapis.com`) and **Google Drive MCP API** (`drivemcp.googleapis.com`).
+
+4. **Configure `appsscript.json` Manifest & OAuth Scopes**
+   - In Apps Script **Project Settings**, check **"Show 'appsscript.json' manifest file in editor"**, then add `oauthScopes` matching least-privilege access ([Official Scopes Guide](https://developers.google.com/apps-script/concepts/scopes)):
+     ```json
+     {
+       "timeZone": "Asia/Tokyo",
+       "dependencies": {
+         "libraries": [
+           {
+             "userSymbol": "GASADK",
+             "version": "0",
+             "libraryId": "1w2mwhWQd4_6rom-UBRPD8gayBoqGH_87awSBVqGI8DdaQI_pOeSuGYDu",
+             "developmentMode": true
+           }
+         ]
+       },
+       "exceptionLogging": "STACKDRIVER",
+       "runtimeVersion": "V8",
+       "oauthScopes": [
+         "https://www.googleapis.com/auth/drive.readonly",
+         "https://www.googleapis.com/auth/script.external_request"
+       ]
+     }
+     ```
+     *(Use `https://www.googleapis.com/auth/drive.readonly` for read-only listing/search, or `https://www.googleapis.com/auth/drive` if your agent also creates or modifies files.)*
+
+5. **Run the Sample Script (`Code.gs`)**
+
+```javascript
+/**
+ * Connects GASADK (v2.1.0+) directly to the official Google Drive MCP Server
+ * using ScriptApp.getOAuthToken() and lists the 5 most recent files.
+ */
+function listRecentDriveFilesWithWorkspaceMcp() {
+  const prompt =
+    "List the 5 most recent files from Google Drive. If an error occurs, display the raw error message.";
+
+  const { LlmAgent } = GASADK;
+  const properties = PropertiesService.getScriptProperties();
+  const apiKey = properties.getProperty("GEMINI_API_KEY");
+  if (!apiKey) {
+    throw new Error("Please set 'GEMINI_API_KEY' in Script Properties.");
+  }
+
+  // Option A: Explicit Google Drive MCP Server configuration
+  const mcpServers = [
+    {
+      drive_mcp: {
+        httpUrl: "https://drivemcp.googleapis.com/mcp/v1", // Or "/mcp/v1self" for self-mode fallback
+        headers: {
+          authorization: "Bearer " + ScriptApp.getOAuthToken(),
+        },
+      },
+    },
+  ];
+  // Option B (Shorthand in v2.1.0+):
+  // const mcpServers = LlmAgent.createWorkspaceMcpServers(["drive"], { mode: "v1" });
+
+  const agent = new LlmAgent({
+    apiKey,
+    name: "GoogleDriveMcpAssistant",
+    // Default model in v2.1.0+ is "models/gemini-4-hydrogen"
+    instruction: "You are a helpful Google Workspace AI assistant.",
+    // Optional: set executionMode: "direct" for ~3.5x faster single-loop MCP execution
+    mcpServers,
+  });
+
+  agent.setServices({
+    lock: LockService.getScriptLock(),
+    properties,
+  });
+
+  const response = agent.run(prompt, (logEntry) => {
+    const detail = logEntry.data?.error ? ` | Error: ${logEntry.data.error}` : "";
+    console.log(`[Log ${logEntry.timestamp}] ${logEntry.message}${detail}`);
+  });
+  console.log(response);
+}
+```
+
 ---
-
-## License
-
-[MIT](https://tanaikech.github.io/license/)
 
 ## 🛡 Hooks System & Workspace Safety Guardrails (v1.3.5+)
 
@@ -885,7 +1046,7 @@ function approveSession(sessionId) {
 
 ### 📊 API Quota Safeguards & Token Accumulation (v2.0.0+)
 
-To prevent runaway loops or budget overrun, GASADK automatically tracks token usage per session. You can enforce a strict token limit using the `maxTokensPerSession` option.
+To prevent runaway loops or budget overrun, GASADK automatically tracks token usage per session (including multi-turn and thinking tokens in v2.1.0+). You can enforce a strict token limit using the `maxTokensPerSession` option.
 
 ```javascript
 const agent = new LlmAgent({
@@ -893,6 +1054,48 @@ const agent = new LlmAgent({
   maxTokensPerSession: 50000 // Limit session to 50k tokens
 });
 ```
+
+---
+
+## 🚀 Gemini 4 Hydrogen, Hybrid Direct Mode & Official Google Workspace MCP (v2.1.0+)
+
+GASADK v2.1.0 upgrades the default model across all bundled libraries to **`models/gemini-4-hydrogen`** while maintaining 100% backward compatibility with existing v2.0.0 scripts:
+
+- **Gemini 4 Native Compatibility**: Automatic `thinkingConfig` guards (`thinkingLevel` normalization, stripping unsupported `thinkingBudget` and HTTP-400-prone sampling parameters), strict `role: "user"` for `functionResponse` turns, `thoughtSignature` preservation, `!part.thought` filtering, and multi-turn cumulative token telemetry.
+- **Hybrid Direct Mode (`executionMode: "direct" | "auto" | "planner"`)**: Opt-in single-loop ReAct execution that binds Native Tools and MCP tools directly into `GeminiWithFiles` (cutting 1-tool MCP execution from 6 LLM calls down to 2). Default remains `"planner"` for full backward compatibility.
+- **Official Google Workspace MCP Preset**: Connect to official Google Workspace MCP servers (`drive`, `gmail`, `docs`, `sheets`, `slides`, `calendar`, `chat`) in one line via `LlmAgent.createWorkspaceMcpServers()`.
+- **Compressed & Chunked HITL Persistence**: `saveState()` / `loadState()` / `deleteState()` automatically compress (`Utilities.gzip`) and chunk states exceeding GAS's 9KB `PropertiesService` limit.
+- **Inline Function Hooks**: `GasHookManager` now supports inline `type: "function"` (`handler`) hooks in addition to `gas_function`, `webhook`, and `command`.
+
+```javascript
+function exampleWorkspaceMcpDirectMode() {
+  const { LlmAgent } = GASADK;
+  const props = PropertiesService.getScriptProperties();
+
+  const agent = new LlmAgent({
+    apiKey: props.getProperty("GEMINI_API_KEY"),
+    name: "WorkspaceAssistant",
+    // Default model is now "models/gemini-4-hydrogen"
+    executionMode: "direct", // Optional: 6 -> 2 LLM calls for Native/MCP tools
+    guardDestructiveMcpTools: true, // Optional: block tools with destructiveHint/readOnlyHint=false
+    mcpServers: LlmAgent.createWorkspaceMcpServers(["drive"], { mode: "v1" }),
+  }).setServices({
+    lock: LockService.getScriptLock(),
+    properties: props,
+  });
+
+  const response = agent.run("List the 5 most recent files from Google Drive.");
+  console.log(response);
+}
+```
+
+---
+
+## License
+
+[MIT](https://tanaikech.github.io/license/)
+
+---
 
 ## Author
 
@@ -960,5 +1163,23 @@ const agent = new LlmAgent({
   - **Synchronized `src/lib/` Core Libraries**: Upgraded bundled core components (`GeminiWithFiles.js`, `A2AApp.js`, `MCPApp.js`, `MCPA2Aserver.js`, and `FileSearchApp.js`) to support the `GasHookManager` hooks system natively (allowing interceptors like `BeforeModel`, `AfterModel`, `BeforeTool`, and `AfterTool`).
   - **Ecosystem Modernization**: Upgraded default model configurations to `models/gemini-3.1-flash-lite` across all workspace libraries, tests, and examples to provide modern, cost-effective defaults.
   - **Modular Standalone Twin Synchronization**: Propagated and fully published these updates to all five standalone local repositories (`GeminiWithFiles_GAS_lib`, `A2AApp_GAS_lib`, `MCPApp_GAS_lib`, `MCPA2Aserver_GAS_lib`, `FileSearchApp_GAS_lib`) with next-version tags.
+
+- v2.1.0 (November 26, 2026)
+  - **Default Model Upgrade to `models/gemini-4-hydrogen`**: Unified default model across `LlmAgent`, `GeminiWithFiles`, `MCPApp`, `A2AApp`, `MCPA2Aserver`, and `FileSearch`.
+  - **Gemini 4 & Gemini 3 Native Guards (`GeminiWithFiles.js`, `A2AApp.js`, `FileSearchApp.js`, `LlmAgent.js`, `MCPApp.js`)**:
+    - Enforced `role: "user"` for `functionResponse` turns (resolving Gemini 4 HTTP 400 `Role 'function' is not supported`).
+    - Added automatic `isGemini4` `thinkingConfig` deep-clone/normalization (stripping `thinkingBudget`, promoting `"MINIMAL"` to `"LOW"`, stripping `frequencyPenalty`/`presencePenalty`/`candidateCount`), plus automatic `thinkingLevel: "LOW"` for Planner and `MCPApp` orchestrator/executor on Gemini 3 & Gemini 4 models to prevent thinking timeouts.
+    - Upgraded `_sanitizeToolParameters()` to a strict Gemini `Schema` protobuf whitelist (eliminating HTTP 400 errors from vendor/OpenAPI extensions such as `deprecated`, `x-google-enum-descriptions`, `$schema`, `additionalProperties`, `default`, and empty `properties: {}`).
+    - Fixed parallel Function Calling empty-array return bug, filtered `part.thought === true` across all response extractors, preserved `thoughtSignature` in `A2AApp` history, accumulated multi-turn tokens (`thoughtsTokenCount` + `llmCallCount`), and wired `responseJsonSchema` + opt-in `useParametersJsonSchema`.
+  - **Official Google Workspace MCP & Streamable HTTP Support (`MCPApp.js`, `LlmAgent.js`)**:
+    - Fixed `LlmAgent` retry loop infinite-loop bug (`break;` on `retries <= 0`, inner timeout safeguard, raw error visibility in `logEntry.message`).
+    - Fixed zero-argument `tools/call` sending `arguments: null` (now `{}`), canonical `mode: "ANY"`, Streamable HTTP `Accept` header & SSE (`text/event-stream`) decoding, `Mcp-Session-Id` / `MCP-Protocol-Version` (`>= 2025-06-18`) handling, `nextCursor` pagination, `ToolAnnotations` (`readOnlyHint`/`destructiveHint`) preservation, and acceptance of valid JSON-RPC `result` payloads returned with partial-scope HTTP 403 from Google Workspace MCP servers.
+    - Propagated `MCPApp.callMCPServers()` internal `totalTokenCount` and `llmCallCount` back to `LlmAgent` for accurate `maxTokensPerSession` enforcement, prevented `check_process` premature halting on normal tool steps, consolidated same-server MCP tasks in Planner, and capped serialized `dependentResults` context at 8,000 chars.
+    - Added `LlmAgent.createWorkspaceMcpServers()` helper for official Google Workspace MCP servers (`drive`, `gmail`, `docs`, `sheets`, `slides`, `calendar`, `chat`; `v1` / `v1self`).
+  - **Hybrid Direct Mode & GAS Storage Hardening (`LlmAgent.js`, `GasHookManager.js`, `A2AApp.js`, `MCPA2Aserver.js`)**:
+    - Added opt-in `executionMode: "direct" | "auto" | "planner"` (default `"planner"`, achieving ~3.5x–3.9x speedup on Google Drive MCP by cutting 5–6 LLM calls down to 2), `guardDestructiveMcpTools`, `maxHistoryChars` sliding-window `PreCompress` trimming, and MCP handshake caching (`_cachedMcpServerObj`).
+    - Upgraded `saveState()` / `loadState()` with UTF-8 byte-length detection, `Utilities.gzip` compression, 8KB chunking, and `deleteState()` cleanup to prevent GAS 9KB `PropertiesService` crashes.
+    - Added inline `type: "function"` hook support and empty-hooks fast-path in `GasHookManager.js`, narrowed `A2AApp.js` `ScriptLock` to sheet writes only, added `resources/read`/`prompts/get`/`ping`/`SendMessage`/`GetTask` routes to `MCPA2Aserver.js`, and fixed `FileSearchApp.js` `convMimeType_` and `_pollOperation` bounds.
+  - **Single-Function E2E Test Suite**: Added `tests/Test_GASADK_vNext_E2E.js` (`runAllGasadkVNextTests()`) with 270s soft time-budget protection and guaranteed `finally` cleanup of temporary Google Drive folders/files, Properties, and Cache entries (verified 10/10 PASS on live GAS runtime).
 
 [TOP](#gasadk-agent-development-kit-for-google-apps-script)

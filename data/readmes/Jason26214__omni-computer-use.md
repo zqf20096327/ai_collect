@@ -1,0 +1,182 @@
+# omni-computer-use
+
+I got tired of the permission limits in the computer use of Claude Code and Codex, so I built my own. Especially for us Windows users: there is no computer use at all in the Claude Code CLI here. I really resent that. Why are we Windows users always second class citizens in vibe coding?
+
+I have been using omni myself since June 2026. Whenever I find something that annoys me, I update it.
+
+I use both Claude Code and Codex, and omni runs perfectly on Claude Desktop Code, the Claude Code CLI and Codex. The GIFs below show it: both Claude and GPT open VS Code and type into it. I tested it in Warp too, works there. I also recommended it to a friend who uses Cursor, he tested it and it works for him.
+
+It works everywhere because it does not integrate with any of them. It is a plain MCP server. When it starts it walks up its own process ancestry, and the first ancestor that owns a window is the window it serves. So whether you run it from a terminal, from Claude Desktop or from Codex, it works that out by itself, and you configure nothing.
+
+If you are building a desktop app of your own, try omni. The agent can see your UI and debug it by itself, which is very handy. Same idea as using Playwright when you build web apps.
+
+One line to install it:
+
+```powershell
+claude mcp add omni-computer-use -s user -- uvx omni-computer-use-mcp
+```
+
+Here are the two GIFs:
+
+![Claude Code CLI on Windows: the terminal shrinks to the corner, the orange glow and pill appear, and the agent types a line into VS Code](docs/demo-claude-code.gif)
+
+*Claude Code CLI, one take.*
+
+![Codex on Windows: the Codex window shrinks to the corner, the glow and pill appear, and the agent types into a fresh VS Code window](docs/demo-codex.gif)
+
+*Codex, one take. Codex recorded and cut this one itself.*
+
+Everything below is written for AI. Skip it if you want. Good luck 👍
+
+## Install
+
+Requires Windows and Python 3.11+ (uv / uvx fetch Python for you). The PyPI package name carries an `-mcp` suffix; everything else — the command, the server key, this repo — is plain `omni-computer-use`.
+
+**Recommended — install into Claude Code.** Claude Desktop reads Claude Code's MCP servers *in addition to* its own, so this one command makes the server available in both the Claude Code CLI and the Claude Desktop app:
+
+```powershell
+claude mcp add omni-computer-use -s user -- uvx omni-computer-use-mcp
+claude mcp list   # expect: omni-computer-use … ✓ Connected
+```
+
+The other directions are narrower. In Claude Desktop's `claude_desktop_config.json` — visible to Claude Desktop only, the CLI won't see it:
+
+```json
+{
+  "mcpServers": {
+    "omni-computer-use": { "command": "uvx", "args": ["omni-computer-use-mcp"] }
+  }
+}
+```
+
+A desktop-extension bundle (`.mcpb`, one-click install) is attached to each GitHub release — same scope caveat: Claude Desktop only.
+
+Run standalone (any MCP client, or just to poke at it):
+
+```powershell
+uvx omni-computer-use-mcp
+```
+
+> Windows spawn tip: `uv`/`uvx` are native executables and need no wrapper. If your MCP client launches servers through a `.cmd` shim (like `npx`), *that* one needs a `cmd /c` prefix — this server doesn't.
+
+## Example
+
+On a multi-monitor rig every screenshot self-describes — it names the monitor it captured and what else is attached, so the agent never loses track of which screen it is looking at:
+
+```
+This screenshot was taken on monitor "\\.\DISPLAY2" (2560x1600, primary).
+Other attached monitors: "\\.\DISPLAY1" (2560x1440). Use switch_display to
+capture a different monitor.
+```
+
+`open_application` reports what actually happened instead of fire-and-forget:
+
+```
+Opened "Calculator".                                  # a real window appeared
+launched "…" but its process exited within ~2s        # crashed on startup — reported, not faked
+  without showing a window …
+```
+
+## Status
+
+- **29 tools** — 27 matching Claude Desktop's computer-use, plus `deactivate` and `display_overview`; a dev `reload` tool makes **30** when `COMPUTER_USE_DEV=on`.
+- **16-scenario end-to-end suite** under `tests/` (`scen_*.json`), each run through a fresh MCP process.
+- Built and verified on **Windows 11** (2560×1600 @ 150% DPI) against Claude Desktop's computer-use as the oracle; the screenshot downscale matches CDC's ~1.2 MP within rounding.
+
+## Tools
+
+**Matching Anthropic's computer-use (27):** `request_access`, `list_granted_applications`, `request_teach_access`, `screenshot`, `zoom`, `switch_display`, `cursor_position`, `mouse_move`, `left_click`, `right_click`, `middle_click`, `double_click`, `triple_click`, `left_click_drag`, `left_mouse_down`, `left_mouse_up`, `scroll`, `key`, `hold_key`, `type`, `wait`, `open_application`, `read_clipboard`, `write_clipboard`, `computer_batch`, `teach_step`, `teach_batch`.
+
+**omni-specific (2):**
+
+- `deactivate` — end the session without killing the process (glow off, controlling window restored, grants revoked); the counterpart to `request_access`.
+- `display_overview` — one composite, labeled image of all monitors laid out per the virtual-desktop arrangement (an orientation aid for "which screen is that window on?"; not a click surface).
+
+All click / move / scroll / drag / zoom coordinates are in the **image-pixel space of the most recent screenshot**; the server maps them back to physical pixels.
+
+## How it works (the parts worth reading)
+
+**Faithful desktop visuals.** While a session is active the server reproduces Claude Desktop's on-screen affordances, pixel-calibrated from reference captures: a static orange edge glow, a centered "Agent is using your computer" pill that flies to the corner, and the controlling window (the Windows Terminal running the CLI, or the Claude Desktop window itself) shrunk flush to the top-right and **parked off-screen during each capture** so screenshots show the true desktop with no black box. Click-through is kind-aware: a non-layered terminal drops to the bottom of the z-order for each synthetic click; the layered Claude Desktop window gets `WS_EX_TRANSPARENT` (the desktop tool's own approach) so clicks pass through to whatever is beneath — the window itself never moves, so the user's real mouse is unaffected.
+
+**Keyboard self-harm guard.** Synthetic keystrokes go to whatever holds OS focus. If the controlling window (the Claude window, or the hosting terminal) is frontmost, `type` / `key` are **blocked** — otherwise the text would land in the agent's own conversation, or run as a shell command with a trailing Return. The guard is unconditional and identifies the control surface by window identity and owning process, while still leaving a second, unrelated terminal window a legitimate target. Mouse actions are exempt (a click carries its own coordinate).
+
+**Multi-monitor.** Screenshots carry an event-driven note naming the captured monitor and flagging when it changed; `open_application` warns when a window opened on a different monitor than captures currently target — precisely, by monitor name, when it has the window handle; `display_overview` returns the all-screens map. The glow and shrink land on the controlling window's own monitor, leaving other displays untouched.
+
+**Honest launching & self-heal.** `open_application` polls for a real window and distinguishes *opened* / *running-no-window-yet* / *crashed-on-startup* / *nothing-launched* instead of always reporting success. A force-killed session's shrunk terminal is restored on the next start from a small state file (guarded against window-handle reuse).
+
+**Hot-reload (dev).** Set `COMPUTER_USE_DEV=on` to add a `reload` tool that `importlib.reload`s the logic modules in-process, so edited code takes effect without restarting the session — handy while developing automation against the server. It is off by default (the clean 29-tool surface).
+
+See **[SPEC.md](SPEC.md)** for the authoritative, tool-by-tool contract and the module architecture.
+
+## Differences from the desktop tool (by design)
+
+The built-in computer use grants apps from the list of *installed* applications and applies a tiered model: browsers are visible but read-only, terminals and IDEs are click-only — no keystrokes, by architecture. Sensible defaults for general desktop use, and they close off the workflow this server was built for: letting the agent launch the app you are *currently building* — a loose `.exe` no install list knows about — click through it, type into it, verify behavior, then go back to the IDE and edit code.
+
+omni grants every approved app at `tier:"full"` — IDEs, terminals, and dev builds included (`open_application` accepts a full `.exe` path). Full power, your responsibility.
+
+A CLI has no permission GUI, so `request_access` **auto-grants** resolvable apps at `tier:"full"` and returns the same JSON shape; foreground gating is permissive by default (it only errors on an empty allowlist). Masking of non-allowlisted windows defaults off (the rect-based masker over-masks). Teach mode is a stub — it executes the step's actions and returns a screenshot, but there is no fullscreen tooltip overlay (a desktop-app feature). Each of these is controlled by the env vars below.
+
+## Configuration
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `COMPUTER_USE_MAX_PIXELS` | `1200000` | Max pixels in a downscaled screenshot (≈ 1.2 MP). |
+| `COMPUTER_USE_MASKING` | `off` | Mask non-allowlisted app windows in screenshots. |
+| `COMPUTER_USE_ENFORCE_FOREGROUND` | `off` | Block input when the frontmost app isn't allowlisted. |
+| `COMPUTER_USE_AUTOGRANT` | `on` | Auto-grant resolvable apps on `request_access`. |
+| `COMPUTER_USE_DEV` | `off` | Register the developer `reload` hot-reload tool (on → 30 tools). |
+| `COMPUTER_USE_LOG_DIR` | `%LOCALAPPDATA%\omni-computer-use\logs` | Directory for the rotating `mcp.log` (tool calls + tracebacks). |
+| `COMPUTER_USE_GLOW` | `on` | Static orange edge glow while a session is active. |
+| `COMPUTER_USE_SHRINK_TERMINAL` | `on` | Shrink the controlling window to the top-right corner. |
+| `COMPUTER_USE_HIDE_CONTROLLING` | `on` | Park the controlling window off-screen during captures. |
+| `COMPUTER_USE_PILL` | `on` | Centered "Agent is using your computer" pill. |
+| `COMPUTER_USE_GLOW_COLOR` | `217,119,87` | Glow / pill color (`#D97757`). |
+| `COMPUTER_USE_GLOW_ALPHA` | `0.4` | Peak glow opacity at the very edge. |
+| `COMPUTER_USE_GLOW_BAND` | `0.05` | Glow band width as a fraction of the smaller screen dimension. |
+| `COMPUTER_USE_GLOW_EXCLUDE` | `on` | Exclude the glow / pill from captures. |
+
+## Gotchas (real Windows behavior)
+
+- **IME affects `key` / `hold_key`, not `type`.** `type` injects Unicode directly and bypasses the input method (CJK and emoji work in any layout). `key` / `hold_key` send virtual-key codes that pass **through** the active IME — so with a Chinese IME active, sending the letter `a` opens a pinyin candidate list instead of typing `a`. Use `type` for text; switch the IME to English for letter shortcuts.
+- **Elevated apps** (Task Manager, UAC prompts, admin installers) can't be driven — Windows UIPI blocks input from a non-elevated process. Same limitation as the desktop tool.
+- **Timing-critical UI needs `computer_batch`.** Actions inside one batch run milliseconds apart; separate tool calls are a model round-trip apart (seconds). Anything that only exists mid-flight — a Stop/Cancel button, a menu that closes on blur — is unreachable one call at a time. Put the whole sequence in one batch and tune the moment with `wait`.
+- **Keyboard actions need the target focused first.** The self-harm guard blocks `type` / `key` while the controlling window holds focus. Start the batch with a click on the target window: the click moves focus, and the keyboard actions that follow in the same batch go where you meant.
+- **A click that lands is not always a click that acts.** Synthetic clicks are delivered by the OS, but an app can still ignore one — notably an Electron window whose title bar is drawn by the renderer, when that renderer is in an error state: the native tooltip still appears and the window still activates, yet the close button does nothing while a native `WM_CLOSE` closes it fine. Verify with a screenshot rather than trusting the returned `Clicked.`, and suspect the app (not the coordinate) when hover works but the action doesn't.
+
+## Tests
+
+`tests/` holds a 16-scenario end-to-end suite (`scen_*.json`) plus the driver that launches a fresh server and runs a scenario's JSON list of tool calls, interleaving the returned images:
+
+```powershell
+uv run python tests/drive.py tests/scen_calc.json     # compute 7×8 by clicks, screenshot, verify
+```
+
+`tests/dev/` holds the one-off Win32 probes written during development (glow/pill sampling, z-order and capture-affinity experiments).
+
+## Tech stack
+
+Python ≥ 3.11, packaged with [uv], src layout, hatchling. [`mcp`] Python SDK (FastMCP) over stdio; [`mss`] for capture; [`pillow`] for imaging; [`pywin32`] + `ctypes` for DPI awareness, window / clipboard / foreground access, and raw Win32 `SendInput` mouse/keyboard injection.
+
+## Privacy Policy
+
+omni-computer-use runs entirely on your machine and has no server side.
+
+- **Data collection: none.** The source imports no networking libraries and contains no telemetry, analytics, or crash reporting. Nothing is ever uploaded, anywhere.
+- **Usage and storage.** Screenshots, clipboard contents, and input events are processed in memory on your machine and returned only over local stdio to the MCP client you connected the server to. The only thing written to disk is a rotating local log (`mcp.log`, tool calls and tracebacks) under `%LOCALAPPDATA%\omni-computer-use\logs` — configurable via `COMPUTER_USE_LOG_DIR`, deletable at any time.
+- **Third-party sharing: none.** No accounts, no external services, no third parties.
+- **Data retention.** Log rotation on your own disk is the only retention there is; you control it.
+- **Contact.** Privacy questions: [open a GitHub issue](https://github.com/Jason26214/omni-computer-use/issues).
+
+Note that whatever MCP client you attach (e.g. Claude Desktop, the Claude Code CLI) receives the screenshots and text this server captures, and is governed by its own privacy policy.
+
+## License
+
+MIT © Jason26214
+
+[uv]: https://github.com/astral-sh/uv
+[`mcp`]: https://github.com/modelcontextprotocol/python-sdk
+[`mss`]: https://github.com/BoboTiG/python-mss
+[`pillow`]: https://python-pillow.org/
+[`pywin32`]: https://github.com/mhammond/pywin32
+
+<!-- mcp-name: io.github.Jason26214/omni-computer-use -->

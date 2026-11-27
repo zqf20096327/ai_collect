@@ -1,16 +1,29 @@
 <p align="center">
-  <img src="src/gateway/public/om.png" alt="OM Logo" width="72" height="72" />
+  <img src="src/gateway/public/omega-wordmark.svg" alt="OMEGA" width="420" />
 </p>
 
 # OMega
 
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen.svg)](https://nodejs.org/)
+[![Downloads](https://img.shields.io/npm/dt/omega-harness.svg?label=downloads&color=brightgreen)](https://www.npmjs.com/package/omega-harness)
 [![Dependencies](https://img.shields.io/badge/dependencies-1-blue.svg)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-171%20passed-success.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-194%20passed-success.svg)](tests/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](README.md)
 
 **OMega** is a lightweight, local-first agent harness you fully control | Runs offline on your hardware or routed across cloud models, with human-in-the-loop approvals, isolated git worktrees, rollback snapshots, and Git-inspectable memory built in.
+
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Core Capabilities](#core-capabilities)
+- [Configuration](#configuration)
+  - [Smart Routing, Hedging & RPM Spillover](#smart-routing-hedging--rpm-spillover)
+  - [Multi-User Gateway Authentication](#multi-user-gateway-authentication)
+- [Extending OM](#extending-om)
+- [CLI Slash Commands](#cli-slash-commands)
+- [Testing](#testing)
+- [License](#license)
 
 ---
 
@@ -26,7 +39,7 @@ npm run build
 Or scaffold a new project:
 
 ```bash
-npx omega-agent init my-agent
+npx omega-harness init my-agent
 cd my-agent
 ```
 
@@ -44,7 +57,7 @@ node bin/om.js service install               # Install 24/7 native OS service (s
 
 ## Core Capabilities
 
-- **Multi-Model Routing & Local System 1**: `ModelRouter` handles retries, rate-limit/quota cooldowns, and automatic failover across Gemini, OpenAI, Anthropic, DeepSeek, Kimi, Qwen, GLM, Ollama, LM Studio, vLLM, and `om`. `OMSystemOne` (`src/systemOne.ts`) provides hardware-adaptive complexity routing, risk gating, tool shortlisting, and self-heal triage.
+- **Multi-Model Routing, Hedging & Local System 1**: `ModelRouter` (`src/providers/router.ts`) provides EWMA TTFT/latency-aware routing (`priority` / `latency` / `round_robin`), proactive `rpmGuard` concurrency & 60s RPM spillover, opt-in cloud speculative hedging, `adaptiveEffort` for fast TTFT, half-open circuit breakers with exponential backoff, RFC 9110 / `x-ratelimit-reset-*` header parsing, hardened SSE streams (`AbortSignal` + idle-timeout reader cancellation + Gateway `TCP_NODELAY` & keep-alive heartbeats), and automatic failover across Gemini, OpenAI, Anthropic, DeepSeek, Kimi, Qwen, GLM, Ollama, LM Studio, vLLM, and `om`. `OMSystemOne` (`src/systemOne.ts`) provides hardware-adaptive complexity routing, risk gating, tool shortlisting, and self-heal triage.
 - **Autonomous Daemons & Automations UI**: `OMDaemon` runs cron, interval, file-watch, and webhook triggers with deterministic-first checks (0 LLM tokens when passing), isolated git worktrees, step/token guardrails, persistent run logs, Quick Templates, and 1-click diff/merge/discard in the Gateway UI. Install as a native 24/7 OS service via `om service install`.
 - **Unified `ExecutionBackend` Seam**: Swap between `LocalExecutionBackend`, `DockerExecutionBackend`, and `SSHExecutionBackend` (`execution` in `om.config.json`) to route filesystem tools, shell commands, persistent terminals, `OMGitManager`, `WorkspaceSnapshotManager`, and TypeScript LSP diagnostics uniformly.
 - **Coding-Agent Toolset**: Sandboxed `exec_command`, persistent interactive terminals (`terminal_start`, `terminal_write`, `terminal_read`, `terminal_list`, `terminal_close`), file tools (`read_file`, `write_file`, `patch_file`, `move_file`, `delete_file`, `list_dir`, `search_files`), Git tools, TypeScript AST/LSP tools (`file_outline`, `go_to_definition`, `find_references`, `get_diagnostics`, `get_workspace_diagnostics`), web search/fetch, and Streamable HTTP MCP servers.
@@ -77,6 +90,23 @@ OM_GATEWAY_PORT=3000
 ```
 
 Runtime defaults (routing fallback chains, `daemon` triggers, `security` rules, `execution` backend, `systemOne`, `selfHeal`, and `gateway`) live in [`om.config.json`](om.config.json).
+
+### Smart Routing, Hedging & RPM Spillover
+
+Configure latency-aware routing, tail-latency hedging, and proactive rate-limit spillover in `om.config.json`:
+
+```json
+{
+  "routing": {
+    "enabled": true,
+    "strategy": "latency",
+    "balancePrimary": true,
+    "adaptiveEffort": true,
+    "hedging": { "enabled": true, "delayMs": 4500 },
+    "rpmGuard": { "enabled": true, "softRpmPerModel": 25, "maxInFlightPerModel": 4 }
+  }
+}
+```
 
 ### Multi-User Gateway Authentication
 
@@ -174,7 +204,7 @@ npm run benchmark:eval       # Coding-task scorecard runner (--live for real API
 node scripts/security-audit.js  # Dependency, secret & eval() audit
 ```
 
-All 171 unit & integration tests pass using Node's built-in `node:test` runner across Linux, macOS, and Windows CI (`.github/workflows/ci.yml`), covering core agent loops, security hardening, Windows/OS sandboxing, audit chain integrity, deterministic replay evals, and monorepo/LLM-failover battle tests (Playwright is used for `test:e2e`).
+All 194 unit & integration tests pass using Node's built-in `node:test` runner across Linux, macOS, and Windows CI (`.github/workflows/ci.yml`), covering core agent loops, routing resilience & hedging, security hardening, Windows/OS sandboxing, audit chain integrity, deterministic replay evals, and monorepo/LLM-failover battle tests (Playwright is used for `test:e2e`).
 
 ---
 

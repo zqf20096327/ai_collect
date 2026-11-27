@@ -201,7 +201,7 @@ steps:
       config: .assess/config.toml   # optional; warn-only defaults without it
 ```
 
-Two badges come with it - GitHub's native status badge for the gate workflow, and a live AI-readiness badge served from the committed `.assess/badge.json` via shields.io (written by every assess run: the Step and the next gate, e.g. `Step 3 · next: coverage gate`, or `Step 4 · all gates held`):
+Two badges come with it - GitHub's native status badge for the gate workflow, and a live AI-readiness badge served from the committed `.assess/badge.json` via shields.io (written by every assess run: the Step, the practices fully in place and the next gate, e.g. `Step 3 · 2 practices fully in place · next: coverage gate`, or `Step 4 · 5 practices fully in place · all gates held`):
 
 ```markdown
 [![Assess Gate](https://github.com/<owner>/<repo>/actions/workflows/assess-gate.yml/badge.svg)](https://github.com/<owner>/<repo>/actions/workflows/assess-gate.yml)
@@ -216,7 +216,7 @@ The same gate runs on GitLab merge request pipelines. Add these three lines to y
 
 ```yaml
 include:
-  - remote: https://raw.githubusercontent.com/bjcoombs/ai-native-toolkit/v4.0.0/templates/assess-gate.yml
+  - remote: https://raw.githubusercontent.com/bjcoombs/ai-native-toolkit/v4.1.0/templates/assess-gate.yml
     inputs: { config: .assess/config.toml }
 ```
 
@@ -251,7 +251,7 @@ Backlog refinement as three GitHub workflows any repository calls with one `uses
 jobs:
   sweep:
     if: vars.REFINE_ENABLED == 'true'
-    uses: bjcoombs/ai-native-toolkit/.github/workflows/reusable-refine-sweep.yml@v4.0.0
+    uses: bjcoombs/ai-native-toolkit/.github/workflows/reusable-refine-sweep.yml@v4.1.0
     with:
       enabled: ${{ vars.REFINE_ENABLED == 'true' }}
       mode: ${{ vars.REFINE_MODE || 'dry-run' }}

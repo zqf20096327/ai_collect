@@ -9,7 +9,7 @@
 [English](README.en.md) | 简体中文
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![Tests](https://img.shields.io/badge/tests-349%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-364%20passed-brightgreen)
 ![Adapters](https://img.shields.io/badge/adapters-42-orange)
 ![License](https://img.shields.io/badge/license-Apache%202.0-black)
 
@@ -50,7 +50,7 @@ git clone https://github.com/MiyanoShihoo/camty.git && cd camty
 pip install -r requirements.txt                    # 或 pip install --target vendor <pkg>
 pip install -r requirements-dev.txt                # 测试/CI 依赖（pytest + httpx2），与运行依赖分开安装
 python -m camty keys set main --kind openai --base-url https://api.deepseek.com/v1     --api-key sk-xxx --model-decide deepseek-reasoner   # 配置 LLM（引擎/审批用）
-python -m pytest tests/ -q                         # 349 项自检
+python -m pytest tests/ -q                         # 364 项自检
 ```
 
 支持 Python 3.10–3.13（CI 矩阵在 Ubuntu/Windows 实测）。
@@ -173,7 +173,7 @@ camty/
 ├── packs/                    # 场景包：single-web / ext-web / int-ad（阶段链 + 攻击图）
 ├── playbooks/                # 战术手册：web/（10+ 服务指纹应对）+ ad/（ASREP/Kerberoast/
 │                             #   LAPS/委派/SMB relay）
-├── tests/                    # 349 项测试（27 个套件：引擎/越权/对抗/MITM E2E/破解实测...）
+├── tests/                    # 364 项测试（28 个套件：引擎/越权/对抗/MITM E2E/破解实测...）
 ├── scripts/                  # 辅助（build_beacon/pack_xor/smoke_browser/fetch_tools/build_dist）
 ├── docs/                     # design.md + c2-design.md（协议与路线）
 ├── engagements/              # 交战配置（demo 模板；真实交战数据被 .gitignore 隔离）

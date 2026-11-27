@@ -13,14 +13,14 @@
 
 **Your AI writes Arabic. Sibawayh makes it _correct_ Arabic.**
 
-An open-source Agent Skill (`SKILL.md`) and Arabic spelling, grammar and punctuation checker. It makes Claude Code, Codex, Cursor, GitHub Copilot and other AI coding agents write correct, natural Modern Standard Arabic (MSA, فصحى), and check it before they answer.
+A source-available Agent Skill (`SKILL.md`) and Arabic spelling, grammar and punctuation checker. It makes Claude Code, Codex, Cursor, GitHub Copilot and other AI coding agents write correct, natural Modern Standard Arabic (MSA, فصحى), and check it before they answer.
 
-<p dir="rtl"><b>سيبويه</b> مهارة مفتوحة المصدر لوكلاء الذكاء الاصطناعي (Agent Skill)، ومدقّق إملائي ونحوي للغة العربية. تجعل Claude Code وCodex وCursor وGitHub Copilot وغيرها تكتب العربية الفصحى سليمةً وطبيعية، ثم تراجعها قبل الإجابة: الهمزات والإملاء وعلامات الترقيم والنحو والأسلوب واتجاه النص من اليمين إلى اليسار.</p>
+<p dir="rtl"><b>سيبويه</b> مهارة مفتوحة المصدر جزئيًا (Source-available) لوكلاء الذكاء الاصطناعي (Agent Skill)، ومدقّق إملائي ونحوي للغة العربية. تجعل Claude Code وCodex وCursor وGitHub Copilot وغيرها تكتب العربية الفصحى سليمةً وطبيعية، ثم تراجعها قبل الإجابة: الهمزات والإملاء وعلامات الترقيم والنحو والأسلوب واتجاه النص من اليمين إلى اليسار.</p>
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE)
+[![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-orange)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-3776ab?logo=python&logoColor=white)](#-run-the-checker-yourself)
 [![Dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen)](#-run-the-checker-yourself)
-[![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-d97757)](skills/arabic-writing/SKILL.md)
+[![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-d97757)](skills/sibawayeh/SKILL.md)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757)](#-install)
 [![AI-judged: −97% errors](https://img.shields.io/badge/AI--judged-%E2%88%9297%25%20errors-2ea44f)](https://anasash.github.io/Sibawayh/)
 
@@ -127,12 +127,12 @@ flowchart LR
 
 ```
 /plugin marketplace add anasAsh/Sibawayh
-/plugin install sibawayh@sibawayh
+/plugin install sibawayeh@sibawayh
 ```
 
 That's it. The skill now loads by itself whenever Claude writes Arabic.
 
-Upgrading from 0.2.x? The plugin was called `arabic-writing` then. Run `/plugin uninstall arabic-writing@sibawayh`, then the install command above.
+Upgrading from an older release? The plugin and skill were called `arabic-writing`, then `sibawayh`. Run `/plugin uninstall sibawayh@sibawayh` (or `/plugin uninstall arabic-writing@sibawayh` if you're coming from 0.2.x), then the install command above.
 
 <details>
 <summary>Prefer a manual install?</summary>
@@ -140,11 +140,11 @@ Upgrading from 0.2.x? The plugin was called `arabic-writing` then. Run `/plugin 
 ```bash
 git clone https://github.com/anasAsh/Sibawayh.git
 cd Sibawayh
-ln -s "$PWD/skills/arabic-writing" ~/.claude/skills/arabic-writing
-# or: cp -r skills/arabic-writing ~/.claude/skills/
+ln -s "$PWD/skills/sibawayeh" ~/.claude/skills/sibawayeh
+# or: cp -r skills/sibawayeh ~/.claude/skills/
 ```
 
-From a shell, the plugin commands are `claude plugin marketplace add anasAsh/Sibawayh` and `claude plugin install sibawayh@sibawayh`.
+From a shell, the plugin commands are `claude plugin marketplace add anasAsh/Sibawayh` and `claude plugin install sibawayeh@sibawayh`.
 
 </details>
 
@@ -155,10 +155,10 @@ The skill is a standard [`SKILL.md`](https://agentskills.io/specification) folde
 ```bash
 git clone https://github.com/anasAsh/Sibawayh.git
 mkdir -p ~/.agents/skills
-cp -r Sibawayh/skills/arabic-writing ~/.agents/skills/
+cp -r Sibawayh/skills/sibawayeh ~/.agents/skills/
 ```
 
-According to their documentation, that folder is read by OpenAI Codex, Cursor, GitHub Copilot (CLI and VS Code), Gemini CLI, OpenCode, Amp, Goose, Roo Code, Zed, JetBrains Junie and Windsurf (Devin Local). A few agents use their own folder; copy the same `arabic-writing` folder there instead:
+According to their documentation, that folder is read by OpenAI Codex, Cursor, GitHub Copilot (CLI and VS Code), Gemini CLI, OpenCode, Amp, Goose, Roo Code, Zed, JetBrains Junie and Windsurf (Devin Local). A few agents use their own folder; copy the same `sibawayeh` folder there instead:
 
 | Agent | Folder for your user | Folder inside a project |
 |---|---|---|
@@ -171,7 +171,7 @@ If you use Node, [`npx skills add anasAsh/Sibawayh`](https://github.com/vercel-l
 
 ### Claude Desktop and claude.ai
 
-1. Download [`arabic-writing.zip`](https://github.com/anasAsh/Sibawayh/releases/latest/download/arabic-writing.zip) from the latest release. To build it yourself: `cd Sibawayh/skills && zip -r arabic-writing.zip arabic-writing -x '*__pycache__*'`
+1. Download [`sibawayeh.zip`](https://github.com/anasAsh/Sibawayh/releases/latest/download/sibawayeh.zip) from the latest release. To build it yourself: `cd Sibawayh/skills && zip -r sibawayeh.zip sibawayeh -x '*__pycache__*'`
 2. In Claude, open **Customize → Skills**, choose **Create skill → Upload a skill**, and upload the zip.
 3. Turn on **Code execution and file creation** in **Settings → Capabilities**, so that Claude can run the checker.
 
@@ -195,9 +195,9 @@ A smoke test is one Arabic request, checked to see that the agent read `SKILL.md
 It needs Python 3.8 or later and nothing else.
 
 ```bash
-python3 skills/arabic-writing/scripts/check_arabic.py file.md          # report findings
-python3 skills/arabic-writing/scripts/check_arabic.py --fix file.md    # print text with safe fixes applied
-python3 skills/arabic-writing/scripts/check_arabic.py --json -         # JSON findings from stdin
+python3 skills/sibawayeh/scripts/check_arabic.py file.md          # report findings
+python3 skills/sibawayeh/scripts/check_arabic.py --fix file.md    # print text with safe fixes applied
+python3 skills/sibawayeh/scripts/check_arabic.py --json -         # JSON findings from stdin
 ```
 
 | Severity | Meaning |
@@ -219,7 +219,7 @@ python3 skills/arabic-writing/scripts/check_arabic.py --json -         # JSON fi
 ## 🗂️ What's inside
 
 ```
-skills/arabic-writing/
+skills/sibawayeh/
 ├── SKILL.md                  writing rules, workflow, checklist
 ├── references/
 │   ├── grammar.md            agreement, numbers, case endings
@@ -228,7 +228,10 @@ skills/arabic-writing/
 │   ├── common-errors.md      قل ولا تقل
 │   ├── approved-forms.md     never "fix" these
 │   ├── classical.md          classical register, only on request
-│   └── glossary.md           450+ tech terms, English → Arabic
+│   ├── glossary.md           450+ tech terms, English → Arabic
+│   ├── legal.md              contracts, notices: terms and document shape
+│   ├── banking.md            bank/loan text: terms and document shape
+│   └── commercial.md         business letters, quotations: terms and shape
 └── scripts/
     ├── check_arabic.py       the checker (stdlib only)
     ├── archeck/              rules
@@ -279,6 +282,9 @@ Yes. When you ask for Egyptian, Gulf, Levantine or another dialect, the agent wr
 **Can it write classical Arabic (فصحى التراث)?**
 Yes, when you ask for it. Ask for classical or elevated literary style (فصحى التراث، أسلوب تراثي، "classical Arabic") or for a genre that is classical by nature, such as a Friday sermon, a maqama or a literary debate, and the agent switches register: weightier words, balanced sentences, sparing rhyme, and no invented quotations. Everyday requests stay in plain Modern Standard Arabic. This mode is new in 0.4.0 and has had only a small trial.
 
+**Does it know legal, banking or business-correspondence Arabic?**
+Yes. When the text is a contract, terms of service, legal notice, bank letter, loan/financing text, business letter, quotation or similar, the agent picks up the matching terminology and document shape (preamble and article numbering for a contract, the customer-notice phrasing for a bank letter, the opening/closing formulas for a business letter) on its own — no need to name the domain. This is new and has not had an evaluation trial yet.
+
 **Which agents does it work with?**
 Any agent that supports the `SKILL.md` Agent Skills format: Claude Code (as a plugin), Claude Desktop, Codex, Cursor, GitHub Copilot, OpenCode and others. See [Install](#-install) for each one's folder and for which agents we have tested. Agents without a shell use the checklist alone.
 
@@ -288,7 +294,7 @@ Native-speaker review is the most valuable contribution. Ways to help:
 
 - 🧑‍⚖️ **Score the answers.** The evaluation was judged by an AI model. If you read Arabic natively, score a set of the blind answer pairs in [`evals/results/`](evals/results/) and [open an issue](https://github.com/anasAsh/Sibawayh/issues) with what you find. The [test page](https://anasash.github.io/Sibawayh/ar/) explains the method.
 - 🤖 **Try another agent.** Most agents in [Install](#-install) are documented but not yet tested by us. Tell us whether the skill loads and the checker runs in yours.
-- 💻 **Glossary.** Suggest better or more standard terms in [`glossary.md`](skills/arabic-writing/references/glossary.md). Some terms, such as epoch, tokenization and pipeline, still have no settled Arabic equivalent.
+- 💻 **Glossary.** Suggest better or more standard terms in [`glossary.md`](skills/sibawayeh/references/glossary.md). Some terms, such as epoch, tokenization and pipeline, still have no settled Arabic equivalent.
 - 📝 **Word lists.** Add misspellings to `scripts/data/*.tsv`. The rule is strict: an entry must be wrong in *every* context, and each entry needs a test.
 - 🚩 **False flags.** If the checker flags correct Arabic, [open an issue](https://github.com/anasAsh/Sibawayh/issues) with the sentence.
 
@@ -300,7 +306,7 @@ python3 -m unittest discover -s tests -t .
 
 ## 📄 License
 
-MIT, see [`LICENSE`](LICENSE). The project contains no GPL code. Any entries adapted from LanguageTool (LGPL) would live only in `skills/arabic-writing/scripts/data/third_party/`, with their own licence notice. The frequency lexicons (`scripts/data/lexicon_*`) are word counts derived from [Arabic Wikipedia](https://ar.wikipedia.org/) featured articles, whose text is licensed CC BY-SA 4.0.
+Source-available: MIT with the [Commons Clause](https://commonsclause.com/) condition, see [`LICENSE`](LICENSE). Free to use, modify, self-host and embed, including at a company, for any purpose — the only thing withheld is the right to **sell** the software itself or resell it as a hosted/managed service. If you want to offer Sibawayh (or a product substantially built on it) as a paid product or service, contact the author for a commercial license. The project contains no GPL code. Any entries adapted from LanguageTool (LGPL) would live only in `skills/sibawayeh/scripts/data/third_party/`, with their own licence notice. The frequency lexicons (`scripts/data/lexicon_*`) are word counts derived from [Arabic Wikipedia](https://ar.wikipedia.org/) featured articles, whose text is licensed CC BY-SA 4.0.
 
 <div align="center">
 <br>

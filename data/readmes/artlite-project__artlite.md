@@ -36,7 +36,7 @@ device rather than for portability.
   they apply.
 - **A local model for coding agents.** Claude Code, Codex and opencode work against `artlite-server`, with tool calls
   and a prompt cache, so each turn reads only what is new ([Agents](docs/server.md#agents)).
-- **Requests that meet run together.** With `-np`, Llama 3.x, Qwen3, Gemma 4, Flint, LFM3, Spark-X, the 9B / 27B
+- **Requests that meet run together.** With `-np`, Llama 3.x, Qwen3, Gemma 4, Flint, Inkling 2, LFM3, Spark-X, the 9B / 27B
   Qwen models and MiniCPM-V answer several requests at a time: four get about 3x one request's tokens per second in all, 1.8x where one request already runs with a
   drafter, 1.4x on Flint ([Several requests at a time](docs/server.md#several-requests-at-a-time)).
 - **Answers that parse.** JSON schemas, grammars and tool calls hold what the model writes, in every API's spelling
@@ -118,6 +118,7 @@ Every option: [artlite-cli](docs/cli.md) (text and images), [artlite-server](doc
 | [LFM3-1.7B, LFM3-VL-2B, LFM3-Audio-2B, LFM3-Omni-2B; the decision models d1-2B, d1-Omni-2B](docs/models/lfm3.md) | GGUF QAD-Q4_0, Q4_K_M, Q8_0; d1-2B Q4_0, Q4_K_M, Q8_0; LFM3-Audio, LFM3-Omni Q4_K_M, Q4_0; d1-Omni Q8_0 | prefill, decode (short-convolution, sliding-window and full-attention layers); images and videos through LFM3-VL's vision encoder; speech through LFM3-Audio's encoder (transcription, live transcription) and its generator (text to speech, spoken replies); all of them in one model (LFM3-Omni: videos with their sound, realtime conversations); decisions, also about images, videos and audio |
 | [Spark-X2.6 4B, 1.7B](docs/models/spark.md) | GGUF Q4_K_M, Q8_0; bartowski Q4_K_M, Q4_0 | prefill, decode with its DSpark drafter (3.4-3.7x on code and math); tool calls, thinking levels |
 | [Flint](docs/models/flint.md) | GGUF int4 (Recursive's official file) | prefill, decode (a 40B mixture of experts, ~2.5B active: 31 tokens/s at 1K); tool calls, thinking |
+| [Inkling 2 Mini](docs/models/inkling2.md) | GGUF UD-Q4_K_XL (unsloth) | decode and a prefill (a 26B mixture of experts whose middle layers loop 3 times: 11.5 tokens/s at 1K, a 1K prompt in 2.2 s, 8K in 12.8 s), its DSpark drafter (up to 1.2x on code); images through its vision encoder; thinking, several requests at a time |
 | [Stable Diffusion 1.5](docs/models/sd15.md) | diffusers safetensors | the UNet and the VAE decoder |
 
 Each model's tested files and the planned models: [Models](docs/models/README.md).

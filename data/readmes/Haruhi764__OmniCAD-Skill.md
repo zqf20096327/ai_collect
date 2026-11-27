@@ -18,6 +18,8 @@ OmniCAD 是我为 Codex 开发的开源 CAD 自动绘图 Skill。它可以根据
 
 [快速安装](#安装与快速开始) · [使用说明](SKILL.md) · [更新日志](CHANGELOG.md)
 
+**V1.2.0** 增加原生任务超时与检查点、五类专业图纸验收、逐页打印对照。适用范围和升级方法见[安装与兼容性](references/install-v12.md)。
+
 ## 自动绘图演示
 
 <p align="center"><img src="assets/OmniCAD-light(1).gif" alt="OmniCAD 自动绘制法兰工程图演示" width="100%"></p>
@@ -47,21 +49,22 @@ OmniCAD 是我为 Codex 开发的开源 CAD 自动绘图 Skill。它可以根据
 需要 Python 3.10+。建议使用独立虚拟环境。纯 DXF 使用基础包即可。PDF、图片预检使用 `intake` 附加依赖。原生 DWG/PDF 依赖 Windows、已授权 AutoCAD、可用的出图设置和字体。Poppler 用于 PDF 渲染。
 
 ```bash
-git clone https://github.com/Haruhi764/OmniCAD-Skill.git
+git clone --branch v1.2.0 --depth 1 https://github.com/Haruhi764/OmniCAD-Skill.git
 cd OmniCAD-Skill
-python -m pip install ".[intake,autocad]"
-omnicad mechanical examples/shaft-c.json work-c.json
-omnicad build work-c.json work-c.dxf
-omnicad oqa work-c.dxf --job work-c.json --domain mechanical --mode standard
-omnicad publish work-c.json work-c.dxf native-c --verify-native
+py -3 -m venv .venv-v120
+.venv-v120/Scripts/python.exe -m pip install ".[intake,autocad]"
+.venv-v120/Scripts/python.exe -m omnicad mechanical examples/shaft-c.json work-c.json
+.venv-v120/Scripts/python.exe -m omnicad build work-c.json work-c.dxf
+.venv-v120/Scripts/python.exe -m omnicad oqa work-c.dxf --job work-c.json --domain mechanical --mode standard
+.venv-v120/Scripts/python.exe -m omnicad publish work-c.json work-c.dxf native-c --verify-native
 ```
 
-在 Codex 中使用 Skill 时，将含 [SKILL.md](SKILL.md) 的目录安装到受支持的本地技能目录。CLI 与 Skill 可以分别使用。复用已验证的 [通用支架示例](examples/bracket.json) 时，从 `build` 开始。验收包含人工项目，`publish` 会为缺失的必填视觉证据保留待复核状态。
+也可从 [Release](https://github.com/Haruhi764/OmniCAD-Skill/releases/tag/v1.2.0) 下载含 wheel 的完整 ZIP。已有 V1.1 用户可按[升级与回滚说明](references/install-v12.md) 并行验证新版本。CLI 与 [Codex Skill](SKILL.md) 可分别安装。验收包含人工项目，`publish` 会为必填视觉证据保留待复核状态。
 
 ## 开发计划
 
 - [x] AutoCAD 二维绘图与验收
-- [ ] AutoCAD LT 兼容
+- [ ] AutoCAD LT 兼容（Experimental，可选 DXF 交换。LT 2027 实机验收待完成）
 - [ ] SolidWorks 建模与装配
 - [ ] Revit BIM 建模
 
@@ -69,7 +72,7 @@ omnicad publish work-c.json work-c.dxf native-c --verify-native
 
 ## 反馈与贡献
 
-欢迎提交 [Issue](https://github.com/Haruhi764/OmniCAD-Skill/issues)，附软件版本及脱敏复现。详细工作流见 [V1.1 文档](references/v11.md)，贡献方式见 [CONTRIBUTING.md](CONTRIBUTING.md)。目前不支持任意 DWG 自动修改、图片自动矢量化或三维建模；工程设计仍需人工复核。
+欢迎提交 [Issue](https://github.com/Haruhi764/OmniCAD-Skill/issues)，附软件版本及脱敏复现。现有绘图工作流见 [V1.1 文档](references/v11.md)，类型验收见 [V1.2 验收说明](references/acceptance-v12.md)，LT 用户可选用 [Experimental 测试包](references/lt-compatibility.md)。贡献方式见 [CONTRIBUTING.md](CONTRIBUTING.md)。二维工程图仍需人工专业复核。
 
 项目采用 [MIT 许可证](LICENSE)，第三方许可见 [来源说明](references/provenance.md)。如果这个项目对你有帮助，欢迎 Star。
 

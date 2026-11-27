@@ -112,6 +112,7 @@ Thank you to everyone who has contributed to Pi Bot. See the
 <!-- CONTRIBUTORS:START -->
 - [@w01fb0ss](https://github.com/w01fb0ss)
 - [@agooll](https://github.com/agooll)
+- [@rajnishmanitiwari](https://github.com/rajnishmanitiwari)
 - [@juemimgcd](https://github.com/juemimgcd)
 - [@eltociear](https://github.com/eltociear)
 <!-- CONTRIBUTORS:END -->

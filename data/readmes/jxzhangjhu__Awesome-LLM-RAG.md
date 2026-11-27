@@ -52,6 +52,7 @@ We strongly encourage the researchers that want to promote their fantastic work 
 - [poincare-memory](https://github.com/dhruvmojila/poincare-memory) - Hierarchy-aware, time-aware memory for LLM agents and RAG on the Poincaré ball: structural retrieval (subtree, ancestors, entailment cones), temporal decay policies and an interactive inspector. NumPy-only, runs offline; reference implementation of an IEEE ICBDML 2026 paper.
 - [Haystack](https://github.com/diogocccarvalho/haystack) - Local semantic router for markdown note vaults: hybrid retrieval (embeddings + corpus-IDF, RRF fusion, llama.cpp cross-encoder reranking) where user corrections become permanent rules and self-testing regression pairs (audit exits 1 on regression). All local, zero cloud, MIT licensed.
 - [ClickHouse Loom](https://github.com/ClickHouse/loom) - Self-hosted document search with citations for agents (Markdown, text, PDF, `.docx`, `.pptx`), served over MCP, HTTP and Python/TypeScript SDKs, beside shared memory and a code index. Stores data in ClickHouse. Apache-2.0.
+- [docs-rag-mcp](https://github.com/Ahmed-Manai/docs-rag-mcp) - MCP server in C# that indexes a folder of Markdown, text, HTML, Word (`.docx`) and PDF files into a single local SQLite file and serves hybrid (embedding + keyword) search with file and heading citations to Claude, GitHub Copilot or Cursor. Embeddings from Ollama (fully local), OpenAI or Azure OpenAI; incremental re-indexing and folder watching. MIT licensed.
 
 ## Workshops and Tutorials
 - [Agent Shadow Brain](https://github.com/theihtisham/agent-shadow-brain) - Self-evolving AI coding intelligence with infinite memory (TurboQuant), genetic algorithm self-evolution, predictive bug detection, PageRank knowledge graphs, swarm intelligence, and adversarial defense.
@@ -158,11 +159,11 @@ EMNLP 2023 - May 2023 [[Paper](https://arxiv.org/abs/2305.06983)][[Github](https
 
 **SPARK: Adaptive Parametric Knowledge Participation for Faithful Retrieval-Augmented Generation** \
 *Ruochang Li, Pengcheng Huang, Zhenghao Liu, Yukun Yan, Huiyuan Xie, Yu Gu, Ge Yu, Maosong Sun* \
-arXiv - Jun 2026 [[Paper](https://arxiv.org/abs/2606.27786)][[Github](https://github.com/OpenBMB/SHIFT)]
+arXiv - Jun 2026 [[Paper](https://arxiv.org/abs/2606.27786)][[Github](https://github.com/OpenBMB/SPARK)]
 
 **ParamMute: Suppressing Knowledge-Critical FFNs for Faithful Retrieval-Augmented Generation** \
 *Pengcheng Huang, Zhenghao Liu, Yukun Yan, Haiyan Zhao, Xiaoyuan Yi, Hao Chen, Zhiyuan Liu, Maosong Sun, Tong Xiao, Ge Yu, Chenyan Xiong* \
-NeurIPS 2025 - Feb 2025 [[Paper](https://arxiv.org/abs/2502.15543)][[Github](https://github.com/OpenBMB/ParamMute)]
+NeurIPS 2025 - Feb 2025 [[Paper](https://proceedings.neurips.cc/paper_files/paper/2025/hash/90d1e515d74686ad148b469a3cecbbaa-Abstract-Conference.html)][[arXiv](https://arxiv.org/abs/2502.15543)][[Github](https://github.com/OpenBMB/ParamMute)]
 
 **Improving Retrieval Augmented Language Model with Self-Reasoning** \
 Yuan Xia, Jingbo Zhou, Zhenhui Shi, Jun Chen, Haifeng Huang \  

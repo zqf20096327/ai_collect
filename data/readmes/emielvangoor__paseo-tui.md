@@ -192,6 +192,7 @@ message box: `esc` leaves it, `i` or `enter` goes back in.
 |---|---|
 | `i` · `enter` | Write to the focused agent (`enter` sends, `alt+enter` adds a newline, `esc` leaves). When the agent waits on you, `enter` opens that instead |
 | `/` | The agent's commands and skills, as in the desktop: `/` at the start of a message lists both, `/` later in a message lists skills. Type to filter, `↑` / `↓` choose, `tab` or `enter` inserts, `esc` closes |
+| `/clear` · `/new` · `/exit` · `/q` | Handled by paseo-tui, as in the desktop: `/exit` archives the agent; `/clear` archives it and opens a fresh one with the same setup |
 | `↑` / `↓` (in the composer) | Previous / next prompt from history |
 | `ctrl+v` | Paste an image from the clipboard (pasting or dropping an image path works too) |
 | `n` · `ctrl+n` | New agent in this workspace (a new tab) |
@@ -201,11 +202,12 @@ message box: `esc` leaves it, `i` or `enter` goes back in.
 | `m` | Agent settings: model, thinking level, mode, toggles such as Fast |
 | `s` | Stop the running agent (asks; `s` again or `y` confirms) |
 | `enter` · `x` | A pending tool permission: review it (the full command; `y` allows, `n` denies, `esc` decides later) · deny it straight away |
-| `enter` · `x` | A pending question (e.g. Claude's AskUserQuestion): answer it, picking an option or typing your own · dismiss it |
+| `enter` · `x` | A pending question (e.g. Claude's AskUserQuestion): answer it in one scrollable form with every question, picking options or typing your own answer · dismiss it |
 | `u` | Subagents of this agent; open one as a `↳` tab (`w` or `ctrl+w` closes it) |
 | `a` | Archive the agent or the workspace, delete the agent, or remove a project (always confirms) |
 | `delete` | Delete the agent permanently (asks; `fn+delete` on a Mac keyboard) |
 | `H` | History, like the desktop's: every agent including archived ones, searchable; `enter` opens one, and restores it first (with its workspace or worktree) when archived |
+| `c` | Settings: start-up view, header (branch, PR, diff), model label, workspace numbers, thinking and tool output, scroll speed, keyboard hints, quit confirmation, terminal title, update check, editor and file manager. Saved to `config.toml` on every change |
 | `e` | Open the workspace in your editor in a floating pane: `$VISUAL`, `$EDITOR`, else nvim or vim (`ctrl+\` hides it, `e` brings it back, quitting the editor closes it). GUI editors need their terminal mode, e.g. `VISUAL="emacs -nw"` |
 | `F` | Browse the workspace's files in a floating pane with ranger, yazi, lf or nnn (the first one installed; `ctrl+\` hides it, `F` brings it back). Without one, opens the directory in Finder, Explorer or the Linux file manager |
 
@@ -253,6 +255,7 @@ UI reacts instantly and nothing is polled.
 | What | Where |
 |---|---|
 | UI state per host (folded projects, panel widths, grouping, New-workspace choices) | `<config dir>/paseo-tui/state.json` |
+| Settings (`c`, or edit the file: changes apply while the app runs) | `<config dir>/paseo-tui/config.toml` |
 | Prompt history | `~/.local/state/paseo-tui/history.json` (`$XDG_STATE_HOME`) |
 | Unpacked bridge, pasted images | `<cache dir>/paseo-tui/` |
 

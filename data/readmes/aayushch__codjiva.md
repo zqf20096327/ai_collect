@@ -24,6 +24,10 @@ with sound.*
     one does to it.
   - **Map** shows a folder level by level, down to single functions, and links each file to everything that
     was made of it.
+- **Ask** puts a question about what is on screen to the agent that drew it. The answer names the lines of
+  code it relies on, and it can put numbered notes on the parts of the picture.
+- **Select code** in a file to discuss only those lines, or to make any of the six views of only that function
+  or type.
 
 Everything Codjiva makes is plain HTML, saved in a `.codjiva/` folder inside your project. An exported artifact
 is one file that opens in any browser, offline.
@@ -79,7 +83,10 @@ Open **Settings** (the sliders icon in the title bar, or Cmd/Ctrl+,) to see whic
    make any of the six.
 7. **Feedback.** Under the inspector, write what should change. Codjiva attaches the moment of the film you are
    at and, with **Point at…**, the element you mean. A new version is made with only that change.
-8. **Compose.** Tick two or more artifacts in the library and click **Compose**. Codjiva proposes joins between
+8. **Ask.** The inspector has an **Ask** tab beside **About**. Write a question about the picture or the code
+   behind it. The agent that drew the picture answers, usually within seconds. See
+   [Asking about a visual](#asking-about-a-visual).
+9. **Compose.** Tick two or more artifacts in the library and click **Compose**. Codjiva proposes joins between
    their ports, and you confirm them.
 
 **Rationale.** A blueprint or a film says what the code does. Where the code also shows why it is built that
@@ -99,6 +106,40 @@ long each of your jobs really took and corrects the estimate with them, separate
 model. Those notes are kept in `timings.json` in the app's settings folder. They hold numbers and the names
 of the agent and the model, and no file names or code.
 
+### Asking about a visual
+
+The **Ask** tab of the inspector holds the discussions about the blueprint, film or view on screen.
+
+- **Who answers.** The question goes to the agent that drew the picture and continues the conversation in
+  which it was drawn, so the agent has already read the code. When that conversation cannot be continued, a
+  new one is started and given the text of the discussion. This happens with an agent that cannot resume a
+  conversation, with an API key, and with a picture that was made on another computer.
+- **The answer** is text. A place in the code, written as `path:line`, is a link to that line when the file
+  and the line exist. A place that does not exist stays plain text.
+- **Notes.** An answer can put notes on parts of the picture. Each note is a numbered mark on the corner of
+  its part, and a click on the mark shows its text. The picture is not made again for this. The switch
+  **Notes on the blueprint** above the discussion hides the marks and keeps the notes. In a film, a note is a
+  card that is shown for a few seconds at one moment of the film. A click on the note in the Ask tab goes to
+  that moment and pauses.
+- **Change the blueprint from this…** under the last answer starts a job that makes a new version. The agent
+  is given the discussion with your instruction.
+- **Several discussions.** **New** starts another discussion about the same picture, and **Delete** removes
+  one with its notes.
+- **One question at a time.** A second question cannot be sent until the first is answered. A question
+  about a picture cannot be sent while a job is making a new version of it. **Stop** ends a question that is
+  being answered.
+- **Who asked.** The app has no accounts. Each question carries the `user.name` of your git configuration as
+  a label, or the name of your account on the computer when git has none.
+
+A question changes no file of your project. The agent is started with an empty folder as the only place it
+may write to, and its answer is its reply.
+
+**A picture made by an earlier version of Codjiva.** Notes are drawn by the code a picture carries inside
+it, and a picture keeps the code it was built with. When a note is to be shown on a picture that was built
+before notes existed, the Ask tab offers **Update it**. This builds a new version from the same source
+files, without an agent. The earlier version is kept, and the new one is discarded when it does not pass
+the checks at least as well.
+
 To visualise a **whole folder**, hover the folder in the explorer and click the small icon on its row. Codjiva
 tells you how many files and roughly how many tokens that means before you start, because a folder costs more
 than a file.
@@ -114,6 +155,9 @@ The sidebar on the left, the inspector on the right and the job panel at the bot
 - The sizes of the panels, and which of them are open, are remembered for the next time the app starts.
 - The title bar has a button for each panel. The keys are ⌘0 for the sidebar, ⌥⌘0 for the inspector and ⇧⌘Y
   for the job panel on macOS, and the same with Ctrl in place of ⌘ elsewhere.
+
+Beside the Source view the panel on the right has a width of its own, and it has two sections. See
+[A part of a file](#a-part-of-a-file).
 
 ### Following names in the Source view
 
@@ -156,6 +200,39 @@ Parsed languages are C, C++, Go, Java, JavaScript, Python, Rust and TypeScript, 
 keyword such as `class` or `def`, and a use is the same word. A name that is defined outside the open folder,
 for example in a standard library, is not found.
 
+### A part of a file
+
+A discussion or a picture can be about a part of a file: one function, one type, or any lines.
+
+- **Select lines** in the Source view. A bar appears at the selection with **Discuss** and **Visualise**.
+  When the lines lie inside a function or a type, the bar offers a choice between those lines and that
+  whole definition. A right-click on the selection offers the same commands.
+- **Discuss** opens a discussion about that code in the panel on the right. It works like the Ask tab.
+- **Visualise** makes any of the six views of only that code. The agent still reads the whole file, and
+  draws the part. The picture is shown in the panel on the right, above the discussion, and an answer can
+  put notes on it.
+- **Marks.** A line that starts code with a discussion or a picture has a mark in the margin. A click on
+  the mark opens that code in the panel, and its lines are tinted. With nothing open, the panel lists what
+  the file has.
+- **Two sections.** The panel shows the definitions and references of a clicked name in one section and the
+  open discussion or picture in the other. Drag the line between them to give one more room. A button swaps
+  them. Drag the panel's edge to make it as wide as you need, up to a narrow strip that is left for the
+  code.
+- **Maximise** shows the picture in place of the code, with the inspector and its Ask tab beside it.
+  **Back to the code** in the toolbar returns.
+
+Codjiva remembers the code by what it is, and not only by its line numbers.
+
+- A part that is a whole definition is found again by its name after the file changes, also when it has
+  moved.
+- A part that is a range of lines is found again by its text, also when it has moved. When the text of the
+  lines was edited, the panel says that the code is no longer in the file as it was, and shows where it
+  used to be.
+- In a language that Codjiva does not parse, a part is always a range of lines.
+
+A picture of a part is marked stale only when the code of that part changes. A change elsewhere in the file
+leaves it as it is. The library lists such a picture as `file › name`. It cannot be ticked for **Compose**.
+
 ### Versions and staleness
 
 Every job adds a version; nothing is overwritten. The version list is in the toolbar, followed by icons that
@@ -186,11 +263,14 @@ agent run.
   their last commit. Codjiva cannot tell whether the agent or you changed a file, so the job is not stopped,
   and a blueprint or film made from a changed file is marked stale. A job that changes an already saved version
   is stopped and its result is discarded.
+- Discussions are kept in `.codjiva/threads/`, one file for each, with their questions, answers and notes.
+  Your teammates see them exactly when `.codjiva/` is tracked by git. Each question in such a file carries
+  the name it was asked under.
 - The answer to **Which view fits this file?** is kept in `.codjiva/suggestions/`. The agent is given the
   file's text for that question and draws nothing. With Claude Code it is asked with the small model, `haiku`,
   whatever model Settings names for jobs.
 - Several jobs can run at the same time. Only a second job for the same blueprint, film or pipeline has to wait
-  until the first has ended.
+  until the first has ended. Questions are asked one at a time.
 - Artifacts are shown in a sandboxed frame that can run scripts and nothing else, with a policy that blocks
   every network request. An artifact cannot reach the app, your files or the internet.
 
@@ -256,6 +336,7 @@ installed accepts only updates signed with it. On Linux the updater works for th
 cargo test --workspace                   # the core, the builder and the app shell
 cd ui && npm run check && npm test       # the interface: types and unit tests
 cd ui && npm run build && npm run e2e    # the interface in a real browser, with a stand-in backend
+cd ui && npm run e2e -- --browser webkit # the same in WebKit; `--scheme light` runs it in the light theme
 cd runtime/test && npm ci && npm test    # the runtime: frames, self-test, three browser engines
 scripts/selfcheck.sh                     # the real app window touring itself (macOS)
 ```

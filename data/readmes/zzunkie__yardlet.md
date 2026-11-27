@@ -8,8 +8,9 @@
 Lightweight, non-intrusive, yet versatile ADE. Yardlet is a native macOS app that runs the real agent
 CLIs you already use, Codex, Claude Code, OpenCode, Antigravity CLI and others, side by side in one
 window of projects and tasks, each with the agent loop, sign-in and session history it already has.
-It adds no agent layer of its own: no hooks, no wrappers around the agent commands, and nothing
-written into the agents' settings.
+By default it adds no agent layer of its own: no hooks, no wrappers around the agent commands, and
+nothing written into the agents' settings. The few options that go further are off until you turn
+them on (see [Off by default](#off-by-default)).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/main-dark.png">
@@ -32,7 +33,7 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
 - **Sessions stay where the agent keeps them.** Codex runs against your normal `CODEX_HOME` and
   Claude Code against its own store, so a session started in Yardlet resumes in the original app or
   CLI, and the other way round. Yardlet keeps only its own index, drafts and reading state.
-- **Stop whenever you like.** Yardlet writes nothing into the agents' own configuration; it hands
+- **Stop whenever you like.** By default Yardlet writes nothing into the agents' own configuration; it hands
   them its tools when it starts them. Quit it or remove it, and each agent, its sign-in and its
   sessions are as they were, ready in the original app or CLI (see [Uninstall](#uninstall)).
 - **Several accounts.** Register more than one account per provider and start a task on the one
@@ -64,6 +65,19 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/review-dark.png">
   <img alt="Reviewing a task's changes: the diff of a file opens in a pane next to the conversation" src="docs/images/review-light.png">
 </picture>
+
+## Off by default
+
+These options reach past what Yardlet otherwise leaves alone, so each stays off until you turn it on,
+and turning it off undoes it.
+
+- **Send now in Antigravity tasks (experimental)** (Settings > General): a message sent while an
+  Antigravity task works reaches it at its next step. While it is on, Yardlet adds a plugin folder under
+  `~/.gemini/config/plugins/` that `agy` reads in every conversation, also outside Yardlet; turning it
+  off removes the folder, which removing Yardlet alone does not.
+- **Keep tasks working with the lid closed** (Settings > General): registers a helper that runs as root
+  and keeps the Mac awake with its lid closed while tasks work (see [Permissions](#permissions)). Turn
+  it off before removing Yardlet, as macOS keeps an app's background item after the app is deleted.
 
 ## Requirements
 
@@ -114,7 +128,9 @@ Quit Yardlet and move it to the Trash, or run `brew uninstall --cask zzunkie/tap
 agents, their sign-ins and their sessions do not change. If **Settings > General > Keep tasks
 working with the lid closed** is on, turn it off first: macOS keeps an app's background item after
 the app is deleted. It has nothing left to run then, and you can also turn Yardlet off in **System
-Settings > General > Login Items & Extensions**. To remove Yardlet's own data as well:
+Settings > General > Login Items & Extensions**. Turn off **Send now in Antigravity tasks
+(experimental)** too if it is on, which removes its plugin folder from `~/.gemini/config/plugins/`. To
+remove Yardlet's own data as well:
 
 - `~/.yardlet` (task list, drafts, reading state) and `~/Library/Application Support/Yardlet`
   (browser profiles, staged updates). `brew uninstall --zap --cask zzunkie/tap/yardlet` removes
@@ -402,8 +418,9 @@ YARDLET_SIGNING_IDENTITY="Developer ID Application: <name> (<team>)" ./scripts/b
 - `YARDLET_PROVISIONING_PROFILE=<path>` embeds a Developer ID profile in the browser host
   (`Yardlet Browser Host.app/Contents/embedded.provisionprofile`) with the entitlements it grants. The
   profile must be for the App ID `<team>.com.zzunkie.yardlet.browser-host`; the app itself needs none.
-  Touch ID passkeys stay off with the stock CEF build, whose keychain group has no team ID
-  (`YARDLET_PATCH_CEF_WEBAUTHN_GROUP=1` enables the tested opt-in prototype; see docs/BROWSER_HOST.md §7).
+  Touch ID passkeys stay off with the stock CEF build, whose keychain group has no team ID;
+  `YARDLET_PATCH_CEF_WEBAUTHN_GROUP=1` gives it the signing team's (docs/BROWSER_HOST.md §7). Releases
+  carry both: `release.sh` requires the profile.
 - A Developer ID build keeps the browser's cookie key in the login keychain instead of the mock
   keychain, so sites in the built-in browser need signing in again once after the switch.
 - Once the installed app is Developer ID signed, `stage-update.sh` and Install Update… accept only a
@@ -429,10 +446,13 @@ default `https://yardlet.app/appcast.xml`, and the same address with `-x86_64` b
 and the public key, notarizes the app and its disk image with `notarize.sh` (`Yardlet-<version>.dmg`,
 and `Yardlet-<version>-x86_64.dmg` for Intel), and runs Sparkle's `generate_appcast`, which signs the
 image with the EdDSA key and writes that architecture's appcast with the download under the GitHub
-release `v<version>`. It checks that every executable in each image is of its architecture and that
-the key built into the app accepts the signature, then prints the publishing steps: the GitHub release
-with both images first, then both appcasts on the site, and the Homebrew cask's two hashes. Everything
-lands in `.build/release-<version>/arm64/` and `.build/release-<version>/x86_64/`.
+release `v<version>`. It checks that every executable in each image is of its architecture, that the
+browser host holds the profile and Touch ID's keychain groups, and that the key built into the app
+accepts the signature, then prints the publishing steps: the GitHub release with both images as a
+draft; the "Check a release's disk images" workflow (`.github/workflows/release-check.yml`), in which
+macOS 15 and 26 open the draft's images and start the app and its browser host; publishing the draft
+once that passes; both appcasts on the site; and the Homebrew cask's two hashes. Everything lands in
+`.build/release-<version>/arm64/` and `.build/release-<version>/x86_64/`.
 
 - Raise `CFBundleShortVersionString` and `CFBundleVersion` in `Packaging/Info.plist` and commit
   first: Sparkle orders updates by `CFBundleVersion`.

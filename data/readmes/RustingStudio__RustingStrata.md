@@ -10,7 +10,7 @@ Supported models: Qwen3, Qwen3-Next, Qwen3.5/3.6, Qwen3.8-Flash-Next, Recursive 
 GLM-5.3-Flash, Hy4-flash, Inkling 2 Mini and Kolibri 1.1. The architectures, the GGUF types and the notes for each model are in
 [docs/MODELS.md](docs/MODELS.md).
 
-Version 1.3.6.
+Version 1.4.0.
 
 ## Numbers
 
@@ -124,6 +124,7 @@ Inkling 2 open the GPU by themselves.
 - [HOSTING.md](docs/HOSTING.md): running a server for other people.
 - [SUPPORTED_GPUS.md](docs/SUPPORTED_GPUS.md) and [AMD.md](docs/AMD.md): the GPUs tried so far and AMD notes.
 - [VISION.md](docs/VISION.md): image input. [LORA.md](docs/LORA.md): LoRA adapters.
+- [ROADMAP.md](ROADMAP.md): what is planned next, by section; ideas from users are welcome.
 
 ## Development
 

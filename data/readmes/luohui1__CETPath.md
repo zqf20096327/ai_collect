@@ -185,7 +185,7 @@ flowchart LR
 
 ## 快速开始
 
-环境要求：Node.js 20+（不部署 Python 后端也可完整使用原卷做题、听力与记忆树背词）。
+环境要求：Node.js 20+ 和 Python 3（`npm run dev` / `npm run build` 会先用 Python 导出 Agent 提示词；不部署 Python 后端也可完整使用原卷做题、听力与记忆树背词）。
 
 ```bash
 git clone https://github.com/luohui1/CETPath.git

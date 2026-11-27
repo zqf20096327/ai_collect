@@ -15,6 +15,7 @@
   <a href="https://registry.modelcontextprotocol.io/v0/servers?search=better-lavka-mcp"><img src="https://img.shields.io/badge/MCP_Registry-io.github.d3d0n%2Fbetter--lavka--mcp-1249D2" alt="MCP Registry"></a>
   <img src="https://img.shields.io/pypi/pyversions/better-lavka-mcp" alt="Python">
   <a href="https://github.com/d3d0n/better-lavka-mcp/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License"></a>
+  <a href="https://glama.ai/mcp/servers/d3d0n/better-lavka-mcp"><img src="https://glama.ai/mcp/servers/d3d0n/better-lavka-mcp/badges/score.svg" alt="Glama MCP server score"></a>
 </p>
 
 <p align="center">

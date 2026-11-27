@@ -1,0 +1,401 @@
+<div align="center">
+
+<br/>
+
+<img src="banner.svg" alt="dotstell" width="100%" />
+
+<br/>
+<br/>
+
+### Your knowledge is scattered. Dotstell connects it.
+
+**Everything you write, everyone you know, everything you do —<br/>all linked in one living knowledge graph.**
+
+Ask it in Dotstell, or from Codex, Claude and any other AI tool through the built-in [MCP server](docs/MCP.md).
+
+*"Your knowledge is not lost. It's just not connected yet."*
+
+**[Try it free in your browser: dotstell.app](https://dotstell.app)** · [Download the desktop app](https://www.dotstell.com/#download)
+
+<sub>Free to start. Open source. No credit card required.</sub>
+
+**Capture · Connect · Ask**
+
+Notes · People · Tasks · Bookmarks · Wikilinks · Knowledge Graph · AI Chat & Writing · MCP server · Meetings · Voice dictation · Local Ollama · Import & Export
+
+<br/>
+
+<img src="docs/assets/dotstell-tour.gif" alt="A tour of Dotstell: asking AI about your notes, connecting Claude Code over MCP, turning a meeting into action items, and the knowledge graph" width="85%" />
+
+<sub>Fictional demo data.</sub>
+
+<br/>
+
+[![GitHub Stars](https://img.shields.io/github/stars/dotstell/dotstell?style=flat-square&color=7c6aff&logo=github)](https://github.com/dotstell/dotstell/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/dotstell/dotstell?style=flat-square&color=gray&logo=github)](https://github.com/dotstell/dotstell/network/members)
+[![Release](https://img.shields.io/github/v/release/dotstell/dotstell?style=flat-square&color=10b981&label=release)](https://github.com/dotstell/dotstell/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/dotstell/dotstell/total?style=flat-square&color=7c6aff&label=downloads)](https://dotstell.com/#download)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-7c6aff?style=flat-square)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org)
+[![Rust](https://img.shields.io/badge/Rust-Tauri%20v2-CE422B?style=flat-square&logo=rust)](https://tauri.app)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
+
+<br/>
+
+[Website](https://www.dotstell.com) · [Live App](https://dotstell.app) · [Releases](https://github.com/dotstell/dotstell/releases) · [Report a bug](https://github.com/dotstell/dotstell/issues) · [Request a feature](https://github.com/dotstell/dotstell/issues) · [Contact](mailto:hello@dotstell.com)
+
+</div>
+
+---
+
+## What is Dotstell?
+
+Dotstell is an open source personal knowledge graph — a single place to write notes, track people, manage tasks, save bookmarks, and connect all of them together through a visual graph. With a built-in AI layer that understands your entire knowledge base.
+
+Most productivity tools are built around **capture**. Dotstell is built around **connection** — and now, **conversation**.
+
+**Capture** your ideas, meeting notes, and research. **Connect** them to people, tasks, and bookmarks — building a knowledge graph that grows with you. **Ask** an AI that answers from your own notes, not the internet — chat, get person intelligence, generate writing, and discover what you already know.
+
+> *Everything you write, everyone you know, everything you do — all linked in one living knowledge graph. Now with AI that understands all of it.*
+
+The question it answers that other tools don't:
+
+> *"What do I know about this person, this project, this decision — right now, in full context?"*
+
+### See it
+
+| Ask your own knowledge | Connect Codex, Claude and Cursor |
+|---|---|
+| <img src="docs/assets/screenshot-ask.png" alt="AI Chat answering from notes, people and tasks" /> | <img src="docs/assets/screenshot-mcp.png" alt="Connecting Claude Code to Dotstell through the MCP server" /> |
+| **Meetings become action items** | **Everything linked in one graph** |
+| <img src="docs/assets/screenshot-meetings.png" alt="Meeting assistant producing a summary, decisions and tasks" /> | <img src="docs/assets/screenshot-graph.png" alt="Knowledge graph linking notes, people, tasks and bookmarks" /> |
+
+---
+
+## Support the project
+
+Dotstell is free, self-hostable, and built in the open. If it saves you time or you believe in what we're building:
+
+- **[Star the repo](https://github.com/dotstell/dotstell/stargazers)** — the single most useful thing you can do. It helps others find Dotstell and tells us the work is worthwhile.
+- **[Open an issue](https://github.com/dotstell/dotstell/issues)** — bug reports and feature requests shape what gets built next.
+- **[Contribute code](CONTRIBUTING.md)** — all skill levels welcome; see the contributing guide.
+- **Share it** — tell someone who needs a better way to organise their work.
+
+Every star, issue, and PR genuinely matters for an early-stage OSS project.
+
+---
+
+## Features
+
+### Capture
+
+| | Feature | Description |
+|---|---|---|
+| 📑 | **Rich Text Notes** | Slash commands, tables, code blocks, checklists, images, a table of contents and PDF export; sub-notes, note tabs, colour labels, pinning and drag-to-reorder |
+| 📓 | **Notebooks** | Organise notes into named, colour-coded collections; deleted notes stay in the Trash for 30 days |
+| 🎙️ | **Meetings** | Paste or upload a Zoom, Teams or Meet transcript (`.vtt`, `.srt`, `.txt`) or your rough notes and get a summary, decisions, action items and open questions; action items become linked tasks. Record a meeting too — see [docs/MEETINGS.md](docs/MEETINGS.md) |
+| 🗣️ | **Voice dictation** | Speak into any note in 12 languages. **Fast** uses your browser, with spoken punctuation ("comma", "question mark", "new line") and automatic capitals; **High accuracy** uses Whisper-class models with your own OpenAI, Groq or Gemini key. Words appear as you speak, on a draggable bar that works on a phone |
+| 🔖 | **Smart Bookmarks** | Save any URL — title, description and favicon fetched automatically; bulk import from Chrome, Firefox or Safari |
+| ✅ | **Tasks & Priorities** | Kanban board and list view with priorities, due dates and times, reminders and overdue alerts |
+| 👥 | **People & 1-on-1s** | Track contacts, attach notes, tasks and context directly to people; `@mention` them in notes |
+
+### Connect
+
+| | Feature | Description |
+|---|---|---|
+| ⬡ | **Wikilinks & Backlinks** | Type `[[` in any note to link it to another; backlinks and unlinked mentions update automatically |
+| 🔗 | **Manual Linking** | Connect any entity to any other — note → person, bookmark → task, and so on |
+| 🌐 | **Knowledge Graph** | A visual map of everything; wikilinks and manual connections appear as live edges, with AI-found missing links and clusters |
+| 🔍 | **Universal Search** | Ctrl+K command palette across notes, people, tasks and bookmarks, and semantic search by meaning |
+| 🏠 | **Dashboard** | Overdue alerts, task progress, recent notes and bookmarks, knowledge health and an AI digest |
+
+### Ask
+
+| | Feature | Description |
+|---|---|---|
+| ✨ | **AI Chat, Write & Assist** | Chat grounded in your notes, bookmarks and tasks; draft from templates or improve existing text; inline rewrite, expand and fix; smart titles, auto-tags, summaries, related notes and Person Intelligence. Works with Ollama (local and private), OpenAI, Anthropic, Gemini or Groq |
+| 🔌 | **Connect AI tools (MCP server)** | Let Codex, Claude Code, Cursor and Claude Desktop search and read your notes, bookmarks, tasks, people and meetings with a revocable, read-only token — see [docs/MCP.md](docs/MCP.md) |
+
+### Yours to keep
+
+| | Feature | Description |
+|---|---|---|
+| 📤 | **Export & No Lock-in** | One click exports everything as a zip: Markdown notes with wikilinks and front matter (opens in Obsidian), people, tasks (Markdown and CSV), browser-importable bookmarks, and a lossless JSON backup — see [docs/EXPORT.md](docs/EXPORT.md) |
+| 📥 | **Import** | Bring in Markdown (Obsidian, Notion, Bear, Joplin, Logseq), Evernote (`.enex`), Google Keep (Takeout) and contacts (`.vcf`, `.csv`); notebooks, tags, dates and `[[wikilinks]]` are kept. Preview first, one-click undo — see [docs/IMPORT.md](docs/IMPORT.md) |
+| 🖥️ | **Web, desktop and phone** | Use it in the browser, as a ~10 MB desktop app for Windows, macOS and Linux, or on a phone or tablet; 12 themes |
+| 🏠 | **Self-hostable** | Your own Supabase project and any Node.js host — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
+
+---
+
+## Screenshots
+
+Live previews of the app are available on [dotstell.com](https://www.dotstell.com) — the landing page includes an interactive knowledge graph, dashboard mockup, and feature walkthroughs.
+
+Try the live app at [dotstell.app](https://dotstell.app) or [download the desktop build](https://github.com/dotstell/dotstell/releases) for Windows, macOS and Linux.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20.9+
+- pnpm — `npm install -g pnpm`
+  > We use pnpm instead of npm/yarn because it is significantly faster (hard-linked global store, no re-downloading the same package twice), produces a deterministic `pnpm-lock.yaml`, and is required by the Tauri CLI toolchain used for the desktop build. The lockfile is committed — always use `pnpm install`, not `npm install`, to keep the lockfile consistent.
+- A free [Supabase](https://supabase.com) account
+
+### 1. Clone
+
+```bash
+git clone https://github.com/dotstell/dotstell.git
+cd dotstell
+```
+
+### 2. Install dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Set up Supabase
+
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Go to **SQL Editor** and run `supabase/schema.sql` to create all tables, policies, and triggers.
+
+   That one file is all a new project needs. For an existing database, apply any migrations you have not run yet, in order:
+
+```
+supabase/migrations/
+├── add_notebooks_table.sql
+├── add_notes_soft_delete.sql
+├── 002_bookmarks_enhancements.sql
+├── 003_bookmark_visits.sql
+├── 004_notes_parent.sql
+├── 005_notes_sort_pin.sql
+├── 006_notes_color.sql
+├── 007_notebooks_constraints.sql
+├── 008_ai_embeddings.sql          ← vector(768) columns on notes + bookmarks (AI semantic search)
+├── 009_ai_match_functions.sql     ← pgvector cosine similarity RPC functions
+├── 010_tasks_embedding.sql        ← vector(768) column on tasks + match_tasks() (tasks in AI Chat RAG)
+├── 011_fix_function_search_paths.sql
+├── 012_mcp.sql                    ← MCP tokens and the read-only functions behind the MCP server
+└── 013_data_api_grants.sql        ← explicit table grants (needed on new Supabase projects from 30 Oct 2026; safe to run on any)
+```
+
+3. Copy your project URL and anon key from **Settings → API**
+
+### 4. Configure environment
+
+```bash
+cp .env.local.example .env.local
+```
+
+Edit `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+> **Behind a corporate SSL proxy?** Add `NODE_TLS_REJECT_UNAUTHORIZED=0` to your `.env.local`. Do **not** set this in production.
+
+### 5. Run
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000), create an account and start connecting your knowledge.
+
+---
+
+## AI Features
+
+Dotstell ships a complete AI layer. All features work with five provider options:
+
+| Provider | Chat | Embeddings | Notes |
+|---|---|---|---|
+| **Ollama (local)** | ✅ | ✅ | Free, private, runs on your machine |
+| **OpenAI** | ✅ | ✅ | GPT-4o, text-embedding-3-small |
+| **Anthropic** | ✅ | — | Claude models; use a separate embedding provider |
+| **Google Gemini** | ✅ | ✅ | Generous free tier |
+| **Groq** | ✅ | — | Extremely fast inference; use a separate embedding provider |
+
+**AI features:**
+- **Meeting assistant** — paste or upload a Zoom, Teams or Meet transcript (or record the meeting) and get a summary, decisions and action items; turn action items into linked tasks
+- **Voice dictation** — *Fast* (your browser, with spoken punctuation and automatic capitals, English) or *High accuracy* (your own OpenAI, Groq or Gemini speech key, with punctuation and capitals from the model); both work on phones
+- **Connect AI tools (MCP server)** — let Codex, Claude Code, Cursor and Claude Desktop read your notes, bookmarks, tasks, people and meetings with a revocable, read-only token (see [docs/MCP.md](docs/MCP.md))
+- **AI Writing Assistant** — draft notes from scratch using 8 starter templates (Outline, Meeting notes, Daily log, Research note, OoO email, Proposal, Status update, Email draft) or a custom prompt; improve existing notes with one-click actions (Improve English, Make formal, Make concise, Expand, Full rewrite)
+- **AI Chat** — slide-out panel with RAG (semantic search grounds answers in your notes, bookmarks, and tasks), "This note" and "All knowledge" modes, People tab for person intelligence
+- **Inline Assist** — select text → rewrite / expand / shorten / fix grammar / outline / checklist / explain
+- **Smart title & auto-tags** — suggest a title and up to 5 relevant tags as you write
+- **Note & bookmark summaries** — one-click summary in bullet or paragraph form
+- **AI Knowledge Digest** — dashboard panel summarising your latest notes activity
+- **Semantic Related Notes** — sidebar panel showing notes similar to the one you're reading
+- **Person Intelligence** — searches all your notes and bookmarks for mentions of a person and generates a structured brief
+- **Graph intelligence** — finds missing links, note clusters, and bridgeable gaps in your knowledge graph
+
+API keys are stored only in your browser's `localStorage`. dotstell's servers never store or log them: a request that goes through a dotstell API route carries the key for that one request and passes it to your chosen AI provider over TLS. Speech-to-text (recording and High accuracy dictation) goes straight from your browser to the provider.
+
+### Using Ollama with the live app — Local AI Agent
+
+The hosted app at `dotstell.app` runs over `https://`. Modern browsers block `https://` pages from fetching `http://localhost` directly (Private Network Access spec). To use Ollama with the live app, run the **Dotstell Local AI Agent** — a tiny zero-dependency Node.js proxy that adds the required browser security headers.
+
+**Follow these steps in order:**
+
+**Step 1 — Install and start Ollama**
+
+Download Ollama from [ollama.com](https://ollama.com) if you haven't already, then make sure it is running:
+
+- **Windows:** Ollama usually auto-starts as a background service. Open `http://127.0.0.1:11434` in your browser — if it shows "Ollama is running" you're ready. If not, find **Ollama** in the Start Menu and launch it, or run `ollama serve` in a terminal.
+- **macOS / Linux:** Run `ollama serve` if it isn't already running in the background.
+
+> **Windows tip:** If `ollama serve` returns `bind: Only one usage of each socket address`, Ollama is already running — skip this step entirely.
+
+**Step 2 — Pull a model** *(first time only)*
+
+Dotstell needs two model types — one for chat/writing and one for semantic search (RAG). Pull one from each column:
+
+| Purpose | Model | Size | Notes |
+|---|---|---|---|
+| **Chat** | `gemma4:e4b` | ~4B | Fastest and most accurate in dotstell's meeting tests; fits an 8 GB graphics card — recommended |
+| **Chat** | `qwen3.5:4b` | 4B | Equally accurate, a little slower |
+| **Chat** | `phi4-mini` | 3.8B | Small and fast on CPU |
+| **Chat** | `qwen2.5:3b` | 3B | Strong and multilingual |
+| **Chat** | `llama3.2` | 3B | Reliable all-rounder |
+| **Chat** | `deepseek-r1:7b` | 7B | Best reasoning quality — needs a GPU |
+| **Chat** | `qwen2.5:7b` | 7B | Excellent quality + multilingual — needs a GPU |
+| **Embeddings** | `nomic-embed-text` | — | Required for semantic search, Related Notes, and task-aware AI Chat |
+
+```bash
+ollama pull gemma4:e4b
+ollama pull nomic-embed-text
+```
+
+> **Models that think** (Qwen 3.5, Gemma 4 and similar) work: dotstell turns the thinking off so replies are quick. You can allow it with **Let the model think before answering** under the model picker in AI Settings; expect much slower replies.
+
+> **No GPU?** Stick to 3–4B models (`phi4-mini`, `qwen2.5:3b`, `llama3.2`). 7B models are slow on CPU alone.
+
+**Step 3 — Start the Dotstell Local AI Agent**
+
+You do not need to clone this repo. Run directly via npx (Node.js 18+ required):
+
+```bash
+npx @dotstell/agent
+```
+
+Keep this terminal window open while you use Ollama in dotstell. The agent runs on `http://127.0.0.1:12345` and is loopback-only — not reachable from outside your machine.
+
+**Step 4 — Open dotstell.app → AI Settings → choose Ollama (Local)**
+
+The settings modal shows a green **"Local Agent is running"** badge when the agent is detected. All AI features — Chat, Writing Assistant, Inline Assist, Summaries, Person Intelligence, AI Digest — route through the agent automatically.
+
+---
+
+**Alternative ways to run the agent:**
+
+```bash
+# Download the single file directly (no npm):
+curl -o dotstell-agent.mjs https://raw.githubusercontent.com/dotstell/dotstell/main/packages/agent/index.mjs
+node dotstell-agent.mjs
+
+# If you already have the repo cloned:
+node packages/agent/index.mjs
+```
+
+See [`packages/agent/README.md`](packages/agent/README.md) for environment variables, troubleshooting, and security details.
+
+> **You do not need the agent when running dotstell locally** (`localhost:3000`). PNA restrictions only apply when accessing the live `https://dotstell.app`.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router, React 19) |
+| Language | TypeScript 5 · Rust (desktop shell) |
+| Styling | Tailwind CSS v4 |
+| Database | Supabase (PostgreSQL 17.6 + Row Level Security) |
+| Auth | Supabase Auth (JWT) |
+| Rich Text Editor | Tiptap v3 |
+| Graph Visualisation | React Flow v11 |
+| Desktop | Tauri v2 (native WebView wrapper, ~10 MB installer) |
+| Icons | Lucide React |
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a full breakdown of the system design, data model, security model, and key design decisions.
+
+---
+
+## Project Structure
+
+The full annotated directory tree is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+| Directory | Purpose |
+|---|---|
+| `src/app/` | Next.js App Router pages and API routes (auth, notes, AI, bookmarks, tasks…) |
+| `src/components/` | React UI components grouped by domain (`ai/`, `editor/`, `graph/`, `layout/`…) |
+| `src/hooks/` | Data-fetching and behaviour hooks |
+| `src/lib/` | AI client, Supabase clients, rate limiter, TipTap extensions; `meetings/` (transcripts and digests), `voice/` (dictation and speech-to-text), `mcp/` (MCP server), import and export |
+| `src-tauri/` | Rust / Tauri v2 desktop shell |
+| `supabase/` | Schema SQL and incremental migrations |
+| `packages/agent/` | Dotstell Local AI Agent — zero-dep Node.js Ollama proxy |
+
+---
+
+## Roadmap
+
+| Feature | Status |
+|---|---|
+| Notes, People, Tasks, Bookmarks | ✅ Live |
+| Wikilinks + Backlinks | ✅ Live |
+| Knowledge Graph | ✅ Live |
+| Desktop app (Windows, macOS + Linux) | ✅ Live |
+| AI layer — Chat, Assist, Semantic Search, Person Intelligence, Summaries, Digest | ✅ Live (v0.4.0) |
+| Local AI via Ollama — works from both live app and local dev | ✅ Live (v0.4.0) |
+| AI Writing Assistant — draft from scratch (8 templates) + improve existing content | ✅ Live (v0.5.0) |
+| Import (Markdown, Evernote, Google Keep, contacts) and full Export | ✅ Live (v0.7.0) |
+| Meetings — transcript summary, decisions and action items, dictation, recording | ✅ Live (v0.8.0) |
+| MCP server — AI tools read your knowledge, read-only, with revocable tokens | ✅ Live (v0.9.0) |
+| Dictation: phone-friendly bar, High accuracy engine, spoken punctuation and capitals | ✅ Live (v0.9.1) |
+| MCP Registry listing (`com.dotstell/dotstell`) | ✅ Listed (v0.9.1) |
+| Browser extension — save pages and clip to dotstell | 🔜 Next (v0.10.0) |
+| Docs (per-project documentation) | 🔜 Soon |
+| Integrations (Slack, Teams, etc.) | 🔜 Planned |
+| Mobile app | 🔜 Planned |
+
+---
+
+## Contributing
+
+Contributions are welcome and genuinely appreciated.
+
+- **Bug reports & feature requests** — open an [issue](https://github.com/dotstell/dotstell/issues)
+- **Code contributions** — please open an issue first for anything significant so we can align on approach
+- **Docs, design, tests** — always welcome without prior discussion
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+
+---
+
+## Self-Hosting
+
+Dotstell is designed to be self-hostable. You need:
+
+- A Node.js server (or Vercel / any Next.js host)
+- A Supabase project (or self-hosted Supabase)
+
+The full guide — database, environment, Supabase auth settings, running it, and what each feature needs — is in **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
+
+---
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE) — AGPL-3.0
+
+This means you can use, modify and distribute Dotstell freely, including self-hosting it. If you run a modified version as a network service, you must make the modified source available to users of that service.
+
+© 2026 Dotstell

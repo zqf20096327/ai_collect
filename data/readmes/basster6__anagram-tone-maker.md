@@ -312,9 +312,9 @@ from a device over USB, not transcribed, so it is accurate for firmware
 v1.19.2.24 and refreshable with `cli.py refresh-blocks`.
 
 What a paid block is and what it is for comes from the **Darkglass Anagram
-Marketplace** itself. `tools/market.py` reads the product catalogue behind the
-shop (`https://api-v2.darkglass.com/shopify/products`) and matches each product to
-a block by the plugin URI in its variant SKU. It fetches on demand and caches the
+Marketplace** itself (marketplace.anagram.shop). `tools/market.py` reads the
+plugin list behind it (`https://api-v2.darkglass.com/marketplace/products/list`),
+whose entries carry the plugin URI, so each one matches a block directly. It fetches on demand and caches the
 result in `reference/.market-cache.json` (gitignored) for a week, so the vendors'
 descriptions are never shipped in this repo. Factory blocks are not sold, so the
 shop has nothing on them.

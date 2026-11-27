@@ -6,42 +6,41 @@ rest are read from RAM or the SSD. **It works with any MoE model llama.cpp suppo
 Qwen3.8-Flash-Next, DeepSeek-V4.1-Flash, gpt-oss-120b, GLM-4.5-Air and Qwen3.6-35B-A3B, from 22 GB to over 300 GB of weights.
 
 It is an independent project, not affiliated with ggml-org. Base: llama.cpp `f5222f25c` (2026-10-28, see `BASE_COMMIT`).
-Version **v0.5.0** (2026-11-23). Changes: [CHANGELOG.md](CHANGELOG.md).
+Version **v0.5.1** (2026-11-27). Changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Speed and quality at a glance
 
-Decode tok/s, one user, greedy, cold start, tandem.cpp v0.5.0, re-measured for every release. The other engine is measured the
+Decode tok/s, one user, greedy, cold start, tandem.cpp v0.5.1 (first run), re-measured for every release. The other engine is measured the
 same day, on the same PC, with the same file and its own recommended settings. KL against the original weights: see
 [Which model file](#which-model-file) (the same file gives the same KL on Strata and on tandem.cpp: 0.0260 vs 0.0259).
 
 | Model, file | PC | tandem.cpp | Other engine, same day |
 |---|---|---|---|
-| Qwen3.8-Flash-Next IQ3_S + MTP (78 GiB) | RTX 5090 32 GB, 128 GB RAM | 190.5 | Strata v0.2.18: **201.1** |
-| Qwen3.8-Flash-Next IQ3_S + MTP | RTX 5070 Ti 16 GB, 64 GB | 74.3 | Strata: **87.5** |
-| Qwen3.8-Flash-Next IQ3_S + MTP | RTX 5070 Ti 16 GB, **32 GB** | **52.4** | Strata: 30.2–35.4 |
-| Qwen3.8-Flash-Next IQ4_XS + MTP (91 GiB) | RTX 5070 Ti 16 GB, 64 GB | 49.5 | |
-| DeepSeek-V4.1-Flash Maya-XS (102 GiB of experts) | RTX 5090 32 GB, 128 GB | **60.7** | Maya v1.1.73: 39.6, with DSpark 56.4 |
-| DeepSeek-V4.1-Flash Maya-S (157 GiB of experts) | RTX 5090 32 GB, 128 GB | **29.0** | Maya: 22.9, with DSpark 22.4 |
-| DeepSeek-V4.1-Flash Maya-S | RTX 5070 Ti 16 GB, **64 GB** | **9.4** | Maya: 6.0, with DSpark 6.1 |
-| DeepSeek-V4.1-Flash IQ2_XS (139 GiB of experts) | RTX 5070 Ti 16 GB, 64 GB | 13.1 | |
+| Qwen3.8-Flash-Next IQ3_S + MTP (78 GiB) | RTX 5090 32 GB, 128 GB RAM | 192.5 | Strata v0.2.22: **202.1** |
+| Qwen3.8-Flash-Next IQ3_S + MTP | RTX 5070 Ti 16 GB, 64 GB | 76.5 | Strata: **86.3** |
+| Qwen3.8-Flash-Next IQ3_S + MTP | RTX 5070 Ti 16 GB, **32 GB** | **50.9** | Strata: 30.8 |
+| Qwen3.8-Flash-Next IQ4_XS + MTP (91 GiB) | RTX 5070 Ti 16 GB, 64 GB | 46.0 | |
+| DeepSeek-V4.1-Flash Maya-XS (102 GiB of experts) | RTX 5090 32 GB, 128 GB | **60.4** | Maya v1.1.81: 39.1, with DSpark 55.9 |
+| DeepSeek-V4.1-Flash Maya-S (157 GiB of experts) | RTX 5090 32 GB, 128 GB | **28.8** | Maya: 20.8, with DSpark 23.9 |
+| DeepSeek-V4.1-Flash Maya-S | RTX 5070 Ti 16 GB, **64 GB** | **9.2** | Maya: 4.7, with DSpark 4.6 |
+| DeepSeek-V4.1-Flash IQ2_XS (139 GiB of experts) | RTX 5070 Ti 16 GB, 64 GB | 13.3 | |
 
 When the model fits in RAM, Strata is faster on Qwen3.8; once it doesn't, tandem.cpp is. On long prompts read from the SSD the
-other engines are faster: 15.7k tokens take 53 s on the 32 GB row (Strata 27–31 s) and 21 s on the Maya-S 128 GB row (Maya 14 s).
+other engines are faster: 15.7k tokens take 51 s on the 32 GB row (Strata 47 s) and 21 s on the Maya-S 128 GB row (Maya 14 s).
 CPUs: i5-14600KF (5090 rows), i5-12400F (5070 Ti rows). Full tables, prompt times and older comparisons with llama.cpp:
 [docs/results.md](docs/results.md).
 
 For a big card serving many concurrent streams, use [Tandem-vLLM](https://github.com/ewhacc/tandem) instead.
 
-## What's new in v0.5.0 (2026-11-23)
+## What's new in v0.5.1 (2026-11-27)
 
-- **Up to +15% decode when the model is bigger than RAM.** The experts VRAM evicts are copied back to RAM on a second stream
-  while the GPU computes, instead of in line with the uploads (Maya-S on 128 GB 25.2 → 29.0 tok/s, on 64 GB 8.6 → 9.4;
-  DeepSeek-V4.1 IQ2_XS on 64 GB 12.5 → 13.1).
-- **2× decode when the model just misses fitting in RAM.** Once the RAM store holds every expert, the CPU keeps computing its
-  share of the misses instead of uploading all of them (Qwen3.8 IQ4_XS on a 16 GB card with 64 GB: 24.7 → 49.5 tok/s).
-- **Faster long prompts when most of the model is in RAM:** layer streaming now also runs when part of the model is on the SSD,
-  reading each layer's missing experts one layer ahead (Maya-S on 128 GB, 15.7k tokens: 30–40 → 20–26 s).
-- Under a memory limit (Docker, systemd), the RAM store is sized to the limit instead of the host's RAM.
+- **The CPU/upload split now tunes itself on your PC and remembers it.** While it runs, tandem.cpp tries uploading slightly more
+  and slightly fewer of the missed experts than the rule says, and moves when the same side wins twice. The result is saved per
+  model, GPU, RAM and thread count in `~/.cache/tandem/share-tune.tsv` and used from the next start. On a 16 GB card with 64 GB,
+  from the second run: Qwen3.8 IQ3_S 74 → 80 tok/s, IQ4_XS 47.6 → 50.5. The first run is about the same as v0.5.0 (the table
+  above). `LLAMA_MOE_SHARE_TUNE=0` turns it off; `LLAMA_MOE_TUNE_FILE` moves the file (`0`: no file).
+
+Earlier releases: [CHANGELOG.md](CHANGELOG.md).
 
 ## Build
 

@@ -55,7 +55,7 @@ flowchart TD
     GATES{"flow-gate<br/>scope, validation, deltas,<br/>DoD, manual tasks, levels"}
     REV["/flow:review<br/>flow-review: 7 EGM reviewers"]
     DEC{"Blockers?"}
-    RES["/flow:resolve, /flow:update<br/>flow-update: drafting agent"]
+    RES["/flow:resolve, /flow:update<br/>flow-resolve, flow-update: drafting agent"]
     ACC["/flow:accept<br/>flow-accept: acceptance.yaml,<br/>merge into main"]
     BRIEF --> PROP --> GATES
     GATES -->|pass| REV
@@ -65,7 +65,7 @@ flowchart TD
     DEC -->|revise| RES --> GATES
   end
 
-  subgraph build["3. Build, on branch change/&lt;change&gt;"]
+  subgraph build["3. Build, on branch &lt;type&gt;/&lt;name&gt;"]
     APP["/flow:apply<br/>flow-apply → apply-change"]
     TASK["apply-task, per task<br/>tdd-slice-&lt;lang&gt; per slice,<br/>free-task per manual task"]
     FIN["review per language,<br/>then dod-verify"]
@@ -108,6 +108,25 @@ stateDiagram-v2
   REVIEW --> RED: a mutant survives, back to RED
   REVIEW --> GREEN: static analysis or a test fails, back to GREEN
 ```
+
+## Name a change, its branches and its commits
+
+A change name starts with its type, a [Conventional Commits](https://www.conventionalcommits.org/) type followed by a
+hyphen: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `spike`, `style` or `test`.
+`flow-propose` exits with code 2 on a new change whose name has no type. The type names the branches and the commits:
+
+| For the change `fix-export-timeout` | Name |
+| --- | --- |
+| Specification branch (`flow-propose` to `flow-accept`) | `docs/propose-fix-export-timeout` |
+| Code branch (`flow-apply`) | `fix/export-timeout` |
+| Branch of a task of a `(parallel)` group | `fix/export-timeout--2.1` |
+| Commit of a slice or a task | `fix(export-timeout): <task text>`, or `docs(export-timeout): ...` for a `[docs]` slice |
+| Merge commit into main | `fix(export-timeout): merge change fix-export-timeout` |
+
+`spike` is not in the types of `@commitlint/config-conventional`: if commitlint checks your commits, add it to its
+`type-enum` rule. A change named before 0.11.0, without a type, is a `feat`: its code branch is `feat/<change>`, or
+`change/<change>` while only that branch exists. `bash <pack>/scripts/flow.sh branch <change>` prints the code branch of
+a change.
 
 ## Prepare a change with Event Storming and Example Mapping
 
@@ -185,7 +204,7 @@ awf init    # once per project: creates .awf/, which awf workflow install requir
 awf workflow install gplanchat/awf-workflow-openspec-tdd
 ```
 
-Add `--global` to install it for every project, or `@0.10.5` to pin a version. Then check the installation:
+Add `--global` to install it for every project, or `@0.11.0` to pin a version. Then check the installation:
 
 ```bash
 awf workflow info openspec-tdd
@@ -282,8 +301,9 @@ Run a workflow with `awf run openspec-tdd/<workflow>`. The usual entry points:
 | `flow-propose` | Drafts a new change (proposal, specs, design, tasks) in `.worktrees/propose-<change>`. |
 | `flow-update` | Revises the artifacts of an existing change. |
 | `flow-review` | Reviews a drafted change with the EGM reviewers (see below). |
+| `flow-resolve` | Hands the findings of the EGM review, or the fixes you approved (`fixes`), to `flow-update`. Run `flow-review` again afterwards. |
 | `flow-accept` | Accepts a change: writes `acceptance.yaml` and merges the proposal. |
-| `flow-apply` | Applies a change in `.worktrees/<change>` through `apply-change`. The change stays on its branch `change/<change>`, unmerged. |
+| `flow-apply` | Applies a change in `.worktrees/<change>` through `apply-change`. The change stays on its branch `<type>/<name>`, unmerged. |
 | `flow-sync` | Carries the deltas of a change into the main specs, fails when a requirement of a delta is not in them, and deletes a spec left without a requirement. |
 | `flow-archive` | Replays the Definition of Done and archives the change. |
 | `flow-waive` | Records your waiver of a failed gate for a change, 30 days at most. Run it from your terminal. |
@@ -307,7 +327,10 @@ and `specs/` form the feature part, `tasks.md` the implementation plan. Run it w
 awf run openspec-tdd/flow-review --input change=<change>
 ```
 
-The findings go to `.awf/status/egm/review.md`, and the status to `.awf/status/flow-review.json`. Without a Blocker,
+The findings go to `.awf/status/egm/review.md`, and the status to `.awf/status/flow-review.json`. The report writes each
+finding as a [Conventional Comment](https://conventionalcomments.org/): a Blocker is an `issue (blocking)`, a Major an
+`issue (non-blocking)` and a Nit a `nitpick (non-blocking)`, followed by its scope, its reviewer and the recommendation.
+`flow-review.json` keeps the EGM counts `blockers`, `majors` and `nits`. Without a Blocker,
 the workflow succeeds. With one, the `ask` operation of the command contract puts the question to a person, and the
 run stops in its terminal state `waiting`. The default `ask` prints the question and the line that answers it:
 
@@ -374,7 +397,30 @@ forward only, never `main`. When `NEXUS_AGENT_RUN_ID` is set, the workflows chan
 |---|---|
 | `flow-propose`, `flow-update`, `flow-sync`, `flow-archive`, `flow-accept` | No worktree: the clone switches to `docs/propose-<change>` (from the origin when it exists there, else created from `main`) and the workflow goes on. |
 | `flow-accept` | Writes and commits `acceptance.yaml`, but does not merge into `main`: the run pushes the branch, and you merge it through a pull request or with `flow-accept` outside a run. |
-| `flow-apply` | The clone switches to `change/<change>`, `commands.sh deps .` installs the dependencies, and the change is applied in place. A `(parallel)` group runs one task at a time. |
+| `flow-apply` | The clone switches to the branch of the change (`<type>/<name>`), `commands.sh deps .` installs the dependencies, and the change is applied in place. A `(parallel)` group runs one task at a time. |
+| `flow-review` | The clone switches to `docs/propose-<change>` when that branch exists, here or on the origin; the workflow creates no branch. The report is recorded in the change, `openspec/changes/<change>/egm-review.md` and `egm-review.json`, committed alone on that branch (never on `main`), on the first run and again with the decision of a resumed run. |
+| `flow-resolve` | Same switch as `flow-update`. Without `fixes`, it reads the findings from the recorded `egm-review.json`. |
+
+`egm-review.json` holds the fields of `.awf/status/flow-review.json` (`change`, `run`, `commit` reviewed, `blockers`,
+`majors`, `nits`, `report`, `status`) and `findings`, a list of `{reviewer, severity, label, scope, finding,
+recommendation}` where `severity` is `Blocker`, `Major` or `Nit` and `label` its Conventional Comment label. The
+commit that records it comes after the commit reviewed and touches only these two files.
+
+**Questions.** The EGM decision of `flow-review` goes through the `ask` operation of the command contract. To route it
+to your dashboard, declare `ask: <command>` in `.awf/commands.yaml`. The command receives `--run <id> --kind <kind>
+--question <text> --options <a,b,...> --recommended <option> --resume-step <step> --input <name>`, must return
+without waiting for the answer, and its output becomes the message of the terminal state `waiting`. Its exit code does
+not change the outcome. Resume the run with `awf resume <id> --from <step> --input <name>=<answer>`, with the input
+named by `--input` (`egm_decision` for `flow-review`), whatever name your dashboard gives the answer.
+
+**EGM in an image.** `flow-review` reads the EGM plugin from `EGM_ROOT`, a copy of
+[github.com/google/elephant-goldfish-model](https://github.com/google/elephant-goldfish-model) (tag `v0.1.0` or
+later). It reads `agents/<persona>.md` for the seven personas (`zoom_out`, `comprehension`, `design_critic`,
+`structural`, `style`, `implementation_readiness`, `codebase_details`) and
+`resources/document_standards/{zoom-out,feature-spec,implementation-readiness}-standard.md`, and puts their text in the
+prompt: the reviewer agents need no access to these files. `skills/egm-resolve` serves only `/flow:resolve` in Claude
+Code. For example: `git clone --depth 1 --branch v0.1.1 https://github.com/google/elephant-goldfish-model /usr/local/share/egm`
+and `ENV EGM_ROOT=/usr/local/share/egm`.
 
 No workflow ends by asking you to run a command again from another folder. A failed step prints what failed and why
 on its output, which Susan shows in the run's log.
@@ -419,7 +465,7 @@ If an item is missing, Claude Code shows a message. Run `/flow:setup` to install
 
 - After `flow-accept` merges `docs/propose-<change>` into main, the branch and its worktree stay. `flow-sync` and
   `flow-archive` run on that branch again, which holds neither the code nor the checked boxes of `tasks.md` that
-  `change/<change>` brought to main, and no workflow merges their commits into main. Until a fix lands, delete the
+  the branch of the change brought to main, and no workflow merges their commits into main. Until a fix lands, delete the
   branch and its worktree after the acceptance, so that `flow-sync` creates a new one from main, then merge the
   result by hand.
 

@@ -131,7 +131,7 @@ Use an editable install (`pip install -e .`): the server looks for the built UI 
 ## Command line
 
 ```bash
-cognitrix                              # chat with the Assistant agent in the terminal
+cognitrix                              # chat with your main assistant in the terminal
 cognitrix --ui tui                     # full-screen terminal UI
 cognitrix --ui web                     # web app on http://localhost:8000
 cognitrix --agent "Researcher"         # chat with a saved agent
@@ -139,19 +139,70 @@ cognitrix --provider anthropic --model claude-sonnet-5-5
 cognitrix -p "Summarise README.md"     # one prompt, print the reply, exit
 cognitrix -p "Plan a launch" --task    # run the prompt as a planned multi-step task
 cognitrix -c -p "And the next step?"   # continue the previous session
+cognitrix --add-dir ../api --add-read-dir ~/docs   # more folders (read & write / read only)
 ```
+
+In the interactive shell, `/add-dir <path> [read]` adds a folder and `/dirs` lists them.
+
+With no `--agent`, the command line uses your **main assistant**: the agent the app marks as main (Settings > Assistant), whatever it is called. Its turns run the same way as a chat in the app, as your account (`--user EMAIL` picks another account on a shared install): the same instructions, AGENTS.md, memory, skills, tools, connected apps and permission rules, and the chat shows up in the app's chat list. `--provider`, `--model` and `--temperature` change only that run, never the saved agent. With no account on the install, the CLI uses its own local "Assistant" agent.
 
 | Command | What it does |
 | --- | --- |
-| `cognitrix agents -l` / `--new` / `<name>` | List, create, show, update or delete agents |
-| `cognitrix tools -l [category]` | List tools (`general`, `system`, `web`) |
+| `cognitrix agents` / `<name>` / `<name> --new` / `--update` / `--delete` | List, show, create, change or delete agents (`--json` for scripts) |
+| `cognitrix tools -l [category]` | List tools, all or one category (`web`, `system`, `apps`, ...) |
 | `cognitrix skills -l` / `--install` / `--run` | Manage and run skills |
-| `cognitrix acp --agent Assistant` | Run as an Agent Client Protocol server for code editors |
+| `cognitrix keys list` / `set <provider>` / `import-env` | Save model API keys without opening Settings (servers, containers) |
+| `cognitrix sessions` / `show <id>` / `delete <id>` | List, read or delete saved chats |
+| `cognitrix mcp list` / `add` / `import` / `test` / `tools` / `attach` | Manage MCP servers and give them to agents (below) |
+| `cognitrix acp` | Run as an Agent Client Protocol server for code editors (`--agent NAME` for another agent) |
 | `cognitrix connect <server>` | Pair this PC with a Cognitrix web server |
 | `cognitrix reset-password <email>` | Set a new password for a local account |
-| `cognitrix --sessions` / `--session <id>` | List or reopen saved chats |
+| `cognitrix --resume <id>` | Continue a saved chat (`-r`; `--session` works too) |
 
 Run `cognitrix --help` or `cognitrix <command> --help` for every option.
+
+#### MCP servers
+
+```bash
+cognitrix mcp add fs -- npx -y @modelcontextprotocol/server-filesystem ~/work   # a command (stdio) server
+cognitrix mcp add docs --url https://example.com/mcp -H "Authorization=Bearer ..." --agent Coder
+cognitrix mcp import .mcp.json --agent Coder      # Claude Code / Cursor / VS Code / Cognitrix files
+cognitrix mcp list                                # these and the ones added in the app
+cognitrix mcp test fs                             # connect and count its tools (`tools fs` lists them)
+cognitrix mcp attach fs --agent Assistant         # or detach; enable / disable / remove / show
+cognitrix --mcp-config .mcp.json -p "..."         # servers for one run only, nothing saved
+```
+
+Servers added here go in `~/.cognitrix/mcp.json` and can be given to any agent on this install.
+
+In the interactive shell, `/voice` (or an empty Enter with `--audio`) records a message from the microphone and sends what you said, using a saved Deepgram, OpenAI, Groq or Google key. Recording needs `pip install sounddevice`.
+
+#### Scripts, CI and benchmarks
+
+```bash
+cognitrix keys import-env                                    # save OPENAI_API_KEY, ANTHROPIC_API_KEY, ... once
+cognitrix -p "Fix the failing test" -C ./repo --output-format json
+cat task.md | cognitrix -p - --output-format stream-json --max-turns 40 --timeout 1800
+cognitrix -r <session id> -p "Now add a test"                # continue that chat
+cognitrix -p "Review this diff" --allowed-tools Read,Grep,Glob --effort high
+```
+
+With `-p`, stdout carries only the reply: `text` (default) prints it as it streams, `json` prints one result object at the end (`result`, `session_id`, `usage`, `tool_calls`, `duration_ms`, `is_error`), and `stream-json` prints one JSON object per line (`system` init, `text`, `tool_use`, `tool_result`, `result`). Tool lines, prompts and logs go to stderr. Exit codes: `0` done, `1` the turn failed, `2` bad arguments, `124` `--timeout` hit, `130` interrupted. `--system-prompt`, `--append-system-prompt`, `--allowed-tools`, `--disallowed-tools` (these two also cover the tools every chat gets, such as Run Code), `--mcp-config`, `--max-turns` and `--effort` apply to that run only. Without a terminal, a tool that needs approval is refused (and listed in `permission_denials`) unless auto-approve is on or `--dangerously-skip-permissions` is given.
+
+### Fully autonomous runs
+
+For benchmarks and throwaway containers, `--dangerously-skip-permissions` (also `--yolo` or
+`--dangerously-bypass-approvals-and-sandbox`) runs with no approval prompts at all:
+
+```bash
+cognitrix --yolo -p "Fix the failing tests in this repo"
+```
+
+Every approval is answered Yes for that run only: tool calls, full-shell commands, coding agents, copy back
+from the sandbox, Request Access, sub-agents and task runs it starts (even ones a worker picks up). The bash
+tool runs any command in a real shell. A request for you to take over the agent's computer is refused at once,
+since nobody is watching. Tools you set to "never" stay blocked, and your saved settings don't change. It
+prints a warning on stderr, so a `-p` answer on stdout stays clean. It is ignored for `--ui web`.
 
 ### Code editors (Agent Client Protocol)
 
@@ -162,7 +213,7 @@ In Zed, add this to `settings.json`:
   "agent_servers": {
     "Cognitrix": {
       "command": "cognitrix",
-      "args": ["acp", "--agent", "Assistant"]
+      "args": ["acp"]
     }
   }
 }

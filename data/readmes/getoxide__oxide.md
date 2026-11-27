@@ -68,15 +68,15 @@ Download the installer for your platform from [GitHub Releases](https://github.c
 
 | Platform | File | Notes |
 | --- | --- | --- |
-| macOS (Apple Silicon) | `Oxide_<version>_macos_arm64.dmg` | Drag `Oxide.app` into `/Applications`. |
-| Windows 10/11 (x64) | `Oxide_<version>_windows_x64.exe` | NSIS installer. |
-| Windows 11 (arm64) | `Oxide_<version>_windows_arm64.exe` | NSIS installer. |
-| Linux (x64) | `Oxide_<version>_linux_x64.AppImage`, `.deb` or `.rpm` | |
-| Linux (arm64) | `Oxide_<version>_linux_arm64.AppImage`, `.deb` or `.rpm` | |
+| macOS (Apple Silicon) | [`Oxide.dmg`](https://github.com/getoxide/oxide/releases/latest/download/Oxide.dmg) | Drag Oxide onto Applications. |
+| Windows 10/11 (x64) | [`Oxide-x64.exe`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-x64.exe) | NSIS installer. |
+| Windows 11 (arm64) | [`Oxide-arm64.exe`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-arm64.exe) | NSIS installer. |
+| Linux (x64) | [`Oxide-x64.AppImage`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-x64.AppImage), [`.deb`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-x64.deb) or [`.rpm`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-x64.rpm) | |
+| Linux (arm64) | [`Oxide-arm64.AppImage`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-arm64.AppImage), [`.deb`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-arm64.deb) or [`.rpm`](https://github.com/getoxide/oxide/releases/latest/download/Oxide-arm64.rpm) | |
 
 <!-- /site:install -->
 
-Until the first stable release is published, [build from source](#build-from-source).
+The file names carry no version: each link always downloads the latest stable release. Older releases are on [GitHub Releases](https://github.com/getoxide/oxide/releases).
 
 ### Requirements
 
@@ -84,18 +84,51 @@ Until the first stable release is published, [build from source](#build-from-sou
 
 ### Updates
 
-Oxide has no in-app updater: the Settings page is empty for now. To update, download the newer installer from [GitHub Releases](https://github.com/getoxide/oxide/releases) and install it over the old one.
+Oxide checks for a newer release at launch and every few hours. When one exists, an **Update** button appears in the top-right of the window, left of the Tools panel button. Its popover shows the new version and its release notes. **Install update** downloads the package with visible progress, verifies its signature against Oxide's release key (a mismatch is refused and nothing is installed) and installs it. Oxide then asks to restart: running Terminal programs will end, and unsaved files are asked about as on a normal quit. With Session restore on, Projects, Terminals and open files come back. **Later** keeps the session running. A failed download, signature or install leaves the installed Oxide untouched, shows what went wrong and offers the install again.
+
+How the update is applied depends on the platform:
+
+- **macOS:** Oxide replaces `Oxide.app` in place and asks for an administrator password when its folder is not writable. Later: the new version starts at the next launch.
+- **Windows:** the verified installer runs in passive mode (no wizard pages) when you choose **Restart now**, or when you quit Oxide after choosing **Later**. The installer ends Oxide and starts the new version.
+- **Linux AppImage:** the AppImage file you launched is replaced. Later: the new version starts at the next launch.
+- **Linux `.deb` and `.rpm`:** Oxide does not update these itself; use your package manager.
+
+A version several releases behind goes straight to the latest release.
+
+Linux `.deb` and `.rpm` installs update through the signed APT and DNF repositories, which serve x64 and arm64. Add the one for your distribution once:
+
+#### Linux: add the APT repository (Debian, Ubuntu)
+
+```sh
+sudo install -d -m 0755 /usr/share/keyrings
+curl -fsSL https://updates.getoxide.dev/apt/oxide-repository.gpg | sudo tee /usr/share/keyrings/oxide.gpg > /dev/null
+echo "deb [signed-by=/usr/share/keyrings/oxide.gpg] https://updates.getoxide.dev/apt/ ./" | sudo tee /etc/apt/sources.list.d/oxide.list
+sudo apt update && sudo apt install oxide
+```
+
+#### Linux: add the DNF repository (Fedora, RHEL, openSUSE)
+
+```sh
+sudo curl -fsSL -o /etc/yum.repos.d/oxide.repo https://updates.getoxide.dev/rpm/oxide.repo
+sudo dnf install oxide
+```
+
+`dnf` asks once to import the Oxide repository key from the `.repo` file's `gpgkey`; it checks both the packages and the repository metadata against it. The `.repo` file sets `skip_if_unavailable=1`, so an unreachable Oxide repository never breaks the rest of `dnf`.
+
+Installing the downloaded `.deb` or `.rpm` of a stable release does this step for you (the `.deb` also adds the key; a pre-release package adds nothing), and doing it first and installing afterwards leaves one source. Purging the `.deb` (`sudo apt purge oxide`) or erasing the `.rpm` removes the repository again; `sudo apt remove oxide` keeps it. The `.rpm` cannot import the key itself (rpm locks its keyring during a package script), so `dnf` imports it on first use and the key stays in the rpm keyring after the erase. To remove it by hand, find it with `rpm -qa gpg-pubkey --qf '%{NAME}-%{VERSION}-%{RELEASE}  %{SUMMARY}\n' | grep -i oxide` and run `sudo rpm -e <that name>`.
+
+After that, `sudo apt update && sudo apt upgrade` or `sudo dnf upgrade` brings each new release. Both repositories only ever serve stable releases: a pre-release (`-rc`) never reaches them.
 
 ### Verifying a download
 
 Every release lists the SHA-256 checksums in its release notes and attaches a [build-provenance attestation](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) for each installer, which ties it to the exact workflow run and commit that built it:
 
 ```sh
-shasum -a 256 Oxide_<version>_macos_arm64.dmg   # macOS; compare with the release notes
-gh attestation verify Oxide_<version>_macos_arm64.dmg --repo getoxide/oxide
+shasum -a 256 Oxide.dmg   # macOS; compare with the release notes
+gh attestation verify Oxide.dmg --repo getoxide/oxide
 ```
 
-On Windows, compare `(Get-FileHash .\Oxide_<version>_windows_x64.exe).Hash` with the release notes (`windows_arm64.exe` on Windows on Arm). On Linux, use `sha256sum Oxide_<version>_linux_x64.AppImage`.
+On Windows, compare `(Get-FileHash .\Oxide-x64.exe).Hash` with the release notes (`Oxide-arm64.exe` on Windows on Arm). On Linux, use `sha256sum Oxide-x64.AppImage`.
 
 ### Opening an unsigned build
 
@@ -110,7 +143,7 @@ Alternatively, remove the quarantine flag from the terminal: `xattr -dr com.appl
 
 **Windows.** The installer is **not Authenticode-signed**, so SmartScreen may warn on first run. Choose **More info → Run anyway** after verifying the download as above.
 
-**Linux.** The packages are **not signed with a distribution key**; verify them with the checksums and attestations above. Make an AppImage executable (`chmod +x Oxide_<version>_linux_x64.AppImage`) and run it, or install the package with `sudo apt install ./Oxide_<version>_linux_x64.deb` or `sudo dnf install ./Oxide_<version>_linux_x64.rpm`. Oxide needs WebKitGTK 4.1 (`libwebkit2gtk-4.1`), which any distribution from the last few years ships; the packages are built on Ubuntu 22.04.
+**Linux.** The `.rpm` is signed with the Oxide repository key and the `.deb` is covered by the signed APT `InRelease`; the AppImage is not signed, so verify every download with the checksums and attestations above. Make an AppImage executable (`chmod +x Oxide-x64.AppImage`) and run it, or install the package with `sudo apt install ./Oxide-x64.deb` or `sudo dnf install ./Oxide-x64.rpm`. Oxide needs WebKitGTK 4.1 (`libwebkit2gtk-4.1`), which any distribution from the last few years ships; the packages are built on Ubuntu 22.04.
 
 ## Quick start
 
@@ -137,7 +170,7 @@ flowchart LR
 - `crates/oxide-platform`: the only crate with OS-specific code, plus the process, lock and diagnostics primitives ([ADR-0019](docs/adr/0019-platform-layer.md)).
 - `crates/oxide-core`: Projects, SQLite storage, terminals and their shells, files, Git, GitHub and language servers. It knows nothing about Tauri.
 - `crates/oxide-app`: the thin Tauri shell that exposes Core to the webview.
-- `web/`: the React frontend, grouped by area under `web/src` (`projects`, `terminal`, `editor`, `issues`, `pull-requests`, `settings`, `shared`, `styles`).
+- `web/`: the React frontend, grouped by area under `web/src` (`projects`, `terminal`, `editor`, `issues`, `pull-requests`, `settings`, `updates`, `shared`, `styles`).
 - `assets/`: the app icon masters and the palette ([assets/README.md](assets/README.md)).
 
 - **Core owns files and processes.** The webview gets no filesystem or shell permission. Every action goes through a typed Tauri command generated with [tauri-specta](https://github.com/specta-rs/tauri-specta), and every shell is a process Core owns ([ADR-0016](docs/adr/0016-security-boundaries.md)).

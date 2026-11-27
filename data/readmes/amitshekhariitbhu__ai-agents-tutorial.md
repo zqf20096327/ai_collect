@@ -424,6 +424,30 @@ Let's get started: [How do Browser Agents work?](https://outcomeschool.com/blog/
 
 ---
 
+## How does a deep research agent work?
+
+In this blog, we will learn about how a deep research agent works. We will also see why a normal LLM answer is not enough for big questions, how the agent plans, searches, reads, takes notes, and finds gaps in a loop, how many helper agents can research in parallel, how the final report with sources is written, and where deep research works well and where it fails.
+
+We will cover the following:
+
+- The problem with a normal LLM answer
+- What is a deep research agent?
+- How does a deep research agent work?
+- Step 1: Understand the question
+- Step 2: Make a research plan
+- Step 3: Search and read
+- Step 4: Take notes
+- Step 5: Reflect and find the gaps
+- Step 6: Write the report with sources
+- Many agents working together
+- A simple code example
+- Normal chat vs deep research
+- Where it works well and where it fails
+
+Let's get started: [How does a deep research agent work?](https://outcomeschool.com/blog/deep-research-agent)
+
+---
+
 ## How does LangChain work?
 
 In this blog, we will learn about how LangChain works. We will also see why we need it, what chains, prompts, memory, and output parsers are, how retrieval and agents fit in, and how the full flow works together in the real world.
@@ -1624,6 +1648,25 @@ We will cover the following:
 - Where SSML works well and where it fails
 
 Let's get started: [How does SSML control how a voice agent speaks?](https://outcomeschool.com/blog/speech-synthesis-markup-language-ssml)
+
+---
+
+## How does a voice agent handle accents and noisy environments?
+
+In this blog, we will learn about how a voice agent handles accents and noisy environments. We will also see why accents and noise confuse a voice agent, how the sound is cleaned before the agent listens, how the agent avoids treating background noise as the caller's turn, how the speech recognition model learns to understand many voices, how the agent uses context and confidence to recover from mistakes, and where this works well and where it still fails.
+
+We will cover the following:
+
+- How a voice agent hears us
+- Why accents and noise confuse a voice agent
+- Layer 1: Cleaning the sound before listening
+- Layer 2: Knowing when the caller is really speaking
+- Layer 3: A speech recognition model that has heard many voices
+- Layer 4: Using context to fix what was misheard
+- Layer 5: Confidence and confirmation
+- Where it works well and where it still fails
+
+Let's get started: [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
 
 ---
 

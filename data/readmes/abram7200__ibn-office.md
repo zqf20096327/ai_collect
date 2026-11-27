@@ -146,6 +146,7 @@ Full explanations, with how each one works: **[docs/FEATURES.md](docs/FEATURES.m
 | **Sub-tasks** | A worker can split a big step into up to 6 linked sub-tasks on other agents/models (one more level at most). Sub-tasks only read; the parent writes — so they never clash. |
 | **The router** | Every step gets the right agent and model level (light / standard / strong). A step that keeps failing is escalated by itself. With one agent, the split happens across its own models and effort levels. |
 | **Owner notes** | Your corrections and rules are caught from any message, in English or Egyptian Arabic, and pinned for every later request, project and chat. The plan must answer each one by id. |
+| **Repository facts** | Agents learn how each repository really works from their own repeated failures ("here `python -m pytest` works, bare `pytest` does not"): a fact is stated only after three sessions confirm it and dropped when later sessions contradict it. From Microsoft's [TokenEconomizer](https://github.com/microsoft/TokenEconomizer) micro-skills (LLM-free, no extra tokens to learn). |
 | **Elephant & Goldfish** | The Manager remembers everything; reviewers start fresh and see only the work. A planted "canary" proves they did not see the chat. |
 | **Ponytail** | Must fix, Should fix, Nice to have — all done, each answered "fixed" or "not real, because…", scheduled without conflicts. |
 | **No hallucination** | Fixed result format, a checker per job, and the Office's own truth check: claims vs what really changed on disk, independent re-run, tamper-evident record. |
@@ -334,6 +335,7 @@ IBN Office would not exist without these open-source projects — please star th
 | [**FreeLLMAPI**](https://github.com/tashfeenahmed/freellmapi) | one local endpoint over the free tiers of many providers |
 | [**Hermes Agent**](https://github.com/NousResearch/hermes-agent) | Nous Research's agent, running on FreeLLMAPI's free models |
 | [**AlphaCode**](https://github.com/dragonked2/alphacode) | a terminal coding agent with a built-in free lane |
+| [**TokenEconomizer**](https://github.com/microsoft/TokenEconomizer) (Microsoft Research, UC Berkeley) | micro-skills: repository facts learned from repeated failures (vendored, unchanged, in `.upstream/TokenEconomizer/`) |
 | [**Ponytail**](https://github.com/DietrichGebert/ponytail) | the review discipline: Must / Should / Nice to have, all done |
 | [**Elephant–Goldfish Model**](https://github.com/google/elephant-goldfish-model) | the fresh-eyes reviewer personas |
 | [**agent-office**](https://github.com/ignitrondev/agent-office) · [**whatsmyagentdoing**](https://github.com/Charonyuu/whatsmyagentdoing) · [**Three.js**](https://github.com/mrdoob/three.js) | the live office view and agent activity |
@@ -354,7 +356,7 @@ checks. What changed in each release: [CHANGELOG.md](CHANGELOG.md).
 
 ## Credits
 
-Created by **Ibram**. IBN Office builds on open-source work — Ponytail, Elephant–Goldfish, agent-office,
+Created by **Ibram**. IBN Office builds on open-source work — Ponytail, Microsoft's TokenEconomizer, Elephant–Goldfish, agent-office,
 whatsmyagentdoing, Three.js, and the four helpers — see [THIRD_PARTY_NOTICES.md](docs/THIRD_PARTY_NOTICES.md).
 
 Licensed under the [MIT License](LICENSE). Free for everyone.

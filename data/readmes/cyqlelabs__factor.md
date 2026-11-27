@@ -42,6 +42,7 @@ than logging, so past failures become constraints it doesn't repeat.
 | ☎️ **Answers the phone** | A real number to call, or it calls and texts you — barge-in, voicemail detection, optional fully local speech ([Phone](#phone-calls-and-sms)) |
 | 🎙️ **Listens in the room** | Mic in, speakers out, barge-in, optional wake word, push-to-talk via `factor talk` ([PC voice](#pc-voice-mic-and-speakers)) |
 | 👥 **Tells voices apart** | A recording is read voice by voice, so each person holds their own conversation — and company in the room moves the answer to a memory space it can hear ([PC voice](#pc-voice-mic-and-speakers)) |
+| 🎵 **Plays your music** | Radio streams, audio links, YouTube or SoundCloud pages and local files, through an mpv it installs itself; it reports a song only once it is really playing, and turns the music down while you talk |
 | 🖐️ **Hands on your desktop** | Windows, screenshots, mouse, keyboard, clipboard, notifications on X11/Wayland/macOS/Windows — plus grid vision with the accessibility tree tagged on top ([Desktop](#desktop)) |
 | 🌐 **A real browser, not just fetch** | CDP tools attach to your running Chrome/Chromium/Brave or launch a managed one ([Browser](#browser)) |
 | 🧩 **Extensible everything** | Channel connectors, Go tools, runtime-mounted MCP servers, markdown skills ([Extending](#extending-factor)) |
@@ -75,7 +76,9 @@ factor init      # interactive setup wizard
 
 On Windows, download
 [factor-windows-amd64.msi](https://github.com/cyqlelabs/factor/releases/latest/download/factor-windows-amd64.msi)
-and run it. It installs for your account alone, so it asks for no administrator,
+and run it. The installer is not signed yet, so SmartScreen may stop it with
+"Windows protected your PC": choose **More info**, then **Run anyway**. It installs
+for your account alone, so it asks for no administrator,
 puts `factor` on your PATH and in the Start menu, and offers to start the setup
 wizard when it finishes. Remove it in Settings > Apps; your settings and memory in
 `%USERPROFILE%\.factor` stay.
@@ -552,21 +555,7 @@ fake carrier, a scripted microphone and speaker, a fake MCP server over real std
 JSON-RPC, a scripted desktop — plus live headless-Chrome and desktop round-trip
 tests that auto-skip where the machine can't host them.
 
-## Code signing policy
-
-Windows releases are signed. Free code signing provided by
-[SignPath.io](https://about.signpath.io), certificate by
-[SignPath Foundation](https://signpath.org).
-
-| Role | Members |
-|---|---|
-| Committers and reviewers | [CyqleLabs members](https://github.com/orgs/cyqlelabs/people) |
-| Approvers | [CyqleLabs owners](https://github.com/orgs/cyqlelabs/people?query=role%3Aowner) |
-
-Each signed file comes from this repository's release workflow, built from the
-tagged source, and an approver releases every signing request by hand.
-
-### Privacy
+## Privacy
 
 Factor sends your conversations only where you point it: to the language-model
 providers you configure, to the channels you turn on (Telegram, phone, voice

@@ -125,6 +125,7 @@ The [routing research](docs/research/multi-agent-routing-best-practices.md) and 
 Manage settings or compare built-in Antigravity slash commands anytime:
 
 - Toggle retry count, trigger policy, and plan tier in the right-hand **agy-cmd** Sidecar panel — changes take effect immediately.
+- Click **Check Update** in the panel header to check GitHub Releases and self-update an installed plugin with SHA-256 verification and automatic rollback on failure (startup auto-check is enabled by default and can be toggled in the panel, via `--auto-update-check off`, or `AGY_CMD_DISABLE_AUTO_UPDATE_CHECK=1`; optional silent auto-install is **off by default** and can be enabled in the panel or via `--auto-update-install on`, gated by same-major version, verified SHA-256 asset, and per-version failure circuit breaker).
 - Click `★ Star` in the panel header to follow updates on GitHub (after 3 successful auto-retry saves, a one-time dismissible reminder appears once).
 - Adjust settings or inspect commands directly in chat (e.g., ask to set auto-retry to 5, enable Boost, or compare all built-in Antigravity desktop slash commands).
 
@@ -152,6 +153,14 @@ python skills/agy-cmd/scripts/setup_auto_router.py --delivery-test-gate off
 
 # Enable one independent review after implementing an approved plan in free mode
 python skills/agy-cmd/scripts/setup_auto_router.py --free-plan-review on
+
+# Toggle automatic GitHub Releases check when opening the Sidecar panel (on by default)
+python skills/agy-cmd/scripts/setup_auto_router.py --auto-update-check off
+python skills/agy-cmd/scripts/setup_auto_router.py --auto-update-check on
+
+# Opt in to silent same-major + SHA-256 auto-updates (off by default)
+python skills/agy-cmd/scripts/setup_auto_router.py --auto-update-install on
+python skills/agy-cmd/scripts/setup_auto_router.py --auto-update-install off
 
 # Verify plugin bundle integrity
 python skills/agy-cmd/scripts/setup_auto_router.py --sync-check

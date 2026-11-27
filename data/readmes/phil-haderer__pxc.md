@@ -50,7 +50,10 @@ Many test rounds went into PxC, and every line of it was written with Claude Cod
 - **LLMs included:** one tick lets a text model improve your prompt. It also describes the canvas and reference images, turns sketches and scribbles into prompts, and names what to remove.
 - **Your own prompts:** save a prompt under a name and use it again later, with the function and model it was made for.
 - **Tested settings:** every function and model starts with its tested settings; change them under Advanced settings if you like.
-- **Your models, organised:** **Download missing files** fetches each model as one pack and puts every file into the right ComfyUI folder. Already have a model in another version? Choose your own file in the file's field in the gear window (Model Links) instead of downloading it again: besides the int8 ConvRot files PxC downloads, the bf16, fp8 and nvfp4 versions of the same model can be used, and GGUF for the main model with the [ComfyUI-GGUF](https://github.com/city96/ComfyUI-GGUF) node pack. PxC also recognises six other versions of the main models and uses the settings from their model cards: Qwen Image 2.1 Turbo int8, MOSS Image Base int8, Kromoss int8 (a fine-tune of MOSS), Fibo 2.0 Dev int8, Krea 2 Turbo fp8 and MiniMax H3 Image w4a8. Pick one in Model Links, or keep it in the folder instead of the file PxC downloads. 
+- **Model files made easy:**
+  - **Download missing files** gets each model as one pack, every file in the right ComfyUI folder.
+  - Already have a model? Pick your own file in the gear window ▸ Model Links: bf16, fp8, nvfp4, or GGUF with [ComfyUI-GGUF](https://github.com/city96/ComfyUI-GGUF).
+  - Six other versions (Qwen Image 2.1 Turbo, MOSS Image Base, Kromoss, Fibo 2.0 Dev, Krea 2 Turbo, MiniMax H3 w4a8) are recognised and run with their model-card settings.
 - **Team use:** run ComfyUI on one strong PC or server and point several PxC installations at it (gear window ▸ Other settings ▸ ComfyUI address). The queue lists your own jobs and, read-only, the jobs of the others, and the progress bar shows how many jobs are ahead of yours.
 
 > Unofficial community project, not affiliated with PhotoCraft, ArtCraft or Storyteller. PhotoCraft is in early alpha
@@ -93,6 +96,9 @@ The Style prompts button beside the prompt adds a ready-made style text. A few o
 ## Coming in the next version
 
 - **SAM 3 selection:** click an object in your picture (or type what it is) and PxC selects it in PhotoCraft, ready for Fill or Remove.
+- **Portable version:** a ZIP with its own Python inside: unpack it and start PxC, no setup script needed.
+- **Denoise in Text to Image:** a slider that starts from the picture open in PhotoCraft (image to image) for every model; 1.0 still makes a new picture.
+- **Custom LoRAs per model:** each model keeps its own LoRA list, so switching models no longer means switching LoRAs by hand.
 - Minor adjustments.
 
 ## How it fits together
@@ -360,11 +366,38 @@ MiniMax H3 Image draws in a size you pick in megapixels (4 to 20 MP, best at abo
 
 ## More features
 
-- **Results & history:** **Variants** give several results as layers in one group. **History** (in the ⋯ menu at the bottom right) brings back earlier settings. **Undo** and **Redo** in the header, left of the gear, take back or bring back the last AI result; results of queued runs are hidden and shown again one by one. The seed button brings back the seed of the last run; **Copy canvas** and **Save image** are in the bottom-right menu.
-- **Prompts:** **Style prompts** and **Enhance my Prompt with LLM**; next to it, **Reroll prompt** has the text model write a new prompt (in Sketch to image and Scribble, where the text model always writes, Reroll prompt stands alone). **Save** keeps a prompt under a name, **Describe Canvas** writes what the picture shows, the copy button copies the prompt the text model wrote, and Ctrl+Z in the field brings back a deleted prompt.
-- **Pictures & references:** drop, paste (Ctrl+V) or add pictures to the **reference slots**; click a slot's tag, type **@** in the prompt to pick it from a list, or drag its picture into the prompt to name it. **Cut out:** the scissors at the bottom right remove the background with **BiRefNet**, **RMBG-2.0** or **Both**: a copy of the picture is added as a new layer with an editable layer mask. Every reference slot has its own cut-out button. It needs the optional files under [Model downloads](#model-downloads) ▸ Remove background. A **live preview** shows the picture while it is being made.
-- **Work faster:** Ctrl+Enter generates, Ctrl+Alt+Enter stops a run, Esc closes the queue or the settings, Ctrl+S saves the picture, Q or the list symbol at the bottom right opens the queue. **Batch** runs Refine Image, Upscale or Edit on all open pictures or a whole folder (optional dry run on the first picture); the **queue** shows what is waiting. While a run is on, Generate becomes **Add to queue** for the same function (Text to Image, Edit canvas, Refine Image or Upscale; any model, e.g. Text to Image prompts on several models one after the other): the picture in front and the settings are taken at the click, and the result comes as a new layer; Variants ×n become n jobs. The other functions wait until the run is over. **Your settings:** **Save settings** at the bottom of the Advanced settings keeps what you changed on the page as its start settings for this function and model; **Load defaults** brings back the PxC standard settings. **Hide this model** for models you do not use, and a **Tip of the day** at start (can be switched off).
-- **Files & settings:** **Check files** (gear window ▸ Model Links ▸ ⋯) compares the model files on your disk with their checksums; a damaged file is named, never deleted. **Advanced settings:** edge feather, context size, mask density, sampling, custom LoRAs; the head row names the model and function they belong to, a blue dot marks a changed value and **Reset** brings back their startup settings.
+**Results**
+- **Variants:** several results as layers in one group; a **live preview** shows the picture while it is made.
+- **Undo / Redo** in the header take back or bring back the last AI result.
+- **History** (⋯ menu, bottom right) brings back earlier settings.
+
+**Prompts**
+- **Style prompts** add a ready-made style. **Save** keeps your own prompt under a name: you find it in Style prompts ▸ Custom prompts, and it brings back the function and model it was made for.
+- **Enhance my Prompt with LLM** improves your prompt; **Reroll prompt** has the text model write a new one.
+- **Describe Canvas:** an LLM describes your picture, so you can reuse the description as a prompt for Text to Image.
+
+**Reference pictures and cut-out**
+- Drop, paste (Ctrl+V) or add pictures to the **reference slots**; name a slot in the prompt with **@** or a click on its tag.
+- **Cut out** (scissors, bottom right, and on every slot): removes the background with BiRefNet or RMBG-2.0 as a new layer with a mask. Needs the optional files under [Model downloads](#model-downloads).
+
+**Queue and batch**
+- While a run is on, Generate becomes **Add to queue** (Text to Image, Edit canvas, Refine Image, Upscale).
+- **Batch** runs Refine Image, Upscale or Edit on all open pictures or a whole folder.
+- The **queue** window (Q, or the list symbol at the bottom right) shows every waiting and running job with its progress: yours and, in team use, those of the others.
+
+**Settings and files**
+- **Save settings** / **Load defaults** at the bottom of Advanced settings; a blue dot marks a changed value.
+- **Hide this model** for models you do not use; **Check files** (Model Links ▸ ⋯) finds damaged downloads.
+
+The shortcuts work only while the PxC window is active: click into it first.
+
+| Shortcut | Does |
+|---|---|
+| Ctrl+Enter | Generate |
+| Ctrl+Alt+Enter | Stop the run |
+| Ctrl+S | Save image |
+| Q | Open the queue |
+| Esc | Close the queue or the settings |
 
 <a id="help"></a>
 <details>
@@ -379,9 +412,12 @@ MiniMax H3 Image draws in a size you pick in megapixels (4 to 20 MP, best at abo
 | "You need to download …" | Open the gear window and download the missing file, then restart ComfyUI (it reads its model folders only at start). |
 | A Flux 3 download is refused | Log in to Hugging Face and accept the licence on the model page first. |
 | On Linux nothing appears | Run `./pxc.sh` in a terminal; the message tells you what is missing. |
-| **Enhance my Prompt with LLM** is slow, especially with 8 GB of VRAM | Start ComfyUI with the option `--use-ck-attention` (Comfy Kitchen attention): add it at the end of the line with `main.py` in your ComfyUI start file (`.bat`), or run `python main.py --use-ck-attention`. In our tests on 8 GB the prompt writers ran 2 to 5 times faster, Qwen Image 2.1 pictures about 25 % faster, with the same quality of prompts and pictures (tested with ComfyUI 0.45). On 16 GB the prompt writers are fast without it. |
+| **Enhance my Prompt with LLM** is slow, especially with 8 GB of VRAM | Start ComfyUI with `--use-ck-attention` (add it at the end of the `main.py` line in your start file). On 8 GB the prompt writers ran 2 to 5 times faster and Qwen Image 2.1 about 25 % faster, with the same quality. On 16 GB it is not needed. |
 
-**Update.** Once a day at the start PxC asks GitHub whether a newer version is out (GitHub sees your IP address and the PxC version, nothing else; untick **Check for updates** in Gear ▸ **Other settings** to stop it, **Check now** asks at once). A newer version shows as a blue dot on the gear and a line at the top of **Other settings** with **What's new** (the release page) and **Skip this version**. To install it, download the new ZIP and unpack it over the old folder; if you used `git clone`, **Update now** there runs `git pull` for you. Then run the setup script again if PxC says so, and restart PxC. Your settings stay in `data\` (Linux: `~/.config/pccomfy/`) and are not touched.
+**Update.**
+- Once a day at the start PxC asks GitHub for a newer version (GitHub sees your IP address and the PxC version, nothing else). Untick **Check for updates** in gear ▸ **Other settings** to stop it; **Check now** asks at once.
+- A newer version shows as a blue dot on the gear, with **What's new** and **Skip this version** at the top of **Other settings**.
+- To install it, download **Source code (zip)** on the release page and copy what is in its folder `pxc-<version>` over your PxC folder (replace the files), or press **Update now** if you used `git clone`. Run the setup script again only if PxC says so, then restart PxC. Your settings in `data\` (Linux: `~/.config/pccomfy/`) stay as they are.
 
 **Report a problem.** Open an issue on this repository's **Issues** page and tell us:
 - what you did, what you expected and what happened (the status line at the bottom of the window is useful);

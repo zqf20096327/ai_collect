@@ -21,9 +21,6 @@ The AI engine where models, voice, vision, memory, tools, agents and workflows w
   <a href="https://linkedin.com/company/cluaiz"><b>LinkedIn</b></a>
 </p>
 
-> [!NOTE]
-> v0.1.0 is a pre-release. Settings, APIs and file layout can still change before the stable release.
-
 ## What Cluaiz is
 
 **One engine. Every kind of intelligence.**
@@ -38,12 +35,27 @@ new, and flows carry the steps so you do not have to. Memory keeps only what you
 the limits you set, and an audit log records all of it. It fits your machine, works where you are, and grows with
 what you build.
 
-## Works with
+## Why Cluaiz
 
-- **[Cluaiz App](https://github.com/cluaiz/cluaiz-app):** the desktop app. It talks to a running `cluaiz serve`, so
-  a model is loaded once.
-- **[Cluaiz Tools](https://github.com/cluaiz/cluaiz-tools):** the registry of skills, plugins and MCP servers that
-  the Engine installs. It takes pull requests.
+- **Full speed, without the tuning.** On the same model file and placement, generation is equal to official
+  llama.cpp on the GPU, on a GPU + RAM split and on the CPU, with one exception listed in the
+  [benchmarks](test/benchmarks/README.md). The planner chooses the GPU layers, context and KV cache for you;
+  `cluaiz show` prints why, and every value can still be set by hand.
+- **It measures before it loads.** Free GPU memory and RAM are read on every load, so the plan matches the machine
+  as it is right now: on an L4, 14 of 16 models loaded within 0.09 GB of the planned VRAM
+  ([run 21](test/benchmarks/planner-and-vram.md#run-21)). A model that cannot fit is refused with the
+  amount missing, and a load that fails steps back to fewer GPU layers instead of crashing.
+- **A MoE model larger than VRAM + RAM, streamed from the SSD.** Qwen3.6 35B A3B (18.2 GB file) on an L4 with
+  8 GB VRAM free and a 12 GB RAM limit: Cluaiz generated 19.8-25.1 tokens/s on chat and long prompts with its MoE
+  cache and expert prefetch, against 9.1-11.0 for llama.cpp at its defaults (about 2.2x) and 15.9-20.7 for llama.cpp
+  with its own MoE cache ([SSD streaming benchmark](test/benchmarks/ssd-streaming-moe.md)).
+- **One engine for chat, voice, vision and embeddings.** Chat, vision, speech, transcription and embeddings share one process, one
+  model store and one API, so an app does not wire up a separate server for each.
+- **Works with what you already use.** Any OpenAI client can point at Cluaiz, and MCP clients such as Claude
+  Desktop and Cursor reach it through `cluaiz mcp-server`.
+- **You stay in control.** Agents act in a sandboxed mode by default, ask before changes outside the workspace,
+  and every write, command and admin call goes to an audit log. WebAssembly plugins run with no file access and
+  only the network they declare.
 
 ## What you can do with it
 
@@ -63,26 +75,12 @@ what you build.
 
 Every feature with its status and the test run that checked it: [features](docs/reference/features.md).
 
-## Why Cluaiz
+## Works with
 
-- **Full speed, without the tuning.** On the same model file and placement, generation is equal to official
-  llama.cpp on the GPU, on a GPU + RAM split and on the CPU, with one exception listed in the
-  [benchmarks](docs/reference/benchmarks.md). The planner chooses the GPU layers, context and KV cache for you;
-  `cluaiz show` prints why, and every value can still be set by hand.
-- **It measures before it loads.** Free GPU memory and RAM are read on every load, so the plan matches the machine
-  as it is right now: on an L4, 14 of 16 models loaded within 0.09 GB of the planned VRAM
-  ([run 21](test/cloud/runs/2026-11-18-run21-l4-planner/SUMMARY.md)). A model that cannot fit is refused with the
-  amount missing, and a load that fails steps back to fewer GPU layers instead of crashing.
-- **A 26B model on a 4 GB laptop GPU.** Gemma 4 26B A4B (MoE, 14.2 GB file) ran at 16.7 tokens/s in `cluaiz bench`
-  and 11-13 tokens/s in chat on an RTX 3050 with 4 GB VRAM: attention on the GPU, experts in RAM, the rest read from
-  the disk ([run 20](test/cloud/runs/2026-11-16-run20-laptop-moe-disk/SUMMARY.md)).
-- **One engine for chat, voice, vision and embeddings.** Chat, vision, speech, transcription and embeddings share one process, one
-  model store and one API, so an app does not wire up a separate server for each.
-- **Works with what you already use.** Any OpenAI client can point at Cluaiz, and MCP clients such as Claude
-  Desktop and Cursor reach it through `cluaiz mcp-server`.
-- **You stay in control.** Agents act in a sandboxed mode by default, ask before changes outside the workspace,
-  and every write, command and admin call goes to an audit log. WebAssembly plugins run with no file access and
-  only the network they declare.
+- **[Cluaiz App](https://github.com/cluaiz/cluaiz-app):** the desktop app. It talks to a running `cluaiz serve`, so
+  a model is loaded once.
+- **[Cluaiz Tools](https://github.com/cluaiz/cluaiz-tools):** the registry of skills, plugins and MCP servers that
+  the Engine installs. It takes pull requests.
 
 ## Quick start
 
@@ -144,17 +142,18 @@ Same model file, same placement, same settings, Cluaiz against official llama.cp
 | Generation (GPU, GPU + RAM split, CPU) | Equal, within the run-to-run noise; one exception: a 2-bit model on a 1 vCPU server, 13-20% slower |
 | Prompt, fully on the GPU | Equal on an RTX 3050 laptop and a Tesla T4; llama.cpp up to 11% faster on an L4 |
 | Prompt, split across GPU and RAM | Up to 1.6x faster through the chat API on the T4 (even prompt chunks); equal with `cluaiz bench` |
+| MoE model larger than VRAM + RAM (Qwen3.6 35B A3B, L4 with 8 GB VRAM free, 12 GB RAM) | Generation 1.7-2.3x faster than llama.cpp at its defaults, and 1.2-1.4x faster than llama.cpp with its own MoE cache ([SSD streaming benchmark](test/benchmarks/ssd-streaming-moe.md)) |
 
-Every table, machine and run: [benchmarks](docs/reference/benchmarks.md).
+Every table, machine and run: [benchmarks](test/benchmarks/README.md).
 
 ## Supported hardware
 
 | Hardware | Backend | Tested on |
 | :--- | :--- | :--- |
 | **NVIDIA GPU**, Windows and Linux | CUDA 12 / CUDA 13 pack | RTX 3050 Laptop 4 GB (Windows 11), Tesla T4 16 GB (Ubuntu 24.04), L4 23 GB (Debian 13) |
-| **Apple Silicon**, macOS 14+ | Metal | MacBook Air M5 16 GB ([run](test/mac/runs/2026-10-28-m5-air-16gb/SUMMARY.md)), virtual M1 on macOS 15 |
+| **Apple Silicon**, macOS 14+ | Metal | MacBook Air M5 16 GB ([run](test/benchmarks/release-and-platforms.md#mac-m5)), virtual M1 on macOS 15 |
 | **AMD Radeon, Intel Arc**, Windows and Linux | Vulkan pack | Built, not yet run on this hardware |
-| **x86-64 CPU** (SSE4.2 to AVX-512) | CPU, best build picked at start | Ryzen 7 7435HS, Xeon with AVX-512 / AMX, EPYC VPS with 1 vCPU and 3.8 GB RAM ([run](test/cloud/runs/2026-11-16-run19-vps-deep/SUMMARY.md)) |
+| **x86-64 CPU** (SSE4.2 to AVX-512) | CPU, best build picked at start | Ryzen 7 7435HS, Xeon with AVX-512 / AMX, EPYC VPS with 1 vCPU and 3.8 GB RAM ([run](test/benchmarks/release-and-platforms.md#run-19)) |
 | **ARM64 Linux** | CPU (NEON and newer) | AWS Graviton2, Ubuntu 24.04 |
 
 ROCm/HIP, OpenVINO, SYCL and CANN builds are not part of the release yet. Packages and every run:

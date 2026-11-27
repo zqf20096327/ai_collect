@@ -34,6 +34,12 @@ pnames(dat) # print the names of the objects contained in dat
 
 ## <span style="color:green"> **JLD2 datasets** </span> 
 
+### **apples_brix**
+Sugar concentration (degrees Brix; N=642) in apples to be predicted from VIS-NIR spectra 
+(reflectance, 300–1150 nm).
+
+Thanks to J.M. Roger and INRAE (Umr Itap) for having made available this dataset. 
+
 ### **cassav**
 NIRS data on cassava roots (2009-2013; South-America).
 FOSS NiRSystem Instruments 400-2498 nm (step = 2 nm). This is an extract of the dataset used in Lesnoff et al. 2020. 
@@ -60,11 +66,16 @@ References:
 ### **challenge2018**
 NIRS data (protein content of forages and feed) used in the challenge of the congress [Chemometrics2018](https://chemom2018.sciencesconf.org/) (Paris, January 2018). The original [data](https://chemom2018.sciencesconf.org/resource/page/id/5.html) contain errors (duplicates). The data provided in **JchemoData** have been corrected (duplicates have been removed), and documented with new descriptors (type of vegetal materials).
 
+Thanks to P. Dardenne and CRAW Gembloux for having made available this dataset. 
+
 ### **challenge2021**
 Data used in the challenge of the e-congress [Chemometrics2021](https://chemom2021.sciencesconf.org/) (February 2021). See [here](https://chemom2021.sciencesconf.org/resource/page/id/5.html?lang=fr) for a full description.
-One parameter (degrees Brix) has to be predicted from near infrared spectra (reflectance) of fruits scanned between 300 – 1100 nm. The original data contain a calibration set (1066 spectra of instrument 1, and the variable to predict), a set of standardization between instruments (245 spectra per instrument), and a validation set to predict (993 spectra, from instruments 1 to 7).
 
-In dataset **challenge2021**, objects 'Xtrain', 'Ytrain', 'Xtest' and 'Ytest' only correspond to instrument 1. 
+One parameter (degrees Brix) had to be predicted from VIS-NIR spectra (reflectance; 300 – 1100 nm) of fruits. The original data contain a calibration set (1066 spectra of *instrument 1*, and the variable to predict), a set of standardization between 7 instruments (245 spectra per instrument), and a validation set to predict (993 spectra collected from *instruments 1* to *7*).
+
+Dataset **challenge2021** (objects 'Xtrain', 'Ytrain', 'Xtest' and 'Ytest') contains the data corresponding to *instrument 1* only. 
+
+Thanks to P. Dardenne and CRAW Gembloux for having made available this dataset. 
 
 ### **corn**
 [Eigenvector Corn data](https://eigenvector.com/resources/data-sets) 

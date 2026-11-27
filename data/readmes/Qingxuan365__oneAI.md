@@ -49,7 +49,7 @@ A CLI that is not listed can be added under Settings → CLI with a name and a s
 
 OneAI currently runs on **Windows 10 / 11 (x64)**, because it relies on the Windows ConPTY API. The AI CLIs themselves are not bundled: install the ones you want separately and make sure their commands are on your `PATH`.
 
-- **Installer**: download `OneAI-Setup-<version>.exe` from the [latest release](https://github.com/keepingFE/oneAI/releases/latest) and run it.
+- **Installer**: download `OneAI-Setup-<version>.exe` from the [latest release](https://github.com/Qingxuan365/oneAI/releases/latest) and run it.
 - **From source**: see below.
 
 On first launch OneAI asks for the interface language, then shows a short guide. After that, add a project folder, click the "+" next to it and pick a CLI.
@@ -88,7 +88,7 @@ Electron 31, React 18, TypeScript, Tailwind CSS, Lucide React, `@xterm/xterm`, `
 
 ## Privacy
 
-OneAI runs locally. It has no telemetry or analytics and no update checker. It reads the local session files of the CLIs you use to show history, summaries and usage, and it never reads or copies login credentials. The only network request OneAI makes itself is the Kimi Code quota lookup (`api.kimi.com`), which uses your own Kimi Code login and only happens while you use Kimi Code. If you add online music in Settings, the player also contacts exactly those addresses, and only to play them. The CLIs you start in the terminals talk to their own services as usual.
+OneAI runs locally and has no telemetry. History, summaries, and usage are generated from local CLI session files. OneAI checks GitHub Releases for updates at startup by default. You can turn off this check in Settings → About. Kimi Code quota lookups use your Kimi Code login to query `api.kimi.com`. If you add online music, OneAI connects to the configured streams or playlists to play them. The CLIs you start in the terminals connect to their own services.
 
 ## Contributing
 

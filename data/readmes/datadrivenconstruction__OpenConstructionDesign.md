@@ -33,6 +33,7 @@
   <a href="#building-services-mep">MEP</a> ·
   <a href="#export-ifc4-and-the-erp-link">Export</a> ·
   <a href="#lua-scripting">Lua</a> ·
+  <a href="#browser-version">Browser</a> ·
   <a href="#build-from-source">Build</a>
 </p>
 
@@ -492,6 +493,34 @@ Run it headless and override a parameter:
 ddc run project.ddc crates/script/data/recipes/twisted_diagrid_tower.lua --out tower.ddc --param floors=32
 ```
 
+## Browser version
+
+The editor also runs in a browser tab. It is the same code as the desktop application, compiled to
+WebAssembly (`crates/web-editor`, with the page entry and build tools in `tools/web`). The model,
+checks, generators, IFC and the ERP revision package work as on the desktop; Lua scripts, OS file
+dialogs, the update check, local AI keys, the MCP server and the external format converters stay
+desktop only. AI requests go through the host page, so keys never reach the browser. On touch
+devices and small screens it opens view only.
+
+**In OpenConstructionERP** nothing has to be installed by hand. The ERP reads the release feed
+[`erp-link/release/latest-web.json`](erp-link/release/latest-web.json), downloads the zip from the
+GitHub release, checks its size and SHA-256, verifies its minisign signature against the public key
+shipped with the ERP (key id `BF094D8BDEC11250`) and unpacks it under its data folder
+(`design/web-editor/`). A newer feed installs the newer bundle the same way and removes the old one.
+
+**On your own machine** you need Rust with the `wasm32-unknown-unknown` target, clang and llvm-ar,
+the `wasm-bindgen` CLI in the version from `Cargo.lock`, and Python 3:
+
+```bash
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli --version 0.2.130 --locked
+bash tools/web/build_bundle.sh            # bundle in dist/web-editor/
+mkdir -p tools/web/pkg && cp -r dist/web-editor/* tools/web/pkg/
+python3 -m http.server 8080 -d tools/web  # open http://localhost:8080/
+```
+
+Full guide, including how releases are built, signed and updated: [docs/BROWSER.md](docs/BROWSER.md).
+
 ## Repository layout
 
 | Crate | Role |
@@ -569,6 +598,7 @@ Details and other platforms: [docs/BUILDING.md](docs/BUILDING.md).
 | [User guide](docs/USER_GUIDE.md) | Core workflows and shortcuts |
 | [Architecture](docs/ARCHITECTURE.md) | Crates, data flow, journal, AI contract |
 | [Building](docs/BUILDING.md) | Building and testing |
+| [Browser version](docs/BROWSER.md) | Browser build, ERP install and updates |
 | [Changelog](CHANGELOG.md) | What shipped |
 
 ## Contributing

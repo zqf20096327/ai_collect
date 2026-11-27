@@ -6,6 +6,8 @@ https://github.com/user-attachments/assets/6e5bbd27-3d4d-46e3-a719-cef76400f557
 
 <p align="center"><b>Real Claude Code agents. Real colleagues. One server. Played like a game — shipped like a company.</b></p>
 
+<p align="center">👥 Made by <a href="https://www.linkedin.com/in/marko-jevtic-75247368/"><b>Marko Jevtić</b></a> and <a href="https://www.linkedin.com/in/bste/"><b>Branko</b></a></p>
+
 <p align="center">
   <a href="https://office-demo.sparkcan.com"><img height="44" src="https://img.shields.io/badge/%E2%96%B6%20Try%20it-live%20demo-22C55E?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Try the live demo"></a> &nbsp; <a href="https://www.facebook.com/groups/orchestrator"><img height="44" src="https://img.shields.io/badge/Join%20the-community-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Join the community on Facebook"></a> &nbsp; <a href="#-quick-start"><img height="44" src="https://img.shields.io/badge/Quick-start-6E56CF?style=for-the-badge&logo=rocket&logoColor=white" alt="Quick start"></a>
 </p>
@@ -170,7 +172,7 @@ flowchart LR
 | An agent on another machine means SSH and `tmux attach` | Every machine's sessions sit in the same office; `Space` puts you at any terminal, **Take control** gives you the keyboard |
 | You carry context between agents by hand | They ask each other, wait for each other, hand work over and review each other — on the record |
 | One Claude account runs out and the work stops | Several accounts per machine; when one is spent its people move on by themselves |
-| Keeping everyone busy is your job | The foreman answers operational questions; a `/goal` keeps one going until it holds; routines repeat the checks |
+| Keeping everyone busy is your job | A project manager answers questions about the work it planned; a `/goal` keeps one going until it holds; routines repeat the checks |
 | You work alone | Your colleagues are in the same office, on the same server, with their own agents in their own rooms |
 
 ## 🧩 Everything it does
@@ -184,7 +186,6 @@ flowchart LR
 | 📋 **Quests** | Tasks with worktrees and branches; each a conversation (questions with answers to click, pictures, send back). Done = tested, reviewed, merged |
 | 🤝 **Teamwork** | Agents ask, wait for, hand over to, review, unblock and wake each other |
 | 🎯 **Goals** | `/goal every test in packages/api passes` — they keep going, turn after turn, until it holds |
-| 🧢 **The foreman** | A supervisor that walks the floor, answers operational questions and keeps people moving — you are asked only about direction |
 | 🔋 **Claude accounts** | Several per machine, signed in **from the office**; Z.AI's GLM plan too. Out of quota → people move on; out of Fable → they go on with Opus |
 | 🧠 **Long memory** | The record kept word for word ([MemPalace](docs/MEMORY.md)); agents `recall` and `remember` across sessions |
 | 🧭 **Central context** | What every employee always knows — the office, the project, their role, a client, their own notes — given at every start, after every compaction and as a change; employees propose, you keep it ([docs/CONTEXT.md](docs/CONTEXT.md)) |
@@ -325,8 +326,6 @@ Verified on macOS (Apple silicon) and Linux; in daily use as an always-on office
 | Projects → Integration | After each merge your verification command also runs on the integration branch; **Bring in main** merges the base branch in, **Promote to main** fast-forwards the base branch to it — refused while tests fail, when it is not a fast-forward, or over uncommitted changes. Nothing is ever pushed |
 | Terminals → Operations | Build results are the office's own verification runs; deployments are commands that really ran in a terminal, with their exit status; git activity is commits and merges measured on the machines |
 | A security notification | Claude Code refused an action, a known credential format went through a session (it is redacted in the records), a machine was refused a connection, or someone presented wrong owner tokens |
-| The **Foreman** stands at someone's desk during a round | The foreman's own session looked at that employee (`look_at`: the last lines of their real terminal, their task, their open question), answered them, gave them work or told them what to do next. Between rounds it walks the office from desk to desk; that walk is only a walk — nothing is read or sent |
-| An employee's question is answered without you | The foreman's session called `answer_question`; the employee gets the answer as usual and the record says the foreman gave it. Approving or denying an action is never the foreman's |
 | Hire → **Account**, **Model**, **Effort** | That employee's sessions are started with `CLAUDE_CONFIG_DIR=<that account's folder> claude --model … --effort …`. The effort levels offered are the ones the Claude Code on that machine says it has |
 | Company → Claude → **Add an account… → A Claude account** | The office makes a config folder on that machine and runs Claude Code's own sign-in (`claude auth login`) there, in a terminal of its own; the window shows its link and passes on the code you paste. The login token stays in that folder on that machine; the office keeps neither the code nor the token ([docs/ACCOUNTS.md](docs/ACCOUNTS.md)) |
 | Company → Claude → **Z.AI — GLM Coding Plan** | Your API key is written into that account's own `settings.json` on the machine (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`); Claude Code started there talks to Z.AI's models. The office does not keep the key, and never moves anybody onto that account or off it by itself |
@@ -360,22 +359,6 @@ Verified on macOS (Apple silicon) and Linux; in daily use as an always-on office
 - **Delivered ≠ confirmed.** Messages, tasks and answers move `queued → sent → confirmed`, and *confirmed* requires a signal from Claude Code.
 - **Measured, reported, unavailable.** Verification results are measured on the host; an agent's summary is “reported”; token usage is read from the real transcript or shown as “not available”. Cost is never invented. **How much Claude is left** on each account (5-hour and weekly percentages, exactly as Claude Code reports them, and a model's own limit once Claude refused a turn for it) is shown in Company → Claude; employees can be put on different Claude accounts.
 - **Autonomy is Claude Code's own permission modes, chosen per employee.** The three levels — Standard, Auto, Unrestricted — map to its modes and allow-rules; high-risk commands (pushes, `sudo`, deploys, broad deletions, reading credential files) go to the owner first. The top level, **Unrestricted**, is Claude Code's bypass-permissions mode — nothing is checked or asked there — and only an owner can give it; the owner can also switch the high-risk hold off for it. What stays in front of every level: a project's deny rules and the fence around the office's own files. `docs/SECURITY.md` says what that does and does not protect.
-
-</details>
-
-<details>
-<summary><b>The foreman</b></summary>
-
-Hire the **Foreman** (Team → Hire, role *Foreman*; give it any folder — that is only where its Claude Code session runs). There is one for the whole office, it runs on the office's own machine, and it has **no desk**: it walks the office — the shared floor and every member's room that is open — and keeps the work going. Hiring it switches its rounds on; **Settings → Foreman** pauses them.
-
-- **The office decides when, without any model.** Every few seconds it works out from its own records what needs attention: an employee's question nobody has answered, a blocked task, someone idle for five minutes with a task in progress, ready work that nobody has while somebody is free, and someone whose session has done nothing for ten minutes with no task at all. Only when that list holds something *new* — and the previous round is over, and the gap you set has passed — is **one** prompt delivered to the foreman's session. The prompt carries the digest itself, so a simple round needs a handful of tool calls. A quiet office starts no round and costs nothing.
-- **The foreman acts through its own tools**: `office_overview`, `look_at` (an employee's real terminal screen, task and recent events), `answer_question`, `assign_task`, `create_task`, `tell_employee` (carry on, how a blocker is resolved, what to pick up), `escalate_to_owner`, `finish_round`. Everything it does is on the record under its name, and its character walks to whoever it is dealing with.
-- **Everyone is its business, members' own employees too** — while their member's computer is in the office. Work does not cross: a shared project's task never goes to someone's own computer, nor the other way round. Because the foreman sees what an owner sees, its own terminal is for owners only, and only owners can talk to it (see `docs/SECURITY.md`).
-- **You are asked only about direction.** The foreman answers operational questions itself and escalates what is yours: direction, product or policy, anything destructive or irreversible, anything it is not sure about. An escalated question stays open in your inbox. You can always answer first — whoever answers first counts.
-- **It never approves anything.** Permission requests stay with you and with each employee's level; the foreman has no tool that could decide one, and cannot edit files or type into anybody's terminal.
-- **Cost.** Each round is a real turn in the foreman's Claude Code session and uses the Claude usage of the account that session runs on. An item the foreman has already seen does not start another round; an employee the foreman itself told to carry on, and who stops again, is left alone for twice as long each time. Optionally, with nothing waiting, it takes one look around every *N* minutes if tasks or sessions changed since its last round (default 15; 0 = never).
-
-*Settings → Foreman* shows who the foreman is, who it is with, the last round and its summary, and what currently needs attention (`GET /api/foreman`).
 
 </details>
 
@@ -495,4 +478,4 @@ Working and verified on macOS (Apple silicon) with Claude Code 2.1.321–2.1.323
   <img src="docs/assets/logo.svg" width="72" alt="The Orchestrator logo: a conductor's baton over a terminal prompt"><br>
   <sub><b>ORCHESTRATOR</b> — the baton conducts, the prompt plays.<br>No employees were harmed by the whip. It only wakes the sleepers.</sub>
 </p>
-<p align="center"><sub>Made by <a href="https://www.linkedin.com/in/bste/">Branko</a> and <a href="https://www.linkedin.com/in/marko-jevtic-75247368/">Marko Jevtić</a> · LinkedIn</sub></p>
+<p align="center">Made by <a href="https://www.linkedin.com/in/marko-jevtic-75247368/"><b>Marko Jevtić</b></a> and <a href="https://www.linkedin.com/in/bste/"><b>Branko</b></a> · <sub>LinkedIn</sub></p>

@@ -187,13 +187,33 @@ ruskel --cache-dir /custom/cache --cache-status
 
 Ruskel runs cache maintenance after build requests. It removes interrupted
 trash first. It removes inactive old-toolchain data after one hour and
-workspace data after 14 days. If recognized usage exceeds 20 GB, Ruskel evicts
-the oldest safe workspace entries until usage is below 15 GB. Active entries,
-the newest valid workspace, and entries with invalid metadata remain in place.
+workspace data after 14 days. If recognized usage exceeds the size limit,
+Ruskel evicts the oldest safe workspace entries until usage is below three
+quarters of the limit. The default limit is 20 GB. Active entries, the newest
+valid workspace, and entries with invalid metadata remain in place.
 `--cache-status` reports recorded workspace paths, package names and versions,
 and entries that maintenance cannot safely remove. Cache entries created by an
 older Ruskel version show their identity hash until the next query refreshes
 their metadata.
+
+Each workspace root has its own cache entry, so each Git worktree of a
+workspace has its own entry. One entry for a large workspace can use several
+gigabytes. If you use several worktrees of a large workspace, raise the limit
+so that maintenance does not evict entries that you still use:
+
+```sh
+ruskel --set-cache-limit 60GB
+ruskel --set-cache-limit default
+```
+
+The limit accepts decimal units such as `GB` and binary units such as `GiB`.
+`default` removes the stored limit. Ruskel stores the limit in the cache root.
+Every process that uses the root applies it, including `ruskel-snapshot`, the
+MCP server, and commands that Git hooks start. Maintenance reads the limit at
+each pass. A routine pass runs at most once a day, so a lower limit can take a
+day to apply. `--cache-status` shows the limit that applies. If the stored
+value is invalid, Ruskel uses the default and lists the problem under
+`Skipped`.
 
 Versions before this cache feature can leave artifacts in a project target
 directory or a Cargo registry source directory. Run `cargo clean` in each

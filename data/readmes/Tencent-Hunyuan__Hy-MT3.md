@@ -35,6 +35,8 @@ Beyond general translation, Hy-MT3 is optimized for two industrial scenarios:
 
 In this release, we also open-source [TransRubric](./TransRubric/README.md), a rubric-based automatic evaluation suite for translation. It outperforms other evaluation schemes on the WMT26 metrics shared task test set, and is more stable than human evaluation while achieving higher pairwise accuracy than most professional annotators.
 
+We also welcome everyone to try our Tencent Hy Translate browser extension, which supports selection translation, full-page translation and side-panel text translation. Download links: [Chrome](https://chromewebstore.google.com/detail/tencent-hy-translate-a-pe/plkeongecagdacbbldjkoaijdogfkhof?hl=en) and [Edge](https://microsoftedge.microsoft.com/addons/detail/npohaablejgdcokflkffadojdconaacm).
+
 ## News
 
 * 2026.11.24  We open-sourced **Hy-MT3-1.8B**/**Hy-MT3-7B**/**Hy-MT3-30B-A3B** on HuggingFace and ModelScope, and released **TransRubric** on GitHub.

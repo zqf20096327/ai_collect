@@ -146,7 +146,7 @@ CowAgent supports all mainstream LLM providers. **Chat, vision, image generation
 
 | Provider | Featured Models | Chat | Vision | Image Gen | ASR | TTS | Embedding |
 | --- | --- | :-: | :-: | :-: | :-: | :-: | :-: |
-| [DeepSeek](https://docs.cowagent.ai/models/deepseek) | deepseek-flash (V4.1) / pro | ✅ | ✅ | | | | |
+| [DeepSeek](https://docs.cowagent.ai/models/deepseek) | deepseek-flash (V4.1) / pro | ✅ | ✅ | | ✅ | ✅ | |
 | [Claude](https://docs.cowagent.ai/models/claude) | claude-opus-5-5 / sonnet-5-5 | ✅ | ✅ | | | | |
 | [OpenAI](https://docs.cowagent.ai/models/openai) | gpt-6.2-sol / gpt-6.2-astra | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [Gemini](https://docs.cowagent.ai/models/gemini) | gemini-4-neon | ✅ | ✅ | ✅ | | | |
@@ -159,7 +159,7 @@ CowAgent supports all mainstream LLM providers. **Chat, vision, image generation
 | [MiMo](https://docs.cowagent.ai/models/mimo) | mimo-v2.6-pro / flash | ✅ | ✅ | | ✅ | ✅ | |
 | [CowAgent](https://docs.cowagent.ai/models/cowagent) | GPT / Claude / Gemini and more with one key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [LinkAI](https://docs.cowagent.ai/models/linkai) | Models via the LinkAI platform | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| [Custom](https://docs.cowagent.ai/models/custom) | Local models / third-party proxy | ✅ | | | | | |
+| [Custom](https://docs.cowagent.ai/models/custom) | Local models / third-party proxy | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 > For details on each provider, see the [Models overview](https://docs.cowagent.ai/models/index).
 

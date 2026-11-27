@@ -163,6 +163,15 @@ Chatter Radar includes an **MCP connector** at `/mcp/`. You can talk to your Cha
 
 Without a token, `/mcp/` rejects every request.
 
+### Show your tasks in other apps (task feed)
+
+Chatter Radar can serve your tasks as a small JSON feed that other apps read and mark done: a connected list in Pinkas, a Telegram bot, a dashboard. The feed holds only the tasks themselves (title, due date, details), never the chat messages behind them.
+
+1. Set `RADAR_FEED_TOKEN` (a long random string) in `.env` and restart.
+2. Give the app the address `https://<your-radar>/api/feed` and the token. It calls the feed with the header `Authorization: Bearer <RADAR_FEED_TOKEN>`.
+
+The token opens only the feed, not the rest of Chatter Radar, and the feed is reachable only where Chatter Radar is. Without a token the feed is off. The format is in [docs/feed.md](docs/feed.md).
+
 ## Configuration
 
 | Env var | Default | |
@@ -175,6 +184,7 @@ Without a token, `/mcp/` rejects every request.
 | `RADAR_URGENT_PATTERN` / `RADAR_URGENT_DEBOUNCE_SECONDS` | Hebrew+English list / 90 | fast path in scheduled mode |
 | `RADAR_DEBOUNCE_SECONDS` / `RADAR_MAX_WAIT_SECONDS` | 120 / 600 | realtime mode |
 | `RADAR_MCP_TOKEN` / `RADAR_PUBLIC_URL` | — | Claude / ChatGPT connector |
+| `RADAR_FEED_TOKEN` | — | task feed for other apps (`/api/feed`); off when empty |
 | `RADAR_TRANSCRIBE_URL` / `_KEY` / `_MODEL` / `_LANGUAGE` | — / — / `whisper-1` / auto | voice notes |
 | `RADAR_MAX_ATTACHMENTS_PER_BATCH` | 6 | images/PDFs sent per extractor call |
 | `RADAR_MAX_RULES` | 40 | rulebook cap (forces merging) |

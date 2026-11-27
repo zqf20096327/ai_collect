@@ -43,7 +43,7 @@ See also:
 
 - **November 23, 2026** **DiffSynth-Studio now supports unified multi-GPU parallel inference, covering most models within the framework.** Provided you have sufficient hardware resources, fully unleash the potential of your GPUs! Please refer to the [documentation](https://diffsynth-studio-doc.readthedocs.io/en/latest/Pipeline_Usage/Parallel_Inference.html).
 
-- **November 23, 2026** The framework has added a KV-Cache compression module. Currently supported compression methods include [EntroPack](https://github.com/modelscope/entropack), SVD, and Cholesky-QR, among which EntroPack delivers the best performance. It can be used to reduce the VRAM required by the KV-Cache, and is applicable to Qwen-Image-2.1, Qwen-Image-2.1-Turbo, and Wan2.2-Animate-2-14B. For details, see the [documentation](https://diffsynth-studio-doc.readthedocs.io/en/latest/Pipeline_Usage/KV_Cache_Compression.html).
+- **November 23, 2026** The framework has added a context compression module. Currently supported compression methods include [EntroPack](https://github.com/modelscope/entropack), SVD, and Cholesky-QR, among which EntroPack delivers the best performance. It can be used to reduce the VRAM required by the KV-Cache and other large context tensors, and is applicable to Qwen-Image-2.1, Qwen-Image-2.1-Turbo, and Wan2.2-Animate-2-14B. For details, see the [documentation](https://diffsynth-studio-doc.readthedocs.io/en/latest/Pipeline_Usage/KV_Cache_Compression.html).
 
 - **November 23, 2026** We trained an image super-resolution model, DetailScale-SR, which integrates multiple model capabilities such as text rendering, transparent backgrounds, and detail intensity control. The model architecture adopts LoRA + [Diffusion Template](https://arxiv.org/abs/2604.24351). Now you can confidently feed blurry images into the model to render high-definition images with rich details.
 
@@ -403,6 +403,18 @@ We believe that a well-developed open-source code framework can lower the thresh
 
 <details>
 
+<summary>Diffutoon-2: High-Resolution Anime-Style Video Rendering V2.0</summary>
+
+> Fuse the capabilities of multiple models to render any video into a beautiful anime-style video.
+
+* Paper: [Diffutoon-2: Toon Shading with Video Diffusion Models](https://arxiv.org/abs/2611.30945)
+* Model: [ModelScope](https://modelscope.cn/models/DiffSynth-Studio/Diffutoon-2)
+* Example Code: [MiniMax-H3-Diffutoon-2](/examples/minimax_h3/model_inference/MiniMax-H3-Diffutoon-2.py)
+
+</details>
+
+<details>
+
 <summary>DetailScale-SR: Continuous Detail Control for Real-World Super-Resolution</summary>
 
 > Equip the image super-resolution model with a full set of capabilities such as text rendering, transparent backgrounds, and detail strength control.
@@ -708,5 +720,4 @@ https://github.com/Artiprocher/DiffSynth-Studio/assets/35051019/59fb2f7b-8de0-44
 | MiniMax-H3 | [Comfy-Org/MiniMax-H3: FL2VA int8_convrot](https://www.modelscope.cn/models/Comfy-Org/MiniMax-H3) | [code](/examples/minimax_h3/model_inference/MiniMax-H3-Int8-ConvRot-FL2VA.py) | [code](/examples/minimax_h3/model_inference_low_vram/MiniMax-H3-Int8-ConvRot-FL2VA.py) | [code](/examples/minimax_h3/model_inference_parallel/MiniMax-H3-Int8-ConvRot-FL2VA.py) | - | - | [code](/examples/minimax_h3/model_training/lora/MiniMax-H3-Int8-ConvRot-FL2VA.sh) | [code](/examples/minimax_h3/model_training/validate_lora/MiniMax-H3-Int8-ConvRot-FL2VA.py) |
 | MiniMax-H3 | [Comfy-Org/MiniMax-H3: Ref2VA int8_convrot](https://www.modelscope.cn/models/Comfy-Org/MiniMax-H3) | [code](/examples/minimax_h3/model_inference/MiniMax-H3-Int8-ConvRot-Ref2VA.py) | [code](/examples/minimax_h3/model_inference_low_vram/MiniMax-H3-Int8-ConvRot-Ref2VA.py) | [code](/examples/minimax_h3/model_inference_parallel/MiniMax-H3-Int8-ConvRot-Ref2VA.py) | - | - | [code](/examples/minimax_h3/model_training/lora/MiniMax-H3-Int8-ConvRot-Ref2VA.sh) | [code](/examples/minimax_h3/model_training/validate_lora/MiniMax-H3-Int8-ConvRot-Ref2VA.py) |
 | MiniMax-H3 | [Comfy-Org/MiniMax-H3: FL2VA pruned int8_convrot](https://www.modelscope.cn/models/Comfy-Org/MiniMax-H3) | [code](/examples/minimax_h3/model_inference/MiniMax-H3-Int8-ConvRot-Pruned-FL2VA.py) | [code](/examples/minimax_h3/model_inference_low_vram/MiniMax-H3-Int8-ConvRot-Pruned-FL2VA.py) | [code](/examples/minimax_h3/model_inference_parallel/MiniMax-H3-Int8-ConvRot-Pruned-FL2VA.py) | - | - | [code](/examples/minimax_h3/model_training/lora/MiniMax-H3-Int8-ConvRot-Pruned-FL2VA.sh) | [code](/examples/minimax_h3/model_training/validate_lora/MiniMax-H3-Int8-ConvRot-Pruned-FL2VA.py) |
-| MiniMax-H3 | [Comfy-Org/MiniMax-H3: Ref2VA pruned int8_convrot](https://www.modelscope.cn/models/Comfy-Org/MiniMax-H3) | [code](/examples/minimax_h3/model_inference/MiniMax-H3-Int8-ConvRot-Pruned-Ref2VA.py) | [code](/examples/minimax_h3/model_inference_low_vram/MiniMax-H3-Int8-ConvRot-Pruned-Ref2VA.py) | [code](/examples/minimax_h3/model_inference_parallel/MiniMax-H3-Int8-ConvRot-Pruned-Ref2VA.py) | - | - | [code](/examples/minimax_h3/model_training/lora/MiniMax-H3-Int8-ConvRot-Pruned-Ref2VA.sh) | [code](/examples/minimax_h3/model_training/validate_lora/MiniMax-H3-Int8-ConvRot-Pruned-Ref2VA.py) |
-| MiniMax-H3 | [Comfy-Org/MiniMax-H3: FL2VA pruned fp8](https://www.modelscope.cn
+| MiniMax-H3 | [Comfy-Org/MiniMax-H3: Ref2VA pruned int8_convrot](https://www.modelscope.cn/models/Comfy-Org/MiniMax-H3) | [code](/examples/minimax_h3/model_inferenc

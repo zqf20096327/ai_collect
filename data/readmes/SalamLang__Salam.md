@@ -74,7 +74,7 @@ inclusive environment for building high-performance software.
 
 The installer detects your OS and architecture and adds Salam to your PATH; open a new terminal afterwards.
 
-Options go after `sh -s --`, for example `... | sh -s -- --dir ./bin --version 0.6.19`.
+Options go after `sh -s --`, for example `... | sh -s -- --dir ./bin --version 0.7.1`.
 The shell installer takes `--dir DIR`, `--version X.Y.Z`, `--os NAME`,
 `--arch NAME`, `--platform NAME`, `--no-modify-path`, `--no-color` and `--help`;
 run it with `--help` for the full list.
@@ -121,23 +121,23 @@ irm https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.ps
 > negotiate TLS independently of .NET.
 
 To pass options, wrap the fetched script instead of piping it - a bare
-`irm ... 0.6.19 | iex` does not work, since that "0.6.19" is parsed as an
+`irm ... 0.7.1 | iex` does not work, since that "0.7.1" is parsed as an
 argument to `Invoke-RestMethod`, not to the installer:
 
 ```powershell
-iex "& { $(irm https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.ps1) } --dir C:\Tools\Salam --version 0.6.19"
+iex "& { $(irm https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.ps1) } --dir C:\Tools\Salam --version 0.7.1"
 ```
 
 Or set the matching environment variable before the plain piped form instead:
 
 ```powershell
-$env:SALAM_VERSION = "0.6.19"; irm https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.ps1 | iex
+$env:SALAM_VERSION = "0.7.1"; irm https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.ps1 | iex
 ```
 
 Or from `cmd.exe`:
 
 ```bat
-curl -fsSLo "%TEMP%\salam-install.bat" https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.bat && "%TEMP%\salam-install.bat" --version 0.6.19
+curl -fsSLo "%TEMP%\salam-install.bat" https://raw.githubusercontent.com/SalamLang/Salam/refs/heads/main/install.bat && "%TEMP%\salam-install.bat" --version 0.7.1
 ```
 
 ## 🧩 Editor Support
@@ -163,6 +163,13 @@ its own installation instructions:
 All of them highlight the English and Persian keyword packs, and the
 word lists are generated from the compiler's own tables so they cannot drift.
 The richer plugins also run, build, check and format through the compiler.
+
+## 🚇 Built with Salam
+
+[**Salam Tunnel**](https://github.com/BaseMax/salam-ssh-tunnel) is a desktop app
+written entirely in Salam. It routes a whole computer through an SSH server with
+one button, and draws its window with the page language. It is a larger example
+of native UI, background work, processes and the `std/net` packages.
 
 ## 🛠️ The Compiler (`salam`)
 
@@ -258,12 +265,14 @@ end
 
 `salam new NAME` makes a folder with `main.salam`, `salam.toml` and a
 `.gitignore`; `salam new NAME --desktop` makes a desktop app with a web
-interface (see [docs/DESKTOP.md](docs/DESKTOP.md)). `salam init [DIR]` turns an
-existing folder (the current one by default) into a project and keeps the files
-that are already there. In a terminal `init` asks for the name, a description,
+interface (see [docs/DESKTOP.md](docs/DESKTOP.md)). `salam init [DIR]` writes a
+project into DIR (the current folder by default) when it is empty; `.git`,
+`.gitignore`, `.DS_Store`, `README*` and `LICENSE*` (the last two in any letter
+case) do not count, and an existing file is kept. When it holds any other file or folder, the project goes into a new
+subfolder named after the project. In a terminal `init` asks for the name, a description,
 the type (`cli`, `http` or `dsl`, the page language), the platforms, the design
 system (`shadcn` or `none`) and the web mode (`page`, `spa` or `ssr`), shows a
-summary and writes a starter project with a README; the answers go into
+summary and writes a starter project with a readme; the answers go into
 `[project]` and `[design]` in `salam.toml`. The flags `--name=`,
 `--description=`, `--type=`, `--platforms=a,b|all`, `--design=` and `--web=`
 answer questions up front, and `-y` accepts the defaults, so scripts never
@@ -280,7 +289,7 @@ salam init -y --type=dsl --platforms=web,linux # a page project in the current f
 One `page:` program targets every platform. `salam build` and `salam run` take
 `--platform=web|js|android|ios|linux|macos|windows`, and `salam build` also
 `--platform=all` for every platform a project lists in `salam.toml`.
-`--arch=x86_64|aarch64|i686|arm|riscv64` picks the CPU for linux, macos and
+`--arch=x86_64|aarch64|i686|arm|riscv64` picks the CPU for Linux, macOS and
 windows; `--target=TRIPLE` spells the whole target out and wins over both.
 
 ```sh
@@ -331,7 +340,7 @@ the standard library and the bundled tools to the newest release.
 completion, go to definition, rename, formatting and quick fixes); the editor
 plugins under [`extensions/`](extensions/) start it, and
 [docs/LSP.md](docs/LSP.md) lists what it covers. `salam dap` is the debug
-adapter behind F5 in VS Code.
+adapter behind F5 in Visual Studio Code.
 
 ### Cross-compilation
 
@@ -453,7 +462,7 @@ To build the image yourself:
 
 ```sh
 docker build -t salam docker                                   # newest release
-docker build -t salam --build-arg SALAM_VERSION=0.6.19 docker   # a chosen release
+docker build -t salam --build-arg SALAM_VERSION=0.7.1 docker   # a chosen release
 ```
 
 [`docker/docker-compose.yml`](docker/docker-compose.yml) builds the same

@@ -7,11 +7,12 @@ PRAXO-CORE is a dependency-free TypeScript framework for building tool-using AI 
 | Field | Value |
 | --- | --- |
 | Package | `@axisvela/praxo-core` |
-| Registry | [npm](https://www.npmjs.com/package/@axisvela/praxo-core/v/0.9.0) |
-| Install | `npm install @axisvela/praxo-core@0.9.0` |
+| Registry | [npm](https://www.npmjs.com/package/@axisvela/praxo-core/v/0.10.0) |
+| Install | `npm install @axisvela/praxo-core@0.10.0` |
 | Source version | `0.10.0` |
-| Published version | `0.9.0` |
-| Source tag | `typescript/v0.10.0` |
+| Published version | `0.10.0` |
+| Publication status | published |
+| Canonical source tag | [`typescript/v0.10.0`](https://github.com/axisvela/praxo-core/tree/typescript/v0.10.0) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/typescript/ |
@@ -30,7 +31,7 @@ PRAXO-CORE is a dependency-free TypeScript framework for building tool-using AI 
 Install the published package:
 
 ```bash
-npm install @axisvela/praxo-core@0.9.0
+npm install @axisvela/praxo-core@0.10.0
 ```
 
 ```ts
@@ -80,7 +81,7 @@ Runnable examples live under [`language/typescript/examples`](language/typescrip
 | --- | --- |
 | [advanced-delegation](language/typescript/examples/advanced-delegation) | This example shows an application-level parent/child agent pattern. The parent agent may call a `delegate` tool but not the child's `record` tool. The delegate tool runs a child... |
 | [checkpoint](language/typescript/examples/checkpoint) | This example uses published npm `@axisvela/praxo-core@0.9.0` to keep checkpoint storage application-owned while using the SDK allowlist for payload encoding. |
-| [consumer](language/typescript/examples/consumer) | This starter installs the published `@axisvela/praxo-core@0.9.0` package from npm in a separate application. It does not import the repository's TypeScript source. Node.js 20 or... |
+| [consumer](language/typescript/examples/consumer) | This starter installs the published `@axisvela/praxo-core@0.10.0` package from npm in a separate application. It does not import the repository's TypeScript source. Node.js 20 o... |
 | [event-sink](language/typescript/examples/event-sink) | This example uses published npm `@axisvela/praxo-core@0.9.0` to observe agent lifecycle and tool events without coupling the agent to a logging or telemetry backend. |
 | [hitl](language/typescript/examples/hitl) | This example demonstrates a write tool that requires human approval: |
 | [identity-policy](language/typescript/examples/identity-policy) | This example uses published npm `@axisvela/praxo-core@0.9.0` to bind a trusted principal to Core policy authorization. The application owns authentication and principal storage;... |
@@ -97,26 +98,30 @@ Runnable examples live under [`language/typescript/examples`](language/typescrip
 
 ## Scenario Tutorials
 
-Scenario-oriented tutorials live under `language/typescript/Tutorial`.
+Scenario-oriented tutorials live under `language/typescript/Tutorial`. Planning context: [Tutorial Plan](https://axisvela.github.io/praxo-core/getting-started/tutorial-plan/), [100 candidate agent scenarios](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), and [Tutorial Catalog](https://axisvela.github.io/praxo-core/getting-started/tutorial-catalog/).
 
 | Path | What it shows |
 | --- | --- |
 | [Tutorial](language/typescript/Tutorial) | Application-shaped tutorials live here, alongside `language/go/examples/`, which keeps mechanism checks and focused integration examples. Tutorial is intentionally capitalized i... |
-| [api-orchestration](language/typescript/Tutorial/api-orchestration) | A bounded first slice of [SE-08](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an integration platform. It maps two fixed synthetic APIs, validate... |
+| [api-orchestration](language/typescript/Tutorial/api-orchestration) | A bounded first slice of [SE-08](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an integration platform. It maps two fixed synthetic APIs, validates the order schema, and either drafts a review-only mapping or stops on a schema mismatch. No network, credentials or partner system is accessed. |
 | [copyright-evidence](language/typescript/Tutorial/copyright-evidence) | Compares fixed authorized assets and drafts a review-only evidence packet. No broad crawl, DMCA notice or infringement verdict. |
 | [customer-support](language/typescript/Tutorial/customer-support) | A native TypeScript Core tutorial for a customer-support reply streamed over SSE. The Agent has two fixed tools: `lookup_order` reads `order-100`, and `search_policy` reads a fi... |
 | [education-tutoring](language/typescript/Tutorial/education-tutoring) | Tracks a fixed learner fixture and drafts a graded Socratic question for review. No adaptive model or issued grade. |
 | [live-show](language/typescript/Tutorial/live-show) | Replays fixed engagement events and drafts a review-only running order. No audience profiling, coupon sends or stream control. |
-| [localization-draft](language/typescript/Tutorial/localization-draft) | A bounded first slice of [CS-07](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a legal or tax compliance system. It compares fixed localization ru... |
+| [localization-draft](language/typescript/Tutorial/localization-draft) | A bounded first slice of [CS-07](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a legal or tax compliance system. It compares fixed localization rules and drafts review-only localized product text. No legal/tax guarantee, live content system or publication. |
 | [meeting-coordination](language/typescript/Tutorial/meeting-coordination) | Reconciles fixed calendar evidence and drafts review-only minutes. No invitations or live calendar writes. |
-| [negotiation-interpretation](language/typescript/Tutorial/negotiation-interpretation) | A bounded first slice of [OG-03](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an interpreter or cultural-profiling system. It compares a fixed bi... |
+| [negotiation-interpretation](language/typescript/Tutorial/negotiation-interpretation) | A bounded first slice of [OG-03](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not an interpreter or cultural-profiling system. It compares a fixed bilingual transcript excerpt and drafts review-only negotiation notes. No micro-expression inference, mind reading or live interpretation guarantee. |
 | [order-review](language/typescript/Tutorial/order-review) | First deterministic native TypeScript Core integration slice. It shares the synthetic order HTTP service with the Python example, not a remote Agent loop. The `review_order` too... |
 | [phishing-awareness](language/typescript/Tutorial/phishing-awareness) | Classifies a fixed synthetic email and drafts an authorized review-only awareness exercise. No sends, links or infrastructure attacks. |
-| [retail-replenishment](language/typescript/Tutorial/retail-replenishment) | A bounded first slice of [CS-05](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not live pricing or procurement. It checks a fixed SKU's stock and pric... |
+| [retail-replenishment](language/typescript/Tutorial/retail-replenishment) | A bounded first slice of [CS-05](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not live pricing or procurement. It checks a fixed SKU's stock and pricing fixture and drafts a review-only purchase order. No network, credentials or live model are used. |
 | [sales-crm](language/typescript/Tutorial/sales-crm) | Extracts fixed objections from a transcript and drafts a review-only CRM update. No CRM write or customer message. |
 | [storyboard-previs](language/typescript/Tutorial/storyboard-previs) | Turns a fixed script scene into a review-only shot plan. No rendering or virtual-production engine. |
 | [travel-booking](language/typescript/Tutorial/travel-booking) | A native TypeScript Core tutorial for review-only flight booking. It checks fixed `trip-100` inventory and drafts a fare hold with no payment or booking write. The model package... |
-| [workspace-plan](language/typescript/Tutorial/workspace-plan) | A bounded first slice of [SE-01](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a code-generation or deployment product. It reads a fixed allowlist... |
+| [workspace-plan](language/typescript/Tutorial/workspace-plan) | A bounded first slice of [SE-01](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a code-generation or deployment product. It reads a fixed allowlisted workspace, applies one bounded edit to `app.js` and inspects synthetic diagnostics. In-process fixtures only; no host filesystem, compiler or deployment. |
+
+## Reference Applications
+
+No accepted end-to-end reference application is recorded for this language yet. Candidate goals are tracked in the [Reference Application Portfolio](https://axisvela.github.io/praxo-core/project/roadmap/#reference-application-portfolio).
 
 ## Verify
 
@@ -159,7 +164,7 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 - Mirror repository: https://github.com/axisvela/praxo-core-typescript
 - Release index: https://axisvela.github.io/praxo-core/languages/registry-status/
 
-This repository is a discovery mirror of the canonical TypeScript source. The monorepo remains the source of truth and the release workflow source.
+This repository is a discovery mirror of the canonical TypeScript source. The monorepo remains the source of truth and the release workflow source. The mirror's `main` branch tracks current source, not a release snapshot. Source tags refer to the canonical monorepo and are not necessarily present in this mirror; syncing the branch does not publish mirror tags or registry packages.
 
 PRAXO-CORE is not a hosted model, workflow engine, identity provider, or safety controller. Do not infer exactly-once execution, complete sandbox isolation, production security certification, live-provider behavior, or physical safety from this package.
 

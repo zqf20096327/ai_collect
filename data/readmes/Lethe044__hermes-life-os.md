@@ -33,6 +33,7 @@ Ask in plain language; Hermes calls the right tool and answers from your own dat
 | Add a task in one line | "call Sam tomorrow #work !high ~30m" | `quick_add` |
 | Know what to test next | "what experiment should I try?" | `suggest_experiment` |
 | Check if work fits | "can I fit 3 hours of work before Friday?" | `check_capacity` |
+| Batch small tasks | "batch my #calls into one block" | `batch_tasks` |
 | Budget your week | "at least 10 hours of deep work a week" | `set_time_budget` |
 | Check your estimates | "how good am I at estimating?" | `get_estimate_accuracy` |
 | See if the week is too full | "can I do everything due this week?" | `get_workload_forecast` |
@@ -51,7 +52,7 @@ Ask in plain language; Hermes calls the right tool and answers from your own dat
 | Undo a mistake | "put the rent task back" | `restore_deleted` |
 | Understand yourself | "what affects my sleep?" | `get_correlations` |
 
-All 317 tools are listed in the [tool reference](docs/TOOLS.md).
+All 320 tools are listed in the [tool reference](docs/TOOLS.md).
 
 ## Contents
 
@@ -611,6 +612,9 @@ recently deleted list.
 - **Quick add**: type a task the way you would say it. Hermes picks out the due date (today,
   tomorrow, a weekday, `by fri`, `in 3 days`, an ISO date), `#tags`, a `!priority`, an estimate
   (`~30m`, `~1h30m`) and a repeat (`every week`, `daily`). `preview=true` shows the reading only.
+- **Closing gaps**: `fill_time_budget` proposes (or creates) the blocks that would meet a short
+  minimum budget; `batch_tasks` groups same-tag tasks into one block; a tripwire with a follow-up
+  task creates it through `act_on_tripwires`.
 - **Experiment ideas**: `suggest_experiment` proposes experiments from the correlations in your
   own data, only for things you can change and in the direction that should help.
 - **Capacity and rebalancing**: `check_capacity` says whether new work fits before a deadline;
@@ -2210,9 +2214,4 @@ hermes-life-os-wrapped --days 7                      # a "your week" card
 ```
 
 A single shareable PNG card - your average Life Score, entries logged,
-days active, average mood/sleep, your best day, and badges earned - in
-the spirit of Spotify Wrapped or GitHub's yearly contribution recap.
-Entirely local: reads only from data already on disk, makes no LLM or
-network calls, and the image never leaves your machine unless you
-choose to share it. Needs matplotlib (already a core dependency, same
-as the dash
+days active, average mood/sleep, your best d

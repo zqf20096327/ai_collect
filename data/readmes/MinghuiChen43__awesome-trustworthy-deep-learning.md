@@ -192,6 +192,11 @@ Daily updating from ArXiv. The preview README only includes papers submitted to 
 
 ### 2026
 
+- Chain-of-Thought Is Not Explainability. [[paper]](https://arxiv.org/abs/2611.31271)
+  - Fazl Barez, Tung-Yu Wu, Iván Arcuschin, Michael Lan, Vincent Wang, Noah Siegel, Nicolas Collignon, Clement Neo, Isabelle Lee, Alasdair Paren, John Yan, Adel Bibi, Damiano Fornasiere, Robert Trager, Yanai Elazar, Yoshua Bengio.
+  - Key Word: Chain-of-Thought Reasoning; Explanation Faithfulness; Language Model Interpretability.
+  - <details><summary>Digest</summary> The authors review evidence that a language model's stated reasoning can diverge from the computations that produced its answer. Among 1,000 recent papers on chain-of-thought reasoning, they find that about 21.7% base a method or safety argument on the assumption that these explanations are faithful. They recommend testing faithfulness in the intended application and reporting the results alongside interpretability claims.</details>
+
 - Verbalizable Representations Form a Global Workspace in Language Models. [[paper]](https://arxiv.org/abs/2607.15495)
   - Wes Gurnee, Nicholas Sofroniew, Adam Pearce, Mateusz Piotrowski, Isaac Kauvar, Runjin Chen, Anna Soligo, Paul Bogdan, Euan Ong, Rowan Wang, Ben Thompson, David Abrahams, Subhash Kantamneni, Emmanuel Ameisen, Joshua Batson, Jack Lindsey.
   - Key Word: Mechanistic Interpretability; Jacobian Lens; Global Workspace; Internal Representations; Alignment Auditing.
@@ -316,6 +321,11 @@ Daily updating from ArXiv. The preview README only includes papers submitted to 
   - Max Springer, Chung Peng Lee, Blossom Metevier, Jane Castleman, Bohdan Turbal, Hayoung Jung, Zeyu Shen, Aleksandra Korolova.
   - Key Word: Alignment Drift.
   - <details><summary>Digest</summary> Fine-tuning an aligned language model can unexpectedly weaken its safety guardrails even on purely benign data. The paper argues the common “don’t worry—task updates are orthogonal to safety directions” story is unreliable because that orthogonality is dynamically unstable under gradient descent. Using a geometric view, it claims alignment behavior lives in low-dimensional, sharply curved subspaces, so first-order thinking misses how loss curvature creates a second-order “acceleration” that gradually pushes training trajectories into alignment-sensitive regions. They formalize when this happens via an Alignment Instability Condition (three geometric properties), and derive a quartic scaling law: alignment loss grows like training time, controlled by alignment sharpness and curvature coupling between the fine-tuning task and safety-critical parameters. The takeaway: safety degradation is an intrinsic geometric risk of standard fine-tuning, motivating curvature-aware methods and predictive diagnostics instead of purely reactive red-teaming.
+
+- SP^2DPO: An LLM-assisted Semantic Per-Pair DPO Generalization. [[paper]](https://arxiv.org/abs/2601.22385)
+  - Chaoyue He, Xin Zhou, Di Wang, Hong Xu, Wei Liu, Chunyan Miao.
+  - Key Word: Direct Preference Optimization; Preference Learning; Per-Pair Temperature; LLM-as-Annotator; AI Alignment.
+  - <details><summary>Digest</summary> Standard DPO uses one global temperature beta for every preference pair, even though real preference data mixes high-signal failures (safety, factuality, instruction violations) with low-signal stylistic differences and label noise. SP^2DPO assigns each pair its own beta_i, computed offline from teacher-LLM annotations of the semantic gap (category, magnitude, confidence), so training stays plain DPO with no extra overhead and the beta schedule is auditable. On UltraFeedback with four 4B-8B instruction-tuned backbones, it is competitive with a tuned global-beta DPO baseline and improves AlpacaEval 2.0 length-controlled win rate on two of four backbones without per-model beta sweeps.</details>
 
 - Asymptotic Universal Alignment: A New Alignment Framework via Test-Time Scaling. [[paper]](https://arxiv.org/abs/2601.08777)
   - Yang Cai, Weiqiang Zheng.

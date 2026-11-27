@@ -130,6 +130,8 @@ git clone https://github.com/ysunyang4/webagent.git
 
 If **WebAgent** has enhanced your daily AI workflow or boosted your productivity, consider buying the author a coffee ☕! Donations are completely voluntary and do not grant any extra features, proprietary services, or priority support.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/ryansun)
+
 > 💼 **Enterprise Sponsorship & Commercial Licensing**  
 > For enterprise sponsorship, custom agent integrations, or commercial licensing inquiries (dual-licensing exempt from GPL-3.0 copyleft obligations), feel free to reach out via [GitHub Issues](https://github.com/ysunyang4/webagent/issues) or email: `ysunyang4@gmail.com`.
 
@@ -155,6 +157,12 @@ If **WebAgent** has enhanced your daily AI workflow or boosted your productivity
         <code>UID: 1292741809</code><br />
         <span style="font-size: 11px; color: #888;">Binance Pay · Ryan Sunv</span>
       </td>
+      <td align="center" width="220">
+        <img src="assets/ko-fi-qr.png" width="180" alt="Ko-fi" style="border-radius: 12px;" /><br />
+        <br />
+        <b>Ko-fi</b><br />
+        <span style="font-size: 11px; color: #888;">Buy me a coffee on Ko-fi</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -167,6 +175,7 @@ If **WebAgent** has enhanced your daily AI workflow or boosted your productivity
 | **Crypto (USDT, on-chain)** | **Address: `TPRrDW8DGsrDmcnWvanTbFz7XEJuywu21i`** · Network: **TRON (TRC-20)** | From any wallet or exchange — just select the **TRON (TRC-20)** network when sending |
 | **WeChat Reward** | Official WeChat Reward QR code | Scan only from the official image above |
 | **Alipay Appreciation** | Official Alipay Appreciation QR code | Scan only from the official image above |
+| **Ko-fi** | [https://ko-fi.com/ryansun](https://ko-fi.com/ryansun) | Buy me a coffee via Ko-fi (PayPal) |
 
 > ☕ **Every tip, big or small, means the world to me.** Your support helps me keep improving this project — making it more complete, more polished, and more powerful. Thank you for helping it grow.
 

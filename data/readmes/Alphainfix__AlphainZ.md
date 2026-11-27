@@ -67,9 +67,13 @@ they stay in the PDF, sync with Zotero, and reopen the conversation when you cli
   limits on output and steps.
 - **Use multiple computers.** Conversations and settings can sync through Zotero or a folder you choose
   (iCloud Drive, OneDrive, ...). API keys never leave the computer you entered them on.
+- **In English or Chinese.** The interface comes in English and Simplified Chinese. Choose on the first
+  welcome page or in Settings → General → Appearance, which follows Zotero's own language by default.
 - **Serve other agents.** Turn on Settings → Advanced → MCP Server, and AlphainZ writes a small bridge,
   `alphainz-mcp-stdio.mjs`, into your Zotero data folder. Add it to a client such as Claude Desktop as a
-  stdio server run with `node`, and the client can search your library while Zotero is open.
+  stdio server run with `node`. While Zotero is open, the client can then search your library by metadata,
+  topic or the meaning of the full text, find figures from a description, read papers and look at their
+  pages, and read your notes, highlights and comments.
 
 ## Accuracy of semantic image and text search
 
@@ -175,6 +179,16 @@ npm test
 
 The values in `.env.production` are inert placeholders: a component inherited from Beaver still
 constructs a client it never uses, and fails to load without them.
+
+## Changelog
+
+- **0.1.81** (2026-11-26): OpenCode Go works again, and its DeepSeek model keeps its own name; Chinese punctuation in
+  answers stays as written.
+- **0.1.80** (2026-11-25): a Chinese interface, and eight more library tools over MCP (full-text and
+  figure search, pages and images, highlights and comments).
+- **0.1.78** (2026-10-30): the first public release.
+
+Full notes for each version are on the [releases page](https://github.com/Alphainfix/AlphainZ/releases).
 
 ## License
 

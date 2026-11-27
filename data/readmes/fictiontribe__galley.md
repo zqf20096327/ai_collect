@@ -168,9 +168,9 @@ The principles behind it are in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
   and its zod schemas (discriminated unions become page sections) and the
   routes in `src/pages`, without running your code. The site kit and the
   starters are Astro.
-- **Docusaurus, Nuxt, Next.js, SvelteKit, Eleventy, Hugo and Jekyll** are
-  recognised by their conventions, and any folder of markdown with front
-  matter works.
+- **Docusaurus, Nuxt, Next.js, SvelteKit, Eleventy, Hugo and Jekyll** each
+  have a built-in adapter that reads the framework's own configuration
+  statically, and any folder of markdown with front matter works.
 - **Anything else** arrives through a small [adapter](docs/adapters.md), with
   a conformance kit to prove it and a worked
   [Eleventy example](examples/adapter-eleventy).
@@ -194,11 +194,9 @@ Intent, not a promise. The longer version is [ROADMAP.md](ROADMAP.md).
   server), run on the real services
 - The desktop app for Windows and Linux, tried by people and signed
 - The site kit, adapter kit and plugin kit on npm
-- Full adapters beyond Astro
 
 **Later**
 
-- Single sign-on for hosted installs
 - Galley Cloud: the editor, hosted for you
 
 ## Documentation
@@ -251,7 +249,8 @@ change between minor versions ([what the numbers mean](RELEASING.md#what-the-ver
 - **New, in final checks**: the guided move from WordPress, run against an
   export file and a stand-in WordPress site, not yet a real one; a hosted
   editor, one site per install, run for real on its image and on a server
-  behind HTTPS (its image isn't on a registry yet: [`docs/cloud-install.md`](docs/cloud-install.md)).
+  behind HTTPS (multi-arch image published to `ghcr.io/fictiontribe/galley` on
+  each release: [`docs/cloud-install.md`](docs/cloud-install.md)).
 - **Preview**: the page builder.
 - **In progress**: deploys to Vercel (built, not yet run on the real
   service); hosting the editor online on your own Fly.io, Cloudflare or
@@ -279,8 +278,8 @@ Every commit is signed off under the [DCO](DCO) (`git commit -s`); there is
 no CLA. Good places to start:
 
 - **Starters**: a new site for a kind of business the starters don't cover.
-- **Adapters**: a full adapter for a framework Galley only recognises by
-  convention ([how](docs/adapters.md)).
+- **Adapters**: an adapter for a framework Galley doesn't ship with yet
+  ([how](docs/adapters.md)).
 - **Plugins**: a form destination, a script, an image service, a host
   ([how](docs/plugins.md)).
 

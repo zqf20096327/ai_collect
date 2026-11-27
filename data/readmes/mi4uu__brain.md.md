@@ -26,14 +26,15 @@
 |---|---|
 | **Obsidian-compatible markdown** | Wikilinks, embeds, callouts, math, mermaid, tasks, frontmatter, aliases. Open your existing Obsidian vault and it just works. |
 | **Graph view** | Interactive map of your notes and wikilinks: hover to light up neighbours, click to open, drag, zoom, filter by folder or tag, plus a local graph of the current note. Smooth on thousands of notes. |
-| **Live editor + preview** | CodeMirror 6 with cursor-anchored scroll sync, autosave, instant tooltips, command palette, quick switcher. |
+| **Live editor + preview** | CodeMirror 6 with cursor-anchored scroll sync, autosave, instant tooltips, command palette, quick switcher. Editor, Preview or Both, one click or **⌘\\**. |
 | **Semantic search built in** | Per-vault embedded vector store (pure JS, no external DB). Notes are chunked, embedded and indexed on every save. |
 | **Pluggable embedders** | Default: `bge-small-en-v1.5` running locally via **bundled WASM ONNX**, works in the prebuilt single binary, zero native deps. Or point at **Ollama**, **LM Studio**, or **OpenAI**: anything with `/v1/embeddings`. |
-| **MCP server (streamable HTTP)** | 18 tools and 2 resources mounted on the same port. Claude Desktop, Claude Code, Cursor and any MCP-compliant agent can read, search, query and write your notes. |
+| **MCP server (streamable HTTP)** | 19 tools and 2 resources mounted on the same port. Claude Desktop, Claude Code, Cursor and any MCP-compliant agent can read, search, query and write your notes. List tools return pages, so a small local model never gets the whole vault in one reply. |
 | **MCP Apps note view** | In hosts that support MCP Apps (tested with OpenClaw), `read_note` opens an interactive view of the note: clickable wikilinks, Back, backlinks, light and dark. Other clients get the same text as before. |
 | **Per-folder agent permissions** | Right-click a folder → set `{read, write}` for the MCP surface. Keep `Journal/Private/` out of agent reach without locking down the vault. |
 | **Optional password auth** | argon2id, bearer tokens, 24-hour TTL, gates both HTTP API and MCP. Off by default, on with one click. |
 | **Git autocommit with a full audit trail** | Every save lands in git, attributed to whoever (or whichever agent) made it. Full history with author filter, diff, restore, manual checkpoints. The vault is a real git repo on disk. |
+| **See what agents changed** | A Changes view lists every note an agent touched since you last looked, grouped by day, with the diff and a revert: undo just that change, or put the note back to how it was. |
 | **Agents that don't overwrite each other** | `write_note` takes the revision an agent read; if another agent changed the note meanwhile, nothing is written and the agent is told to re-read and merge. |
 | **A tidy tree** | Hide agent scratch files and templates from the tree and search, sort each folder its own way, daily notes grouped by year and month, a homepage note. |
 | **No vendor lock-in** | Your vault is a folder of `.md` files. Open it in VSCode, Obsidian, `cat`, anything. brain.md is just one more way to view and query it. |
@@ -76,7 +77,7 @@ files you can open in any editor at any time.
 | License                                 | Proprietary             | AGPL-3.0        | Proprietary        | **AGPL-3.0**           |
 | Local-first vault on disk               | ✓                       | ✓               | ✗ (cloud)          | **✓**                  |
 | Plain `.md` files (no proprietary db)   | ✓                       | ✓ (block model) | ✗                  | **✓**                  |
-| Built-in MCP server                     | ✗ (3rd-party plugin)    | ✗               | ✗                  | **✓ (18 tools)**       |
+| Built-in MCP server                     | ✗ (3rd-party plugin)    | ✗               | ✗                  | **✓ (19 tools)**       |
 | Vector RAG built-in                     | ✗ (paid plugin)         | ✗               | ✓ (cloud only)     | **✓ (embedded, local)** |
 | Per-folder agent permissions            | n/a                     | n/a             | n/a                | **✓**                  |
 | Single binary, no Electron              | ✗ (Electron)            | ✗ (Electron)    | n/a                | **✓ (`bun --compile`)** |
@@ -100,6 +101,9 @@ Model Context Protocol.
   - [Tasks across the vault](#tasks-across-the-vault)
   - [Graph view](#graph-view)
   - [Keeping the vault tidy](#keeping-the-vault-tidy)
+  - [Auto versioning & history](#auto-versioning--history)
+  - [What agents changed](#what-agents-changed)
+  - [Mobile](#mobile)
 - [AI for agents](#ai-for-agents)
   - [Semantic search (RAG)](#semantic-search-rag)
   - [MCP server](#mcp-server)
@@ -274,9 +278,14 @@ Two synchronised panes powered by **CodeMirror 6** and a
 in the preview stays anchored to the cursor in the editor; a thin SVG
 connector marks the link between them.
 
-Need more room? The layout button in the pane header (or **⌘\\ / Ctrl+\\**)
-cycles **editor + preview → editor only → preview only**, and the
-choice is remembered per device.
+Need more room? The **Editor / Preview / Both** switch in the pane
+header picks the layout in one click, and **⌘\\ / Ctrl+\\** cycles
+through the three. The choice is remembered per device.
+
+The chip at the top right says where your text is: *Unsaved* while you
+type, *Saving*, *Saved*, then *Saved, not in history* until the
+autocommit picks it up. Click it to record the change in history right
+away, retry a failed save, or open History.
 
 ![Editor + preview, sidebar with backlinks](docs/img/project-with-sidebar.png)
 
@@ -287,6 +296,13 @@ state per device (`localStorage`). The **Tags** panel splits into
 **Related** panel powers itself from the RAG index, the same engine the
 agents use, and after every save brain.md quietly suggests up to three
 tags borrowed from your closest semantic neighbours.
+
+The accent colour is yours to pick: **Settings → Editor → Accent** has
+Ink, Violet, Teal, Rust and Graphite, each tuned for light and dark.
+It marks the selection, the active block and the new-change dots, and
+nothing else.
+
+![Settings, Editor, accent colour](docs/img/settings-accent.png)
 
 ### Markdown that actually does things
 
@@ -391,6 +407,32 @@ in the same save window.
 
 ![Note history with unified diff and one-click restore](docs/img/gitautoversioninghistry.png)
 
+### What agents changed
+
+History answers "what happened to this note". **Changes** answers "what
+did my agents do while I was away". It opens on its own when there is
+something new, and it sits behind the button with the badge in the
+topbar the rest of the time.
+
+- Notes are grouped by day, newest first, one row per note with who
+  touched it and when. Notes you have not looked at yet carry a dot,
+  in the list and in the file tree.
+- *Only agents* hides your own edits. *Mark all seen* moves your
+  cursor to now. The cursor is stored on the server, so a second
+  browser or your phone agrees on what is new.
+- Expand a note to see each edit with its diff.
+
+![Changes view: notes agents touched, grouped by day](docs/img/changes-view.png)
+
+Every edit has a revert, and the dialog tells you what goes with it.
+**Undo only this change** takes out that one edit and keeps everything
+written after it. **Restore the note to before this change** puts the
+note back to that point and lists the later edits that go too. A note
+an agent created moves to Trash instead. If the note changed in a way
+that conflicts, nothing is written and you are told why.
+
+![Revert dialog: undo one change or restore the note](docs/img/changes-revert.png)
+
 ### Mobile
 
 brain.md is not a desktop-only tool. The same vault, the same
@@ -431,8 +473,9 @@ hamburger, the sidebar slides in as a drawer.
   <img src="docs/img/mobile3.jpeg" alt="brain.md mobile, sidebar drawer" width="30%" />
 </p>
 
-Real phone, not a Chrome DevTools emulator. Captures notes on the
-move; the same RAG, tags, backlinks, and tasks you have on desktop.
+A phone is a first-class client, not a squeezed desktop: touch-sized
+rows and buttons, row actions always in reach, and the same RAG, tags,
+backlinks, tasks and Changes view you have on desktop.
 
 ---
 
@@ -596,20 +639,21 @@ per tool call. Claude Desktop and LM Studio both do this.
 
 ![MCP Server page in brain.md](docs/img/mcp-server-page.png)
 
-Tools (18):
+Tools (19):
 
 | Tool                  | Folder perm | What it does                                                       |
 |-----------------------|-------------|--------------------------------------------------------------------|
 | `search_notes`        | `read`      | Full-text vault search                                             |
 | `similar_notes`       | `read`      | Semantic RAG (top-k chunks)                                        |
-| `read_note`           | `read`      | Note body + mtime                                                  |
-| `list_notes`          | `read`      | Filtered vault tree                                                |
+| `read_note`           | `read`      | Note body, mtime, parsed `properties`                              |
+| `list_notes`          | `read`      | Filtered vault tree, paged                                         |
 | `get_backlinks`       | `read`      | Inbound wikilinks                                                  |
 | `graph_view`          | `read`      | Graph of notes and links (whole vault, a folder, or around a note) |
-| `list_tags`           | `read`      | Tag → count map                                                    |
+| `list_tags`           | `read`      | Tags with counts, most used first, paged                           |
 | `get_tasks`           | `read`      | Aggregate tasks (filter: open/done/all)                            |
 | `write_note`          | `write`     | Create or overwrite a note                                         |
 | `append_note`         | `write`     | Append a paragraph (blank-line separator)                          |
+| `update_properties`   | `write`     | Change frontmatter properties (`set`, `unset`, `base_revision`)    |
 | `find_related`        | `read`      | Notes semantically close to a given path (excludes self)           |
 | `find_similar_tasks`  | `read`      | Semantic search across task lines (filter: open/done/all)          |
 | `semantic_outline`    | `read`      | Cluster a note's chunks into topical groups (cosine ≥ threshold)   |
@@ -621,10 +665,18 @@ Tools (18):
 
 Every tool carries MCP annotations. All of them are `readOnlyHint: true`
 except `write_note` (overwrites: `destructiveHint`; not idempotent, a
-repeat still bumps mtime) and `append_note` (adds: neither destructive
-nor idempotent). Hosts with an approval mode based on annotations can run
+repeat still bumps mtime), `append_note` (adds: neither destructive
+nor idempotent) and `update_properties` (changes only the named
+frontmatter keys; destructive, idempotent). Hosts with an approval mode based on annotations can run
 reads without a prompt and still ask before writes. Annotations are hints
 for the host; folder permissions are what brain.md enforces.
+
+List tools page their results: `list_notes` (100 per page),
+`search_notes` (20), `get_tasks`, `get_backlinks` (50 each) and
+`list_tags` (100). Each takes `limit` and `offset`. When there is more,
+the reply says so and gives the next `offset`, so an agent asks for the
+next page instead of drowning in one huge reply. See
+[docs/mcp.md](docs/mcp.md#paging).
 
 Resources (2):
 
@@ -702,7 +754,7 @@ light or dark theme.
   wikilinks in its result `_meta`, filtered by the caller's folder
   permissions, so the view needs no extra tool calls. Hosts that ask you
   to approve every call from a view prompt once per note.
-- **Read-only.** `write_note` and `append_note` are marked model-only
+- **Read-only.** `write_note`, `append_note` and `update_properties` are marked model-only
   (`visibility: ["model"]`), so a spec-following host won't let the view
   call them.
 - Images and other media show a placeholder in the view. Maths uses

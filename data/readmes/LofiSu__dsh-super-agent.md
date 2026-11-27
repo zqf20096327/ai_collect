@@ -97,6 +97,20 @@ pnpm ds-agent tasks                             # tickets and their stage
 pnpm ds-agent panel                             # Panel · Execution
 ```
 
+`tasks` prints one tab-separated line per ticket: `<ticketId> <stage> <title>`. `panel` prints Mandate, the Executor Session, the workspace directory, the latest report, and Outbox `pending` / `sent` / `failed` counts.
+
+`chat` runs that ticket to completion before it returns, so the quickstart ticket is usually `ended/ready`. Pause applies to a ticket that is still in progress. From a second terminal with the same `DS_AGENT_HOME`, read the id from `tasks` (`latest` and a unique prefix also work) and hold it:
+
+```bash
+pnpm ds-agent tasks
+pnpm ds-agent pause ticket_1 --reason "waiting on staging"
+pnpm ds-agent tasks                             # person/paused
+pnpm ds-agent panel                             # state column is paused
+pnpm ds-agent resume ticket_1 --reason "human verified"
+```
+
+The pause is stored on the ticket in SQLite. A new process still lists that same ticket as paused, and `resume` clears it and continues the work (`resume` needs a live model). Afterward, `tasks` and `panel` show the updated stage and report. Pausing a ticket that is already paused prints `already paused` and keeps the original pause record. Resuming a ticket that is not paused prints `not paused` and leaves the ticket as it was. An unknown id exits with an error and leaves every other ticket unchanged. While a ticket is paused, the Watchdog does not nudge it or fail it.
+
 State lives in `DS_AGENT_HOME`, or in `./.ds-agent` when unset. `pnpm ds-agent serve` runs the daemon and Watchdog timer over persisted state; it starts no inbound channel loop. To inspect the read model in a browser:
 
 ```bash
@@ -189,8 +203,8 @@ Every Worker `bash` call is wrapped: `sandbox-exec` on macOS, `bwrap` on Linux. 
 
 ### Observability
 
-- `ds-agent tasks` — tickets and their stage.
-- `ds-agent panel` — Panel · Execution, with Mandate, Executor Session, directory, report, and Outbox delivery counts.
+- `ds-agent tasks` — tickets and their stage. A paused ticket is `person/paused`.
+- `ds-agent panel` — Panel · Execution, with Mandate, Executor Session, directory, report, and Outbox delivery counts. A paused ticket's state is `paused`.
 - `ds-agent health` — store, vault mode, machines, Watchdog.
 - `ds-agent metrics` — counters for ingress, Eval, bypass fan-out, speculative deliver/discard, Watchdog nudge/fail, and model latency.
 - `ds-agent memory` — recent long-term memory entries.

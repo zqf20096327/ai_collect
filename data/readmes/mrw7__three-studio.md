@@ -94,10 +94,16 @@ offline with no assets.
 
 ### Turbofan manual
 
-A procedurally built high-bypass turbofan (inlet lip, 22-blade fan, nacelle
-with thrust-reverser grilles, five-stage compressor, annular combustor,
-three-stage turbine, nozzle, pylon) plus an eight-step interactive manual with a
-seven-part BOM, per-step cameras, hidden parts, highlights and hotspots.
+A procedurally built high-bypass two-spool turbofan, modelled from published
+engine proportions and the NASA Glenn turbofan description: a closed inlet lip
+with an acoustic liner, 22 wide-chord fan blades on NACA-section airfoils with a
+58°→27° root-to-tip twist, 44 outlet guide vanes, a three-stage booster, an
+eight-stage HP compressor with static stator rings, an annular combustor with 20
+fuel nozzles, a two-stage HP and five-stage LP turbine, a core nozzle and exhaust
+plug, and a wing pylon. The nacelle and core cowl are cut open so the modules
+stay visible, and the two spools turn at different rates (N2 ≈ 1.63 × N1). Plus
+an eight-step interactive manual with a seven-part BOM, per-step cameras, hidden
+parts, highlights and hotspots.
 
 ![Turbofan engine](docs/screenshots/06-demo-turbofan.png)
 

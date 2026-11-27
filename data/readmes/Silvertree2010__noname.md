@@ -27,7 +27,7 @@ noname is a terminal UI (TUI) for [Claude Code](https://claude.com/claude-code),
 - streaming text, thinking and tools, diffs that write themselves in
 - inline permissions and questions, rewind with `esc esc`, `/btw` side questions
 - live context and limit bars, cost under every answer
-- themes (default, dracula, tokyo-night, catppuccin mocha, or your own), animated backgrounds, self updates
+- themes (default, dracula, tokyo-night, catppuccin mocha, sunflower, or your own), animated backgrounds, self updates
 - image paste, `@` file mentions, background shells and subagents, `/diff`, `/mcp`, `/resume`
 - Linux, macOS and Windows; optional Codex engine with `--codex`, opencode engine with `--opencode` and Antigravity engine with `--agy`
 
@@ -111,6 +111,12 @@ Every Claude Code command and skill works as usual, except Claude Code's own `/v
 `/voice whisper` or `/voice parakeet` picks a speech model and downloads it once, together with [whisper.cpp](https://github.com/ggml-org/whisper.cpp) (checked against pinned sha-256 sums, kept in `~/.local/share/noname/voice`, `%LOCALAPPDATA%\noname\voice` on Windows). After that `/voice` starts recording; `enter` puts the text in the input box, `esc` cancels. Everything runs on your machine. Whisper base is 148 MB and knows many languages; Parakeet TDT 0.6B v3 is 356 MB, 25 European languages, and more accurate. Linux needs `pw-record`, `parecord` or `arecord`; macOS is not supported yet (whisper.cpp publishes no macOS build).
 
 Don't need it? Build with `cargo build --release --no-default-features` and the voice code is left out of the program entirely.
+
+### Phone
+
+`/phone` turns this window into the receiver for text you dictate on another device: the next piece of text lands in the input box (you still press `enter`), `/phone off` stops. Only one window receives at a time; `/phone` in another window takes over.
+
+noname only does the receiving. Anything that writes plain text files into `~/.cache/slashphone/text/` (`$XDG_CACHE_HOME/slashphone/text/`) can feed it: noname takes the oldest `.txt` file, puts its text in the input and moves the file to `done/`. Write a file under another name (for example `.part`) and rename it to `.txt` when it is complete. On Linux, `/phone` also tries `systemctl --user start slashphone.service`, so a speech-to-text service of that name can be started on demand; if there is none, nothing happens. Nothing is sent over the network by noname.
 
 ### Session files on /clear
 

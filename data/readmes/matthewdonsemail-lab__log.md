@@ -8,7 +8,7 @@
 </p>
 
 <h3 align="center">Your agent answers your DMs in your voice. Nothing sends until you approve it.</h3>
-<p align="center"><b>Read and reply to the people you already talk to on X, Discord, Slack, Instagram, Reddit, LinkedIn and Facebook<br>
+<p align="center"><b>Read and reply to the people you already talk to on X, Discord, Slack, Instagram, Reddit and LinkedIn<br>
 from your terminal, or from any agent: Claude Code, Codex, Cursor, Hermes, OpenCode, ChatGPT, Claude and Grok.</b><br>
 <a href="docs/useCases/README.md">See every play, step by step →</a></p>
 
@@ -30,7 +30,7 @@ claude mcp add log -- logMcp
 |---|---|
 | **You approve every send** | Replies are set to `ask` by default: the agent shows you the draft and waits for your yes. Every command that changes something is a dry run until `--live`. |
 | **Your voice, checked** | Each draft is scored against how you really write to that person before it can go out ([docs/voice](docs/voice)). |
-| **Hard daily limits** | Each account has its own read and write budget (500 reads and 240 writes a day on X), quiet hours, and pacing. A refusal from the platform stops the run and nothing is retried. |
+| **Hard daily limits** | Each account has its own read and write budget (500 requests and 240 writes a day on X), quiet hours, and pacing. A refusal from the platform stops the run and nothing is retried. |
 | **One session per account** | Your own accounts, signed in by you, one connection each, the way the platform's own app works. |
 | **Messages in are checked too** | Prompt injection, token stealers and encoded scripts are held before your agent reads them. |
 | **Everything is recorded** | Every read, draft, approval and send is written to a local database (`~/.logCli/log.db`) you can query. |
@@ -99,16 +99,16 @@ log voice --to <handle> --text "<draft>"
 <tr>
 <td width="50%" valign="middle">
 
-### Facebook Marketplace and groups
+### TikTok video research
 
-Listings kept live across local accounts, and groups read for people asking for a service.
+Search videos or a hashtag in the account's own browser, and export each video's full details with the bundled extractor.
 
 </td>
 <td width="50%">
 
 ```bash
-log facebook listings
-log facebook join group --account <name> --group <url>
+log tiktok search --account <name> --query "#hashtag"
+log tiktok scrape --account <name> --query "#hashtag" --output videos.json
 ```
 
 </td>
@@ -129,7 +129,7 @@ irm https://log.listeningkit.com/install.ps1 | iex                             #
 curl -fsSL https://log.listeningkit.com/install.sh | sh -s -- --skills all     # also every play as a skill
 ```
 
-This installs the `log` and `logMcp` commands, and Python with everything the platform engines need. It writes your settings to `~/.logCli/.env`. Already have [Bun](https://bun.sh)? `bun add -g @listeningkit/log` installs just the commands. Already have log? `--skills all --skillsOnly` adds only the skills; on Windows, set `$env:LOG_SKILLS = "all"` before the PowerShell line. More: [docs/install.md](docs/install.md).
+This installs the `log` and `logMcp` commands, and Python with everything the platform engines need. It writes your settings to `~/.logCli/.env`, then opens `log launch --setup` to pick your platforms and sign them in. Already have [Bun](https://bun.sh)? `bun add -g @listeningkit/log` installs just the commands. Already have log? `--skills all --skillsOnly` adds only the skills; on Windows, set `$env:LOG_SKILLS = "all"` before the PowerShell line. More: [docs/install.md](docs/install.md).
 
 ### Connect your accounts
 
@@ -146,6 +146,8 @@ Then check it with `log <platform> session check --account <name>`, which sends 
 | Codex, Cursor, OpenCode and other MCP clients | add `logMcp` as a stdio MCP server: [docs/mcp.md](docs/mcp.md) |
 | Claude, ChatGPT and Grok, or an agent on a server | the hosted server, `https://mcp.listeningkit.com/mcp`, over OAuth |
 
+An agent can also do the setup itself in one pass: `log setup` (MCP: `setup`) wires the harnesses, sets local account defaults and names the sign-ins only you can finish.
+
 Then ask in plain words: *"read my X DMs and tell me who's waiting on me"*. log's router names the play for that request, and the agent follows its steps. Every harness, and what each one can do: [Works in every harness](#works-in-every-harness).
 
 ## Platforms
@@ -156,9 +158,10 @@ Then ask in plain words: *"read my X DMs and tell me who's waiting on me"*. log'
 | [Discord](docs/platformGuides/discord.md) | DMs, groups and server channels, live; sends, reactions, voice notes, files | its own API client and the live gateway, no browser |
 | [Slack](docs/platformGuides/slack.md) | DMs and group DMs in every workspace, live; sends, reactions, voice notes | its own API client and the live socket, no browser |
 | [Instagram](docs/platforms/instagram/README.md) | DM threads, live; sends, photos, reactions, voice notes | its own API client and the realtime connection, no browser |
-| [Facebook](docs/platformGuides/facebook.md) | Marketplace listings, groups, new-account setup | the account's own browser, opened once a day from the account's home country |
-| [Reddit](docs/platformGuides/reddit.md) | session check (new) | its own API client |
-| [LinkedIn](docs/platformGuides/linkedin.md) | session check (new) | its own API client |
+| [Reddit](docs/platformGuides/reddit.md) | home feed, subreddits, posts and their comments; posts, replies, votes | its own API client, no browser |
+| [LinkedIn](docs/platformGuides/linkedin.md) | inbox and messages, posts, likes, reposts, connection requests and suggestions | its own API client, no browser |
+| [TikTok](docs/platforms/tiktok/README.md) | post stats, posting and deleting, video and hashtag search, full video exports | its own API client; search in the account's own browser, exports through the bundled extractor |
+| [Facebook](docs/platformGuides/facebook.md) | legacy: Marketplace listings and group listening are retired (#339) | the account's own browser |
 
 ## Highlights
 
@@ -168,13 +171,13 @@ Then ask in plain words: *"read my X DMs and tell me who's waiting on me"*. log'
 - **Who each person is, and where they are.** Every chat is labelled with who the person is (community, lead, client, partner, friend, bot) and where they are in your sales cycle. A small model labels them on your CPU, and asks a larger model only when it's unsure. The same person on different platforms is suggested as one, and you approve each link ([#242](https://github.com/matthewdonsemail-lab/log/pull/242), [#249](https://github.com/matthewdonsemail-lab/log/pull/249)).
 - **What actually gets replies.** `log inbox outcomes` compares the reply rate of messages log sent with yours, matched by person and stage, and shows which plays work ([#246](https://github.com/matthewdonsemail-lab/log/pull/246)).
 - **One session per account.** Each account keeps one connection open, the way the platform's own app does, never a new one per command.
-- **Live inbox.** New messages are pushed into your agent's context as they arrive, and two agents never answer the same chat.
+- **Live inbox.** New messages are pushed into your agent's context as they arrive, along with what you sent by hand outside log, and two agents never answer the same chat ([#348](https://github.com/matthewdonsemail-lab/log/pull/348)).
 - **Daily limits.** Every account has its own daily limits, pacing and quiet hours. A refusal from the platform stops the run, and nothing is retried.
 - **A judge on every message in.** The voice gate checks what goes out; the judge checks what comes in. Token stealers, encoded scripts and prompt injection are held before your agent reads them, and a small local model marks what the rules miss ([#189](https://github.com/matthewdonsemail-lab/log/pull/189), [#190](https://github.com/matthewdonsemail-lab/log/pull/190)).
 - **Turn aware.** On Discord and Slack a multi-line reply waits while they are typing, and holds the rest if they write back or keep typing ([#199](https://github.com/matthewdonsemail-lab/log/pull/199), [#202](https://github.com/matthewdonsemail-lab/log/pull/202)).
 - **Search knows where it was said.** Every hit names a DM, a group or a server channel, and you can search only one of them ([#198](https://github.com/matthewdonsemail-lab/log/pull/198)).
 - **It watches its own tools.** Tool health shows which tools are used, which fail and which guides went stale, and suggests the fix ([#203](https://github.com/matthewdonsemail-lab/log/pull/203)).
-- **Your machine, your data.** Accounts and sessions stay in `~/.logCli`. Many accounts? Keep them in [Twenty](docs/twenty.md), an open-source CRM, so every machine, agent and teammate sees the same ones.
+- **Your machine, your data.** Accounts and sessions stay in `~/.logCli`, in the local account store (`localAccounts.json`). Its cookies, passwords and PINs are taken out of that file and kept encrypted in log.db, with the key held by your OS keyring ([encrypted account store](docs/security/encryptedStore.md)).
 
 ## Works in every harness
 
@@ -227,7 +230,7 @@ One command installs and enables both halves: `log` (log's tools, every play as 
 
 Each thing log can do has one name and works the same way from the CLI, the MCP server and the log console, on every platform. The platform is something you pass in, never a default:
 
-- **Shared tools.** `log chats list`, `log messages read|send|react|watch` and their MCP tools (`chatsList`, `messagesRead`, `messagesSendLive`) work on X, Discord, Slack, Instagram and Facebook, the platform taken from the account.
+- **Shared tools.** `log chats list`, `log messages read|send|react|watch` and their MCP tools (`chatsList`, `messagesRead`, `messagesSendLive`) work on X, Discord, Slack and Instagram, the platform taken from the account.
 - **One sign-in.** `log sessions signIn` (MCP: `sessionsSignIn`) opens the account's own browser, you sign in on the platform's login screen, and the session is saved only once the platform shows you signed in. A signed-out browser never overwrites a good session. `log sessions check` answers for every account at once.
 - **The log console.** `log console` is the same operations as a terminal console, or as a web console on your own machine with `--web`. Every console screen has a matching command.
 - **Views.** `report` draws a view from log's own data, and `browserView` shows an account's live browser in the chat, where the host draws MCP Apps. Elsewhere both come back as text.
@@ -442,7 +445,7 @@ A video with no sound, like motion graphics, says `no sound` and is told by what
 
 ### The models it uses
 
-Five pinned models and two you train run on your own machine, with no key. Four hosted services are used only when you add their key. Each pin, how `log models` checks it, how models download and update, what your machine needs and how to turn each one off: [local models](docs/models.md).
+Six pinned models and two you train run on your own machine, with no key. Four hosted services are used only when you add their key. Each pin, how `log models` checks it, how models download and update, what your machine needs and how to turn each one off: [local models](docs/models.md).
 
 | Model | Runs | What it does |
 |---|---|---|
@@ -451,6 +454,7 @@ Five pinned models and two you train run on your own machine, with no key. Four 
 | roberta-base-go_emotions | your machine, pinned | the emotions of each new message, for your pipeline labels |
 | LFM2.5-VL-450M | your machine, pinned | describes every picture and video frame as text |
 | myuri | your machine, pinned pip package | human mouse paths, typing and scrolling in the browsers |
+| gliner2.5-small | your machine, pinned | marks messages that carry a lasting fact or a promise, for what log remembers about each person |
 | your AI-writing detector and your pipeline labeller | your machine, trained on your data | the voice gate's AI reading; who each person is and where they are |
 | SubQ, Jina, AssemblyAI, Inworld or Fish Audio | hosted, each with its key | the voice gate, ranking chat history, transcripts, voice notes ([what each receives](docs/trust.md#what-leaves-your-machine)) |
 
@@ -509,7 +513,7 @@ Every call is timed: `log timing` shows p50, p95 and p99 for every tool and each
 - **Fast.** Your agent reads a conversation in milliseconds, not seconds.
 - **Gentle on your accounts.** The platform isn't asked again every time your agent looks something up. One account was disabled after an agent read a server too much, too fast (rule 94), and reading from `log.db` keeps that from happening.
 - **Yours.** Your messages, sessions and media text stay on your machine in one file you can back up.
-- **Shareable when you need it.** Accounts can live in [Twenty](docs/twenty.md) so several machines share them. A hosted version, with a login per user, is planned.
+- **Shareable when you need it.** Accounts live in the local account store. A hosted version, with a login per user, is planned.
 
 ## Roadmap
 
@@ -524,7 +528,7 @@ What's built, what's next and what's planned is kept in one pinned issue: **[Roa
 | Your day | the hottest deals in your DMs, from the pipeline labels | a morning debrief: who is waiting, what you owe, what was held overnight |
 | Voice | cloned voice notes; the grounding pack and one calibrated score; an AI-writing detector trained on you | a higher catch rate on short messages, voice-note replies in your voice, then calls, with your yes per call |
 | Pipeline ([#236](https://github.com/matthewdonsemail-lab/log/issues/236)) | who and where per chat on the CPU, the larger model when unsure, one person across platforms (suggested), reply outcomes | your own labels to measure the labeller against, the next step suggested per stage |
-| Browser | human mouse: Fitts's-law timing, corrective moves, tremor ([#201](https://github.com/matthewdonsemail-lab/log/pull/201)) | sign-ins moving from AdsPower to Camoufox, HTTP for X and Discord that sends the same TLS handshake and headers as the account's own browser |
+| Browser | human mouse: Fitts's-law timing, corrective moves, tremor ([#201](https://github.com/matthewdonsemail-lab/log/pull/201)) | HTTP for X and Discord that sends the same TLS handshake and headers as the account's own browser |
 | Every harness ([spec](https://github.com/matthewdonsemail-lab/log/blob/genuiEverywhere/docs/proposals/genuiEverywhere.md), [#196](https://github.com/matthewdonsemail-lab/log/pull/196)) | views in Cursor, Claude and ChatGPT where the host draws MCP Apps | a ChatGPT connector, a smaller inbox tool profile, a Claude Desktop extension, a render test on every PR |
 | Speed | hooks off the slow paths, one push loop per session, Discord catch-up in 4 calls, watchers that stay up | the prompt hook under 150 ms |
 
@@ -537,6 +541,7 @@ Newest first. Work merged into `main` collects in the open release PR, and mergi
 <!-- releases:start: written by `bun run docs:releases` from CHANGELOG.md and src/models/manifest, not edited by hand -->
 | Version | Date | What's in it | Models |
 | --- | --- | --- | --- |
+| [0.5.0](https://github.com/matthewdonsemail-lab/log/compare/v0.4.0...v0.5.0) | 2026-11-26 | the relationship state machine as a Hermes GenUI block, its states explaining each point (+44 more) | added: gliner2.5-small-v1@b5d42bf |
 | [0.4.0](https://github.com/matthewdonsemail-lab/log/compare/v0.3.0...v0.4.0) | 2026-11-21 | agentWording keeps risk words out of what agents read; rules reworded (+9 more) | same as 0.3.0 |
 | [0.3.0](https://github.com/matthewdonsemail-lab/log/pull/212) | 2026-11-20 | one live browser view for console and chat, hidden window when streamed (+41 more) | first pinned: wolf-defender-prompt-injection-small@2484cc9, all-MiniLM-L6-v2@751bff3, roberta-base-go_emotions-onnx@90ee0c1, LFM2.5-VL-450M-ONNX@24e6300, myuri@5.0.0 |
 | [0.2.1](https://github.com/matthewdonsemail-lab/log/pull/179) | 2026-11-20 | The relate graph, the live inbox push (messages during tool calls, burst batching, late copies dropped), inbox labels and ignoring a server or chat (+2 more) | not pinned (newest by name) |
@@ -550,7 +555,7 @@ log --help                                        # every command
 log <platform> session check --account <a>        # is the session still signed in?
 log twitter dms --account <a> [--with <handle>]   # the inbox, or one person in full
 log twitter dm --account <a> --userId <id> --text "<message>" [--live --approvedBy <who>]
-log twitter queue build|plan|run                  # several sends, at random times
+log twitter queue build|plan|run                  # several sends, at random times; closed DMs are skipped
 log chats list --account <a>                      # any platform: the account's chats
 log messages read --account <a> --chat "<chat>"   # any platform: one chat's messages
 log sessions check                                # every account, the platform's own answer
@@ -560,9 +565,11 @@ log watchers                                      # each account's one live watc
 log discord read|send --account <a> --channel "<chat>"
 log slack read|send --account <a> --channel "<chat>"
 log instagram dms|send --account <a>
+log tiktok search|scrape --account <a> --query "<words or #hashtag>"
+log setup                                         # agent setup in one pass
 log voice --to <handle> --text "<draft>"          # check a draft against your voice
 log search "<query>"                              # search every conversation
-log inbox                                         # claim a chat, see what was done in it
+log inbox waiting|claim|actions                   # who's waiting, claim a chat, see what was done in it
 ```
 
 Every command, flag, MCP tool and hook: [docs/reference.md](docs/reference.md).
@@ -575,9 +582,9 @@ The full docs are at **[log.listeningkit.com/docs](https://log.listeningkit.com/
 |---|---|
 | Get started | [install](docs/install.md), [add your accounts](docs/accounts.md), [connect your agent](docs/mcp.md), [each harness](docs/harnesses/README.md), [using log well](docs/usingLog.md) |
 | Use cases | [the plays, step by step](docs/useCases/README.md) |
-| Platforms | [X](docs/platformGuides/x.md), [Discord](docs/platformGuides/discord.md), [Slack](docs/platformGuides/slack.md), [Facebook](docs/platformGuides/facebook.md), [Reddit](docs/platformGuides/reddit.md) and [LinkedIn](docs/platformGuides/linkedin.md) |
+| Platforms | [X](docs/platformGuides/x.md), [Discord](docs/platformGuides/discord.md), [Slack](docs/platformGuides/slack.md), [Instagram](docs/platforms/instagram/README.md), [Reddit](docs/platformGuides/reddit.md), [LinkedIn](docs/platformGuides/linkedin.md), [TikTok](docs/platforms/tiktok/README.md) and [Facebook](docs/platformGuides/facebook.md) (legacy) |
 | Reference | [every command, MCP tool and hook](docs/reference.md), [error codes](docs/errorCatalog.md), [agent guides](docs/guides) |
-| How it works | [how log decides what happened](docs/howItWorks.md), [the models it uses](docs/models.md), Twenty, browsers, proxies, each platform's API and the diagrams |
+| How it works | [how log decides what happened](docs/howItWorks.md), [the models it uses](docs/models.md), browsers, proxies, each platform's API and the diagrams |
 
 Where each page sits is set in [docs/site.json](docs/site.json), and a commit check refuses a page that isn't placed.
 

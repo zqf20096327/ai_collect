@@ -263,7 +263,10 @@ void wakeOnPlacedOrder(
   TandemEvent event,
   TandemSession session,
 ) {
-  if (event case AgentCall(tool: 'place_order', caller: .view)) {
+  if (event case AgentCall(
+    tool: OrderDeskCubitTool.placeOrder,
+    caller: .view,
+  )) {
     session.wake();
   }
 }
@@ -352,7 +355,7 @@ Future<void> confirmOrder(
 }
 ```
 
-The dialog reads the draft from the Cubit. This is the same draft listed with `.sees`. If several methods need approval, use `request.tool` to choose the dialog's text.
+The dialog reads the draft from the Cubit. This is the same draft listed with `.sees`. If several methods need approval, switch on `request.tool`, such as `OrderCubitTool.placeOrder`, to choose the dialog's text.
 
 - Approval requests from one turn appear one at a time. Rejecting a request cancels the remaining calls, and the agent can plan again.
 - `approve` and `reject` apply the decision or throw `ApprovalNotPending`. Repeating the same decision does nothing, so a double tap is harmless. `session.isPending(request)` checks whether a request is still pending.
@@ -371,7 +374,8 @@ void showOrderMessages(
   TandemSession session,
 ) {
   final message = switch (event) {
-    AgentCall(tool: 'place_order', :final result) => 'Placed order $result.',
+    AgentCall(tool: OrderCubitTool.placeOrder, :final result) =>
+      'Placed order $result.',
     RunFailed() || ConnectionLost() => 'The agent did not answer. Try again.',
     AgentCall() || RunStopped() => null,
   };
@@ -381,13 +385,13 @@ void showOrderMessages(
 }
 ```
 
-`AgentCall` is emitted after a listed method returns, with its `tool`, `arguments`, `result` and `caller`. The caller is `Caller.inAppAgent`, `Caller.codingAgent` or `Caller.view`, for an action of a [view the agent drew](#views-the-agent-draws). Refused calls and methods that throw do not emit `AgentCall`.
+`AgentCall` is emitted after a listed method returns, with its `tool`, `arguments`, `result` and `caller`. The `tool` is a value of the enum `tandem_generator` writes next to the mixin, such as `OrderCubitTool.placeOrder`, so a renamed method breaks the match at compile time. A string pattern, such as `AgentCall(tool: 'place_order')`, still compiles with the warning `constant_pattern_never_matches_value_type` and never matches. The caller is `Caller.inAppAgent`, `Caller.codingAgent` or `Caller.view`, for an action of a [view the agent drew](#views-the-agent-draws). Refused calls and methods that throw do not emit `AgentCall`.
 
 `RunFailed` and `ConnectionLost` add a `ChatNotice` to `session.items`. `RunStopped` reports a user stop or a backend cancellation. A stop adds a notice or marks the last agent message `stopped`.
 
 When an error has a code, `RunFailed.code` contains a `RunErrorCode`. Match a specific error with a pattern such as `RunFailed(code: .unsupportedOutcome)`.
 
-When the conversation history exceeds the model's context window, call `session.startOver()` to clear Tandem's local history and agent state. The next message starts a new AG-UI thread if Tandem supplied the ID. With an app-supplied ID, the backend may keep its history. A separate conversation needs a new `TandemThread` with a new backend ID. Existing chat items remain, and the chat adds a `startedOver` notice. Pending approval requests are cancelled. `startOver()` does nothing while a run or an approved method is in progress.
+When the conversation history exceeds the model's context window, call `session.startOver()` to clear Tandem's local history and agent state. The next message starts a new AG-UI thread if the `TandemThread` was created without an ID. With an app-supplied ID, the backend may keep its history. A separate conversation needs a new `TandemThread` with a new backend ID. Existing chat items remain, and the chat adds a `startedOver` notice. Pending approval requests are cancelled. `startOver()` does nothing while a run or an approved method is in progress.
 
 ## Notes from the app
 
@@ -418,7 +422,7 @@ final class const _AgentStep() extends StatelessWidget {
 
 ## Keep the conversation
 
-By default, each session starts a new thread. To keep a conversation when a screen closes, store its `TandemThread` outside the screen and pass it to `TandemScope(thread:)` when the screen reopens. The `State` of the page that opens the screen can own the thread. The next session restores the chat, conversation history and agent state. `session.thread.id` is the AG-UI thread ID.
+By default, each session starts a new thread. To keep a conversation when a screen closes, store its `TandemThread` outside the screen and pass it to `TandemScope(thread:)` when the screen reopens. The `State` of the page that opens the screen can own the thread. The next session restores the chat, conversation history and agent state. `session.thread.id.value` is the AG-UI thread ID.
 
 - Only the newest session uses a thread. The previous session detaches, even if its screen is still animating out. Conversations across different screens are not supported yet.
 - A thread can resume on the same screen. Before the first message, Tandem compares the screen's `.sees` values with those saved when the screen closed. Different values reset the thread and add a `startedOver` notice. Keep the state object for as long as the thread to preserve the conversation and screen state together.
@@ -542,8 +546,6 @@ The reference backends also document adapter-specific requirements. With `ag-ui-
 On the web, configure CORS to allow the app's origin. The reference agents do not include CORS middleware.
 
 To send the user's token, give `HttpAgentConnection` an `http.Client` that adds the token, then pass the connection to `TandemScope.connected`. Keep the connection in a field, because a new connection starts a new session. A sandboxed macOS app needs the `com.apple.security.network.client` entitlement to reach the backend.
-
-`OnDeviceAgent` is deprecated and goes away in 0.4.0. Use Firebase AI Logic through `tandem_firebase_ai` or an AG-UI backend instead.
 
 For another transport, such as a WebSocket, implement `AgentConnection`. In `run`, pass `agUiRun(input)` only the decoded frames of this run's request, and end the stream when the transport says the request is over. Route frames by a per-request ID where the transport has one. Routing only by thread or socket mixes an ID-less `RUN_ERROR` or terminal event of an earlier run into the next one, and AG-UI allows a `RUN_ERROR` even after `RUN_FINISHED`. Give `agUiRun` the input with the IDs the server will echo, rewritten if the transport rewrites them, and deduplicate a resumed or reattached stream first.
 

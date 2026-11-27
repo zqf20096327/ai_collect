@@ -11,7 +11,8 @@ Objective-C is a native Core implementation with source tag `objc/v0.8.0`. It pa
 | Build | See README/SETUP.md |
 | Source version | `0.8.0` |
 | Published version | not published |
-| Source tag | `objc/v0.8.0` |
+| Publication status | source-only |
+| Canonical source tag | [`objc/v0.8.0`](https://github.com/axisvela/praxo-core/tree/objc/v0.8.0) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/objc/ |
@@ -30,7 +31,7 @@ Objective-C is a native Core implementation with source tag `objc/v0.8.0`. It pa
 
 ## Quick start
 
-This implementation is source-only. Follow the build instructions in [`language/objc/README.md`](language/objc/README.md).
+No published package is available. Follow the source build instructions in [`language/objc/README.md`](language/objc/README.md).
 
 ## What's included
 
@@ -69,15 +70,19 @@ Runnable examples live under [`language/objc/examples`](language/objc/examples).
 
 ## Scenario Tutorials
 
-Scenario-oriented tutorials live under `language/objc/Tutorial`.
+Scenario-oriented tutorials live under `language/objc/Tutorial`. Planning context: [Tutorial Plan](https://axisvela.github.io/praxo-core/getting-started/tutorial-plan/), [100 candidate agent scenarios](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), and [Tutorial Catalog](https://axisvela.github.io/praxo-core/getting-started/tutorial-catalog/).
 
 | Path | What it shows |
 | --- | --- |
-| [Tutorial](language/objc/Tutorial) | - [Privacy Agent (PE-03)](privacy-agent/README.md): source Objective-C Core, fixed message-exposure classification and a review-only deletion request; no password handling, acco... |
+| [Tutorial](language/objc/Tutorial) | - [Privacy Agent (PE-03)](https://github.com/axisvela/praxo-core/blob/main/language/objc/Tutorial/privacy-agent/README.md): source Objective-C Core, fixed message-exposure classification and a review-only deletion request; no password handling, account access or deletion execution. - [Chronic Care (HC-02)](https://github.com/axisvela/praxo-core/blob/main/language/objc/Tutorial/chronic-care/README.md): fixed wearable trends and a review-only alert; no dosage or individualized treatment change. - [DLP Redaction (CY-06)](https://github.com/axisvela/praxo-core/blob/main/language/objc/Tutorial/dlp-redaction/README.md): fixed export inspection and a review-only redaction draft; no encryption or DLP completeness claim. - [Digital Twin Memory (OG-06)](https://github.com/axisvela/praxo-core/blob/main/language/objc/Tutorial/digital-twin-memory/README.md): consent-scoped fixed memories with provenance and one deletion; no inbox or password access. |
 | [chronic-care](language/objc/Tutorial/chronic-care) | Summarizes a fixed wearable trend and drafts a review-only care alert. No dosage or individualized treatment change. |
 | [digital-twin-memory](language/objc/Tutorial/digital-twin-memory) | Recalls fixed consent-scoped memories with provenance, then deletes one scope. No real inbox, passwords or unrestricted recall. |
 | [dlp-redaction](language/objc/Tutorial/dlp-redaction) | Inspects a fixed export for sensitive fields and drafts a review-only redaction. No encryption, DLP completeness or sharing claim. |
-| [privacy-agent](language/objc/Tutorial/privacy-agent) | A bounded first slice of [PE-03](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a password manager or data-deletion service. It classifies a fixed... |
+| [privacy-agent](language/objc/Tutorial/privacy-agent) | A bounded first slice of [PE-03](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not a password manager or data-deletion service. It classifies a fixed message fixture for sensitive exposure and drafts a review-only deletion request. This uses the source Objective-C Core; no network, credentials or additional frameworks beyond Foundation are required. |
+
+## Reference Applications
+
+No accepted end-to-end reference application is recorded for this language yet. Candidate goals are tracked in the [Reference Application Portfolio](https://axisvela.github.io/praxo-core/project/roadmap/#reference-application-portfolio).
 
 ## Verify
 
@@ -117,7 +122,7 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 - Mirror repository: https://github.com/axisvela/praxo-core-objc
 - Release index: https://axisvela.github.io/praxo-core/languages/registry-status/
 
-This repository is a discovery mirror of the canonical Objective-C source. The monorepo remains the source of truth and the release workflow source.
+This repository is a discovery mirror of the canonical Objective-C source. The monorepo remains the source of truth and the release workflow source. The mirror's `main` branch tracks current source, not a release snapshot. Source tags refer to the canonical monorepo and are not necessarily present in this mirror; syncing the branch does not publish mirror tags or registry packages.
 
 PRAXO-CORE is not a hosted model, workflow engine, identity provider, or safety controller. Do not infer exactly-once execution, complete sandbox isolation, production security certification, live-provider behavior, or physical safety from this package.
 

@@ -178,6 +178,9 @@ Today, Pipeline, Job Detail and Timeline all read from the same underlying caree
 progress is modeled as **events** rather than independent UI state, so OfferU can project one truth
 across the product instead of asking you to maintain several trackers.
 
+Paste an application receipt or a test / interview invitation into the Agent and it moves the job forward
+and records the event with its time and assessment or meeting link. On desktop you can connect a QQ / 163 / Gmail mailbox in Settings → 邮箱 with an app password (授权码): the Agent reads invitations to update the board, application emails go to your Drafts folder with the tailored resume attached, and nothing is sent until you click 确认发送. In the web version, the OfferU browser extension fills the compose page of your already-signed-in Gmail / QQ / 163 webmail instead (recipient, subject, body, resume PDF) and you click Send there yourself; on an open message, 「交给 OfferU」 hands that one mail to the Agent. No mail API or OAuth is used, and the extension never clicks Send.
+
 ### Targeted interview practice
 
 Interview preparation is grounded in the intersection of role delta, career evidence gap and previous
@@ -410,9 +413,9 @@ These commands only validate their own scope; they do not mean "ready to release
 
 Current priorities are productization, not more top-level features:
 
-1. **Zero-Setup onboarding** — native install, local-Agent auto-discovery, Profile bootstrap, first Job, inbox, useful Today.
+1. **Zero-Setup onboarding** — native install, local-Agent auto-discovery, Profile bootstrap, first Job, useful Today.
 2. **Real external-Agent Eval** — validate autonomous tool discovery and complete user journeys before further tool compression.
-3. **Browser + inbox productization** — one-click job capture and beginner-friendly read-only progress sync.
+3. **Browser + inbox productization** — one-click job capture; desktop can now read invitations, save drafts and send after your confirmation over IMAP / SMTP; real-mailbox acceptance and Outlook OAuth are still open.
 4. **Public desktop release** — signed installer, clean-machine setup, migration, backup, restore and upgrade.
 5. **Privacy, security and real-user iteration** — keep trust gates hard while reducing user effort.
 

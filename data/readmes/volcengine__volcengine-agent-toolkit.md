@@ -15,9 +15,9 @@
 
 **[快速安装 →](#默认安装)**
 
-`volcengine-cli` 优先通过 `ve tosutil` 和 `ve arkcli` 使用产品 CLI，要求 **`ve >= 1.1.9`**
-（稳定版 `1.1.9` 起）；使用前执行 `ve version`，版本不满足时先升级。TOS 操作由 finder
-查找并安装 `volcengine-tosutil`；Ark 操作引导下载[官方 skills](https://github.com/volcengine/ark-cli/tree/main/skills)。
+`volcengine-cli` 优先通过 `ve tosutil` 和 `ve arkcli` 使用产品 CLI，要求 **`ve >= 1.1.11`**；
+使用前执行 `ve version`，版本不满足时先升级。TOS 操作由 finder
+查找并安装 `volcengine-tosutil`；方舟（Ark）操作由 finder 查找并安装 `volcengine-ark`，其中打包了[官方 Ark skills](https://github.com/volcengine/ark-cli/tree/main/skills)。
 具体操作遵循对应 skill；通过 `ve` 转发产品命令，并按下述规则传递调用方标识。
 
 Agent 执行 `ve` 时必须注入 `VE_CALLER_TYPE=ai_agent`、`VE_CALLER_NAME=<agent-id>` 和
@@ -31,6 +31,7 @@ Agent 执行 `ve` 时必须注入 `VE_CALLER_TYPE=ai_agent`、`VE_CALLER_NAME=<a
 | Plugin | 产品分类 | Skills | 默认安装 |
 | --- | --- | --- | --- |
 | `volcengine-core` | 核心 | `volcengine-billing-and-cost-management`、`volcengine-cli`、`volcengine-troubleshooting`、`volcengine-knowledge-search`、`volcengine-find-skills`、`volcengine-feedback` | 是 |
+| `volcengine-ark` | 人工智能 | `volcengine-ark` | 否 |
 | `volcengine-storage` | 存储 | `volcengine-tosutil`、`volcengine-tls`、`volcengine-tls-logcollector` | 否 |
 | `volcengine-database` | 数据库 | `volcengine-db-supabase` | 否 |
 | `volcengine-containers-middleware` | 容器与中间件 | `volcengine-vefaas` | 否 |
@@ -49,18 +50,19 @@ Agent 执行 `ve` 时必须注入 `VE_CALLER_TYPE=ai_agent`、`VE_CALLER_NAME=<a
 <!-- BEGIN GENERATED: skill-catalog -->
 | Skill | Plugin | 场景 |
 | --- | --- | --- |
-| [`volcengine-billing-and-cost-management`](./skills/core/volcengine-billing-and-cost-management/SKILL.md) | `volcengine-core` | 分析云费用波动，定位产品、计费项及用量、单价和金额构成的归因。 |
-| [`volcengine-cli`](./skills/core/volcengine-cli/SKILL.md) | `volcengine-core` | 使用 ve 管理火山引擎资源；引导获取 TOS、Ark 技能，并通过 ve tosutil、ve arkcli 执行。 |
+| [`volcengine-billing-and-cost-management`](./skills/core/volcengine-billing-and-cost-management/SKILL.md) | `volcengine-core` | 查询与分析账单、费用变化和账户资金状态，完成账务对账、财务托管与付费归属、资源包及代金券抵扣核查。 |
+| [`volcengine-cli`](./skills/core/volcengine-cli/SKILL.md) | `volcengine-core` | 使用 ve 管理火山引擎资源；TOS、方舟、TLS 任务引导到对应产品技能，并通过 ve tosutil、ve arkcli、ve volclog 执行。 |
 | [`volcengine-troubleshooting`](./skills/core/volcengine-troubleshooting/SKILL.md) | `volcengine-core` | 诊断火山引擎错误、资源状态、配额、指标与 OpenAPI 故障。 |
-| [`volcengine-knowledge-search`](./skills/core/volcengine-knowledge-search/SKILL.md) | `volcengine-core` | 使用 ve docs search/fetch 检索并获取火山引擎官方文档全文，无需登录。 |
+| [`volcengine-knowledge-search`](./skills/core/volcengine-knowledge-search/SKILL.md) | `volcengine-core` | 使用 ve docs search/fetch 检索并获取火山引擎官方文档全文，无需登录；含火山方舟的概念、用法和计费规则类问题。 |
 | [`volcengine-find-skills`](./skills/core/volcengine-find-skills/SKILL.md) | `volcengine-core` | 列出全部火山引擎技能，供 Agent 选择并安装当前缺失的能力。 |
 | [`volcengine-feedback`](./skills/core/volcengine-feedback/SKILL.md) | `volcengine-core` | 整理并提交脱敏的 GitHub 使用反馈，涵盖问题、能力需求、实际场景和成功实践，始终不阻塞主任务。 |
+| [`volcengine-ark`](./skills/specialized/ark/volcengine-ark/SKILL.md) | `volcengine-ark` | 通过 ve arkcli 使用火山方舟：模型查询与选型、模型价格、开通模型、API Key 与推理接入点、调用调试与生图生视频、用量与方舟账单。 |
 | [`volcengine-tosutil`](./skills/specialized/storage/volcengine-tosutil/SKILL.md) | `volcengine-storage` | 使用 tosutil 命令行工具管理 TOS 桶和对象。 |
 | [`volcengine-tls`](./skills/specialized/storage/volcengine-tls/SKILL.md) | `volcengine-storage` | 使用 volclog 操作火山引擎日志服务 TLS：按契约发现/描述/执行，覆盖日志检索、分析、导入、导出与错误恢复。 |
 | [`volcengine-tls-logcollector`](./skills/specialized/storage/volcengine-tls-logcollector/SKILL.md) | `volcengine-storage` | 通过 volclog 设计、校验、部署并排查 Linux 主机或 Kubernetes 上的 TLS LogCollector 日志采集。 |
 | [`volcengine-db-supabase`](./skills/specialized/database/volcengine-db-supabase/SKILL.md) | `volcengine-database` | 管理火山引擎 AI 原生 BaaS Supabase 工作区、SQL、Auth、Realtime 与 Edge Functions。 |
 | [`volcengine-vefaas`](./skills/specialized/containers-middleware/volcengine-vefaas/SKILL.md) | `volcengine-containers-middleware` | 通过 vefaas CLI 部署 veFaaS 应用和 MCP 服务，管理函数、沙箱并调用 OpenAPI。 |
-| [`volcengine-compliance`](./skills/specialized/security/volcengine-compliance/SKILL.md) | `volcengine-security` | 推荐合规基线、汇总合规态势并编写自定义 Rego 合规规则。 |
+| [`volcengine-compliance`](./skills/specialized/security/volcengine-compliance/SKILL.md) | `volcengine-security` | 推荐合规基线、汇总合规结果、编写 Rego 规则，把配置审计事件和快照投递到 TOS、TLS 或 SNS。 |
 | [`volcengine-cloud-trail`](./skills/specialized/security/volcengine-cloud-trail/SKILL.md) | `volcengine-security` | 查询操作审计日志，并管理跟踪和历史补投任务。 |
 | [`volcengine-landing-zone`](./skills/specialized/identity-access-control/volcengine-landing-zone/SKILL.md) | `volcengine-identity-access-control` | 咨询、搭建和管理火山引擎 Landing Zone 与账号基线，并支持部署方案或蓝图。 |
 | [`volcengine-force-conference`](./skills/specialized/service-support/volcengine-force-conference/SKILL.md) | `volcengine-service-support` | 提供当前火山引擎 FORCE 原动力大会查询、个性化论坛规划、门票与订阅查询、论坛订阅变更及参会总结开放状态查询。 |
@@ -153,7 +155,7 @@ Windows PowerShell：
 3. 安装前必须解析为精确的 skill 名称；plugin 只用于分类，不能作为安装目标。
 4. finder 对所有宿主都通过 skills CLI 直接安装选中的 skill，不安装整个 plugin。
 5. 安装命令成功后再次读取宿主安装清单，只有目标全部可见才返回 `verified: true`。
-6. 新增 skill 安装后，若宿主不能动态加载，则新开对话并携带原任务和已完成上下文继续执行。
+6. 安装成功后 finder 返回每个 skill 的入口文件路径。宿主不能动态加载新增 skill 时，Agent 直接按路径读取 `SKILL.md` 并在当前对话继续；只有文件无法读取时才新开对话。
 
 ### Codex
 
@@ -168,7 +170,7 @@ codex plugin list
 上述 plugin 命令只用于首次加载核心 finder。finder 后续发现缺失能力时，只直接安装选中的 skill。
 
 在新对话中直接描述需求，例如“查找对象存储相关 skill”或“安装 `volcengine-tosutil`”。finder 会读取
-完整 catalog、自主选择并直接安装合适的 skill，不会安装整个产品域 plugin。若当前对话不能动态加载新增 skill，需新开对话继续。
+完整 catalog、自主选择并直接安装合适的 skill，不会安装整个产品域 plugin。当前对话不能动态加载新增 skill 时，Agent 按 finder 返回的路径读取 skill 后继续，一般不需要新开对话。
 
 在源码仓库内也可以直接验证发现结果：
 

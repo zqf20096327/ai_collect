@@ -11,13 +11,13 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-1a7f37?style=flat-square"></a>
   <img alt="Release" src="https://img.shields.io/github/v/release/Wennington123/omni-token-optimizer?style=flat-square&color=1a7f37&v=2">
   <img alt="Python" src="https://img.shields.io/badge/python-3.8%2B-1a7f37?style=flat-square&logo=python&logoColor=white">
-  <a href="https://ko-fi.com/wenningtondaquino"><img alt="Ko-fi" src="https://img.shields.io/badge/Ko--fi-Apoie-FF5E5B?style=flat-square&logo=kofi&logoColor=white"></a>
-  <a href="#guia-de-instalação-e-integração"><img alt="Install" src="https://img.shields.io/badge/install-curl_%7C_bash-3fb950?style=flat-square&logo=gnu-bash&logoColor=white"></a>
+  <a href="https://ko-fi.com/wenningtondaquino"><img alt="Ko-fi" src="https://img.shields.io/badge/Ko--fi-Support-FF5E5B?style=flat-square&logo=kofi&logoColor=white"></a>
+  <a href="#installation--integration-guide"><img alt="Install" src="https://img.shields.io/badge/install-curl_%7C_bash-3fb950?style=flat-square&logo=gnu-bash&logoColor=white"></a>
 </p>
 
-Suíte universal e de alto desempenho para **otimização rigorosa de tokens de LLM**, desenvolvida para atender tanto a **desenvolvimento de software** quanto a **tarefas de uso geral** (pesquisa, redação, análise de dados e automação de fluxos).
+A universal, high-performance suite for **strict LLM token optimization**, built for both **software development** and **general-purpose work** (research, writing, data analysis and workflow automation).
 
-O repositório unifica a filosofia de 3 projetos de referência (**Caveman**, **Punisher Mode** e **Ponytail**) com as evidências empíricas e algoritmos de **6 artigos científicos de ponta** em compressão de contexto e raciocínio de agentes.
+The repo merges the philosophy of 3 reference projects (**Caveman**, **Punisher Mode** and **Ponytail**) with the empirical evidence and algorithms of **6 cutting-edge scientific papers** on context compression and agent reasoning.
 
 ## Quick Start
 
@@ -25,58 +25,59 @@ O repositório unifica a filosofia de 3 projetos de referência (**Caveman**, **
 curl -fsSL https://raw.githubusercontent.com/Wennington123/omni-token-optimizer/main/install.sh | bash
 ```
 
-Reinicie a sessão do agente — a skill carrega sozinha. Prefere delegar? Cole o [bloco de prompt pronto](#2-colar-no-seu-agente-de-ia-claude-code-cursor-command-code-etc) no seu agente.
+Restart your agent session — the skill loads by itself. Prefer to delegate? Paste the [ready-to-use prompt block](#2-paste-into-your-ai-agent-claude-code-cursor-command-code-etc) into your agent.
 
-![Demonstração no OpenCode](assets/demo-opencode.gif)
+![Demo in OpenCode](assets/demo-opencode.gif)
 
-*Tela real do OpenCode: instalação em uma linha, `seq 1 3000` passando pelo filtro local e o contexto final.*
-
----
-
-## Sumário
-1. [Visão Geral & Filosofia](#visão-geral--filosofia)
-2. [Arquitetura Geral (Hooks + Skills)](#arquitetura-geral-hooks--skills)
-3. [Fundamentação Teórica & Referências Bibliográficas](#fundamentação-teórica--referências-bibliográficas)
-4. [Painel Visual & Gráficos de Desempenho](#painel-visual--gráficos-de-desempenho)
-5. [Modelagem Matemática & ROI de Ativação](#modelagem-matemática--roi-de-ativação)
-6. [Matriz Numérica de Economia por Camada](#3-exemplo-numérico-em-sessão-típica-15-turnos)
-7. [Estrutura Detalhada dos Arquivos](#estrutura-detalhada-dos-arquivos)
-8. [Guia de Instalação e Integração](#guia-de-instalação-e-integração)
-9. [Licença & Contribuição](#licença--contribuição)
+*A real OpenCode session: one-line install, `seq 1 3000` going through the local filter, and the resulting context.*
 
 ---
 
-## Visão Geral & Filosofia
-
-À medida que os agentes de IA realizam tarefas de longo horizonte, o **crescimento descontrolado do contexto** eleva os custos de inferência, aumenta a latência e degrada a capacidade de atenção do modelo.
-
-O **Omni-Token Optimizer** atua em duas frentes complementares:
-1. **Zero-Token Local Middleware (Hooks)**: Filtra e trunca saídas brutas de ferramentas (terminal, CSVs, respostas JSON) na máquina local antes que os dados cheguem à API do modelo. Custo de execução = **0 tokens**.
-2. **Behavioral System Prompts (Skills)**: Molda o comportamento cognitivo do modelo para gerar respostas ultraconcisas, aplicar *diffs* cirúrgicos em código, adotar enquadramentos de papel (*Responsibility Tuning*) e manter uma memória de estado estruturada (`VARS`, `TODO`, `GUARDRAILS`).
+## Table of Contents
+1. [Overview & Philosophy](#overview--philosophy)
+2. [Architecture (Hooks + Skills)](#architecture-hooks--skills)
+3. [Theoretical Background & References](#theoretical-background--references)
+4. [Visual Dashboard & Performance Charts](#visual-dashboard--performance-charts)
+5. [Mathematical Modeling & Activation ROI](#mathematical-modeling--activation-roi)
+6. [Numeric Savings Matrix by Layer](#3-numeric-example-in-a-typical-15-turn-session)
+7. [File Structure](#file-structure)
+8. [Installation & Integration Guide](#installation--integration-guide)
+9. [TODO & Roadmap](#todo--roadmap)
+10. [License & Contributing](#license--contributing)
 
 ---
 
-## Arquitetura Geral (Hooks + Skills)
+## Overview & Philosophy
 
-![Como funciona](assets/arch-flow.gif)
+As AI agents take on long-horizon tasks, **uncontrolled context growth** drives up inference cost, increases latency and degrades the model's attention.
+
+**Omni-Token Optimizer** works on two complementary fronts:
+1. **Zero-Token Local Middleware (Hooks)**: filters and truncates raw tool output (terminal, CSVs, JSON responses) on the local machine before the data reaches the model API. Execution cost = **0 tokens**.
+2. **Behavioral System Prompts (Skills)**: shapes the model's behavior to produce ultra-concise answers, apply surgical *diffs* to code, adopt role framing (*Responsibility Tuning*) and keep a structured state memory (`VARS`, `TODO`, `GUARDRAILS`).
+
+---
+
+## Architecture (Hooks + Skills)
+
+![How it works](assets/arch-flow.gif)
 
 <details>
-<summary><b>Diagrama em texto (para leitores de tela e cópia)</b></summary>
+<summary><b>Text diagram (for screen readers and copy/paste)</b></summary>
 
 ```text
-[Solicitação do Usuário / Comando de Ferramenta]
+[User request / Tool command]
                       │
                       ▼
  ┌──────────────────────────────────────────────────────────────┐
- │ CAMADA 1: HOOKS LOCAIS (Python / CPU Local - CUSTO: 0 TOKENS) │
- │  • observation_trimmer.py: Trunca logs/CSVs (CoACT / Caveman)│
- │  • context_monitor.py: Monitora limite de tokens da sessão   │
+ │ LAYER 1: LOCAL HOOKS (Python / Local CPU - COST: 0 TOKENS)   │
+ │  • observation_trimmer.py: Truncates logs/CSVs (CoACT/Cave.) │
+ │  • context_monitor.py: Watches the session token ceiling     │
  └────────────────────────────┬─────────────────────────────────┘
-                              │ (Envia observação filtrada)
+                              │ (Sends the filtered observation)
                               ▼
  ┌──────────────────────────────────────────────────────────────┐
- │ CAMADA 2: MASTER SKILL & SUBSKILLS (Prompt / LLM Reasoning)  │
- │  • SKILL.md (Orquestrador Universal)                         │
+ │ LAYER 2: MASTER SKILL & SUBSKILLS (Prompt / LLM Reasoning)   │
+ │  • SKILL.md (Universal Orchestrator)                         │
  │  • subskills/01-terse-communication.md (Caveman + Punisher)  │
  │  • subskills/02-lazy-execution.md (Ponytail + Refactoring)   │
  │  • subskills/03-observation-trimmer.md (TRC + CoACT Rules)   │
@@ -87,198 +88,200 @@ O **Omni-Token Optimizer** atua em duas frentes complementares:
 
 </details>
 
-| Subskill | Foco | Base |
+| Subskill | Focus | Basis |
 |---|---|---|
-| [01 — Terse Communication](subskills/01-terse-communication.md) | Respostas secas, zero cerimônia | Caveman + Punisher |
-| [02 — Lazy Execution](subskills/02-lazy-execution.md) | Menor diff que resolve, YAGNI | Ponytail |
-| [03 — Observation Trimmer](subskills/03-observation-trimmer.md) | Corte de logs e outputs de API | CoACT + TRC |
-| [04 — State Compactor](subskills/04-state-compactor.md) | Memória de estado estruturada | ACON + TRACE |
-| [05 — Prompt Budgeting](subskills/05-prompt-budgeting.md) | Orçamento do contexto inicial | LLMLingua |
+| [01 — Terse Communication](subskills/01-terse-communication.md) | Dry answers, zero ceremony | Caveman + Punisher |
+| [02 — Lazy Execution](subskills/02-lazy-execution.md) | Smallest diff that works, YAGNI | Ponytail |
+| [03 — Observation Trimmer](subskills/03-observation-trimmer.md) | Cutting logs and API outputs | CoACT + TRC |
+| [04 — State Compactor](subskills/04-state-compactor.md) | Structured state memory | ACON + TRACE |
+| [05 — Prompt Budgeting](subskills/05-prompt-budgeting.md) | Initial context budget | LLMLingua |
 
 ---
 
-## Fundamentação Teórica & Referências Bibliográficas
+## Theoretical Background & References
 
-O repositório é construído rigorosamente sobre 9 fontes de conhecimento:
+The repo is built strictly on 9 sources of knowledge:
 
 <details>
-<summary><b>3 repositórios + 6 artigos científicos — clique para expandir</b></summary>
+<summary><b>3 repositories + 6 scientific papers — click to expand</b></summary>
 
-### Repositórios Open-Source
+### Open-Source Repositories
 
-1. **JuliusBrussee/caveman** — *“Why use many token when few token do trick.”*
-   - **Repositório**: GitHub JuliusBrussee/caveman
-   - **Contribuição**: Estilo de comunicação ultraconciso (*Caveman Voice*) e proxies locais de compressão de ferramentas. Reduz retornos de CSVs e logs em até **98.9%**.
+1. **JuliusBrussee/caveman** — *"Why use many token when few token do trick."*
+   - **Repository**: GitHub JuliusBrussee/caveman
+   - **Contribution**: Ultra-concise communication style (*Caveman Voice*) and local tool-output compression proxies. Cuts CSV and log returns by up to **98.9%**.
 2. **Wennington123/punisher-mode** — *High-autonomy, low-friction operational mode for Command Code.*
-   - **Repositório**: GitHub Wennington123/punisher-mode
-   - **Contribuição**: Modo operacional autônomo. Elimina preâmbulos de cortesia ("Certamente, vou ajudar...") e *loops* de confirmação desnecessários, reduzindo a latência e o consumo em conversas *multi-turn*.
+   - **Repository**: GitHub Wennington123/punisher-mode
+   - **Contribution**: Autonomous operating mode. Removes courtesy preambles ("Sure, I'll help...") and unnecessary confirmation *loops*, reducing latency and consumption in multi-turn conversations.
 3. **DietrichGebert/ponytail** — *Makes your AI agent think like the laziest senior dev in the room.*
-   - **Repositório**: GitHub DietrichGebert/ponytail
-   - **Contribuição**: Filosofia YAGNI (*You Aren't Gonna Need It*). Força alterações via patches/diffs curtos em vez de reemitir arquivos inteiros, reduzindo em **45% os tokens consumidos** e em **53% o código escrito**.
+   - **Repository**: GitHub DietrichGebert/ponytail
+   - **Contribution**: YAGNI (*You Aren't Gonna Need It*) philosophy. Forces changes through short patches/diffs instead of re-emitting whole files, cutting **token consumption by 45%** and **written code by 53%**.
 
-### Artigos Científicos Empíricos
+### Empirical Scientific Papers
 
 4. **Code Smells & Chain of Thought Token Consumption** (2025)
-   - **Citação**: *Investigating Token Efficiency in Automated Software Engineering via Chain of Thought Reasoning.* (arXiv:2504.15989)
-   - **Contribuição**: Prova empírica de que códigos poluídos (*code smells*) inflam as etapas de raciocínio CoT do modelo. A refatoração prévia e o enquadramento de papel (*Responsibility Tuning*) reduzem os tokens por unidade de complexidade de `0.1015` para `0.0576` (**corte de 49.7% no CoT**).
+   - **Citation**: *Investigating Token Efficiency in Automated Software Engineering via Chain of Thought Reasoning.* (arXiv:2504.15989)
+   - **Contribution**: Empirical proof that polluted code (*code smells*) inflate the model's CoT reasoning steps. Prior refactoring and role framing (*Responsibility Tuning*) reduce tokens per complexity unit from `0.1015` to `0.0576` (**49.7% cut in CoT**).
 5. **CoACT: Observation Compression via Next-Action Preservation** (2026)
-   - **Citação**: *CoACT: Frame-guided Observation Compression for Long-Horizon Agent Workflows.* (arXiv:2607.02911)
-   - **Contribuição**: Algoritmo de compressão de observações por preservação da próxima ação. Reduz os tokens de saída de ferramentas em **55.9%** sem reduzir a taxa de sucesso (*PASS@1*).
+   - **Citation**: *CoACT: Frame-guided Observation Compression for Long-Horizon Agent Workflows.* (arXiv:2607.02911)
+   - **Contribution**: Observation compression algorithm based on next-action preservation. Cuts tool output tokens by **55.9%** without hurting the success rate (*PASS@1*).
 6. **Tool-Result Clearing (TRC) & Context Compression Policy** (2026)
-   - **Citação**: *Context Compression Tradeoffs in Long-Horizon AI Agent Workflows.* (arXiv:2609.32961)
-   - **Contribuição**: Prova que substituir resultados antigos de ferramentas por placeholders (`[output cleared]`) preserva o *reuso de KV-cache* e reduz o custo acumulado para **0.57x do baseline**.
+   - **Citation**: *Context Compression Tradeoffs in Long-Horizon AI Agent Workflows.* (arXiv:2609.32961)
+   - **Contribution**: Shows that replacing old tool results with placeholders (`[output cleared]`) preserves *KV-cache reuse* and lowers accumulated cost to **0.57x of the baseline**.
 7. **TRACE: Boundary-Local Execution Verifier** (2026)
-   - **Citação**: *TRACE: Recurrent Context Compression with Boundary Execution Verification.* (arXiv:2608.06503)
-   - **Contribuição**: Previne a perda do estado de execução local em resumos longos. Elimina *loops* de reexploração repetitiva e reduz os tokens de pico em **31% a 54%**.
+   - **Citation**: *TRACE: Recurrent Context Compression with Boundary Execution Verification.* (arXiv:2608.06503)
+   - **Contribution**: Prevents loss of local execution state inside long summaries. Eliminates repetitive re-exploration *loops* and cuts peak tokens by **31% to 54%**.
 8. **ACON: Agent Context Optimization** (2025)
-   - **Citação**: *Agent Context Optimization via Contrastive Task Feedback & Compressor Distillation.* (arXiv:2510.00615)
-   - **Contribuição**: Estruturação do contexto em tabelas de estado (`VARS`, `TODO`, `GUARDRAILS`) e destilação de modelos compressores leves (custo 99% menor).
+   - **Citation**: *Agent Context Optimization via Contrastive Task Feedback & Compressor Distillation.* (arXiv:2510.00615)
+   - **Contribution**: Structures context into state tables (`VARS`, `TODO`, `GUARDRAILS`) and distills lightweight compressor models (99% cheaper).
 9. **LLMLingua: Compressing Prompts for Accelerated Inference** (EMNLP 2023)
-   - **Citação**: *LLMLingua: Compressing Prompts for Accelerated Inference via Small Language Models.* (arXiv:2023.emnlp-main.825)
-   - **Contribuição**: Alocação orçamentária por entropia. Preserva 100% da instrução central e reduz demonstrações *few-shot* redundantes em até **5x**.
+   - **Citation**: *LLMLingua: Compressing Prompts for Accelerated Inference via Small Language Models.* (arXiv:2023.emnlp-main.825)
+   - **Contribution**: Entropy-based budget allocation. Preserves 100% of the core instruction and compresses redundant *few-shot* demonstrations by up to **5x**.
 
 </details>
 
 ---
 
-## Painel Visual & Gráficos de Desempenho
+## Visual Dashboard & Performance Charts
 
-### Gráfico 1: Economia Percentual de Tokens por Camada de Otimização
-![Redução Percentual de Tokens](assets/chart_token_savings.png)
+### Chart 1: Percentage Token Savings per Optimization Layer
+![Percentage Token Reduction](assets/chart_token_savings.png)
 
-### Gráfico 2: Evolução do Contexto Acumulado ao Longo de 15 Turnos
-![Crescimento do Contexto](assets/chart_context_growth.png)
+### Chart 2: Accumulated Context Growth Across 15 Turns
+![Context Growth](assets/chart_context_growth.png)
 
 ---
 
-## Modelagem Matemática & ROI de Ativação
+## Mathematical Modeling & Activation ROI
 
-### 1. Custo de Ativação Ajustado por Prompt Caching
-Quando a Master Skill e suas Sub-Skills são carregadas no prompt do sistema ($N_{skill} \approx 1.200 \text{ tokens}$), o custo acumulado em uma sessão de $T$ turnos com desconto de *Prompt Caching* ($d_{cache} \approx 0.90$) é:
+### 1. Activation Cost Adjusted for Prompt Caching
+When the Master Skill and its Subskills are loaded into the system prompt ($N_{skill} \approx 1{,}200 \text{ tokens}$), the accumulated cost over a session of $T$ turns with *Prompt Caching* discount ($d_{cache} \approx 0.90$) is:
 
-$$C_{ativação} = N_{skill} + (T - 1) \times N_{skill} \times (1 - d_{cache})$$
+$$C_{activation} = N_{skill} + (T - 1) \times N_{skill} \times (1 - d_{cache})$$
 
-Para uma sessão de 15 turnos:
-$$C_{ativação} = 1.200 + (14 \times 1.200 \times 0.10) = 2.880 \text{ tokens de entrada.}$$
+For a 15-turn session:
+$$C_{activation} = 1{,}200 + (14 \times 1{,}200 \times 0.10) = 2{,}880 \text{ input tokens.}$$
 
-### 2. Equação da Economia Líquida
-$$\Delta \text{Tokens}_{líquida} = \Delta \text{Output} + \Delta \text{Obs} + \Delta \text{CoT} + \Delta \text{State} - C_{ativação}$$
+### 2. Net Savings Equation
+$$\Delta \text{Tokens}_{net} = \Delta \text{Output} + \Delta \text{Obs} + \Delta \text{CoT} + \Delta \text{State} - C_{activation}$$
 
-### 3. Exemplo Numérico em Sessão Típica (15 Turnos)
+### 3. Numeric Example in a Typical 15-Turn Session
 
-| Métrica / Camada | Sem Otimização | Com Omni-Token Optimizer | Economia Líquida |
+| Metric / Layer | Without optimization | With Omni-Token Optimizer | Net savings |
 | :--- | :---: | :---: | :---: |
-| **Tokens de Resposta (Output)** | 6.000 (400/turno) | 1.200 (80/turno) | **-4.800 tokens** (~4x mais valiosos) |
-| **Ferramentas / Observações** | 60.000 (5 chamadas) | 7.500 (CoACT/TRC/Hook) | **-52.500 tokens** |
-| **Acúmulo de Histórico (Pico)** | 22.600 tokens | 7.200 tokens (ACON/TRACE) | **-15.400 tokens** |
-| **Custo de Ativação da Skill** | 0 tokens | 2.880 tokens | +2.880 tokens |
-| **TOTAL DA SESSÃO** | **140.000 tokens** | **58.000 tokens** | **-82.000 tokens (-58.5%)** |
+| **Response Tokens (Output)** | 6,000 (400/turn) | 1,200 (80/turn) | **-4,800 tokens** (~4x more valuable) |
+| **Tools / Observations** | 60,000 (5 calls) | 7,500 (CoACT/TRC/Hook) | **-52,500 tokens** |
+| **History Accumulation (Peak)** | 22,600 tokens | 7,200 tokens (ACON/TRACE) | **-15,400 tokens** |
+| **Skill Activation Cost** | 0 tokens | 2,880 tokens | +2,880 tokens |
+| **SESSION TOTAL** | **140,000 tokens** | **58,000 tokens** | **-82,000 tokens (-58.5%)** |
 
-**Fator de Retorno (ROI)**: Para cada 1 token gasto mantendo a suíte ativa, a sessão economiza **28.4 tokens de API**.
+> These numbers are a **projection** composed from the per-layer figures in CoACT/TRC, not a controlled benchmark of this repo. A same-model A/B test with pass rate and retry cost is tracked in the [TODO & Roadmap](#todo--roadmap).
+
+**Return Factor (ROI)**: for every 1 token spent keeping the suite active, the session saves **28.4 API tokens**.
 
 ---
 
-## Estrutura Detalhada dos Arquivos
+## File Structure
 
 ```text
 omni-token-optimizer/
-├── SKILL.md                          # Master Skill (Orquestrador Universal)
-├── AGENTS.md                         # Diretrizes enxutas para arquivos de sistema
-├── README.md                         # Documentação completa e teórico-empírica
-├── install.sh                        # Instalador de uma linha (curl | bash)
+├── SKILL.md                          # Master Skill (universal orchestrator)
+├── AGENTS.md                         # Lean behavioral rules for agent files
+├── README.md                         # Full docs, theory and empirical basis
+├── install.sh                        # One-line installer (curl | bash)
 ├── assets/
-│   ├── logo-light.svg                # Logo (tema claro)
-│   ├── logo-dark.svg                 # Logo (tema escuro)
-│   ├── arch-flow.gif                 # Diagrama animado da arquitetura
-│   ├── demo-opencode.gif             # Demo real: instalação + trim no OpenCode
-│   ├── chart_token_savings.png       # Gráfico de economia por camada
-│   └── chart_context_growth.png      # Gráfico de curva de crescimento de contexto
+│   ├── logo-light.svg                # Logo (light theme)
+│   ├── logo-dark.svg                 # Logo (dark theme)
+│   ├── arch-flow.gif                 # Animated architecture diagram
+│   ├── demo-opencode.gif             # Real demo: install + trim in OpenCode
+│   ├── chart_token_savings.png       # Per-layer savings chart
+│   └── chart_context_growth.png      # Context growth curve chart
 ├── subskills/
-│   ├── 01-terse-communication.md     # Estilo enxuto e autonomia (Caveman + Punisher)
-│   ├── 02-lazy-execution.md          # Desenvolvimento enxuto e papéis (Ponytail + Refactoring)
-│   ├── 03-observation-trimmer.md     # Regras de corte de observação (CoACT + TRC)
-│   ├── 04-state-compactor.md         # Memória de estado estruturada (ACON + TRACE)
-│   └── 05-prompt-budgeting.md        # Alocação de orçamento de prompt (LLMLingua)
+│   ├── 01-terse-communication.md     # Terse style and autonomy (Caveman + Punisher)
+│   ├── 02-lazy-execution.md          # Lean development and roles (Ponytail + Refactoring)
+│   ├── 03-observation-trimmer.md     # Observation trimming rules (CoACT + TRC)
+│   ├── 04-state-compactor.md         # Structured state memory (ACON + TRACE)
+│   └── 05-prompt-budgeting.md        # Prompt budget allocation (LLMLingua)
 ├── hooks/
-│   ├── observation_trimmer.py        # Hook Python local (Zero-Tokens) para truncar logs/APIs
-│   └── context_monitor.py            # Hook Python local (Zero-Tokens) para monitorar limite da sessão
+│   ├── observation_trimmer.py        # Local Python hook (zero tokens) to truncate logs/APIs
+│   └── context_monitor.py            # Local Python hook (zero tokens) to watch the context ceiling
 └── plugins/
     └── opencode/
-        ├── index.ts                  # Plugin OpenCode v2: liga os hooks via API de plugins
-        └── trim.ts                   # Lógica pura de trim/estimativa de tokens (testável)
+        ├── index.ts                  # OpenCode v2 plugin: wires the hooks through the plugin API
+        └── trim.ts                   # Pure trim/token-estimation logic (testable)
 ```
 
 ---
 
-## Guia de Instalação e Integração
+## Installation & Integration Guide
 
-### 1. Instalação em uma linha (Linux/macOS)
+### 1. One-line install (Linux/macOS)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Wennington123/omni-token-optimizer/main/install.sh | bash
 ```
 
-O script auto-detecta a pasta de skills do seu agente (`~/.commandcode/skills`, `~/.claude/skills` ou `~/.config/opencode/skills`), instala a skill + subskills + hooks, copia os hooks para `~/.commandcode/hooks/` se existir e imprime o snippet de ativação. Se `~/.config/opencode/` existir, instala também a skill em `~/.config/opencode/skills/` e o plugin de hooks em `~/.config/opencode/plugins/` — mesmo que a raiz detectada seja outra. Opções: `--dir DIR` (raiz de skills alternativa) e `--uninstall`.
+The script auto-detects your agent's skills folder (`~/.commandcode/skills`, `~/.claude/skills` or `~/.config/opencode/skills`), installs the skill + subskills + hooks, copies the hooks to `~/.commandcode/hooks/` if it exists and prints the activation snippet. If `~/.config/opencode/` exists, it also installs the skill into `~/.config/opencode/skills/` and the hook plugin into `~/.config/opencode/plugins/` — even when the detected root is a different one. Options: `--dir DIR` (alternative skills root) and `--uninstall`.
 
-Reinicie a sessão do agente e a skill carrega automaticamente.
+Restart the agent session and the skill loads automatically.
 
-### 2. Colar no seu agente de IA (Claude Code, Cursor, Command Code, etc.)
+### 2. Paste into your AI agent (Claude Code, Cursor, Command Code, etc.)
 
-Copie o bloco abaixo, cole no seu agente e peça para executar:
+Copy the block below, paste it into your agent and ask it to run:
 
 ```text
-Instale e ative a skill omni-token-optimizer do repo
+Install and activate the omni-token-optimizer skill from the repo
 https://github.com/Wennington123/omni-token-optimizer
 
-Passos:
-1. Clone o repo (shallow) em um diretório temporário.
-2. Copie SKILL.md, AGENTS.md, subskills/ e hooks/ para a pasta de skills
-   do seu agente, criando o subdiretório omni-token-optimizer/ (ex.:
-   ~/.claude/skills/omni-token-optimizer/ — se ~/.commandcode/skills
-   existir, use-a).
-3. chmod +x em todos os hooks/*.py.
-4. Se ~/.commandcode/hooks existir, copie hooks/*.py para lá também.
-5. Liste os arquivos instalados para confirmar e diga como ativar a
-   skill em uma nova sessão.
-Não modifique nenhum outro arquivo do meu sistema.
+Steps:
+1. Clone the repo (shallow) into a temporary directory.
+2. Copy SKILL.md, AGENTS.md, subskills/ and hooks/ into your agent's
+   skills folder, creating the omni-token-optimizer/ subdirectory (e.g.
+   ~/.claude/skills/omni-token-optimizer/ — if ~/.commandcode/skills
+   exists, use it).
+3. chmod +x every hooks/*.py.
+4. If ~/.commandcode/hooks exists, copy hooks/*.py there too.
+5. List the installed files to confirm and explain how to activate the
+   skill in a new session.
+Do not modify any other file on my system.
 ```
 
-### 3. Instalação manual
+### 3. Manual installation
 
 ```bash
 git clone --depth 1 https://github.com/Wennington123/omni-token-optimizer.git
-cp -r omni-token-optimizer ~/.claude/skills/omni-token-optimizer   # ajuste ao seu agente
+cp -r omni-token-optimizer ~/.claude/skills/omni-token-optimizer   # adjust to your agent
 chmod +x ~/.claude/skills/omni-token-optimizer/hooks/*.py
 ```
 
-### 4. Integração por agente
+### 4. Per-agent integration
 
-- **Claude Code / Command Code**: a skill é auto-descoberta na pasta de skills; para o `context_monitor.py` (que fala o protocolo JSON de hooks e injeta o aviso de compactação da subskill 04), use a config testada impressa pelo `install.sh` — limiar ajustável via `OMNI_TOKEN_THRESHOLD`. O `observation_trimmer.py` **não** tem wiring nesses agentes: hooks de PreToolUse não substituem o output que o modelo vê (só injetam contexto extra), então ligá-lo aumentaria tokens em vez de reduzir — ele existe para o caso abaixo.
-- **OpenCode (v2)**: suporte completo via skill + plugin local — veja [Integração OpenCode](#5-integração-opencode-v2).
-- **Cursor / VS Code Agent**: adicione o conteúdo do `AGENTS.md` ao seu `.cursorrules` ou `system_prompt.md`.
-- **Agentes customizados em Python**: integre `hooks/observation_trimmer.py` no manipulador de retornos de ferramentas (onde o output pode ser substituído antes da API) e `hooks/context_monitor.py` no loop de sessão.
+- **Claude Code / Command Code**: the skill is auto-discovered from the skills folder; for `context_monitor.py` (which speaks the JSON hooks protocol and injects the subskill 04 compaction warning), use the tested config printed by `install.sh` — threshold adjustable via `OMNI_TOKEN_THRESHOLD`. `observation_trimmer.py` has **no** wiring in those agents: PreToolUse hooks cannot replace the output the model actually sees (they only inject extra context), so wiring it would increase tokens instead of reducing them — it exists for the case below.
+- **OpenCode (v2)**: full support via skill + local plugin — see [OpenCode Integration](#5-opencode-integration-v2).
+- **Cursor / VS Code Agent**: add the contents of `AGENTS.md` to your `.cursorrules` or `system_prompt.md`.
+- **Custom Python agents**: wire `hooks/observation_trimmer.py` into your tool-return handler (where the output can be replaced before the API call) and `hooks/context_monitor.py` into your session loop.
 
-### 5. Integração OpenCode (v2)
+### 5. OpenCode Integration (v2)
 
-Testado no OpenCode **2.4.1**. A integração usa dois mecanismos nativos: a skill auto-descoberta e um plugin de servidor (API v2 de plugins). Diferente do Claude Code/Command Code, no OpenCode o `observation_trimmer` ganha wiring de verdade: o hook `tool.execute.after` substitui o output que o modelo vê, então o corte de logs funciona de fato.
+Tested on OpenCode **2.4.1**. The integration uses two native mechanisms: the auto-discovered skill and a server plugin (v2 plugin API). Unlike Claude Code/Command Code, in OpenCode `observation_trimmer` gets real wiring: the `tool.execute.after` hook replaces the output the model sees, so log trimming actually works.
 
-#### Instalação manual
+#### Manual installation
 
 ```bash
 git clone --depth 1 https://github.com/Wennington123/omni-token-optimizer.git
 cd omni-token-optimizer
 
-# 1. Skill global (auto-descoberta)
+# 1. Global skill (auto-discovered)
 mkdir -p ~/.config/opencode/skills/omni-token-optimizer
 cp SKILL.md AGENTS.md ~/.config/opencode/skills/omni-token-optimizer/
 cp -r subskills hooks ~/.config/opencode/skills/omni-token-optimizer/
 
-# 2. Plugin (hooks locais)
+# 2. Plugin (local hooks)
 mkdir -p ~/.config/opencode/plugins
 cp -r plugins/opencode ~/.config/opencode/plugins/omni-token-optimizer
 ```
 
-No `~/.config/opencode/opencode.json` (o OpenCode recarrega skill e plugin ao salvar, sem restart):
+In `~/.config/opencode/opencode.json` (OpenCode reloads skill and plugin on save, no restart needed):
 
 ```jsonc
 {
@@ -287,67 +290,74 @@ No `~/.config/opencode/opencode.json` (o OpenCode recarrega skill e plugin ao sa
     "~/.config/opencode/skills/omni-token-optimizer/SKILL.md"
   ],
   "plugins": [
-    "/home/SEU_USUARIO/.config/opencode/plugins/omni-token-optimizer"
+    "/home/YOUR_USER/.config/opencode/plugins/omni-token-optimizer"
   ]
 }
 ```
 
-- `instructions` deixa a Master Skill **sempre ativa** (equivalente ao auto-load). Sem ela, a skill continua disponível sob demanda (mencione `@omni-token-optimizer` no prompt).
-- Sem a chave `plugins`, a skill funciona, mas os hooks locais ficam desligados.
-- O plugin também é carregado de `.opencode/plugins/` (por projeto) se preferir escopo local.
+- `instructions` keeps the Master Skill **always on** (equivalent to auto-load). Without it, the skill is still available on demand (mention `@omni-token-optimizer` in your prompt).
+- Without the `plugins` key the skill still works, but the local hooks stay off.
+- The plugin is also loaded from `.opencode/plugins/` (per project) if you prefer a local scope.
 
-#### O que o plugin faz (custo 0 tokens de LLM)
+#### What the plugin does (0 LLM tokens)
 
-| Hook | Subskill | Comportamento |
+| Hook | Subskill | Behavior |
 | --- | --- | --- |
-| `tool.execute.after` | 03 — Observation Trimmer | Trunca saídas longas de `shell` acima de **160 linhas e 6.000 caracteres**: mantém as 40 primeiras linhas, linhas de erro do meio e as 30 últimas, com marcador `[... omni-token-optimizer: N lines / M chars trimmed ...]`. Nunca toca em resultados com anexos (imagens/PDFs). |
-| `session.context` | 04 — State Compactor | Estima o histórico (~4 chars/token) e, acima do limiar, injeta o aviso `[TOKEN_WARNING]` no system prompt — **uma vez**, repetindo só se o contexto crescer ≥25% ou após 2 min. |
+| `tool.execute.after` | 03 — Observation Trimmer | Truncates long `shell` output above **160 lines and 6,000 characters**: keeps the first 40 lines, error lines from the middle and the last 30, with a `[... omni-token-optimizer: N lines / M chars trimmed ...]` marker. Never touches results carrying attachments (images/PDFs). |
+| `session.context` | 04 — State Compactor | Estimates the history (~4 chars/token) and, above the threshold, injects the `[TOKEN_WARNING]` notice into the system prompt — **once**, repeating only if the context grows ≥25% or after 2 min. |
 
-#### Opções
+#### Options
 
-Via `options` na entrada do plugin em `opencode.json`, ou variáveis de ambiente (fallback):
+Through `options` on the plugin entry in `opencode.json`, or environment variables (fallback):
 
 ```jsonc
 "plugins": [
   {
-    "package": "/home/SEU_USUARIO/.config/opencode/plugins/omni-token-optimizer",
+    "package": "/home/YOUR_USER/.config/opencode/plugins/omni-token-optimizer",
     "options": { "contextThreshold": 120000, "debug": true }
   }
 ]
 ```
 
-| Opção | Env | Padrão | Descrição |
+| Option | Env | Default | Description |
 | --- | --- | --- | --- |
-| `contextThreshold` | `OMNI_TOKEN_THRESHOLD` | `120000` | Limiar de tokens para o aviso de compactação |
-| `contextRewarnRatio` | — | `1.25` | Reavisa quando o contexto crescer essa fração desde o último aviso |
-| `contextRewarnMs` | — | `120000` | Janela mínima (ms) entre avisos |
-| `trimTools` | `OMNI_TRIM_TOOLS` | `"shell"` | Ferramentas cuja saída pode ser truncada (lista separada por vírgula) |
-| `trimMaxChars` | `OMNI_TRIM_MAX_CHARS` | `6000` | Gatilho de caracteres para o trim |
-| `trimMaxLines` | `OMNI_TRIM_MAX_LINES` | `160` | Gatilho de linhas para o trim |
-| `debug` | `OMNI_DEBUG=1` | `false` | Loga estimativas e trims no stdout do servidor |
+| `contextThreshold` | `OMNI_TOKEN_THRESHOLD` | `120000` | Token threshold for the compaction notice |
+| `contextRewarnRatio` | — | `1.25` | Re-warn once the context grows by this fraction since the last notice |
+| `contextRewarnMs` | — | `120000` | Minimum window (ms) between notices |
+| `trimTools` | `OMNI_TRIM_TOOLS` | `"shell"` | Tools whose output may be truncated (comma-separated list) |
+| `trimMaxChars` | `OMNI_TRIM_MAX_CHARS` | `6000` | Character trigger for trimming |
+| `trimMaxLines` | `OMNI_TRIM_MAX_LINES` | `160` | Line trigger for trimming |
+| `debug` | `OMNI_DEBUG=1` | `false` | Logs estimates and trims to the server stdout |
 
-#### Verificação
+#### Verification
 
-Salve o `opencode.json` e, em uma sessão do agente, rode `seq 1 3000`: acima dos gatilhos, a saída vira head + marcador de trim + tail. Para conferir o monitor de contexto, baixe o limiar (`"contextThreshold": 100`) e veja o aviso `[TOKEN_WARNING]` entrar no system prompt da próxima chamada.
+Save `opencode.json` and, in an agent session, run `seq 1 3000`: above the triggers the output becomes head + trim marker + tail. To check the context monitor, lower the threshold (`"contextThreshold": 100`) and watch the `[TOKEN_WARNING]` notice enter the system prompt on the next call.
 
-#### Logs esperados (não é bug)
+#### Expected logs (not a bug)
 
-O log do servidor mostra `msg="loading plugin"` **quatro vezes** no boot, sempre em dois pares: o plugin global é resolvido em duas localizações (global e projeto) e re-resolvido no `config.updated` que mescla o config do projeto. O `PluginSupervisor` deduplica por `id` e cacheia o módulo por `revision`, então o `setup` roda **uma vez** e cada hook dispara **uma vez** por evento — verificado com plugin-sonda: 1 `SETUP`, 1 `tool.execute.after` por chamada e 1 `[TOKEN_WARNING]` por request. Custo das linhas extras: poucos ms, zero token.
+The server log shows `msg="loading plugin"` **four times** at boot, always in two pairs: the global plugin is resolved in two locations (global and project) and re-resolved on the `config.updated` event that merges the project config. `PluginSupervisor` deduplicates by `id` and caches the module by `revision`, so `setup` runs **once** and each hook fires **once** per event — verified with a probe plugin: 1 `SETUP`, 1 `tool.execute.after` per call and 1 `[TOKEN_WARNING]` per request. Cost of the extra lines: a few ms, zero tokens.
 
-Ao salvar `index.ts` ou `trim.ts`, o watcher descarta a instância anterior antes de criar a nova, ou seja, hot reload sem restart e sem acúmulo de handlers.
+Saving `index.ts` or `trim.ts` makes the watcher dispose the previous instance before creating the new one — hot reload without restart and without handler accumulation.
 
-### 6. Desinstalar
+### 6. Uninstall
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Wennington123/omni-token-optimizer/main/install.sh | bash -s -- --uninstall
 ```
 
-No OpenCode, remova também as entradas `instructions`/`plugins` do `~/.config/opencode/opencode.json` (o script remove a skill e o plugin, mas não edita esse arquivo).
+In OpenCode, also remove the `instructions`/`plugins` entries from `~/.config/opencode/opencode.json` (the script removes the skill and the plugin, but does not edit that file).
 
 ---
 
-## Licença & Contribuição
+## TODO & Roadmap
 
-Este projeto é distribuído sob a licença **MIT**. Sinta-se à vontade para contribuir com novos hooks ou aprimoramentos empíricos via Pull Requests!
+- [ ] **Controlled A/B benchmark of the savings** — the **-58.5%** in [Mathematical Modeling](#mathematical-modeling--activation-roi) is a **projection** from the per-layer CoACT/TRC figures, not our own measurement. Still to measure: same model, same tasks (fixed and versioned in the repo), with and without skill + plugin, reporting (a) input/output tokens, (b) success rate (pass@1) and (c) **retry cost** — how many times the agent re-runs a command whose output was trimmed. Publish the harness and results together.
+- [ ] **Instrument retries in the plugin** — count re-runs after a trim, to detect over-compression instead of assuming it does not happen.
 
-Gostou? Pague um café: [ko-fi.com/wenningtondaquino](https://ko-fi.com/wenningtondaquino) ☕
+---
+
+## License & Contributing
+
+This project is distributed under the **MIT** license. Feel free to contribute new hooks or empirical improvements via Pull Requests!
+
+Enjoying it? Buy me a coffee: [ko-fi.com/wenningtondaquino](https://ko-fi.com/wenningtondaquino) ☕

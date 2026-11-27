@@ -11,7 +11,8 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its n
 | Build | Source build (see README) |
 | Source version | `0.12.0` |
 | Published version | not published |
-| Source tag | `fortran/v0.12.0` |
+| Publication status | source-only |
+| Canonical source tag | [`fortran/v0.12.0`](https://github.com/axisvela/praxo-core/tree/fortran/v0.12.0) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/fortran/ |
@@ -30,7 +31,7 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its n
 
 ## Quick start
 
-This implementation is source-only. Follow the build instructions in [`language/fortran/README.md`](language/fortran/README.md).
+No published package is available. Follow the source build instructions in [`language/fortran/README.md`](language/fortran/README.md).
 
 ## What's included
 
@@ -67,7 +68,7 @@ Runnable examples live under [`language/fortran/examples`](language/fortran/exam
 
 ## Scenario Tutorials
 
-Scenario-oriented tutorials live under `language/fortran/Tutorial`.
+Scenario-oriented tutorials live under `language/fortran/Tutorial`. Planning context: [Tutorial Plan](https://axisvela.github.io/praxo-core/getting-started/tutorial-plan/), [100 candidate agent scenarios](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), and [Tutorial Catalog](https://axisvela.github.io/praxo-core/getting-started/tutorial-catalog/).
 
 | Path | What it shows |
 | --- | --- |
@@ -82,6 +83,10 @@ Scenario-oriented tutorials live under `language/fortran/Tutorial`.
 | [pollution-tracing](language/fortran/Tutorial/pollution-tracing) | Compares fixed sensor readings and drafts two investigation hypotheses. No causal or enforcement finding. |
 | [simulation-metrics](language/fortran/Tutorial/simulation-metrics) | A scoped numerical tutorial over the native MIT Fortran Core. It computes fixed simulation metrics through a native tool, then lets a deterministic model package the computed nu... |
 | [weather-anomaly](language/fortran/Tutorial/weather-anomaly) | Computes fixed temperature anomalies and drafts a review-only notice. No operational forecast or warning dispatch. |
+
+## Reference Applications
+
+No accepted end-to-end reference application is recorded for this language yet. Candidate goals are tracked in the [Reference Application Portfolio](https://axisvela.github.io/praxo-core/project/roadmap/#reference-application-portfolio).
 
 ## Verify
 
@@ -120,7 +125,7 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 - Mirror repository: https://github.com/axisvela/praxo-core-fortran
 - Release index: https://axisvela.github.io/praxo-core/languages/registry-status/
 
-This repository is a discovery mirror of the canonical Fortran source. The monorepo remains the source of truth and the release workflow source.
+This repository is a discovery mirror of the canonical Fortran source. The monorepo remains the source of truth and the release workflow source. The mirror's `main` branch tracks current source, not a release snapshot. Source tags refer to the canonical monorepo and are not necessarily present in this mirror; syncing the branch does not publish mirror tags or registry packages.
 
 PRAXO-CORE is not a hosted model, workflow engine, identity provider, or safety controller. Do not infer exactly-once execution, complete sandbox isolation, production security certification, live-provider behavior, or physical safety from this package.
 

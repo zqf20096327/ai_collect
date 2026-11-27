@@ -5,7 +5,7 @@
 **Your AI coding assistant draws a map of your app's code, and keeps it up to date.**
 
 Each part of your app gets a page of diagrams. Click any box or arrow to see the real code behind
-it, and a picture of how that screen looks in the app. For **Flutter, iOS and Android** apps, with
+it, and a picture of how that screen looks in the app. For **Flutter, iOS, Android and React Native** apps, with
 **Claude Code, Cursor, Codex, Gemini CLI or GitHub Copilot**.
 
 ## How to use it
@@ -50,6 +50,7 @@ it, and a picture of how that screen looks in the app. For **Flutter, iOS and An
 | Wikipedia for iOS — the Wikimedia Foundation's official app (~209k lines, MIT) | iOS · Swift, Objective-C | [▶ Wikipedia iOS](https://yonivav.github.io/app-map/examples/wikipedia-ios/) |
 | Flutter Gallery — the Flutter team's gallery of Material and Cupertino components and six app studies (~32k lines, BSD-3-Clause) | Flutter | [▶ Flutter Gallery](https://yonivav.github.io/app-map/examples/flutter-gallery/) |
 | Wikipedia for Android — the Wikimedia Foundation's official app (~124k lines, Apache-2.0) | Android · Kotlin | [▶ Wikipedia Android](https://yonivav.github.io/app-map/examples/wikipedia-android/) |
+| Bluesky — the Bluesky social app, React Native and Expo (~323k lines, MIT) | React Native · TypeScript | [▶ Bluesky](https://yonivav.github.io/app-map/examples/bluesky/) |
 
 ![The Wonderous App Map: one card per module, with a screenshot of each](docs/overview.jpg)
 
@@ -210,8 +211,10 @@ reflects the commit it was last synced to; it won't track a branch nobody's merg
 - **Parsing.** Dart is read with the official `analyzer` when a Dart SDK is installed, and with
   [tree-sitter](https://tree-sitter.github.io/) otherwise; Swift, Kotlin, Java and Objective-C are
   read with tree-sitter directly — classes, structs, protocols/interfaces/categories, enums,
-  SwiftUI `View`s and `@Composable` functions, all with their members. Declarations are cached per
-  file, so a rerun only parses what changed.
+  SwiftUI `View`s and `@Composable` functions, all with their members. TypeScript and JavaScript
+  (React Native) are read with tree-sitter too: function and class components, hooks, stores and
+  contexts, with what each component renders (its JSX) and the hooks it calls. Declarations are
+  cached per file, so a rerun only parses what changed.
 - **Diagrams.** The diagrams are Mermaid, rendered in the page with the page's own theme (light
   and dark). Each source sits in a `<script type="text/plain">`, so `<<stereotypes>>` survive.
 - **Screenshots.** At each shot a small adapter records where every class of the map sits on
@@ -227,7 +230,10 @@ reflects the commit it was last synced to; it won't track a branch nobody's merg
 - **Phase 1 (done):** Flutter/Dart, with screenshots on the iOS simulator.
 - **Phase 2 (done):** native Android (Kotlin/Java) and iOS (Swift/Objective-C): class maps, screen
   composition, state machines and screenshots.
-- **Phase 3:** React Native (TypeScript/TSX), with screenshots from the simulator. Plain web is on hold: the screenshots of real running widgets are what sets this tool apart, and that is a mobile story.
+- **Phase 3 (done):** React Native (TypeScript/JavaScript, bare or Expo): component and hook maps, with
+  screenshots from the simulator and the emulator, measured by a dev-only helper inside the app. Plain web
+  is on hold: the screenshots of real running widgets are what sets this tool apart, and that is a
+  mobile story.
 - Want to help? See the [good first issues](https://github.com/yonivav/app-map/labels/good%20first%20issue).
 
 ## Credits
@@ -254,5 +260,8 @@ The examples map these open-source apps, none affiliated with or endorsing this 
   contributors (Apache-2.0). Source excerpts and screenshots in `examples/wikipedia-android/` are © the
   Wikimedia Foundation under the Apache-2.0 license; see `examples/wikipedia-android/LICENSE-wikipedia-android`.
   Article text and images in the screenshots come from Wikipedia under CC BY-SA 4.0 and their own licenses.
+- [Bluesky](https://github.com/bluesky-social/social-app) by Bluesky Social PBC (MIT). Source excerpts and
+  screenshots in `examples/bluesky/` are © Bluesky Social PBC under the MIT license; see
+  `examples/bluesky/LICENSE-bluesky`.
 
 MIT © 2026 Yoni Vizel

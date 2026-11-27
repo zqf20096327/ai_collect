@@ -1,12 +1,12 @@
-# dotai
+# ustack
 
-Shared skills that the pstack plugin does not cover: test audits (`test-audit`, adapted from openclaw's), screenshot walkthroughs and video transcripts, and pstack setup, sync and skill-drift audits (`sync-pstack`). Review runs on pstack's panels with Codex seats, on the work each project's reviews list names.
+Shared skills that the pstack plugin does not cover: test audits (`test-audit`, adapted from openclaw's), skill and override audits (`skill-audit`), video clips and transcripts, and pstack setup and sync (`sync-pstack`). Review runs on pstack's panels with Codex seats, on the work each project's reviews list names.
 
 `passwords` owns unattended 1Password login and new-Mac setup. Each owner's
 machine configuration stays in `~/.config/agent-passwords/machines/`, outside
 the shared source and installed skill folder.
 
-The engineering method comes from the pstack plugin, `pstack@pstack-claude` from `michael-denyer/pstack-claude`, pinned per project: poteto-mode, its playbooks, the principle skills, how, why, architect, arena, interrogate, swarm, reflect, show-me-your-work, tdd, deslop and the rest. dotai does not vendor them.
+The engineering method comes from the pstack plugin, `pstack@pstack-claude` from `michael-denyer/pstack-claude`, pinned per project: poteto-mode, its playbooks, the principle skills, how, why, architect, arena, interrogate, swarm, reflect, show-me-your-work, tdd, deslop and the rest. ustack does not vendor them.
 
 Read [SKILLS.md](SKILLS.md) for the generated inventory, capability limits and pinned install commands for the unchanged upstream skills listed in `upstream-skills.json`. Their source is not copied here.
 
@@ -19,7 +19,7 @@ Read [SKILLS.md](SKILLS.md) for the generated inventory, capability limits and p
 
 ## Install
 
-Install a skill with the Skills CLI, naming the skill and each agent, for example `npx skills add udecode/dotai --skill test-audit --agent codex claude-code`. Project scope is the default; use `--global` only for a user-wide install.
+Install a skill with the Skills CLI, naming the skill and each agent, for example `npx skills add udecode/ustack --skill test-audit --agent codex claude-code`. Project scope is the default; use `--global` only for a user-wide install.
 
 ## Validate
 
@@ -30,6 +30,6 @@ node scripts/build-workflow.mjs
 node scripts/build-workflow.mjs --check
 ```
 
-`validate-skills` checks every skill's frontmatter and the generated catalog. Then it runs only the skill tests that the working tree's changes can reach. A test file runs when it changed, or when it names a changed file or a script that reaches one. A template under a skill's `assets/` reaches the script that renders that folder. `node scripts/affected-tests.mjs --why` prints each pick and the chain that reached it. `--all` runs every test, as a release or a pstack sync does.
+`validate-skills` checks every skill's frontmatter, structural size budgets, the generated catalog, and runs every skill test file.
 
-`build-workflow.mjs` regenerates `SKILLS.md` and `workflow-manifest.json`, rejects duplicate ownership, resolves dependencies and local Markdown references, and records file checksums and modes. `--forbid '<pattern>'` optionally scans shipped content for project or private vocabulary.
+`build-workflow.mjs` regenerates `SKILLS.md`, rejects duplicate ownership, and resolves dependencies and local Markdown references. `--forbid '<pattern>'` optionally scans shipped content for project or private vocabulary.

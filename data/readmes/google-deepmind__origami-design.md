@@ -7,48 +7,58 @@ Global Flat-Foldability Verification.
 
 **Studio:**
 [COrigami Studio](https://google-deepmind.github.io/origami-design/) folds and
-unfolds the showcase models below in the browser, next to their crease
-patterns, packings and stick figures. It also opens the `shaped_3d.fold` that
-`bp-pipeline -o` writes for a design of your own.
+unfolds the showcase models below in the browser across 4-act multi-stage
+schedules, exports 1080p folding and 360° turntable videos, and displays their
+crease patterns, packings and stick figures. It also opens the `shaped_3d.fold`
+that `bp-pipeline -o` writes for a design of your own.
 
 ## Showcase
 
 Precomputed showcase models; each opens in the studio.
 
-> **Reproducibility note:** The ten bundled showcase models under `docs/models/`
-> are precomputed snapshots produced in earlier interactive shaping sessions
-> whose tool-call histories were **not recorded**. They **cannot be
-> regenerated** by running `bp-pipeline` on their `stick_figure.json` files
-> alone. (One model, `wyrmlord-dragon`, also had a single missing corner face —
-> 1 vertex, 2 border edges, 0.41% of the sheet — patched to close a 0.001-unit
-> border gap in its source crease pattern.) Fresh designs written by
-> `bp-pipeline FIGURE -o out/` produce a compatible `shaped_3d.fold` that the
-> studio loads directly.
+> **Reproducibility note:** The original ten showcase models under
+> `docs/models/` are precomputed snapshots produced in earlier interactive
+> shaping sessions whose tool-call histories were **not recorded**, so they
+> **cannot be regenerated** from their `stick_figure.json` files alone. (One
+> model, `wyrmlord-dragon`, also had a single missing corner face — 1 vertex, 2
+> border edges, 0.41% of the sheet — patched to close a 0.001-unit border gap in
+> its source crease pattern.) Newer showcase models (`castor-and-pollux`,
+> `spinosaurus`, and `bounding-red-kangaroo`) ship `shaping_history.json` next
+> to `stick_figure.json` and record any extra CLI flags under `pipeline_args`
+> in [`docs/models/catalog.json`](docs/models/catalog.json) so
+> `bp-pipeline stick_figure.json -o out/ <pipeline_args>` followed by
+> `bp-pipeline actuate out/ --reset --calls shaping_history.json` reproduces
+> `shaped_3d.fold`. Fresh designs written by `bp-pipeline FIGURE -o out/`
+> produce a compatible `shaped_3d.fold` that the studio loads directly.
 
 <!-- disableFinding(LINE_OVER_80) -->
 
 | [![Golden Eagle](docs/models/golden-eagle/preview.png)<br>Golden Eagle](https://google-deepmind.github.io/origami-design/?model=golden-eagle) | [![Winged Pegasus](docs/models/winged-pegasus/preview.png)<br>Winged Pegasus](https://google-deepmind.github.io/origami-design/?model=winged-pegasus) | [![Triceratops](docs/models/triceratops/preview.png)<br>Triceratops](https://google-deepmind.github.io/origami-design/?model=triceratops) | [![Western Dragon](docs/models/wyrmlord-dragon/preview.png)<br>Western Dragon](https://google-deepmind.github.io/origami-design/?model=wyrmlord-dragon) | [![King Cobra](docs/models/king-cobra/preview.png)<br>King Cobra](https://google-deepmind.github.io/origami-design/?model=king-cobra) |
 | :---: | :---: | :---: | :---: | :---: |
 | [![Emperor Scorpion](docs/models/emperor-scorpion/preview.png)<br>Emperor Scorpion](https://google-deepmind.github.io/origami-design/?model=emperor-scorpion) | [![Boxer Crab](docs/models/boxer-crab/preview.png)<br>Boxer Crab](https://google-deepmind.github.io/origami-design/?model=boxer-crab) | [![Bull Moose](docs/models/bull-moose/preview.png)<br>Bull Moose](https://google-deepmind.github.io/origami-design/?model=bull-moose) | [![Indian Peacock](docs/models/indian-peacock/preview.png)<br>Indian Peacock](https://google-deepmind.github.io/origami-design/?model=indian-peacock) | [![Crested Hoopoe](docs/models/crested-hoopoe/preview.png)<br>Crested Hoopoe](https://google-deepmind.github.io/origami-design/?model=crested-hoopoe) |
+| [![Castor and Pollux](docs/models/castor-and-pollux/preview.png)<br>Castor and Pollux](https://google-deepmind.github.io/origami-design/?model=castor-and-pollux) | [![Spinosaurus](docs/models/spinosaurus/preview.png)<br>Spinosaurus](https://google-deepmind.github.io/origami-design/?model=spinosaurus) | [![Bounding Red Kangaroo](docs/models/bounding-red-kangaroo/preview.png)<br>Bounding Red Kangaroo](https://google-deepmind.github.io/origami-design/?model=bounding-red-kangaroo) | | |
 
 <!-- enableFinding(LINE_OVER_80) -->
 
 The studio is the static site under [`docs/`](docs/). A showcase model is a
-directory `docs/models/<slug>/` with three files:
+directory `docs/models/<slug>/` with:
 
 -   `shaped_3d.fold`, in the extended [FOLD](https://github.com/edemaine/fold)
     v1.1 layout that `bp-pipeline -o` writes (`file_frames[0]` plus the `bp:`
-    keys; see the canonical schema in
+    keys including `edges_bp:baseFoldAngle`; see the canonical schema in
     [`src/bp_pipeline/render_3d.py`](src/bp_pipeline/render_3d.py)
     `mesh_to_fold_dict`);
 -   `stick_figure.json`, the stick figure it was designed from;
+-   `shaping_history.json` (for reproducible models), the recorded actuator
+    call list replayed by `bp-pipeline actuate --reset --calls`;
 -   `preview.png`, a 4:3 picture for the gallery.
 
 To add one, also give it an entry in
 [`docs/models/catalog.json`](docs/models/catalog.json) with what the files do
-not say: `slug`, `title`, `subtitle`, `summary`, `techniques`, the paper
-colors `colorTop` and `colorBottom`, and the `camera` angles of the opening
-view. Run `python3 -m http.server -d docs` to try the site locally.
+not say: `slug`, `title`, `subtitle`, `summary`, `techniques`, optional
+`pipeline_args` (extra `bp-pipeline` CLI flags for reproducible models), the
+paper colors `colorTop` and `colorBottom`, and the `camera` angles of the
+opening view. Run `python3 -m http.server -d docs` to try the site locally.
 
 ## Overview
 
@@ -84,10 +94,11 @@ patterns (`CreasePattern`) and shaded 3D shaped models:
         [Flat-Folder](https://github.com/origamimagiro/flat-folder) software.
 6.  **3D Origami Shaping, Pose Recipes & Bundled Agent Design Skills**:
     -   3D geometric simple-fold and river-bend shaping (`bp.shape()`),
-        closed-loop automatic posing (`bp.pose()`, `bp.PoseConfig`), a 19-tool
+        closed-loop automatic posing (`bp.pose()`, `bp.PoseConfig`), a 21-tool
         stateful shaping toolbox (`bp.ShapingState`, `bp.apply_shaping_tool()`,
-        `bp.list_shaping_tools()`), quantitative pose fidelity scoring
-        (`bp.evaluate_fidelity()`), dihedral hinge-mesh folding
+        `bp.list_shaping_tools()`, including width-2 sacrificial-pocket
+        `level_shifter` and `shape_flap_template`), quantitative pose fidelity
+        scoring (`bp.evaluate_fidelity()`), dihedral hinge-mesh folding
         (`bp.build_folded_mesh_3d()`), and portable AI agent skills under
         `.agents/`.
 
@@ -259,7 +270,7 @@ working inside a repository checkout:
     Reference for `bp.prepare`, `bp.pack`, `bp.solve_best`,
     `bp.solve_sweep`, `bp.fold`, and export formats.
 -   [`.agents/skills/origami-shaping/SKILL.md`](.agents/skills/origami-shaping/SKILL.md): Guide
-    to automatic posing (`bp.pose`), the 19-tool shaping toolbox
+    to automatic posing (`bp.pose`), the 21-tool shaping toolbox
     (`bp.apply_shaping_tool`), one-shot shaping (`bp.shape`), and 3D limb
     subdivision (with `references/tools.md` and `references/pose.md`).
 -   [`.agents/skills/origami-critique/SKILL.md`](.agents/skills/origami-critique/SKILL.md):

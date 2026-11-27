@@ -125,8 +125,9 @@ use. Add this near the top of the file:
 This user develops with specflo. At the start of a session, run `specflo guide`
 before any other work. It shows the state of the repo, when to use each project
 level and the next step. Every code change goes through specflo, including a
-one-line fix and a fix from a follow-up. A subagent that has an assigned task
-does not run the guide.
+one-line fix and a fix from a follow-up. Config changes and environment work do
+not, such as editing settings and config files or installing tools. A subagent
+that has an assigned task does not run the guide.
 ```
 
 Prompts that map onto the workflow:
@@ -959,10 +960,14 @@ In an auto run:
 - **The unattended fire.** After one clear has run, every armed seam clears
   and reseeds by itself: the extension fetches the next `specflo auto` pass
   and delivers its payload verbatim. No dialog, no confirmation, no input.
-- **Joining a run cold.** If the run was started outside pi (`specflo auto` in
-  a terminal, then pi opened), the first armed seam prints a bootstrap notice
-  asking you to type `/specflo-continue auto` once; every seam after that is
-  unattended.
+- **Joining a run cold.** If pi has not cleared during the run yet (the run
+  was started in a terminal, pi was restarted, or you resumed or switched
+  sessions), the first armed seam ends the agent's turn and runs
+  `/specflo-continue auto` itself once pi is idle; every seam after that is
+  unattended. This needs pi 0.87.0 or later. If the run still does not go on,
+  type `/specflo-continue auto` once.
+- **Footer.** The specflo segment in pi's footer ends in `auto` while an auto
+  run is under way.
 - **Stopping.** Loop control lives in the CLI, never the extension: on the
   kill switch (`specflo auto --off`), the pass cap, a stall, or project
   completion, nothing clears and the CLI's own stop directive is shown as a
@@ -974,7 +979,8 @@ In an auto run:
 
 The active project in your statusline tells you where the agent is without
 asking: `my-project:plan 0/5` in plan, or `my-project T-03 2/5` in execute
-(the task in progress, then done over total). pi users get this segment from
+(the task in progress, then done over total), ending in `auto` while an auto
+run is under way. pi users get this segment from
 the pi extension. For Claude Code, the repo ships two example scripts in
 [examples/statusline](https://github.com/TacoTakumi/specflo/tree/main/examples/statusline):
 

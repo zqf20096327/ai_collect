@@ -5,7 +5,7 @@
 **专为 Google Antigravity 打造的模块化原生控制中心（MCP App）：集上下文监控与累计用量统计、本地代码审查、生态治理与场景预设、本地壁纸引擎、零依赖界面汉化于一体**
 
 [![Version: v1.6.0](https://img.shields.io/badge/Version-v1.6.0-0ea5e9.svg)](https://github.com/Horikita-9-Suzune-Max-Ultrafast/antigravity-hub/releases/tag/v1.6.0)
-[![Antigravity 2.35.1 Update Verified](https://img.shields.io/badge/Antigravity%202.35.1-Update%20Verified-10b981.svg)](#实测验证官方更新防破坏实录)
+[![Antigravity 2.35.2 Update Verified](https://img.shields.io/badge/Antigravity%202.35.2-Update%20Verified-10b981.svg)](#实测验证官方更新防破坏实录)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Node.js >= 24](https://img.shields.io/badge/Node.js-%3E%3D24-339933.svg)](https://nodejs.org/)
 [![Zero Runtime Deps](https://img.shields.io/badge/Runtime%20Deps-0-brightgreen.svg)](#架构与设计原则)
@@ -47,16 +47,16 @@
 
 使用客户端增强类插件，大家最担心的往往不是功能够不够多，而是**「下次 Antigravity 官方一更新，会不会把客户端改崩、锁死安装器、丢数据或把旧版备份误还原回去？」**
 
-我们在真实生产环境中，刻意保持 **「ASAR 界面汉化已开启 + 本地壁纸已开启 + 原生悬浮窗运行中」** 的全开实战态，**不卸载插件、不提前还原原版**，直接执行官方原地升级至 **Antigravity `2.35.1`**，对全链路进行了 6 维实测验收：
+我们在真实生产环境中，刻意保持 **「ASAR 界面汉化已开启 + 本地壁纸已开启 + 原生悬浮窗运行中」** 的全开实战态，**不卸载插件、不提前还原原版**，连续经历官方原地升级至 **Antigravity `2.35.1` → `2.35.2`**（Electron `44.9.1`），对全链路进行了 6 维实测验收：
 
 | 防破坏验收项 | 实测结果 | 真实链路表现 |
 | :--- | :---: | :--- |
-| **1. 原地升级防锁死与零孤儿进程** | **PASS** | 官方安装器平滑覆盖 `app.asar` 并完成冷启动，无白屏、无文件锁阻塞；升级重启后旧宿主进程自动退出，系统仅保留唯一健康 MCP Server + WebView2 悬浮窗进程树 |
-| **2. 外置真相源 100% 零丢失** | **PASS** | 升级前后与导出快照逐项比对：Vault 记忆库、SQLite 派生索引、个人配置与配额校准、激活词典（1972 条）及本地壁纸库全部无损保留 |
-| **3. 新版干净 `.bak` 自动刷新** | **PASS** | 升级后一键点击「应用汉化」，补丁引擎自动识别新原版（`current_clean_asar`）并先将 `app.asar.agy-console.bak` 刷新为新版 `2.35.1` 干净原版，杜绝误还原旧版降级风险，再注入主进程与预加载运行时 |
+| **1. 原地升级防锁死与零孤儿进程** | **PASS** | 官方安装器平滑覆盖 `app.asar` 并以 `--updated` 完成冷启动，无白屏、无文件锁阻塞；升级重启后旧宿主进程自动退出，系统仅保留唯一健康 `language_server` → MCP Server → Win32 原生 WebView2 悬浮窗进程树 |
+| **2. 外置真相源 100% 零丢失** | **PASS** | 升级前后逐项核验：Vault 记忆库（217/217）、SQLite 派生调用索引（2840/2840）、个人配置与配额校准、激活词典（1972 条）及本地壁纸库与轮播计划全部无损保留 |
+| **3. 新版干净 `.bak` 自动刷新与防降级** | **PASS** | 升级后自动识别 `outdated_after_update` 与真实版本 `2.35.2` 并拦截旧版备份降级；重新应用汉化时先以 `2.35.2` 原版（`current_clean_asar`）刷新 `app.asar.agy-console.bak`，完整注入 `dist/main.js` 与 `dist/preload.js` 且支持一键无损还原 |
 | **4. 本地壁纸免重配自动回归** | **PASS** | 壁纸引擎零新增 ASAR 侵入点；重打汉化后原有图库、轮播计划、透明度/模糊/遮罩/毛玻璃参数直接自动恢复，无需重新选图 |
-| **5. Hook & 新版 Transcript 兼容** | **PASS** | `SessionStart` 简报注入、`PreInvocation`/`PostInvocation` 毫秒计时与新版 `transcript_full.jsonl` 解析开箱即通；`ctx_doctor` 实测 `HEALTHY`、Schema 漂移 `0`、熔断器 `CLOSED (0/3)` |
-| **6. 生态治理完整存活** | **PASS** | 升级后 `gov status` 评分 **`100/100`**（0 错误 / 0 告警 / 0 密钥泄露），全部插件、MCP、Skills、Rules 与 Hooks 挂载完好 |
+| **5. Hook、Transcript 与原生 DB 兼容** | **PASS** | `SessionStart` 简报、`PreInvocation`/`PostInvocation` 计时、`transcript_full.jsonl` 及原生 `conversations/<id>.db`（纳秒级 TTFT / 纯解码 TPS）开箱即通；`ctx_doctor` 实测 `HEALTHY`、Schema 漂移 `0`、熔断器 `CLOSED (0/3)` |
+| **6. 生态治理完整存活与回归全通** | **PASS** | 升级后全部插件、MCP、Skills、Rules 与 Hooks 挂载完好（0 错误 / 0 密钥泄露），21 个测试文件 **86 项自动化测试全部通过** |
 
 > 即使未来 Antigravity 某次大版本改动了内部字段，Hook 也会自动 Fail-Open 返回 `{}`、脱敏录制 `schema-drift.jsonl` 并在连续 3 次异常后熔断，绝不拖慢或卡死主对话；终端运行 `ctx doctor --repair` 即可无损重建索引与复位状态。
 
@@ -137,7 +137,7 @@ cd antigravity-hub
 # 2. 安装开发期 UI 打包依赖（仅 devDependencies，绝不进入部署产物）
 npm install
 
-# 3. 运行全套 18 个自动化测试文件（65 项用例，完全隔离临时目录，零真实数据污染）
+# 3. 运行全套 21 个自动化测试文件（86 项用例，完全隔离临时目录，零真实数据污染）
 npm test
 
 # 4. 构建单文件 MCP App UI 并幂等部署至 ~/.gemini/config/plugins/context-cache
@@ -210,7 +210,7 @@ npm run pack:release
 | 层级 | 工具清单 | 可见性 | 对模型上下文的影响 |
 | :--- | :--- | :--- | :--- |
 | **Model-Visible（5 个精简工具）** | `ctx_open_monitor`、`ctx_brief`、`ctx_save`、`ctx_search`、`ctx_doctor` | `["model", "app"]` | 常驻定义极简（约 `0.6K` tokens） |
-| **App-Only（10 个 UI 私有工具）** | `app_get_context_breakdown`、`app_get_calls`、`app_get_quota`、`app_calibrate_quota`、`app_vault_manage`、`app_config_manage`、`app_doctor_action`、`app_i18n_manage`、`app_governance_manage`、`app_appearance_manage` | `["app"]` | **0 tokens**（模型不可见、不触发推理） |
+| **App-Only（11 个 UI 私有工具）** | `app_get_context_breakdown`、`app_get_calls`、`app_get_quota`、`app_calibrate_quota`、`app_vault_manage`、`app_config_manage`、`app_doctor_action`、`app_i18n_manage`、`app_governance_manage`、`app_appearance_manage`、`app_review_manage` | `["app"]` | **0 tokens**（模型不可见、不触发推理） |
 
 ### 五层抗 Antigravity 破坏性更新设计
 1. **零运行时依赖**：Core Engine、Hooks、MCP Server、CLI 纯基于 Node.js 24 原生能力（含 `node:sqlite`）；仅开发期使用 `@modelcontextprotocol/ext-apps` + `esbuild` 打包单一零外链静态 HTML，部署产物**零 `node_modules`**。
@@ -299,7 +299,7 @@ node --no-warnings bin/ctx.mjs i18n restore
 <summary><strong>3. 汉化或壁纸会不会把 Antigravity 改坏？官方更新后怎么办？</strong></summary>
 
 - **壁纸引擎**：不新增任何 ASAR 侵入点，随时可一键秒关或用 CLI `ctx wallpaper off` 急救关闭；若遇到旧配置冲突自动静默回退。
-- **界面汉化**：首次补丁前自动校验并留存纯净原版 `app.asar` 备份，支持一键无损还原；已在 **Antigravity `2.35.1`** 全开实战态原地升级实测通关——官方更新覆盖 `app.asar` 后客户端正常启动不崩溃，Hub 自动提醒「官方更新待重打」，一键重新应用时会自动将 `.bak` 刷新为新版干净原版（杜绝旧版降级），同时原有壁纸与参数直接自动回归。
+- **界面汉化**：首次补丁前自动校验并留存纯净原版 `app.asar` 备份，支持一键无损还原；已连续通过 **Antigravity `2.35.1` → `2.35.2`** 全开实战态原地升级实测——官方更新覆盖 `app.asar` 后客户端正常启动不崩溃，Hub 自动提醒「官方更新待重打」，一键重新应用时会自动将 `.bak` 刷新为新版干净原版（杜绝旧版降级），同时原有壁纸与参数直接自动回归。
 </details>
 
 <details>
@@ -341,24 +341,25 @@ context-cache/
 │   │   ├── client-restart.mjs           # 脱离进程安全重启 Antigravity（不触碰 app.asar）
 │   │   ├── self-update.mjs              # GitHub Release 检查更新、SHA-256 强校验与原子目录切换
 │   │   ├── doctor.mjs                   # 体检、漂移报告、备份导出与自愈
-│   │   ├── governance/                  # 生态治理（全景扫描/多信号分类器/场景预设/离线体检修复闭环/护栏快照）
+│   │   ├── review/                      # 本地代码审查引擎（Git Diff 解析 / L1 静态规则 / 原生门禁 / L2 Subagent 闭环）
+│   │   ├── governance/                  # 生态治理（全景扫描/4 支柱评分/多信号分类器/场景预设/离线体检修复闭环/护栏快照）
 │   │   ├── appearance/                  # 本地壁纸引擎（外置库/只读扫描/轮播池/旧配置静默回退/热加载）
 │   │   └── i18n/                        # 零依赖 Antigravity 汉化引擎（流式 ASAR/词典/脱离重启）
 │   ├── adapters/antigravity/            # 极薄 Fail-Open Hook 适配层
 │   │   ├── normalize.mjs                # 多版本字段归一化与脱敏漂移录制
 │   │   ├── circuit-breaker.mjs          # 3 次异常熔断 5 分钟
 │   │   └── hook.mjs                     # 统一 Hook 入口（5s 硬超时）
-│   ├── mcp/server.mjs                   # 零依赖 MCP Stdio Server（5 Model + 10 App-Only）
+│   ├── mcp/server.mjs                   # 零依赖 MCP Stdio Server（5 Model + 11 App-Only）
 │   └── ui/                              # 单文件自包含模块化控制台前端
 │       ├── index.html                   # 控制台壳层与资产检视/交接胶囊/设置弹窗
 │       ├── styles.css                   # Radix UI Colors 深浅自适应主题与悬浮条语义色框
 │       ├── app.mjs                      # 主监控交互、预警精准跳转与悬浮窗联动
 │       ├── i18n-ui.mjs                  # 零依赖中英双语前端词典
 │       ├── build-ui.mjs                 # esbuild 单文件零外链打包脚本
-│       └── modules/                     # appearance-module / governance-module / i18n-module
+│       └── modules/                     # review-module / appearance-module / governance-module / i18n-module
 ├── plugin/                              # Antigravity 插件清单、Hooks、Rules、Skills 与图标
 ├── scripts/                             # deploy.mjs、pack-release.mjs 与 doctor.mjs
-├── tests/                               # 18 个自动化测试文件（65 项端到端 / 单元 / 韧性用例）
+├── tests/                               # 21 个自动化测试文件（86 项端到端 / 单元 / 韧性用例）
 ├── LICENSE                              # MIT License
 ├── README.md                            # 简体中文文档
 ├── README.en.md                         # English documentation

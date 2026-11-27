@@ -9,7 +9,7 @@ The product is called shardreel. The Rust engine and data folder keep their inte
 | Stage | What runs on your Mac |
 |---|---|
 | Transcription | whisper.cpp (large-v3-turbo): Metal on Mac, CPU on Linux (CUDA optional) |
-| Decode and encode | VideoToolbox on Mac, NVENC on Linux with an NVIDIA GPU, libx264/libx265 fallback |
+| Decode and encode | VideoToolbox on Mac; on Linux NVENC (NVIDIA), else VAAPI (Intel/AMD, integrated GPUs too), else libx264/libx265 |
 | Moment detection | loudness spikes, on-screen action, speech rate, hype words |
 | Ranking and titles (optional) | Gemini, OpenRouter, LM Studio or Ollama |
 | Captions | word-by-word highlighted captions and a hook banner (libass) |
@@ -26,9 +26,9 @@ shardreel checks these at startup (Settings > System) and refuses to start a job
 | Resource | Minimum | Recommended |
 |---|---|---|
 | Free disk (in `~/.clipforge`) | 10 GB | 30 GB |
-| RAM | 8 GB | 16 GB |
+| RAM | 4 GB (8 GB for the large Whisper models) | 16 GB |
 | CPU cores | 4 (warning only) | 8 |
-| GPU | none on Linux (slow); Apple Silicon on Mac | NVIDIA GPU on Linux |
+| GPU | none on Linux (light mode); Apple Silicon on Mac | NVIDIA GPU on Linux |
 
 The Whisper model alone is about 1.6 GB. Source videos, cache and rendered clips need the rest.
 Intel Macs are not supported.
@@ -54,9 +54,15 @@ curl -fsSL https://bun.sh/install | bash                          # bun
 ```
 
 Transcription runs on the CPU by default. With an NVIDIA GPU and the CUDA toolkit installed,
-build with `cargo run --release --features cuda`. Hardware encoding (NVENC) is used
-automatically when `nvidia-smi` works and ffmpeg has `h264_nvenc`. Otherwise shardreel uses
-libx264/libx265. Clips are saved to `~/Videos/clipforge/`.
+build with `cargo run --release --features cuda`. Hardware encoding is picked automatically:
+NVENC when `nvidia-smi` works, else VAAPI on Intel/AMD GPUs (integrated ones too; needs
+`/dev/dri/renderD*`, override with `CLIPFORGE_VAAPI_DEVICE`), else libx264/libx265. Each
+hardware encoder is test-encoded once before use, so a listed but unsupported one is skipped.
+Clips are saved to `~/Videos/clipforge/`.
+
+Without an NVIDIA GPU, new jobs start in **light mode** with the base Whisper model: clips
+render at 30 fps, one at a time, which roughly halves render time and memory on 60 fps sources.
+Both can be changed per job.
 
 ### Windows through WSL2
 
@@ -92,6 +98,28 @@ For UI development, run `cargo run --release` and `cd web && bun run dev`
    **Pick on frame**, and draw a box around your webcam.
 3. Optional: turn on AI ranking and pick a provider.
 4. Press **Generate clips** and watch the stages. URL downloads show a progress bar.
+
+While a job runs, **Cancel** stops it within a second. A failed or cancelled job has a
+**Resume** button: it reruns with the same settings and reuses the download, analysis and,
+in scan mode, every clip already rendered. Turn on **Review before rendering** (Clips card)
+to untick, retitle and trim the picked moments before anything renders; for URLs each moment
+has a link that opens the video at that time.
+
+For long streams from a URL, turn on **Long videos** in the job options. It never downloads
+the whole video. Two strategies:
+
+- **Scan whole video** (default): downloads only the audio (about 50 MB per hour), finds the
+  best moments across the full length from loudness spikes and YouTube's "most replayed"
+  heatmap, then downloads and renders only those moments. Speech recognition runs on the final
+  clips only, unless AI ranking is on (it then reads every candidate). A 2-hour stream gives
+  3 clips in about 2.5 minutes on a 4-core laptop without a dedicated GPU.
+- **Chunk by chunk**: downloads, analyses and renders a few minutes at a time, deleting each
+  piece, and stops once it has enough clips. It also uses on-screen action, but without a
+  heatmap the clips come from early in the video.
+
+Downloads use 4 parallel range requests (YouTube throttles single connections to about
+1 MB/s), for whole videos too. If YouTube kept the live chat replay, scan mode downloads it in
+the background and also weights the moments chat reacted to. Live streams still in progress, and videos under about 10 minutes, run in one pass.
 
 Clips are saved to `~/Movies/clipforge/<video-name>/` (Linux and WSL: `~/Videos/clipforge/`): the `NN_title.mp4` files, a `.jpg`
 thumbnail for each, and `clips.json` with timestamps, title, hook, hashtags and a caption.

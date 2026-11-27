@@ -10,14 +10,14 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0f172a"></a>
-  <img alt="Skills: 1,812" src="https://img.shields.io/badge/skills-1,812-2563eb">
+  <img alt="Skills: 1,795" src="https://img.shields.io/badge/skills-1,795-2563eb">
   <img alt="Router-first" src="https://img.shields.io/badge/architecture-router--first-0891b2">
   <img alt="Public safe" src="https://img.shields.io/badge/release-public--safe-059669">
 </p>
 
 Universal AI Skills Library is a router-first skill system for local and CLI AI
 tools. It lets Codex, Claude, Cursor, Hermes, Paperclip, OpenCode, Kimi, Qwen,
-Gemini, OpenHands, and other agents search, preflight-route, and load 1,812
+Gemini, OpenHands, and other agents search, preflight-route, and load 1,795
 skills on demand from one shared corpus without copying thousands of files into
 every client.
 
@@ -32,13 +32,13 @@ prompt needs a matching skill.
 | Problem | This repo's answer |
 | --- | --- |
 | Every AI client wants skills in a different place. | Use compact adapters that all point back to one canonical router and corpus. |
-| Large skill libraries can bloat context. | Run deterministic preflight and load exactly one relevant skill when needed. |
+| Large skill libraries can bloat context. | Use preflight for simple tasks and load one workflow stage at a time for multi-part work. |
 | Local AI stacks drift across Hermes, Paperclip, Codex, Claude, and IDE tools. | Keep portable model, memory, routing, and adapter config in repo-owned templates. |
 | Public repos can accidentally leak machine state or secrets. | Ship public-safe defaults, ignored local state, validation scripts, and a release audit. |
 
 ## What It Provides
 
-- 1,812 canonical skills in `skills/`
+- 1,795 canonical skills in `skills/`
 - `skill-router`, a Go CLI for search, preflight routing, validation, and skill
   loading — **decoupled from the corpus**: it resolves skills only through the
   generated manifest interface via env/config-driven paths, with no hardcoded
@@ -70,7 +70,7 @@ Three layers with a clean separation of concerns:
    generated manifest and a config/env-driven path resolver
    (`SKILL_ROUTER_REPO_DIR`, `SKILL_ROUTER_SKILLS_DIR`, `SKILL_ROUTER_MANIFEST`,
    …), so the router and the library evolve independently.
-2. **Corpus** — `skills/`, the single source-of-truth set of 1,812 canonical
+2. **Corpus** — `skills/`, the single source-of-truth set of 1,795 canonical
    skill directories.
 3. **Registry** — generated from the corpus by `scripts/registry/`. One
    generator emits the CLI-first registry artifacts (`manifest.json`,
@@ -181,8 +181,17 @@ lists the package, `skills path <name> <relative-file>` locates an asset, and
 native skill discovery without overwriting an existing skill. Explicit
 `--full-copy` remains available for offline exports.
 
-MCP clients can use `skill_bundle` to list a package and `load_skill` with an
-optional relative `file` to read an individual UTF-8 asset up to 512 KiB.
+Run `skill-router serve` to expose the skills library as an MCP server over stdio.
+It supports stateless MCP `2026-07-28` discovery and legacy initialization-based
+clients. MCP clients can use `skill_bundle` to list a package and `load_skill`
+with an optional relative `file` to read an individual UTF-8 asset up to 512 KiB.
+Use `skill-router skills source <name>` to find the latest public source of
+a skill. Imported skills link to the upstream default branch via GitHub `HEAD`.
+Skills maintained here or removed upstream link to this library's `main`.
+The result also identifies the reviewed library copy. MCP includes the same
+links in `skill_bundle` responses. Loading a skill uses the local reviewed bundle.
+Previous names from consolidated bundles continue to resolve as
+[compatibility aliases](docs/compatibility_aliases.json).
 
 ## Automatic Skill Selection
 
@@ -192,13 +201,21 @@ real user-submitted prompt:
 1. Run `skill-router preflight --hook-event UserPromptSubmit --json "<latest user prompt>"`
    from a user-prompt hook, or `skill-router preflight --json "<latest user prompt>"`
    when the host AI performs the check directly.
-2. If the decision is `route`, sanity-check that the selected skill clearly
-   matches the core task, object, and action.
-3. Load exactly one skill with `skill-router skill <name>` only when the route
-   is clearly relevant.
-4. If the decision is `ambiguous`, the host AI chooses from only the listed
-   candidates or continues with no skill.
-5. If the decision is `no_route`, continue normally.
+2. For a single requirement, load a clearly matching skill with `skill-router skill <name>`.
+3. For multiple deliverables, constraints or checks, call `workflow_plan` or
+   `skill-router skills workflow plan` and name each requirement separately.
+   Include details that change the method, such as the target platform, file
+   format and required checks. The planner gives source lines for matched
+   details and keeps requested independent passes.
+4. Load a stage when beginning its work. Record the contribution and its actual
+   evidence, then review coverage against each named acceptance check.
+   [Workflow planning and examples](docs/WORKFLOW_PLANNING.md)
+
+The [workflow evaluation suite](tests/workflow-eval/breadth) measures whether
+plain-language requests, separated requirements and detailed platform or
+format constraints find the right source sections across 24 scenarios.
+[Execution fixtures](tests/workflow-eval/execution) exercise complementary
+skills through the CLI and MCP using actual documents, data and Python tests.
 
 Do not run automatic skill loading from tool hooks, session-start hooks, stop
 hooks, compaction/resume hooks, assistant messages, tool outputs, status checks,

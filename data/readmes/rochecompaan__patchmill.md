@@ -416,11 +416,12 @@ Each key is optional. Patchmill rejects unknown keys by name.
   "skills": {
     "triage": ".patchmill/skills/patchmill-issue-triage",
     "planning": ".patchmill/skills/patchmill-planning",
-    "implementation": ".patchmill/skills/patchmill-implementation"
+    "implementation": ".patchmill/skills/patchmill-implementation",
+    "retro": ".patchmill/skills/patchmill-retro"
   },
   "pi": {
     "agentDir": ".patchmill/pi-agent",
-    "timeoutMinutes": 90,
+    "timeoutMinutes": null,
     "commandTimeoutMinutes": 20,
     "maxCommandTimeoutMinutes": 25,
     "stallStopMinutes": 10,
@@ -431,6 +432,7 @@ Each key is optional. Patchmill rejects unknown keys by name.
     "specApproval": { "required": false },
     "planApproval": { "required": false }
   },
+  "retro": { "unattended": "off" },
   "run": {
     "triageIntervalMinutes": 5,
     "conflictRetryMinutes": 30,
@@ -446,16 +448,26 @@ These keys change the most:
   the planning gates.
 - `workflow.stateTracking` selects labels on the host or
   [local state](#local-state-mode).
-- `pi.timeoutMinutes` limits each Pi session.
+- `pi.timeoutMinutes` is the optional Session cap in minutes. The default `null`
+  sets no wall-clock limit on phase sessions. A number must be greater than 0
+  and at most 35791. About 5 minutes before the cap, Patchmill asks the agent to
+  stop new work and hand off. Without a cap, triage sessions stop after 90
+  minutes. Subagents follow the same cap (see [Safety](#safety)). A
+  configuration from an earlier `patchmill init` has `90`, which keeps a
+  90-minute cap; set `null` or remove the key to turn it off.
 - `pi.commandTimeoutMinutes` (default 20) is the timeout of an agent `bash` call
   that sets none. `pi.maxCommandTimeoutMinutes` (default 25) is the longest
   timeout that a call can get. `0` turns a limit off. The default must not be
   longer than an enabled cap.
 - `pi.stallStopMinutes` (default 10) is the quiet time after which Patchmill
-  stops the turn of an unattended implementation session and asks the agent to
-  continue another way. A running `bash` call inside its timeout is not quiet.
-  `pi.maxStalls` (default 3) is the Stall that stops the Run attempt at Needs
-  Info. A second Stall of the same command also stops it. `0` turns a limit off.
+  stops the turn of an unattended planning or implementation session and asks
+  the agent to continue another way. A running `bash` call inside its timeout is
+  not quiet. `pi.maxStalls` (default 3) is the number of Stalls that stops the
+  Run attempt at Needs Info. A second Stall of the same command also stops it.
+  `0` turns a limit off.
+- `retro.unattended` (default `"off"`) runs a [Retro](#retros) at the end of
+  each unattended Issue run. `"findings-only"` writes findings only.
+  `"file-issues"` also lets the agent file or comment on `retro` issues.
 - `git.baseBranch: null` uses the default branch of the remote.
 - `run` sets the triage interval and the wait limits of `patchmill run`.
 
@@ -463,6 +475,25 @@ The label names must be different from each other. The comparison ignores case.
 `init` does not change a valid configuration, and rejects an invalid one. The
 [configuration guide](https://patchmill.dev/getting-started/configuration/)
 explains each key, including host logins and trusted comment authors.
+
+## Retros
+
+A Retro reviews the session files of one ended Issue run and suggests changes to
+the agent's environment. Examples are a missing check, an expensive tool call,
+or an instruction that changed nothing. An Issue run ends when its
+implementation pull request is merged, or when a Run attempt stops with Needs
+Info. A ready pull request, a gate wait, or a pause is not an end.
+
+- In an Interactive Issue run, the console agent asks whether to run a Retro.
+  The agent shows its findings and asks before it files or comments on an issue.
+- In unattended runs, set `retro.unattended` to `"findings-only"` or
+  `"file-issues"`. Patchmill then starts a short Pi session at each end.
+
+Each Retro covers the Run attempts that no earlier Retro covered. Its folder is
+`<runsDir>/issue-N/retros/<id>/` and holds `retro.json` and `findings.md`. Each
+end gets at most one Retro. A Retro never changes the outcome, labels, or
+comments of the source issue. Filed issues get the `retro` label and no workflow
+label, so normal triage picks them up.
 
 ## Local state mode
 
@@ -491,8 +522,21 @@ Patchmill does not move the state.
 
 ## Safety
 
-- Each phase runs in a new Pi session. Patchmill stops a session after
-  `pi.timeoutMinutes` (90 minutes by default).
+- Each phase runs in a new Pi session. By default, no wall-clock limit applies.
+  The Stall policy stops and recovers a stuck unattended planning or
+  implementation session, and blocks the Run attempt after repeated Stalls. Set
+  `pi.timeoutMinutes` for an extra hard cap. Triage stops after 90 minutes when
+  no cap is set.
+- Patchmill sets `timeoutMs` and `checkpointBeforeDeadlineMs` in
+  `<agentDir>/extensions/subagent/config.json`, replaces an operator value for
+  these two keys, and keeps the other keys. Because `checkpointBeforeDeadlineMs`
+  is a fail-closed key, an invalid value of another key in that file stops
+  pi-subagents from loading. Subagents get the Session cap, or the largest
+  pi-subagents deadline (about 24.8 days) without a cap. A single async child
+  gets a "checkpoint and stop" message 5 minutes before it; a foreground child,
+  a resumed run, and an async chain or parallel step do not. Agents that
+  Patchmill does not manage keep the 30-minute pi-subagents default on a resume
+  and in an async chain or parallel step.
 - A lock file stops two runs in the same clone from working on one issue.
   Separate clones can still race. Do not delete the lock file or its folder,
   even after a crash. To clear a stale claim, run `patchmill release --issue N`.
@@ -513,14 +557,16 @@ The [Run-once guide](https://patchmill.dev/using-patchmill/run-once/) and
 
 `patchmill init` installs the Patchmill skills in `.patchmill/skills`, together
 with pinned [Superpowers](https://github.com/obra/superpowers) and SimpleEnglish
-skills. Three keys in `patchmill.config.json` select the skill for each step:
-`skills.triage`, `skills.planning`, and `skills.implementation`. Each key names
-a directory that contains a `SKILL.md` file.
+skills. Four keys in `patchmill.config.json` select the skill for each step:
+`skills.triage`, `skills.planning`, `skills.implementation`, and `skills.retro`.
+Each key names a directory that contains a `SKILL.md` file.
 
 To change the workflow, copy a skill to a new directory, edit the copy, and set
 the matching key to that directory. Your skill must keep the result format that
-the kernel reads, and must leave labels and issue comments to the kernel. Put
-project rules, such as setup and test commands, in skills or `AGENTS.md`.
+the kernel reads, and must leave labels and issue comments to the kernel. The
+one exception is the retro skill, which may create `retro` issues, comment on
+them, and create the `retro` label. Put project rules, such as setup and test
+commands, in skills or `AGENTS.md`.
 
 Run `patchmill skills update` after you upgrade Patchmill. The command refuses
 to overwrite managed skill files that you edited.

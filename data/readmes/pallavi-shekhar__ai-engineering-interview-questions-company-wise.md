@@ -376,6 +376,7 @@
   - Asked at: [ElevenLabs](#elevenlabs)
 - How do you handle code-switching and accents in a production ASR system?
   - Asked at: [Sarvam AI](#sarvam-ai), [Abridge](#abridge)
+  - Answer: [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
 - Explain streaming TTS chunking and jitter-buffer sizing.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [How does sentence chunking feed LLM output into TTS faster?](https://outcomeschool.com/blog/sentence-chunking-for-tts), [How does a TTS model start speaking before the full sentence arrives?](https://outcomeschool.com/blog/streaming-tts), and [How does a jitter buffer keep voice audio smooth over a bad network?](https://outcomeschool.com/blog/jitter-buffer)
@@ -1194,7 +1195,7 @@
 #### Agents and Tool Use
 
 - Your on-device model must emit valid, schema-conforming tool calls. How do you guarantee validity rather than hope for it?
-  - Answer: [How does Function Calling work in LLMs?](https://outcomeschool.com/blog/how-does-function-calling-work-in-llms)
+  - Answer: [How does Function Calling work in LLMs?](https://outcomeschool.com/blog/how-does-function-calling-work-in-llms) and [How does Constrained Decoding work?](https://outcomeschool.com/blog/constrained-decoding)
 
 #### Fine-Tuning, Post-Training and Alignment
 
@@ -1282,7 +1283,4 @@
 
 #### Inference, Serving and GPU Performance
 
-- The onboard compute budget is fixed. Walk me through quantizing and pruning a vision model without losing recall on small objects.
-  - Answer: [How does Model Quantization work?](https://outcomeschool.com/blog/how-does-model-quantization-work)
-
-#### AI System Des
+- The onboard compute budget

@@ -1,8 +1,8 @@
-# MCP_CREO_MechDog 0.45.1
+# MCP_CREO_MechDog 0.47.1
 
-![version](https://img.shields.io/badge/version-0.45.1-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
+![version](https://img.shields.io/badge/version-0.47.1-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
 
-当前正式版 **0.45.1**（PATCH）。改进大型曲面的 STL 细化、接缝保护、ASCII 写出和偏差诊断。公开工具以 `creo_capabilities` 的 `tool_count` 为准。 [版本说明](docs/RELEASE_NOTES_0.45.1.md) · [下载页](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.45.1)
+当前正式版 **0.47.1**（PATCH，公开工具 112）。修复默认主基准面偏移（如 XZ `axis="y"`）法线与 `capabilities.frames` 矛盾导致的草图静默反号问题，为 `datum_plane` 补齐 `plane_frame` 回执、为字典草图面反向法线补齐 `frame_warning` 告警与 `frames_note` 文档（[BUG-187](docs/work-items/BUG-187.md)），并合入开发入口统一与四批 P1/P2 台账复核（[DEV-104](docs/work-items/DEV-104.md)）。 [版本说明](docs/release-notes/RELEASE_NOTES_0.47.1.md) · [下载页](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.47.1)
 
 > 让 AI 客户端通过 MCP，直接在 Creo Parametric 里创建**原生可编辑的参数化特征**——不是导出网格，也不是脚本模拟。
 
@@ -54,11 +54,13 @@ Creo 软件、SDK、模板与许可需自行取得；MIT 只覆盖本项目原�
   "mcpServers": {
     "MCP_CREO_MechDog": {
       "command": "C:\\MCP_CREO_MechDog\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\MCP_CREO_MechDog\\server.py"]
+      "args": ["-m", "creo_mechdog"]
     }
   }
 }
 ```
+
+> **已接入的 AI Agent 可以继续用原来的配置和提示词。** 旧配置里的根目录 `server.py` 仍可启动服务。新安装使用上面的 `-m creo_mechdog`。两种入口提供相同的 MCP 工具和输入参数，共用同一安装目录下的模型和任务。写死入口路径或直接导入内部 Python 模块的脚本，见 [Agent 迁移说明](docs/MIGRATION.md#自动化脚本的兼容性)。
 
 服务启动后，让 AI 调用 `creo_startup_status` 等 `state == "ready"`、`creo_session_status` 确认连接，再调用 `creo_execute_plan`，例如创建 Ø20×30 的圆柱：
 
@@ -101,12 +103,12 @@ Creo 软件、SDK、模板与许可需自行取得；MIT 只覆盖本项目原�
 | 我想… | 看这里 |
 | --- | --- |
 | 安装、排错、升级 | [docs/INSTALL.md](docs/INSTALL.md) |
-| 查工具参数与引用格式 | [docs/REFERENCE_SYNTAX.md](docs/REFERENCE_SYNTAX.md)、[docs/MODELING_0.21.md](docs/MODELING_0.21.md) |
+| 查工具参数与引用格式 | [docs/REFERENCE_SYNTAX.md](docs/REFERENCE_SYNTAX.md) |
 | 找可复制的建模方案 | [examples/](examples/) |
 | 确认哪些功能已实测 | [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md) |
 | 种子库 / 换电脑换 Agent | [docs/SEED_LIBRARY.md](docs/SEED_LIBRARY.md)、[docs/MIGRATION.md](docs/MIGRATION.md) |
 | 直接混合的一次性回调 | [docs/CALLBACK_LIFECYCLE.md](docs/CALLBACK_LIFECYCLE.md) |
-| 查看版本变更 | [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)、[0.21.1 版本说明](docs/RELEASE_NOTES_0.21.1.md) |
+| 查看版本变更 | [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)、[0.21.1 版本说明](docs/release-notes/RELEASE_NOTES_0.21.1.md) |
 | 参与开发 / 看台账 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)、[docs/BACKLOG.md](docs/BACKLOG.md) |
 
 ## 已知限制

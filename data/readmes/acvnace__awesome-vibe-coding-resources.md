@@ -217,6 +217,7 @@ Add resources that help people build, test, or ship software with AI. Use the re
 - [melthond/sharpen](https://github.com/melthond/sharpen) - Claude Code plugin that, when turned on, rewrites each eligible prompt into a specific one using the conversation, the codebase and the installed skills, agents and MCP tools, and shows it for approval before any work starts.
 - [web-animation-skills](https://github.com/iart-ai/web-animation-skills) - Nine MIT-licensed agent skills for Claude Code, Cursor and Codex covering web animation: GSAP, SVG, Lottie, micro-interactions, page transitions, 60fps performance and reduced-motion handling.
 - [Mailtrap](https://github.com/mailtrap/mailtrap-skills) - MIT-licensed agent skills and plugin, with the Mailtrap MCP server (`npx -y mcp-mailtrap`), that let Claude Code, Codex, Cursor and other agents add email to an app: transactional and bulk sending via API, SMTP or official SDKs, sending-domain setup, templates, contacts and inbound email.
+- [Scalekit](https://github.com/scalekit-inc/authstack/) - Agent skills and plugin for Claude Code, Codex, Cursor and GitHub Copilot (`npx @scalekit-inc/cli setup`) that add Scalekit, an AI agent integrations platform and MCP gateway, to the app you're building, so its agents call tools through each user's connected accounts. Requires a Scalekit account; free tier available.
 
 ## Command Line Tools
 
@@ -397,6 +398,8 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [Little Cups of Claude](https://littlecupsofclaude.com) - Short, focused tips for Claude Code, the Claude API, the Agent SDK and MCP, one per weekday.
 - [aicharts coding agents](https://aicharts.io/agents) - Codex, Claude Code and Antigravity CLI compared using official Terminal-Bench results, with scores and cost per task across model and effort settings. Free, no account.
 - [Free LLM API Hub](https://freellmapihub.com/) - Dated, sourced list of 60+ free LLM APIs, many OpenAI-compatible, for running AI coding tools without a paid key. MIT, with a no-auth JSON API.
+- [Mode VC LLM Inference Cost Calculator](https://modevc.com/tools/llm-inference-calculator) - Free browser calculator comparing monthly spend, gross margin, prompt caching, and hybrid routing across Claude, GPT, Gemini, DeepSeek, and Grok with no signup.
+- [ReUI](https://reui.io/docs) - shadcn registry with free UI components and examples. Its hosted MCP server helps coding agents find components, inspect their APIs, and get installation commands. MCP requires a ReUI account and has a daily limit on the free tier. Premium blocks, icons, and templates require a paid license.
 
 ## News and Social Media
 

@@ -1,43 +1,32 @@
 # Inference optimization playbook
 
-A map of 127 tested ideas for making huge LLMs fast on consumer GPUs. Each one has a verdict (worked, failed, or works only under conditions), the numbers, the reason, and the conditions it was tested under.
+My field notebook for tuning LLM inference on consumer GPUs. The ledger covers 138 tested hypotheses across 7 model cases, with the verdict, measurements and test conditions for each. I publish it as a read-only reference for people tuning local inference and as a skill for coding agents.
 
-It comes from running DeepSeek V4.1 Flash, Qwen3.8-Flash-Next, GLM-5.3-Flash, MiniMax-M3.1-Flash, Tencent Hy4 Flash and Ling-3.2-air on 4x RTX 3090 with experts offloaded to RAM, and Inkling 2 Mini on a single RTX 3090 with every expert in VRAM. The big models do not fit in 96 GB of VRAM at the quants we wanted. Engines: Strata, Maya forks, an exllamav3 fork, llama.cpp, vLLM, most of them patched by hand.
+My rig measurements use 1-4 RTX 3090 cards (24 GB each). The cases cover expert offload to RAM and models or quants that fit in VRAM, including Inkling 2 Mini on 1 card and Ling-3.2-air R3 on 3-4 cards. Engines include Strata, Maya forks, an exllamav3 fork, llama.cpp and vLLM. [Rig details and model cases](cases/README.md)
 
-| Model, setup | What changed | Before → after |
+| Model and setup | What changed | Result |
 |---|---|---|
-| DeepSeek V4.1 Flash, 4 cards | DMA from pinned RAM for every tensor format, layer skip on the prompt, auto chunk | prefill 32K: 430 → 2,199 tok/s |
-| DeepSeek V4.1 Flash, CPU path on Zen 2 | 1 build flag (PDEP runs in microcode there) | 1 cold expert: 1.6 → 0.44 ms |
-| Hy4 Flash, 1 card | 1 load of experts per block of up to 57,600 tokens, attention in tiles of 2,048 (full build) | prefill of 57,587 tokens: 415.6 → 1,510.2 tok/s |
-| Hy4 Flash, 2 cards | cold experts computed on the CPU in parallel with hot ones on the GPU | decode of short code: 24.6 → 70.4 tok/s |
-| Qwen3.8-Flash-Next, 1-2 cards | DFlash2 drafter | decode +44-46% |
-| Qwen3.8-Flash-Next, Russian | a Cyrillic draft vocabulary, no training | draft acceptance 32% → 54% |
-| MiniMax-M3.1-Flash | attention K/V gathered into VRAM once per chunk | prefill 64K ×3.3 |
-| GLM-5.3-Flash at 2.05 bpw, 4 cards | tensor parallel instead of layer split | 48.3 → 66-68 tok/s |
-| Inkling 2 Mini, 1 card | every expert in VRAM, a token as 1 CUDA graph, NVFP4 experts and attention on the tensor cores | decode 57 (llama.cpp) → 128.7 tok/s, 344K context |
-| Ling-3.2-air, 2 cards | tiled Flash-MLA, macro-prefill, TILE=32 MLA decode, `blk.42` MTP with exact KDA rollback | prefill 32K: 248 → 3,119 tok/s; 260K decode +64.4%; MTP up to 143.8 tok/s |
+| [DeepSeek V4.1 Flash](cases/deepseek-v4.1-flash.md), 4 cards | DMA from pinned RAM for all formats, prompt layer skipping, automatic chunking | 32K prefill rose from 430 to 2,199 tok/s |
+| DeepSeek V4.1 Flash, Zen 2 CPU | Disabled the PDEP path at build time | Time per cold expert dropped from 1.6 to 0.44 ms |
+| [Hy4 Flash](cases/hy4-flash.md), 1 card | Loaded each needed expert once per block of up to 57,600 tokens, with 2,048-token attention tiles | The full build raised 57,587-token prefill from 415.6 to 1,510.2 tok/s |
+| Hy4 Flash, 2 cards | Ran cold experts on the CPU while the GPUs ran hot experts | Short code decode rose from 24.6 to 70.4 tok/s |
+| [Qwen3.8-Flash-Next](cases/qwen3.8-flash-next.md), 1-2 cards | DFlash2 drafter | Decode gained 44-46% over plain decode |
+| Qwen3.8-Flash-Next, Russian | Cyrillic draft vocabulary | Draft acceptance rose from 32% to 54% |
+| [MiniMax-M3.1-Flash](cases/minimax-m3.1-flash.md) | Gathered attention K/V into VRAM once per chunk | 3.3x faster 64K prefill |
+| [GLM-5.3-Flash](cases/glm-5.3-flash.md), 2.05 bpw in VRAM, 4 cards | Switched from layer split to tensor parallel | Decode rose from 48.3 to 66-68 tok/s |
+| [Inkling 2 Mini](cases/inkling-2-mini.md), 1 card | Resident experts, 1 CUDA graph per token, tensor cores for experts and attention | The final build reached 128.7 tok/s after 47 prompt tokens with a 344K window, and 62.3 tok/s after 340K tokens |
+| [Ling-3.2-air](cases/ling-3.2-air.md) R3, 4 cards, FP16 KV | Restored stage pipelining with every expert in VRAM | 32K prefill rose from 2,230 to 5,439 tok/s. Plain decode reached 124.4 tok/s |
+| Ling-3.2-air R3, 2 cards, INT8 KV | Enabled adaptive `blk.42` MTP | Warm decode after a 2K prompt rose from 120.31 to 143.8 tok/s |
 
-And what did not work, which is most of the value:
+### Negative results
 
-- "Keep the hot experts in VRAM" works on 2 of the first 4 models. On MiniMax a profile gives 64-69% hits and random placement gives 61% (sim).
-- Training a drafter on our own data gave little or nothing on 3 models.
-- A short benchmark promised +27% decode. Real generation gave +2%.
-- A drafter change matched on 4,400 tokens of the first turn and broke the second turn.
+- A static MiniMax expert profile gave 64-69% hits against 61% for random placement (sim).
+- Fine-tuning drafters on my own data gave little or no gain across 3 models.
+- A short DeepSeek quant benchmark showed a 27% decode gain. Real generation gained 2%.
+- On Hy4 Flash, quantizing the drafter head matched the first 4,400 tokens and shifted a cache snapshot boundary, changing the second turn.
+- When streaming Ling-3.2-air experts from NVMe with a cold page cache, buffered reads gave 45-92% higher throughput than `O_DIRECT` under 8 and 24 GiB memory caps.
 
-Inkling 2 Mini shows the other regime: once everything fits one card, the cost is kernel launches and memory latency, not placement ([case](cases/inkling-2-mini.md)).
-
-## Why a map
-
-The 6 offloaded models behaved differently. The cheapest way to serve a miss flipped between models on the same hardware, tensor parallel lost on one and won on another, a long drafter window paid on skewed routing and not on flat routing. A fixed list of steps would be wrong for half of them.
-
-So the playbook is built for orientation. You describe your case, find its place, and see only the results that were obtained under the same conditions.
-
-It is written for 2 readers:
-
-- **People** who tune local inference and want to know what is worth trying before they spend a week on it.
-- **Coding agents** that do the tuning for them. The repo root is a ready skill.
-
-The numbers are from one rig. Yours will be different. The mechanisms are the same on any box with GPUs, a CPU and RAM, and chapters 01-15 each end with a checklist for moving the idea to another model.
+The cheapest way to serve an expert miss flipped between models on the same rig. Use the placement, hardware and workload tags to find a result that applies to your setup. Chapters 01-15 end with steps for testing the mechanism on another model.
 
 ## Start
 
@@ -54,7 +43,7 @@ The numbers are from one rig. Yours will be different. The mechanisms are the sa
 ## What is inside
 
 ```
-playbook/    16 chapters by mechanism
+playbook/    start page and 15 chapters by mechanism
   00  the map: entry by regime and by symptom, 15 findings
   01  cost model: time = constant + misses × cost of a miss, ceilings
   02  where to serve a miss: CPU lane vs PCIe copy
@@ -73,10 +62,10 @@ playbook/    16 chapters by mechanism
   15  quality and release gates
 ledger/      every hypothesis: verdict, numbers, why, "revisit when", condition tags
 cases/       the rig, a traits table and 7 model case files
-protocol/    situation card, experiment rules, new-model checklist, entry template
+protocol/    situation card, experiment rules, new-model checklist, rig experiment log format
 tools/       route_sim.py (skew and cache simulator), fit_cost.py (time model fit)
 SKILL.md     entry point for agents
-AGENTS.md    rules for editing this repo
+AGENTS.md    internal notebook maintenance rules
 ```
 
 ## Use it with an agent
@@ -104,24 +93,19 @@ grep "#weak-skew" ledger/hypotheses.md
 python3 tools/route_sim.py --demo uniform --fraction 0.3
 ```
 
-## What it does not have
+## Notes on the measurements
 
-A benchmark harness, data on concurrent load, and hardware other than our rig. The tools here help to orient, they do not launch or time a server.
+Most measurements are for 1 active request. The tools estimate routing, cache behavior and token time from inputs you supply. Use your engine's benchmark or session replay to measure throughput.
 
-## How it is maintained
-
-This is a living notebook. New models and new results are added as dated entries. When a later check changes a decision, the old result stays next to the new one with the date, so the reason stays visible.
-
-Every number says where it came from: a real run, a simulator on real traces (sim), a calculation (calc), a microbenchmark (micro) or someone else's number (ext).
-
-Tested something from here on other hardware and got a different result? Open an issue with the [entry template](protocol/entry-template.md) filled in.
+Unlabeled results come from measured runs. Labels mark simulations (sim), calculations (calc), microbenchmarks (micro), external measurements (ext) and single runs (1 run). When a later test changes a verdict, I keep the earlier result next to the new one.
 
 ## Related
 
-- [alesha-pro/4x3090-llm-benchmarks](https://github.com/alesha-pro/4x3090-llm-benchmarks): raw speed numbers with exact launch commands.
-- [alesha-pro/qwen38-flashnext-strata-4x3090](https://github.com/alesha-pro/qwen38-flashnext-strata-4x3090): the full Qwen3.8-Flash-Next recipe.
-- [alesha-pro/exllamav3-glm53-4x3090](https://github.com/alesha-pro/exllamav3-glm53-4x3090): the exllamav3 fork for GLM-5.3-Flash.
-- [alesha-pro/project-maya](https://github.com/alesha-pro/project-maya): the Maya fork, with [Hy4 Flash notes](https://github.com/alesha-pro/project-maya/blob/82a77bf/docs/HY4-FLASH.md).
-- [alesha-pro/maya-inkling-mini](https://github.com/alesha-pro/maya-inkling-mini): the Inkling 2 Mini engine on one RTX 3090, with a step by step guide.
+- Per-run speed measurements and exact launch commands. [4x3090 benchmark archive](https://github.com/alesha-pro/4x3090-llm-benchmarks)
+- Qwen3.8-Flash-Next setup and raw traces. [Strata recipe](https://github.com/alesha-pro/qwen38-flashnext-strata-4x3090)
+- GLM-5.3-Flash engine and setup. [exllamav3 fork](https://github.com/alesha-pro/exllamav3-glm53-4x3090)
+- Hy4 Flash engine and implementation notes. [Maya fork](https://github.com/alesha-pro/project-maya), [Hy4 Flash notes](https://github.com/alesha-pro/project-maya/blob/82a77bf/docs/HY4-FLASH.md)
+- Inkling 2 Mini engine and setup for 1 RTX 3090. [maya-inkling-mini](https://github.com/alesha-pro/maya-inkling-mini)
+- Ling-3.2-air engine and benchmark notes. [Upstream Maya pull request #1224](https://github.com/mw00/project-maya/pull/1224)
 
-By [@superalesha](https://x.com/superalesha). MIT license.
+MIT license. [@superalesha](https://x.com/superalesha)

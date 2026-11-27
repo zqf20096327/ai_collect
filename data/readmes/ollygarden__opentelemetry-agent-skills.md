@@ -15,6 +15,7 @@ Language-agnostic skills:
 
 | Skill | Path | Use When |
 | --- | --- | --- |
+| `otel-cicd` | `skills/otel-cicd/` | Observing CI/CD pipelines with OpenTelemetry — Collector `github` and `gitlab` receivers for pipeline traces and VCS metrics, `TRACEPARENT` environment-variable propagation into build and test steps, native OTLP integrations, and the `cicd.*`/`vcs.*` semantic conventions. |
 | `otel-collector` | `skills/otel-collector/` | Configuring OpenTelemetry Collector components — config keys, defaults, validation, signal support, stability, and gotchas. Progressive disclosure via `components/<type>/README.md` plus on-demand detail files. |
 | `otel-collector-builder` | `skills/otel-collector-builder/` | Building custom OpenTelemetry Collector distributions with OCB — authoring the builder manifest, aligning core/contrib/provider versions, local component development, CI/Docker/multi-arch builds, and build troubleshooting. |
 | `otel-declarative-config` | `skills/otel-declarative-config/` | Configuring OpenTelemetry SDK providers via a single YAML file (`otelconf`, `OTEL_CONFIG_FILE`, `file_format`). Points at the upstream schema, env-var substitution rules, and configuration precedence. |
@@ -86,6 +87,18 @@ npx skills add ollygarden/opentelemetry-agent-skills -a cursor
 
 See the [skills CLI documentation](https://github.com/vercel-labs/skills#supported-agents) for every supported agent.
 
+### npm
+
+Each merge to `main` that changes `skills/` publishes `@ollygarden/opentelemetry-agent-skills@1.0.<run>` to GitHub Packages, without `evals/`. Installing needs a token with `read:packages`:
+
+```bash
+echo '@ollygarden:registry=https://npm.pkg.github.com' >> .npmrc
+echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> .npmrc
+GITHUB_TOKEN=$(gh auth token) npm install @ollygarden/opentelemetry-agent-skills
+```
+
+`npm view @ollygarden/opentelemetry-agent-skills@<version> gitHead` shows the source commit.
+
 ## Repository Structure
 
 Each skill is a self-contained folder under `skills/`, named to match its `name:` field per
@@ -115,6 +128,9 @@ skills/
   otel-browser/
     SKILL.md
     references/        # setup-sdk, instrumentation, performance
+  otel-cicd/
+    SKILL.md
+    references/        # receivers, propagation, workflow spans, conventions, integrations
   otel-collector/
     SKILL.md
     components/        # one directory per Collector component (log_dedup, interval, …)

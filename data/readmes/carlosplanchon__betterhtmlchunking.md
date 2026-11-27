@@ -31,7 +31,7 @@ pip install betterhtmlchunking
 ```
 
 ### Dependencies
-- Python 3.10+
+- Python 3.11+
 - attrs
 - treelib
 - parsel
@@ -41,11 +41,23 @@ pip install betterhtmlchunking
 
 ## Usage
 
+### Quick Start
+
+```python
+from betterhtmlchunking import chunk_html
+
+chunks = chunk_html(html_content, max_length=4096)  # by="text" measures the text instead
+for chunk in chunks:
+    print(chunk.index, len(chunk.html), chunk.text[:80])
+```
+
+Each `Chunk` is immutable and has `index`, `html`, `text` and `xpaths` (the positional XPaths of its pieces). `chunk_html` takes the same options as `DomRepresentation` as keyword arguments (`tag_list_to_filter_out`, `html_unescape`, `fix_mojibake`). For access to the DOM tree and the regions of interest, use `DomRepresentation` directly, as below.
+
 ### Basic Example
 
 ```python
 from betterhtmlchunking import DomRepresentation
-from betterhtmlchunking.main import ReprLengthComparisionBy
+from betterhtmlchunking.main import ReprLengthComparisonBy
 from betterhtmlchunking.main import tag_list_to_filter_out
 
 html_content = """
@@ -64,7 +76,7 @@ html_content = """
 dom_repr = DomRepresentation(
     MAX_NODE_REPR_LENGTH=20,
     website_code=html_content,
-    repr_length_compared_by=ReprLengthComparisionBy.HTML_LENGTH
+    repr_length_compared_by=ReprLengthComparisonBy.HTML_LENGTH
     # tag_list_to_filter_out=["/head", "/header", "..."]  # By default tag_list_to_filter_out is used.
 )
 dom_repr.start()
@@ -134,9 +146,11 @@ Second paragraph...
 ### Key Parameters
 - `MAX_NODE_REPR_LENGTH`: Maximum allowed length for each chunk (in characters)
 - `repr_length_compared_by`: Length calculation method:
-  - ReprLengthComparisionBy.HTML_LENGTH: HTML source length
-  - ReprLengthComparisionBy.TEXT_LENGTH: Rendered text length
-- `website_code`: Input HTML content
+  - ReprLengthComparisonBy.HTML_LENGTH: HTML source length
+  - ReprLengthComparisonBy.TEXT_LENGTH: Rendered text length
+- `website_code`: Input HTML content, as an already decoded `str`. Text that contains lone surrogates (for example, bytes decoded with `errors="surrogateescape"`) raises `ValueError`, because lxml would silently drop everything after the first one.
+- `tag_list_to_filter_out`: Elements to remove before chunking, as xpath steps such as `/head` or `/body/aside` (defaults to `tag_list_to_filter_out` from `betterhtmlchunking.main`). Each entry matches whole steps at any depth: `/p` removes `<p>` elements but not `<pre>`, and `/b` does not touch `<body>`. A step without an index matches any position; `/div[2]` matches only that one. A removed element takes its contents with it, but the text right after it is kept.
+- `html_unescape`: Whether to HTML-unescape `website_code` before parsing. With `None` (the default) this happens only when the input looks like an escaped document: no real tags, but escaped ones such as `&lt;p&gt;` (for example, HTML stored inside JSON). `True` always unescapes and `False` never does. Unescaping real HTML would turn its escaped text, such as code samples and attribute values, into markup.
 
 ### Advanced Features
 ```python
@@ -160,7 +174,8 @@ for node in tree.all_nodes():
 
 2. **Region Detection**  
    - Uses **Breadth First Search (BFS)** to traverse the DOM tree in a level-order fashion, ensuring that each node is processed systematically.
-   - Combines nodes until the specified size limit is reached.
+   - Combines nodes until the specified size limit is reached. No chunk goes over the limit (the `\n` that joins its pieces included), except a single leaf element or run of text that is larger than the limit on its own and cannot be split without cutting text.
+   - Text placed directly inside an element (around or between its children) is a unit of its own, so splitting an element never drops text. Regions list their pieces by positional XPath; text pieces use the standard text-node form, e.g. `/html/body/p/text()[2]`.
    - Preserves parent-child relationships to maintain contextual integrity.
 
 3. **Chunk Generation**  
@@ -192,6 +207,24 @@ cat input.html | betterhtmlchunking --max-length 32768 --chunk-index 0 > chunk.h
 ```
 
 By default the command reads from `stdin`, processes chunks up to a maximum length of 32,768 characters, and prints the HTML corresponding to chunk index `0` to `stdout`.
+
+### Input Encoding
+
+`stdin` is decoded as UTF-8 by default. For documents in another encoding, pass it with `--encoding`:
+
+```bash
+cat legacy.html | betterhtmlchunking --encoding latin-1 --max-length 32768
+```
+
+Input that is not valid in the chosen encoding is rejected with an error (exit code 1) instead of being processed partially.
+
+### Escaped Input
+
+HTML that arrives escaped (`&lt;p&gt;Hello&lt;/p&gt;`, as when it is stored inside JSON) is unescaped automatically, as long as it has no real tags. Use `--html-unescape` or `--no-html-unescape` to force either behavior:
+
+```bash
+cat escaped.txt | betterhtmlchunking --html-unescape --max-length 32768
+```
 
 ### List All Chunks
 

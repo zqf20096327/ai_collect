@@ -2,9 +2,8 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-385-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-502%20passing-brightgreen.svg)](#testing)
 [![codecov](https://codecov.io/gh/gravion-ux/gravion-ai/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/gravion-ai)
-[![CI](https://github.com/gravion-ux/gravion-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/gravion-ai/actions/workflows/ci.yml)
 
 **Gravion AI — one modular AI platform, every kind of AI a startup needs, ready to rename, re-policy and run as your own.**
 
@@ -24,44 +23,47 @@ engine, or on any inference endpoint you operate, with your own API key.
 > [ARCHITECTURE.md](ARCHITECTURE.md) is **complete**: every module
 > is implemented, every tier bundle is packaged, and the services
 > (licensing authority, governed self-upgrade, training pipelines)
-> are built. What the pieces do *not* contain — by design, and
-> stated plainly wherever it matters — is trained model weights
-> or public hosting: the bundles are the packaging and protocol
-> around models the project trains and hosts as operations steps.
+> are built. Gravion Core now includes compact local trained weights
+> (`src/gravion_ai/data/gravion-core-weights.json`, 10,586,543
+> parameters counted from the stored quantized weights) trained
+> only from the bundled Gravion corpus. Each specialist bundle now
+> also includes compact local trained weights, trained only from
+> its bundled Gravion-owned seed corpus and counted from the stored
+> artifacts in the model registry; public hosting remains an
+> operations step.
 > Piece 1 shipped the *foundation*: the core scaffold,
 > the module registry with one module (chat) wired end-to-end, the
 > Gravion model registry with starter data, and the complete licensing
 > subsystem. Piece 2 adds the **support** and **coder** modules, wired
-> end-to-end on the same path, and the first trained bundles of
-> **Gravion Chat** and **Gravion Code** at Tier 2 (Basic). Piece 3 adds
+> end-to-end on the same path, and the Tier 2 (Basic) registry/bundle packaging entries for
+> **Gravion Chat** and **Gravion Code**. Piece 3 adds
 > the **image** and **music** modules on the same path — each turns a
 > request into a structured brief (mode/kind, aspect, duration, mood)
-> for its model — and the first trained bundles of **Gravion Vision**
-> and **Gravion Audio** at Tier 2 (Basic). Piece 4 adds the **video**
+> for its model — and the Tier 2 (Basic) registry/bundle packaging entries for **Gravion Vision**
+> and **Gravion Audio**. Piece 4 adds the **video**
 > module on the same path — a structured brief (mode, duration,
-> aspect, reference frames) for **Gravion Video**, whose first trained
-> bundle ships at Tier 2 (Basic) — plus an offline local renderer
+> aspect, reference frames) for **Gravion Video**, whose Tier 2 (Basic)
+> registry/bundle packaging entry ships in this build — plus an offline local renderer
 > that turns a request into a real short MP4 for development. The
 > long-form pipeline (scene planning and stitching, up to ~1 hour)
 > remains **planned** with the higher-tier bundles. Piece 5 adds the
 > **website-builder** module on the same path — a structured brief
 > (mode, site type, pages, style) for **Gravion Builder**, whose
-> first trained bundle ships at Tier 2 (Basic) — plus an offline
+> Tier 2 (Basic) registry/bundle packaging entry ships in this build — plus an offline
 > local builder that turns a brief into a real static website
 > (HTML, CSS and JS files) for development. Piece 6 adds the
 > **cyber** and **agentic** modules on the same path — cyber briefs
 > (task, deterministically extracted indicators, stated severity)
 > for **Gravion Shield** and agent briefs (task, tools, steps) for
-> **Gravion Agent**, whose first trained bundles ship at Tier 2
-> (Basic) — plus an offline local planner that writes structured
+> **Gravion Agent**, whose Tier 2 (Basic) registry/bundle packaging entries ship in this build — plus an offline local planner that writes structured
 > agent plan files (plans only; the local planner executes
 > nothing). Piece 7 packages the tiers: every specialist model is
 > now offered as **Tier 1 (Complete)** and **Tier 3
 > (Intermediate)** bundles alongside Tier 2, tier bundles get
 > completeness checks and deterministic hashed descriptors
 > (`gravion bundles`), and training jobs get a spec + validator
-> (`gravion train`) — running one still requires the hosted
-> training pipeline and says so. Piece 8 completes the platform:
+> (`gravion train`) — Gravion Core and specialist jobs train
+> locally from bundled Gravion-owned seed corpora. Piece 8 completes the platform:
 > the **all-in-one** module (routing by `<module>:` directive,
 > chat by default) and **Gravion Omni**, the Tier 4 (Advanced)
 > flagship serving every capability — every module is now
@@ -127,15 +129,24 @@ Modules are sold/used individually (variant packages) or together
 
 Gravion's own models, registered as data (`src/gravion_ai/data/models.json`),
 not hardcoded logic: **Gravion Core** (the built-in offline engine —
-*available now*), **Gravion Chat** and **Gravion Code** (*available
-since Piece 2* as Tier 2 first trained bundles), **Gravion Vision** and
-**Gravion Audio** (*available since Piece 3* as Tier 2 first trained
-bundles), **Gravion Video** (*available since Piece 4* as a Tier 2
-first trained bundle), **Gravion Builder** (*available since
-Piece 5* as a Tier 2 first trained bundle), **Gravion Shield** and
-**Gravion Agent** (*available since Piece 6* as Tier 2 first
-trained bundles),
+*available now* with included compact local weights), **Gravion Chat** and **Gravion Code** (*available
+since Piece 2* as Tier 2 registry/bundle packaging entries), **Gravion Vision** and
+**Gravion Audio** (*available since Piece 3* as Tier 2 registry/bundle packaging entries), **Gravion Video** (*available since Piece 4* as a Tier 2
+registry/bundle packaging entry), **Gravion Builder** (*available since
+Piece 5* as a Tier 2 registry/bundle packaging entry), **Gravion Shield** and
+**Gravion Agent** (*available since Piece 6* as Tier 2
+registry/bundle packaging entries),
 and **Gravion Omni** (*available since Piece 8*), the all-in-one flagship at the Advanced tier.
+**Gravion Support** (dedicated customer-support specialist) and
+**Gravion Review** (code-review specialist) join the registry with
+included local weights trained from their own Gravion-owned seed corpora.
+**Gravion Translate** (Hindi/English/Hinglish phrasebook translation),
+**Gravion Summary** (extractive summarization), **Gravion Search**
+(sparse-embedding passage retrieval), **Gravion Analyst** (descriptive
+statistics from supplied numbers) and **Gravion DocQA** (extractive
+document Q&A) extend the catalog to text-understanding types, each
+with its own module, included local weights and deterministic local
+engine.
 Deployments can register private variants by dropping their own
 `models.json` into the deployment home — same schema, same validation.
 
@@ -144,22 +155,7 @@ gravion models list                     # the whole registry
 gravion models list --capability video  # only models that serve video
 ```
 
-## Requirements
-
-- **Python 3.10 or newer** (CI tests 3.10, 3.11 and 3.12).
-- **One runtime dependency:** `cryptography>=41`, which provides the
-  Ed25519 signatures the licensing subsystem is built on. Everything
-  else is the Python standard library.
-- **Development mode needs no license and no network** — it runs fully
-  offline on the built-in Gravion Core engine. Running against your
-  own inference endpoint instead requires that endpoint and your own
-  API key.
-- **Production use** additionally requires a signed commercial
-  agreement (see [Licensing](#licensing--the-short-version)).
-- **For the test suite:** `pip install -e ".[dev]"` (adds `pytest`
-  and `pytest-cov`).
-
-## Quick start
+## Quickstart
 
 Requires Python 3.10+.
 
@@ -170,48 +166,56 @@ pip install -e .
 
 gravion init --name Gravion --company "Acme Robotics"
 gravion status
+gravion doctor
 gravion chat "hello, what are you?"
 gravion support "where is my invoice?"
+gravion web serve
 gravion export --out my-deployment.zip
 ```
+
+`gravion doctor` runs read-only production-readiness checks.
+`gravion web serve` opens a modern local browser dashboard with
+module cards, model-catalog status, a run timeline, file
+attachments and roadmap items labelled separately from current
+capability; see [docs/WEB.md](docs/WEB.md). An operator-owned bot
+can be connected unchanged through the drop-in bot slot; see
+[docs/BOT-SLOT.md](docs/BOT-SLOT.md). Production operations are
+covered in [docs/PRODUCTION.md](docs/PRODUCTION.md).
+
+**Parameter honesty:** Gravion Core includes a local sparse
+n-gram embedding + direct linear softmax classifier trained only from the
+bundled Gravion corpus (`src/gravion_ai/data/gravion-core-corpus.jsonl`,
+5,657 examples across 779 answer classes, built from this repository's
+own documentation and seed dataset). The saved artifact
+(`src/gravion_ai/data/gravion-core-weights.json`) contains
+**10,586,543 parameters**, counted from its stored quantized
+direct, embedding, classifier, bias, transition, and unigram weights. On a
+held-out set of 1,530 paraphrased prompts it answers 1,238 correctly
+(80.9%), versus 0 for the earlier 750-parameter seed model. Gravion
+Core is not a billions-of-parameters model. Each specialist registry
+entry (Chat, Code, Builder, Vision, Video, Audio, Shield, Agent and
+Omni) also includes local sparse n-gram classifier weights trained
+only from its bundled Gravion-owned seed corpus; the per-model
+parameter counts and SHA-256 hashes in
+`src/gravion_ai/data/models.json` are computed from the stored
+artifacts, and every specialist keeps the same deterministic
+offline fallback when no confident trained match is available. When a deployment
+connects an inference endpoint, that endpoint model's parameter
+count belongs to the connected model; Gravion provides the
+platform, licensing, modules and packaging around it.
+
+Local Gravion Core training uses local prompt/completion dataset
+files only. Prepare a dataset with `gravion train prepare`, then run
+a `gravion-core` job with `gravion train run --job job.json`; the
+trained artifact is written under the deployment `data/models/`
+path. If weights are missing, invalid, or not confident for a
+prompt, Gravion Core falls back to its deterministic offline
+responder.
 
 Development mode needs **no license** and runs fully offline on
 Gravion Core. Edit `policy.md` in the deployment home
 (`~/.gravion-ai` by default, or `$GRAVION_HOME`) — that file is your
 company policy, injected into every module's system context.
-
-## Usage
-
-Day-to-day commands once a deployment exists:
-
-```bash
-gravion models list                       # the Gravion model registry
-gravion models list --capability video    # only models that serve video
-gravion chat "hello, what are you?"       # the reference module
-gravion support "where is my invoice?"    # the support module
-gravion modules list                      # installed modules
-gravion license identity                  # this deployment's cryptographic identity
-gravion license audit verify              # verify the tamper-evident audit chain
-gravion export --out my-deployment.zip    # export config, policy, registry and data
-```
-
-Your company policy lives in `policy.md` in the deployment home
-(`~/.gravion-ai` by default, or `$GRAVION_HOME`) and is injected into
-every module's system context — edit it to teach the deployment your
-company and your rules.
-
-## Demo
-
-The exact sequence CI runs on every push — development mode, no
-license, fully offline on Gravion Core:
-
-```bash
-export GRAVION_HOME=$(mktemp -d)
-gravion init --name Gravion
-gravion status
-gravion modules list
-gravion chat "hello gravion"
-```
 
 ## Licensing — the short version
 
@@ -237,27 +241,6 @@ designed in two separate layers (full detail: [docs/LICENSING.md](docs/LICENSING
 gravion license identity        # this deployment's cryptographic identity
 gravion license audit verify    # check the audit chain
 ```
-
-## Limitations
-
-- **No trained model weights or public hosting ship with this code.**
-  The bundles are the packaging and protocol around models; training
-  and hosting them are operations steps, as stated in the status note
-  at the top of this README.
-- **The long-form video pipeline is planned, not implemented.** The
-  video module produces structured briefs and a short offline MP4 for
-  development; scene planning and stitching up to ~1 hour remains on
-  the roadmap.
-- **The local agentic planner executes nothing.** It writes structured
-  plan files for review — acting on them is a separate, deliberate
-  step.
-- **Training jobs do not run here.** `gravion train` validates a job
-  spec and `gravion train prepare` prepares datasets (validation,
-  deduplication, deterministic split), but running a job requires the
-  hosted training pipeline, and the CLI says so rather than
-  pretending.
-- **Production is gated, by design.** Without a signed agreement and
-  issuer-signed licenses, a deployment stays in development mode.
 
 ## Repository layout
 
@@ -303,7 +286,7 @@ pip install -e ".[dev]"
 python -m pytest -q
 ```
 
-385 tests cover the licensing subsystem end-to-end (identity, signed
+502 tests cover the licensing subsystem end-to-end (identity, signed
 licenses, tamper rejection, audit-chain verification, the entitlement
 protocol and its pinned privacy field set, gate states, suspension,
 export-while-suspended), the Piece 2 support and coder modules
@@ -341,7 +324,8 @@ self-check, manual rollback, grant/revoke persistence), the
 Piece 11 dataset preparation (strict line validation, dedupe,
 deterministic hashed splits, directory sources, refusal of
 invalid or empty datasets), plus
-config, providers, registry, catalog and the CLI.
+config, providers, registry, catalog, the CLI, production doctor
+checks, web file attachments and the drop-in bot slot.
 
 ## Author
 
@@ -352,14 +336,3 @@ Priyanshu Kumar Thakur — [github.com/gravion-ux](https://github.com/gravion-ux
 Source code: MIT (see [LICENSE](LICENSE)). Production deployments are
 additionally governed by the commercial agreement —
 [LICENSE-COMMERCIAL.md](LICENSE-COMMERCIAL.md).
-
-## Sponsors
-
-Sponsorship pays for the maintenance, triage and release time behind this tool. Sponsors are
-listed here by name, and name placement starts at the $25 a month Sponsor tier or the $50
-one-time Sponsor tier.
-
-- [Sponsor on GitHub](https://github.com/sponsors/gravion-ux)
-
-Sponsorship supports the open-source source code. Commercial deployments remain governed by
-the commercial licence agreement.

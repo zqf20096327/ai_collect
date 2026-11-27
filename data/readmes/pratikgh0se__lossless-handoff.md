@@ -6,11 +6,11 @@
 
 This documentation uses ASD-STE100 Simplified Technical English.
 
-Current versions: product 0.22.0 (`install.sh`), hooks 1.24.0 (`HOOK_VERSION` in `hooks/precompact-handoff.py`, `hooks/postcompact-inject.py`, `hooks/auto-recall.py`, `hooks/recall-mcp.py`, `hooks/reanchor.py`, `hooks/claim-guard.py`, `hooks/history-guard.py` and `hooks/action-guard.py`).
+Current versions: product 0.23.0 (`install.sh`), hooks 1.25.0 (`HOOK_VERSION` in `hooks/precompact-handoff.py`, `hooks/postcompact-inject.py`, `hooks/auto-recall.py`, `hooks/recall-mcp.py`, `hooks/reanchor.py`, `hooks/claim-guard.py`, `hooks/history-guard.py` and `hooks/action-guard.py`).
 
-![blocked baseline: plain Claude Code at 10 compactions: 58%](https://img.shields.io/badge/blocked%20baseline%3A%20plain%20at%2010%20compactions-58%25-c0392b) ![Lossless Handoff at 10 compactions: 100%](https://img.shields.io/badge/Lossless%20Handoff%20at%2010%20compactions-100%25-0b7a75) ![4 seeds, small benchmark](https://img.shields.io/badge/benchmark-4%20seeds-8197a0)
+![plain Claude Code that can search its own transcripts, at 10 compactions: 82%](https://img.shields.io/badge/plain%20Claude%20Code%20(can%20search%20transcripts)%20at%2010%20compactions-82%25-c0392b) ![Lossless Handoff at 10 compactions: 100%](https://img.shields.io/badge/Lossless%20Handoff%20at%2010%20compactions-100%25-0b7a75) ![2 seeds, small benchmark](https://img.shields.io/badge/fair%20re--test-2%20seeds-8197a0)
 
-Note on the badges: plain Claude Code was blocked from reading its own chat files in this test. Real Claude Code can read them. A fair re-test is planned.
+Note on the badges: this is the fair re-test. Plain Claude Code was allowed to search its own chat files. It scored 41 of 50 (82%) on the questions with a hint. Lossless Handoff scored 50 of 50 (100%). Two seeds show a direction, not a proof. Earlier run with a blocked baseline: 58% vs 100%.
 
 [![CI](https://github.com/pratikgh0se/lossless-handoff/actions/workflows/ci.yml/badge.svg)](https://github.com/pratikgh0se/lossless-handoff/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Release](https://img.shields.io/github/v/release/pratikgh0se/lossless-handoff)](https://github.com/pratikgh0se/lossless-handoff/releases/latest)
 
@@ -81,7 +81,7 @@ tail -n 3 ~/.local/state/claude-handoffs/health.jsonl
 
 These commands make real model calls and use a small part of your quota. A new line with `"trigger": "manual"` means that the PreCompact hook fired. You can also run `bash tests/smoke.sh`. It uses a temporary HOME and does not touch your real settings.
 
-To check the install without a model call, run `python3 ~/.claude/hooks/postcompact-inject.py --check`. It prints nothing when all is well, or one `HANDOFF CHECK:` line for each problem found. On a new install it can print one line about `cleanupPeriodDays`. `./install.sh --keep-transcripts` sets the value.
+To check the install without a model call, run `python3 ~/.claude/hooks/postcompact-inject.py --check`. It prints nothing when all is well, or one `HANDOFF CHECK:` line for each problem found. On a new install it can print one line about `cleanupPeriodDays`. `./install.sh --keep-transcripts` sets the value. Since 0.23.0, `--check` also reports failed proof checks of the last 7 days. The same text goes into the `HANDOFF CHECK:` line that chats see. `--check --verbose` lists the latest failures. Details: F91 in [docs/spec.md](docs/spec.md) and [docs/hooks-in-detail.md](docs/hooks-in-detail.md).
 
 **Uninstall.** Run `./uninstall.sh`. Add `--purge` to also delete the saved install defaults. Handoff files, indexes and decisions lists stay. See [docs/install.md](docs/install.md#uninstall).
 
@@ -110,7 +110,7 @@ The parts, the events and the files are in [docs/architecture.md](docs/architect
 ## Evidence
 
 - **One OOLONG run is published** ([bench/oolong/evidence/run-20261118T221353-summary.md](bench/oolong/evidence/run-20261118T221353-summary.md)). The harness flagged it for shared-temp use (2.2% of units); on every cleaned task set, Lossless Handoff with llm_map tied plain Claude Code. In that run the main session never compacted, so it does not test the handoff. One small continuity test (the proof test, 4 seeds) is published: see Benchmarks below. Two benchmarks are in this repository: [bench/continuity/README.md](bench/continuity/README.md) and [bench/oolong/README.md](bench/oolong/README.md). Both are code-graded. The full evaluation is not finished, and no part of it is published yet. The small proof test is the only continuity result. The pilot files in `bench/oolong/evidence/` are from a 2-task pilot. They show that the test harness works. They are not a result.
-- **Live mechanism checks.** The hooks check themselves on the author's machine: is a handoff there, does it reach the model, does recall return old messages word for word. These checks show that the mechanism works. They do not show that answers get better. The live mechanism checks currently include failures: some of these checks fail. [docs/evidence.md](docs/evidence.md) lists each check, its number and the reason for each failure.
+- **Live mechanism checks.** The hooks check themselves on the author's machine: is a handoff there, does it reach the model, does recall return old messages word for word. These checks show that the mechanism works. They do not show that answers get better. The live mechanism checks currently include failures: some of these checks fail. [docs/evidence.md](docs/evidence.md) lists each check, its number and the reason for each failure. Since 0.23.0, a nightly shape census (`precompact-handoff.py --shape-census`) reports new transcript shapes. A mutation gate (`tools/mutation/run.sh`) plants 20 faults. On 2026-11-26, smoke plus the code-blind tests caught 20 of 20. This shows that the tests catch these faults, not every fault.
 - **One-off measurements.** The author ran a blind quiz (2026-11-14) and a cost estimate (2026-10-20). Models wrote and graded the quiz. Both come from one user and one machine. Read them as hints. The numbers are in [docs/evidence.md](docs/evidence.md).
 - The details, the limits of each test and the other reliability notes are in [docs/evidence.md](docs/evidence.md) and [docs/handoff-reliability.md](docs/handoff-reliability.md).
 
@@ -118,9 +118,16 @@ The parts, the events and the files are in [docs/architecture.md](docs/architect
 
 ![Accuracy after 1, 3 and 10 compactions](docs/img/accuracy.svg)
 
-Plain Claude Code was blocked from reading its own chat files in this test; real Claude Code can read them. A fair re-test is planned. The size of the real gap is unknown.
+Fair re-test (2026-11-26): plain Claude Code was allowed to search its own chat files. 2 seeds (3001, 3002), Sonnet, 400k window, 10 compactions, Claude Code 2.1.326.
 
-At 10 compactions, plain Claude Code (blocked from its chat files) scores 58% and Lossless Handoff scores 100%. The gain is +42 points (95% interval +27 to +51), over 4 seeds. The test measured 1, 3 and 10 compactions only. It did not measure 2 or 5 compactions.
+| Questions | Plain Claude Code (can search its chat files) | Lossless Handoff | Gain | Seeds with Lossless Handoff ahead |
+|---|---|---|---|---|
+| With a hint | 41 of 50 (82%) | 50 of 50 (100%) | +18 points | 2 of 2 |
+| Neutral (no hint) | 29 of 40 (72%) | 40 of 40 (100%) | +27.5 points | 2 of 2 |
+
+The pass rule was set in `bench/continuity/thresholds.json` (block `fair`) before the data. All validity gates passed: controls, parse rate, 10 real compactions and isolation. A harness capture bug replaced 4 plain-arm answers with a background-task message, so those 4 questions were asked again once. The rule was set before any Lossless Handoff data. The old result was 0 of 4 and the new result is 4 of 4. The total cost was about $70. Two seeds show a direction, not a proof.
+
+Earlier run with a blocked baseline: 58% vs 100%. The chart and the table below show that run (4 seeds). In it, plain Claude Code could not read its own chat files. The gain was +42 points (95% interval +27 to +51). It measured 1, 3 and 10 compactions only.
 
 | Arm | 1 compaction | 3 compactions | 10 compactions |
 |---|---|---|---|
@@ -131,8 +138,9 @@ Full report: [docs/proof/benchmarks/2026-11-23-proof-test.md](docs/proof/benchma
 
 Limits:
 
-- Plain Claude Code was blocked from reading its own chat files in this test; real Claude Code can read them. A fair re-test is planned. The runner denies `~/.claude/projects/**` for every arm (`deny_rules` in `bench/continuity/runner.py`). The Lossless Handoff recall tool reads those files inside Python. The source files for types S and E are deleted after one read (`bench/continuity/gen.py`). At 10 compactions, plain Claude Code gave 42 wrong answers with a hint outside type U, and it had tried a lookup in 40 of those 42. So the 58% against 100% gap overstates the real gap. The size of the real gap is unknown.
-- It is a small benchmark: 4 seeds (2001 to 2004).
+- The fair re-test used 2 seeds. Two seeds show a direction, not a proof.
+- The earlier run (58% vs 100%, 4 seeds) blocked plain Claude Code from its own chat files, so it overstates the gap. The runner denied `~/.claude/projects/**` for every arm (`deny_rules` in `bench/continuity/runner.py`). Use the fair re-test numbers for the gap.
+- Both are small benchmarks: 4 seeds (2001 to 2004) and 2 seeds (3001, 3002).
 - It is our own synthetic benchmark. Code grades it, but we wrote it.
 - It used Sonnet only, at most 10 compactions, and one Claude Code version.
 
@@ -206,7 +214,8 @@ Limits of the proof test: it is a small benchmark with 4 seeds (2001 to 2004), a
 
 Shown:
 
-- Plain Claude Code, blocked from reading its own chat files in this test, loses facts as compactions add up (100%, 80%, 58% at 1, 3 and 10 compactions). Real Claude Code can read those files. A fair re-test is planned.
+- In the fair re-test (2 seeds), plain Claude Code that can search its own chat files scored 82% with a hint and 72% without at 10 compactions. Lossless Handoff scored 100% on both. Two seeds show a direction, not a proof.
+- In the earlier run with a blocked baseline, plain Claude Code lost facts as compactions added up (100%, 80%, 58% at 1, 3 and 10 compactions).
 - On the questions with a hint, Lossless Handoff stopped that loss up to 10 compactions (100%, 100%, 100%), with 0 items where it was wrong and plain Claude Code was right. Without a hint it scored 93% at 3 compactions and 95% at 10, and at 3 compactions there were 2 such items.
 
 Seen, not proved:

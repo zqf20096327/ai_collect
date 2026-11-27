@@ -1065,6 +1065,12 @@ jobs:
   and `dry-run` work as in `package-stage`. The promote call names the same
   `package-name` and `kind`, and sets `private-deps` (with the same
   secrets) when a dependency is one of the owner's private repositories.
+  Set `app-token-repositories` on both calls to limit their read-only tokens to
+  newline-delimited repository names. Include transitive private
+  dependencies and any private `required-releases` entries used by promotion.
+  A non-empty list requires `private-deps: true`. Empty lists retain the legacy
+  installation-wide read access for compatibility; this fallback is deprecated.
+  New callers should always list the repositories they need.
   Callers that passed `library: true` pass `kind: library` to both
   `swift-stage` and `swift-promote`.
 - **Payloads.** `kind: payload` packages a `.pkg` with no
@@ -1340,6 +1346,7 @@ Builds a macOS `.pkg` on every PR commit and reports status directly in the PR a
 | `resource-bundles` | string | No | `""` | Space-separated list of SPM resource bundle names to include in the `.pkg` |
 | `entitlements` | string | No | `""` | Path to entitlements plist for ad-hoc codesigning the built binary |
 | `private-deps` | boolean | No | `false` | Mint a GitHub App token so SwiftPM can clone private/internal org dependencies |
+| `app-token-repositories` | string | No | `""` | Newline-delimited repositories a minted GitHub App token may read during the build; requires `private-deps: true`. Empty retains deprecated installation-wide read access |
 | `build-flags` | string | No | `""` | Extra `swift build` arguments for the PR build only, split on whitespace. `-Xswiftc -Onone` skips optimisation (about a third less compile time) yet, unlike a debug build, still compiles code under `#if !DEBUG`; the PR `.pkg` is then unoptimised |
 | `use-blacksmith` | boolean | No | `false` | Use Blacksmith Linux runners for notification jobs; the macOS Swift/package build stays on `macos-26` |
 
@@ -1998,30 +2005,4 @@ Builds and publishes multiple monorepo packages to npm in dependency order. Supp
 #### Usage
 
 ```yaml
-- uses: photon-hq/buildspace/.github/blocks/publish-npm-packages@main
-  with:
-    changed-packages: ${{ steps.detect.outputs.changed }}
-    root-build-command: "turbo build"
-    npm-token: ${{ secrets.NPM_TOKEN }}
-```
-
----
-
-### rust-build
-
-**Path:** `.github/blocks/rust-build/action.yaml`
-
-Builds a Rust binary for a specific target platform.
-
-| Target | OS |
-|--------|----|
-| `x86_64-unknown-linux-gnu` | Linux (x64) |
-| `aarch64-apple-darwin` | macOS (ARM64) |
-| `x86_64-pc-windows-msvc` | Windows (x64) |
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `binary-name` | string | Yes | — | Name of the binary (from `Cargo.toml`) |
-| `binary-path` | st
+- uses: photon-hq/buildspace/.github/blocks/publish-npm-pack

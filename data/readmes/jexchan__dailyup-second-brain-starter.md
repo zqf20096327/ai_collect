@@ -12,7 +12,7 @@
 
 - **8 个主目录的信息架构** — 系统规则 / 上下文 / 日记 / 项目 / 知识 / 参考 / 任务 / Bases
 - **22 种原子化卡片模板** — insight / book / mentalmodel / person / tool / quote …
-- **16 个开箱即用的 AI 技能（Skills）** — `/today`、`/digest`、`/weekly-review`、`/reading-coach`、`/card-creator` 等
+- **18 个开箱即用的 AI 技能（Skills）** — `/today`、`/digest`、`/weekly-review`、`/reading-coach`、`/card-creator` 等
 - **完整的 AI 协作规则** — CLAUDE.md + AGENTS.md 让任意支持该协议的 AI 编码工具立刻理解你的知识库
 - **Obsidian Bases 数据库视图** — Books、Persons、Resources、Opensource、Subscriptions
 - **清晰的写作规范、命名规范和任务管理规则**
@@ -53,27 +53,40 @@
 
 ## 5 分钟快速上手
 
+> 不想手动敲命令？把 [`INSTALL_PROMPT.md`](./INSTALL_PROMPT.md) 里的提示词整段丢给 AI agent（Codex / Claude Code / Cursor / DeepSeek），它会先问你几个关键选择，再自动完成安装与初始化。
+
 详见 [`QUICK_START.md`](./QUICK_START.md)。简要流程：
 
 ```bash
-# 1. 用这个 repo 作为模板，在 GitHub 上创建你自己的 Vault
-#    (点击 "Use this template" 按钮)
-
-# 2. 克隆到本地
+# 1. 创建你自己的仓库（在 GitHub 页面点 "Use this template"）
 git clone https://github.com/<your-user>/<your-vault>.git my-brain
 cd my-brain
 
-# 3. 用 Obsidian 打开这个文件夹
+# 2. 用 Obsidian 打开这个文件夹
 #    Obsidian → Open folder as vault → 选择 my-brain/
 
-# 4. 填写你的个人上下文（2 个文件）
-#    编辑 01_Context/ 下的 About_Me / Current_Priorities
+# 3. 运行 /onboard 完成初始化（导览 + 按确认清理示例）
+#    在 AI 编码工具中输入：/onboard
 
-# 5. 安装 AI 编码工具（推荐 Codex / ZCode），跑第一个 Skill
-#    /session-brief   → 让 AI 读懂你的 Vault
-#    /today           → 生成今日计划
-#    /card-creator    → 创建你的第一张知识卡片
+# 4. 填写你的个人上下文（最关键，约 10 分钟）
+#    01_Context/About_Me.md           → 你是谁、长期方向、AI 协作偏好
+#    01_Context/Current_Priorities.md → 当前目标、重点、关键问题、暂时不做
+
+# 5. 创建你的第一张卡片
+#    /card-creator → 告诉它：「帮我建一张 insight 卡片：早上的写作比晚上更高效」
+
+# 6. 接入日常工作流
+#    /session-brief → 开新会话时让 AI 读懂你的 Vault
+#    /today         → 生成今日聚焦计划
+#    /closeday      → 每日收尾与复盘
+#    /weekly-review → 周度回顾与下周规划
 ```
+
+几点说明：
+
+- `/onboard` 会在你**明确确认后**才删除 `_EXAMPLE_*` 示例；想先看示例效果，直接跳过即可，之后再跑一次。
+- 第 4 步不做，后面所有技能的质量都会打折 — `About_Me.md` 和 `Current_Priorities.md` 是 AI 理解你的唯一入口。
+- 如果只想白嫖模板、不接 AI：前两步做完就能当普通 Obsidian 库用，只是用不上技能那部分价值。
 
 ---
 
@@ -118,6 +131,8 @@ cd my-brain
 | `random-thinking` | 跨主题随机抽卡做关联思考 | "给点灵感" |
 | `connect` | 连接两个主题，找出桥梁概念 | "连接 X 和 Y" |
 | `trace` | 追踪一个主题在 Vault 中的演化 | "追踪 X 的演化" |
+| `synthesis` | 把一个主题的分散材料综合成结构化综述 | "综合一下 X 这个主题" |
+| `knowledge-gap` | 诊断某个主题或项目还缺哪些材料 | "分析 X 还缺什么" |
 | `critical-check` | 对观点/证据/推理做建设性质疑与校验 | "质疑一下这个观点" |
 | `check-health` | 检查孤立卡片、失效链接、矛盾观点 | "检查知识库健康" |
 | `spaced-review` | 管理知识卡片间隔复习 | "今天该复习什么" |
@@ -144,19 +159,14 @@ cd my-brain
 - [Obsidian](https://obsidian.md)（免费）
 - Git（用于版本控制和同步）
 
-**强烈推荐** — 才能发挥 Skills 的价值（作者常用的组合）：
+**Agent 推荐**：
 
-| 地区 | 编码工具 | 驱动模型 |
-|---|---|---|
-| 国外 | [Codex](https://developers.openai.com/codex/cli/) | GPT-5.5 |
-| 国内 | [ZCode](https://zcode.z.ai) | [GLM-5.2](https://z.ai/blog/glm-5.2) |
+- Codex
+- DeepSeek Harness
+- Workbuddy
 
-> 本模板基于 `AGENTS.md` / `CLAUDE.md` 通用协议，理论上任何支持该协议的 AI 编码工具（Claude Code、Cursor 等）都能接入；以上只是作者实测顺手的推荐。
+> 本模板基于 `AGENTS.md` / `CLAUDE.md` 通用协议，理论上任何支持该协议的 AI 编码工具（Claude Code、Cursor 等）都能接入。
 
-**Obsidian 插件**（Core 插件够用，可选增强）：
-- Templater — 动态模板变量
-- Dataview — 数据库式查询
-- Tasks — 任务管理
 
 ---
 

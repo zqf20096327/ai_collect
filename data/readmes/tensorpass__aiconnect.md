@@ -306,7 +306,7 @@ The interface modules are ready made AI interfaces that connect to the visitor's
 | A full page AI mode | `AiChatPage` | `<aiconnect-chat variant="page">` |
 | A search bar that answers | `AiSearch` | `<aiconnect-search>` |
 
-Each module streams the answer and shows each tool call while it runs. The header names the account and the model that answer. A Stop button ends an answer early, and the install and connect steps appear until the visitor's AI is connected. A question asked before the connection stays on screen and goes out once the wallet connects the site.
+Each module streams the answer and shows each tool call while it runs. A web address in the answer becomes a link labelled with its host and path, and the guards check it as they check every link. The header names the account and the model that answer. A Stop button ends an answer early, and the install and connect steps appear until the visitor's AI is connected. A question asked before the connection stays on screen and goes out once the wallet connects the site.
 
 On a screen up to 640 pixels wide, the side panel and the popup take the whole screen. While they are open there, the page behind them holds its scroll and its position, so a swipe on the module leaves the page in place, and the module sits on the part of the screen the keyboard leaves visible. On a touch screen, opening a module focuses the module itself, and the keyboard opens when the visitor taps the question box. On a wider screen, the page beside the panel and the popup stays usable. The full page mode holds the page's scroll on every screen. A site needs no scroll lock of its own around them.
 
@@ -318,7 +318,8 @@ On a screen up to 640 pixels wide, the side panel and the popup take the whole s
 | `suggestions` | Questions shown in an empty conversation, sent with one click. |
 | `toolLabels` | A plain name per tool, shown while it runs. |
 | `guards` | Your values for the guards: internal names, allowed hosts, the safe answer. |
-| `renderToolResults` | Your own cards for a turn's tool results. |
+| `renderToolResults` | Your own cards for a turn's tool results. Its second argument holds every file the visitor added so far. |
+| `footer` | Your own line under the question box, such as a credit or a privacy note. Nothing is drawn without it. |
 | `attachments` | Images, PDFs and text files the visitor drops, pastes or attaches, and dictation. `{}` takes every kind. |
 | `analytics` | A name for the module's actions in your click analytics. |
 

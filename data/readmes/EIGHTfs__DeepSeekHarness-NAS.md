@@ -39,6 +39,48 @@ scripts/connect-local.bat                # Windows：双击后按提示输入 NA
 - 安装向导可留空端口（用打包默认）；卸载向导默认**保留数据**，选「彻底删除」才清数据；卸载走 Web UI（命令行会被平台拒绝）。
 - 回退旧版：Web UI 卸载（保持默认「保留数据」）→ 装旧版包 → 直接启动。数据按版本目录隔离，各版本用各自的配置与会话。
 
+### 从套件源安装（可自动更新）
+
+套件中心里显示已安装版本、最新在线版本与更新日志，可直接点「更新」；把包作为「套件来源」加进去后，套件中心会按版本比较提示更新。
+
+```bash
+# 起一个本地套件源（任意能访问 GitHub 的机器），再把地址加进 套件中心 → 设置 → 套件来源
+python3 scripts/pkg-source.py --repo EIGHTfs/DeepSeekHarness-NAS --port 8899
+# 填这个地址（单文件目录，所有架构混在一起、每条自带 arch 数组）：
+#   http://<该机器IP>:8899/api/package
+```
+
+离线也可用本地目录当源（自己托管 spk 下载，并现算真实 md5）：
+
+```bash
+python3 scripts/pkg-source.py --from-spk-dir /volume1/release --base-url http://<该机器IP>:8899 --port 8899
+# 目录里的包由本服务直接提供：/spk/<文件名>；图标由 /icon/<包名>-72.png 提供
+```
+
+![套件中心里从本地套件源安装后的效果](https://raw.githubusercontent.com/EIGHTfs/DeepSeekHarness-NAS/main/docs/images/package-source-in-center.jpg)
+
+### Docker 版的环境变量
+
+| 变量 | 作用 |
+|---|---|
+| `PUID` / `PGID` | 容器内运行用户，与宿主目录属主对齐（否则产出 root 文件） |
+| `UMASK` | 新建文件权限掩码，组共享常用 `0002` |
+| `PKG_VAR` | 数据根（容器里默认 `/data`）；`PKG_VERSION=current` 让数据目录不随镜像版本漂移 |
+| `DSH_ADVERTISE_URL` | 你实际访问的外部地址（如 `http://10.10.31.93:3090`），容器启动时用它打印认证链接 |
+| `DSH_WORKSPACES_MANIFEST` | 挂载清单路径（默认 `/etc/dsh/workspaces.json`），把宿主目录接成 `/workspace/<名>` |
+
+### 自动更新后旧数据不会自动搬过来
+
+数据按版本目录隔离是设计：升级（套件中心更新或自动更新）后新版本用新的 `var/<版本>/.dsh`，旧版本的数据仍在原目录，**不会自动迁移**。要把设置、凭据、插件配置带过来，用仓库里的迁移脚本（先看候选、再演练、最后才写盘）：
+
+```bash
+./scripts/migrate-dsh-home.sh list                                   # 列出可迁的旧版本目录（只读）
+./scripts/migrate-dsh-home.sh migrate --from <旧版本> --dry-run       # 演练，不写盘
+./scripts/migrate-dsh-home.sh migrate --from <旧版本> --confirm       # 真执行（配置 + 会话）
+./scripts/migrate-dsh-home.sh migrate --from <旧版本> --config-only --confirm   # 只迁配置，不带会话
+./scripts/migrate-dsh-home.sh prune --version <旧版本> --confirm      # 旧数据改名归档（可恢复）
+```
+
 ## 常用操作（start.sh）
 
 ```bash
@@ -94,7 +136,7 @@ SKIP_BUILD=1 ./build/build-common.sh   # 复用已有 target（秒级）
 | `scripts/prune-release-assets.py` | 清理 Release 改名残留资产；`--tag <tag> --keep-from <dir> [--dry-run]` |
 | `scripts/guards/check-release-assets.py` | 核对某 tag 的四资产是否齐套（缺件告警）；`--repo <owner/name> --tag <tag> [--token] [--strict] [--json]` |
 | `scripts/guards/check-node-engines.py` | 校验随包 node 是否满足官方 engines.node；`--engines "<范围>" --node <路径>` 或 `--node-version <版本>` |
-| `scripts/pkg-source.py` | 通用套件源：任意 GitHub 仓库的 Release → DSM 套件源（单文件、零耦合、默认不下载）；`--repo <owner/repo> [--asset-regex] [--arches] [--check] [--from-spk-dir]`
+| `scripts/pkg-source.py` | 通用套件源：任意 GitHub 仓库的 Release → DSM 套件源（单文件、零耦合）。用 HTTP Range 只读包头解析 `INFO` 取元数据（不整包下载），产出单文件目录 `catalog.json`，对外路由 `/api/package`；`--from-spk-dir` 可离线自托管并现算 md5；`--repo <owner/repo> [--releases N] [--arches] [--arch-expand] [--check]` |
 | `scripts/update-release-note.sh` | 单独刷新某个 Release 正文（不重新构建）；`--tag <tag> [--trigger <名>] [--dry-run]`，`--tag` 可空=最新 |
 | `scripts/collect-failure-fixtures.py` | 采集历史 CI 失败日志做回归夹具；`[--limit N] [--out <dir>] [--dry-run]` |
 
@@ -123,6 +165,9 @@ SKIP_BUILD=1 ./build/build-common.sh   # 复用已有 target（秒级）
 | `scripts/guards/check-packaging-invariants.py` | 打包不变量（含生成函数自包含、按声明范围选版本、出货裁剪并入 `_autoLearned`）；`--verbose` 列出每条检查 |
 | `scripts/guards/check-platform-boundary.py` | 平台边界守卫：公共构建内核不得出现平台专有词，适配器三钩子齐备；`--verbose` 逐项列出 |
 | `scripts/guards/check-path-references.py` | 物料路径守卫：脚本引用的 `config/` `pkgsrc/` `tools/` 等必须真实存在（目录搬家后最容易漏的一类） |
+| `scripts/guards/check-start-placeholders.py` | 占位符守卫：模板里的每个 `__X__` 必须能在它流经的注入点找到替换（按平台分组，路由表 `build/config/placeholder-routes.json`，加平台只加一组配置）；`--verbose` 逐项列出，`--group <name>` 只看一组 |
+| `scripts/guards/check-native-entity.py` | 原生实体闸：白名单点名的「本架构必需原生包」必须在载荷里有实体（抓「只有悬空软链、没有 .node」这类装完起不来的坏包）；`<包> --arch x86_64\|arm64` |
+| `build/docker/build-image.sh` | 容器镜像构建入口：`<target目录> [--arch x86_64\|arm64] [--push]`；内部补 start.sh、预检架构、冒烟（302+healthy）、推 GHCR |
 | `scripts/guards/check-package-parity.py` | 两包结构比对（软链/悬空/manifest）；`<基准包> <候选包> [--verbose] [--baseline-self]` |
 | `scripts/verify-pkg-arch.py` | 验包架构（spk/fpk 通用）：读 `bin/node` 的 ELF `e_machine` 并核 native 平台目录；`<包路径> [--arch x86_64\|arm64] [--keep]` |
 | `scripts/migrate-dsh-home.sh` | 跨版本迁移实例数据（默认含会话）：`list` / `migrate --from <旧版本> --dry-run` / `--confirm` / `prune --version <旧版本> --confirm`；`--config-only` 只迁配置，`--target` 指定目标版本，`--package`/`--group` 指向其它套件；环境变量 `DSH_PACKAGE_NAME` / `DSH_PACKAGE_GROUP` 同义 |
@@ -164,6 +209,7 @@ SKIP_BUILD=1 ./build/build-common.sh   # 复用已有 target（秒级）
 - [群晖资源限制](docs/群晖资源限制.md) — DSM 下 taskset 绑核 / MemoryLimit / cgroup 归属
 - [可行性-OpenWrt与iStoreOS](docs/可行性-OpenWrt与iStoreOS.md) — 换平台打包的实测事实与路线
 - [故障排查指南](docs/故障排查指南.md) — 症状 → 判据 → 处置
+- [Docker 版](docs/Docker.md) — 容器化运行、数据/工作区挂载、权限与限制
 
 ## 许可证
 

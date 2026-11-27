@@ -28,6 +28,8 @@ This skill integrates with [upbit-cli](https://github.com/upbit-official/upbit-c
 npm install -g @upbit-official/upbit-cli
 ```
 
+Requires CLI v1.0.1 or later. For Indonesia, use `--environment id` to connect to `https://api.upbit.co.id`.
+
 ## Skills
 
 | Skill | Description |

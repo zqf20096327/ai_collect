@@ -29,48 +29,49 @@ speed-up ever changes the answer.
 
 <a name="status"></a>
 
-## Status: beta
+## Status: beta, on the road to 0.2
 
-Kinetic is a week old in public and every release before 1.0 is a beta. Thank you to everyone who ran it, told
-us what broke and sent pull requests.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/coverage/progress-0.1.1-4-of-12-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/coverage/progress-0.1.1-4-of-12-light.svg">
+  <img src="assets/coverage/progress-0.1.1-4-of-12-light.svg" alt="Next update 0.1.1: 33%, 4 of 12 done." width="100%">
+</picture>
 
-### Now, in 0.1
+Until 0.2 we ship small 0.1.x updates often, each with fixes and new models. The bar shows how
+far the next one is, and it moves with the commits that move it.
 
-- A model split between the GPU and the CPU can give a different answer on the second and
-  later requests, and `kinetic bench` then says "not identical".
-- The edit numbers on this page are for a repeated edit. On a first run the gain over
-  llama.cpp is up to 2.5x on edits and up to 1.4x on plain generation on our machine.
-- With thinking on, tool calls can end up inside the reasoning
-  ([#5](https://github.com/Veloresearch/kinetic/issues/5)); send
-  `"chat_template_kwargs": {"enable_thinking": false}` until 0.2.
-- Unsloth UD quants (IQ4_XS, IQ3_XXS, IQ2_XS, IQ2_XXS) run on the CPU only
-  ([#1](https://github.com/Veloresearch/kinetic/issues/1)).
-- Speculative decoding can be slower than plain decoding on a model split between the GPU
-  and the CPU.
-- Windows and Linux on x86-64 only, NVIDIA GPUs from Turing (RTX 20) on, one GPU per model.
-- `-hf` is refused with a hint to use `kinetic pull`.
-- A crash report on the AMD RX 9070 under Linux, and older AMD integrated GPUs with 64-wide
-  subgroups (Vega, GCN) run on the CPU.
+### Next: 0.1.1
 
-### Coming in 0.2
+- [x] macOS on Apple Silicon, on the CPU and on the GPU through Metal
+- [x] Older NVIDIA GPUs (Pascal, Volta) and several GPUs for one model with `--gpus`
+- [x] Vulkan prompts on the matrix units, about 3x faster on GPUs that have them
+- [x] `-hf`, as llama.cpp takes it
+- [ ] Inkling 2 Mini on NVIDIA GPUs, also on cards with 6 GB
+- [ ] Inkling 2 Mini on AMD GPUs through Vulkan
+- [ ] Flywheel for every mixture-of-experts model: experts placed by how often their layer
+      runs, the rest computed on the CPU where they are
+- [ ] Gemma 4 26B A4B on the GPU
+- [ ] RAD-1 never slower than plain decoding, also on models split between the GPU and the CPU
+- [ ] AMD's GCN and Vega GPUs through Vulkan
+- [ ] Agent loops keep their prompt cache when a client sends the history back rewritten
+- [ ] Tool calls from OpenCode with LFM3
 
-Want a fix before then? The [nightly build](https://github.com/Veloresearch/kinetic/releases/tag/nightly)
+### Road to 0.2
+
+**0.2 is the release where Kinetic runs every popular model llama.cpp runs.** The map shows where we are.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/coverage/coverage-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/coverage/coverage-light.svg">
+  <img src="assets/coverage/coverage-light.svg" alt="Kinetic runs 73% of downloads of the most downloaded GGUF language models on Hugging Face, by model family" width="100%">
+</picture>
+
+Every orange tile runs in Kinetic today. The grey ones are the road to 0.2: Qwen3.8 Flash Next,
+Qwen3-VL, DeepSeek V4, GLM-5, gpt-oss, Qwen3 MoE and the rest. After 0.2, the work is on what
+llama.cpp does not do.
+
+Want a fix before a release? The [nightly build](https://github.com/Veloresearch/kinetic/releases/tag/nightly)
 is main as it was last night, untested: `install.sh --nightly` or `install.ps1 -Nightly`.
-
-- The same answer on every request when a model is split between the GPU and the CPU; this
-  fits the one report of the exactness check failing on an RTX 4060.
-- Benchmark numbers for a first edit and a repeated edit, reported separately.
-- Tool calls with thinking on come back as tool calls.
-- Unsloth UD quants on NVIDIA GPUs.
-- Speculative decoding that is never slower than plain decoding on split models.
-- macOS on Apple Silicon, on the CPU and on the GPU through Metal.
-- Older NVIDIA GPUs (Pascal, Volta), and several GPUs for one model with `--gpus`.
-- Faster follow-ups in a conversation.
-- `-hf`, as llama.cpp takes it.
-- RAM and VRAM per model in Python ([#24](https://github.com/Veloresearch/kinetic/issues/24)).
-- `docker stop` ends the server at once, and the CUDA image builds for chosen GPUs and with
-  Podman.
-- Clearer messages for GPUs Vulkan refuses and for weight types a GPU cannot run.
 
 Questions and ideas go to [Discussions](https://github.com/Veloresearch/kinetic/discussions),
 bugs to [issues](https://github.com/Veloresearch/kinetic/issues/new). We read all of them.

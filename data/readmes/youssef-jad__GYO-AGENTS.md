@@ -2,9 +2,11 @@
 
 # GYO-AGENTS
 
-Generate instructions for your coding agent, share project knowledge, enforce team conventions, and hand unfinished work from one agent to another with verification evidence tied to the code.
+**AI Agent Framework for Coding** - Generate instructions for your coding agent, share project knowledge, enforce team conventions, and hand unfinished work from one agent to another with verification evidence tied to the code.
 
 Use the [standalone AGENTS.md prompt](#prompt-generate-your-own-agentsmd) in any coding agent, or connect the MCP server for shared memory, Guardrails, local task handoffs, and the full library of 11 client-specific templates.
+
+**🎯 New in v1.1.0:** Enhanced error handling, automatic lock recovery, credential redaction, structured logging, and comprehensive troubleshooting guide. [See release notes](RELEASE_NOTES_v1.1.0.md)
 
 ## Quick start
 
@@ -30,6 +32,21 @@ codex mcp add gyo-agents -- node "$gyo_entry"
 ```
 
 Start a new session and ask for the client-specific setup prompt. Use `get_prompt_claudecode` in Claude Code or `get_prompt_codexcli` in Codex. For Cursor, Kiro, and other clients, see the [MCP setup guide](mcp-server/README.md#quick-start).
+
+**Need help?** See the [Troubleshooting Guide](TROUBLESHOOTING.md) for solutions to common issues.
+
+## Why GYO-AGENTS?
+
+**Production-Ready AI Agent Framework** with features that go beyond simple prompts:
+
+✅ **Agent-to-Agent Handoffs** - One agent checkpoints work, another continues it  
+✅ **Verification Evidence** - Tests and checks tied to actual code state  
+✅ **Convention Enforcement** - Teach rules once, check automatically  
+✅ **Shared Memory** - Agents learn from past decisions  
+✅ **Multi-Stage Workflows** - Implementation → Review → Publish  
+✅ **Stale Detection** - Know when code changed and evidence is invalid  
+✅ **Automatic Recovery** - Self-healing locks, retry logic, circuit breakers  
+✅ **Production Tested** - Verified with real Claude Code and Codex sessions
 
 ## GYO Guardrails
 
@@ -75,6 +92,20 @@ In a new session with the second agent:
 The workflow uses `create_handoff`, `claim_handoff`, `checkpoint_handoff`, `verify_result`, and `submit_result`; `list_handoffs` and `get_handoff` let clients discover tasks and inspect their current state. Relay coordinates participating clients on one machine; it does not launch agents or transfer work between remote checkouts.
 
 **Verified with real Claude Code and Codex sessions.** Claude implemented part of a synthetic billing task, recorded passing tests and checkpointed before stopping. After deliberate changes to the code and an untracked file, a new Codex session reclaimed the expired handoff, identified stale evidence, repaired the regression, completed the remaining work and submitted fresh passing verification. The old claim token was rejected.
+
+## Agent Regression Tests (local preview)
+
+Compare two versions of `AGENTS.md` by running the same Laravel-style caching task in two Codex sessions. GYO grades the resulting edits with a functional PHP check and a Guardrail for the project's caching convention. [Run the comparison](mcp-server/README.md#agent-regression-tests-local-preview)
+
+## Reusable Agent Skills
+
+GYO-AGENTS includes three production-ready skills for Claude Code that you can invoke with slash commands:
+
+- **`/local-verify`** — Run and verify a worktree locally with separated claims for runtime, identity, readiness, loaded code, and behavior.
+- **`/implement-and-publish`** — Full implementation workflow with multi-stage review (Standards, Spec, Complexity) before commit and PR publication.
+- **`/diagnose-incident`** — Incident diagnosis, investigation, and resolution with decisive evidence loops.
+
+[Skills documentation](.claude/skills/README.md)
 
 ## What else you can do
 
@@ -219,3 +250,41 @@ Write in second-person imperative ("Match this format...", "Follow this pattern.
 - If a section lacks data, write "No [X] detected" — do not fill space with generic advice.
 - Total file should be 250–400 lines — comprehensive but not bloated.
 ```
+
+---
+
+## 📚 Documentation
+
+- **[Quick Start Guide](examples/relay-quickstart.md)** - Practical examples of agent handoffs
+- **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Solutions to 20+ common issues
+- **[Skills Documentation](.claude/skills/README.md)** - Using `/local-verify`, `/implement-and-publish`, `/diagnose-incident`
+- **[Relay Documentation](mcp-server/RELAY.md)** - Full Relay API and verification guide
+- **[MCP Tools](mcp-server/README.md)** - Complete list of MCP server capabilities
+- **[Robustness Roadmap](ROBUSTNESS_PLAN.md)** - Future improvements and priorities
+- **[Release Notes](RELEASE_NOTES_v1.1.0.md)** - What's new in v1.1.0
+
+## 🤝 Contributing
+
+We welcome contributions! Areas where you can help:
+
+- **Testing** - Run the agent workflows and report issues
+- **Documentation** - Improve guides and examples  
+- **Skills** - Create new reusable agent skills
+- **Integrations** - Add support for more AI coding tools
+- **Performance** - Optimize snapshot and verification speed
+
+See [ROBUSTNESS_PLAN.md](ROBUSTNESS_PLAN.md) for planned improvements.
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file for details
+
+## 🙏 Support
+
+- **Issues:** [GitHub Issues](https://github.com/youssef-jad/GYO-AGENTS/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/youssef-jad/GYO-AGENTS/discussions)
+- **Security:** See [Security Policy](https://github.com/youssef-jad/GYO-AGENTS/security/policy)
+
+---
+
+**Made with ❤️ for the AI coding community**

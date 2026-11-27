@@ -367,15 +367,16 @@ Every `MACHINES_*` setting also accepts its `TERMINALS_*` name. You can mix pref
 | `MACHINES_PROXY_READ_TIMEOUT_SECONDS` | `360` | Timeout while waiting for upstream proxy responses. Set this above the maximum `/execute?wait` value for Machine (Open Terminal). |
 | `MACHINES_PROXY_WRITE_TIMEOUT_SECONDS` | `300` | Timeout while sending proxied request bodies upstream |
 | `MACHINES_PROXY_POOL_TIMEOUT_SECONDS` | `300` | Timeout while waiting for an upstream proxy connection from the pool |
-| `MACHINES_PROVISION_TIMEOUT_SECONDS` | `120` | Timeout waiting for machine readiness on the `kubernetes-operator` backend |
+| `MACHINES_PROVISION_TIMEOUT_SECONDS` | `120` | Timeout waiting for machine readiness on the `docker` and `kubernetes-operator` backends |
 
 ### Docker
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `MACHINES_DOCKER_HOST` | `127.0.0.1` | Host/IP that the orchestrator uses to reach published machine container ports |
+| `MACHINES_DOCKER_CONTAINER_NAME_PREFIX` | `terminal` | Prefix for container names, e.g. `myprefix` produces `myprefix-<instance-id>`. Use 1–30 letters, digits, or hyphens, starting with a letter or digit. Stop existing environments through Machines before changing the prefix so they can restart with the new names and their existing files. |
 | `MACHINES_DOCKER_NETWORK` | | Docker network for machine containers. Use a comma-separated list to shard machines across multiple Docker bridge networks. |
-| `MACHINES_DOCKER_MOUNTS` | | JSON array of extra bind mounts with `source`, `target`, and optional `readOnly` |
+| `MACHINES_DOCKER_MOUNTS` | | JSON array of extra bind mounts with `source`, `target`, and optional `readOnly` and `isolated` flags |
 | `MACHINES_DOCKER_DATA_DIR` | `data/terminals` (`/app/data/terminals` in the image) | Workspace directory accessible to the orchestrator, including file resets |
 | `MACHINES_DOCKER_HOST_DATA_DIR` | | Optional absolute Docker-host path to the same workspace directory. Unset uses `MACHINES_DOCKER_DATA_DIR`. |
 
@@ -414,19 +415,27 @@ By default, known-size proxied request bodies are buffered so retry behavior is 
 ### Extra mounts
 
 
-Docker deployments can use `MACHINES_DOCKER_MOUNTS` to mount shared data into
-every spawned machine container:
+Docker deployments can use `MACHINES_DOCKER_MOUNTS` to give machines access to host directories.
 
 ```bash
 MACHINES_DOCKER_MOUNTS='[
   {"source": "/srv/datasets", "target": "/mnt/datasets", "readOnly": true},
-  {"source": "/srv/shared-work", "target": "/workspace/shared", "readOnly": false}
+  {"source": "/srv/shared-work", "target": "/workspace/shared", "readOnly": false},
+  {"source": "/srv/private-work", "target": "/workspace/private", "readOnly": false, "isolated": true}
 ]'
 ```
 
 `source` is an absolute path on the Docker daemon host. `target` is the absolute
 container path. `readOnly` defaults to `true`. Do not mount over `/home/user`;
 Machine (Open Terminal) expects that directory to stay writable.
+
+With `isolated: true`, Docker creates and mounts a subdirectory of `source`.
+User-scoped templates share `<source>/<user-id>` for the same user. Other scopes
+use `<source>/<instance-id>`. User IDs that could collide with an instance ID
+or are unsuitable as directory names use `~` followed by their SHA-256 hex digest.
+Use a dedicated source directory for isolated data. Mounts default to shared.
+Recreate existing machine containers to apply mount changes. Host filesystem
+permissions still apply to writable mounts.
 
 Kubernetes deployments do not use `MACHINES_DOCKER_MOUNTS`. Use the existing
 template `podTemplate` field and native Kubernetes volumes instead:

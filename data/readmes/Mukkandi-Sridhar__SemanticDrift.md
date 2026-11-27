@@ -2,7 +2,7 @@
 
 **Does rewording an agent's tool descriptions change which model looks best?**
 A pre-registered study on the MCP tools of [IBM AssetOpsBench](https://github.com/IBM/AssetOpsBench),
-using wording changes that the benchmark's own developers made over 2026.
+using wording changes that the benchmark's own developers made during 2026.
 
 [![Tests](https://github.com/Mukkandi-Sridhar/SemanticDrift/actions/workflows/tests.yml/badge.svg)](https://github.com/Mukkandi-Sridhar/SemanticDrift/actions/workflows/tests.yml)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](LICENSE)

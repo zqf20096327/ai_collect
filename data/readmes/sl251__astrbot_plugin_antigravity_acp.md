@@ -7,11 +7,11 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20Docker-blue)
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![AstrBot](https://img.shields.io/badge/AstrBot-%3E%3D4.29.4%2C%3C4.30-orange)
-![Status](https://img.shields.io/badge/main-v0.8.3-brightgreen)
+![Status](https://img.shields.io/badge/main-v0.8.6-brightgreen)
 
 通过 Google 官方 `agy` 客户端内置的 ACP（Agent Client Protocol）协议，把 Antigravity 模型安全、稳定地接入 AstrBot，作为日常对话主力。
 
-> 💡 **主分支 v0.8.3（2026-11-25）** 完成模型管理与路由交互重构（[#36](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/36) / [PR #37](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/37)）：默认首页保持「运行监控」并新增全局默认摘要条与异常恢复横幅；支持原地编辑（保留 `provider_id`）、配置漂移一键同步、受控默认迁移及「跟随全局」思考档位明示。可通过下方主分支 ZIP 或页面重装并重载插件。
+> 💡 **主分支 v0.8.6（2026-11-27）**：修复宿主工具执行超时后，晚带回的工具结果被当作过期回填（`TOOL_STALE`）的问题——会话、运行与历史都匹配时，用真实结果重新生成一次回答，而不是报错后让宿主切到 fallback；跑满步数后的收尾请求也不再报 `TOOL_CONTEXT`（[#45](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/45) / [PR #46](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/46)）。可通过下方主分支 ZIP 或最新 Release 纯净包安装并重载插件。
 
 ---
 
@@ -38,7 +38,7 @@
 做这个插件最大的初衷，就是因为**被 Google 杀号杀怕了**。为了稳稳用上官方模型，本插件坚持**纯合规路线**：
 - **不碰逆向，不写黑科技**：只调用本机官方 `agy` 客户端，走标准 stdio 管道和 ACP 协议通信。
 - **免 API Key，零中转**：本地客户端自带鉴权，不需要搭建任何第三方 HTTP 反代服务，登录即用。
-- **权限安全物理熔断**：`agy` 原生拥有读写本地文件和执行终端命令的 Agent 权限。为了防止机器人在聊天中被提示词注入破坏系统，插件在启动时**强制关闭了自带的所有本地文件与终端工具**，外部工具调用完全交由 AstrBot 自身的权限体系托管。
+- **权限安全默认熔断**：`agy` 原生拥有本地文件与命令执行能力；为防止提示词注入越权破坏系统，插件默认拒绝所有内置工具，仅在开启工具总闸后支持于 Linux CLI `1.5.17` / `1.5.18` 按需单次授权读取隔离会话工作区顶层 `.txt`（或独立开启实验性 `search_web`），文件编辑/写入、终端与浏览器保持锁定拒绝，其余外部工具调用交由 AstrBot 自身权限体系托管。
 
 ### 📌 功能边界一览
 
@@ -55,7 +55,7 @@
 
 - **官方通道直连**：原生 stdio 管道通信，享受 Google 官方客户端的稳定连接与低风控保障（这不构成账号安全或上游可用性的绝对保证）。
 - **双模能力支持**：支持多模态识图（Vision）以及内置 MCP 桥接工具调用（Tool Use），可无缝调用 AstrBot 的各种技能插件。
-- **可视化运行监控与管理面板**：运行监控首页、模型管理与环境认证三标签页协同，含会话池分段条、环形统计、Token 堆叠与延迟图，支持原位编辑、漂移修复、受控默认迁移及主题切换；路由和失败诊断为只读展示，不额外消耗模型额度。
+- **可视化运行监控与管理面板**：运行监控、模型管理、环境与认证、工具权限页签协同，含会话池分段条、环形统计、Token 堆叠与延迟图，支持原位编辑、漂移修复、受控默认迁移及主题切换；路由和失败诊断为只读展示，不额外发起模型请求；账号额度按需刷新，近 24 小时脱敏请求明细跨重载保存。
 - **智能防雪崩**：具备 429 限流快速熔断、错误提前中断与疑似压缩后的上下文退役机制，避免异常重试浪费资源。
 
 ---
@@ -105,7 +105,11 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
   0.7.2 另对 [#19](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/19) 的 Safe Mode 第 4 条规则实施结构锚定的等义改写，保留安全约束（实机已验收：不再出现该伪 429）；详见 [CHANGELOG](CHANGELOG.md)。
 - **只读诊断与统计指令**：
   - `/agy doctor`：进行无损连通性与会话自检。
-  - `/agy cost`：查看各实例只读缓存复用、近 24 小时 Token 统计与进程池摘要（不发任何模型请求）。
+  - `/agy cost` 查看各实例近 24 小时的缓存复用、Token 与进程池摘要。已结算的脱敏统计可跨插件重载恢复。
+  - `/agy quota` 手动查询官方 CLI 账号额度，`/agy usage [30|90|365]` 查看本地每日用量，`/agy help` 列出全部指令。
+  - 进入运行监控时按需更新账号额度，60 秒内优先使用缓存。也可点击「刷新额度」立即查询。
+  - QQ 私聊中 `/new` 正常、`/agy cost` 被当成聊天时，请在该会话实际使用的 AstrBot 配置「可用插件」中勾选 `astrbot_plugin_antigravity_acp` 并保存，再发 `/agy help`。
+- **工具跑得久之后出现 `TOOL_STALE` / `TOOL_TIMEOUT`，或回复与工具结果无关**：升级至含 #45 修复的 v0.8.6。工具执行超过 `tool_execution_timeout` 后，只要 ACP 会话仍存活且历史未被改写，晚带回的结果会用于一次无工具生成；否则返回 `TOOL_TIMEOUT` 且不自动重试。详情见 [宿主工具执行超时后的回填](docs/troubleshooting.md#宿主工具执行超时后的回填)。
 - **同一会话连续出现 `history_rewrite`**：升级至含 #33 修复的 v0.8.2 后，在同一会话连续发送消息，检查后续轮是否显示 `reused=true`。真实历史编辑等情况仍会触发重建。详情见 [会话复用排障](docs/troubleshooting.md#会话复用与历史重写)。
 
 ---
@@ -114,6 +118,9 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 
 *(完整历史见 [`CHANGELOG.md`](./CHANGELOG.md))*
 
+- **v0.8.6**：工具执行超时后晚带回的结果在会话、运行与历史都匹配时重建一次无工具生成，不再抛 `TOOL_STALE` 或切到 fallback；不匹配时返回 `TOOL_TIMEOUT`。跑满步数后的收尾请求不再报 `TOOL_CONTEXT`（[#45](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/45) · [PR #46](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/46)）。
+- **v0.8.5**：额度按需自动刷新、60 秒缓存与失败冷却；新增有界 SQLite 监控明细持久化（24 小时、每实例最多 100 轮），重载后恢复请求、耗时、Token 与复用统计，存储异常时降级为内存统计（[#43](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/43) · [PR #44](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/44)）。
+- **v0.8.4**：新增独立「工具权限」页签（`setup/tool-policy`）、官方 CLI 账号额度查询（`setup/quota-refresh` / `monitor/quota`）与本地每日用量热力图（`monitor/daily/*`），精简工具权限说明、汉化额度窗口与折叠长列表并重构 `/agy` 管理员指令可读性（[#38](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/38) · [PR #39](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/39)）；完成 CLI `1.5.18` 原生工具协议实测，开放 `read_file` 至 `1.5.18` 与只读分页校验，解除原生工具对宿主 MCP 非空的依赖并修正非搜索拒止文案（[#41](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/41) · [PR #42](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/42)）。
 - **v0.8.3**：重构「运行监控 / 模型管理 / 环境与认证」三标签页、新增原位编辑（`provider-update`）与配置漂移修复（`provider-repair`）、支持受控默认迁移及思考「跟随全局」明示（[#36](https://github.com/sl251/astrbot_plugin_antigravity_acp/issues/36) · [PR #37](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/37)）。
 - **v0.8.2**：修复临时用户文本导致的会话误重建，覆盖普通续聊及工具回填。[#35](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/35)
 - **v0.8.1**：替换为 feat/ui-redesign 原生可视化前端，兼容监控 v2 与复制降级，保留 v0.8.0 后端（实机待 #31）。
@@ -135,7 +142,7 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 | 当前契约 | 详细说明与证据入口 |
 | --- | --- |
 | 模型请求只走官方 `agy acp` stdio；每会话隔离目录，认证由官方 CLI 管理，不读取或记录凭据内容 | [架构与认证](docs/architecture.md)，[启动/登录排障](docs/troubleshooting.md#启动登录与模型设置) |
-| CLI 内置文件、终端、web search/browser 继续拒绝；只有当前活跃 prompt 中已观测且匹配的快照 MCP 调用可获唯一 `allow_once`，宿主审批/校验/预算仍有效 | [MCP 权限与 schema](docs/architecture.md#mcp-的两层权限与两份-schema)，[#12 排障](docs/troubleshooting.md#empty权限拒绝与-12) |
+| 内置工具默认拒绝。Linux + CLI 1.5.17 / 1.5.18 可单独启用隔离工作区顶层 `.txt` 只读授权（含 `StartLine`/`EndLine`/`ByteOffset`）。联网搜索可作为实验性开关单独开启（默认关闭）：CLI 不请求审批，插件只能在通知到达后中止，发现时请求可能已发出。两项均可脱离宿主 MCP 独立启用。`edit_file`、`write_file`、终端、浏览器及 `1.5.18` 调度/子代理/工作流工具保持拒绝；文本读取与搜索均与 MCP 共用次数预算 | [MCP 权限与 schema](docs/architecture.md#mcp-的两层权限与两份-schema)，[#41 调查报告](docs/issue41-builtin-tools-probe.md)，[#12 排障](docs/troubleshooting.md#empty权限拒绝与-12) |
 | 模型 schema 适配（含 `anyOf`/联合类型数组）与宿主原始契约独立；执行按原始 schema 校验，两者均参与工具指纹 | [#13 参数排障](docs/troubleshooting.md#tool_arguments-与-13) |
 | 默认严格会话复用；活跃工具轮等待回填期间同会话并发新请求按 `queue_timeout` 排队隔离；已输出可见正文、交接工具或进入工具续轮后失败禁止重试/fallback；仅思考/进度且未交接的失败可保留显式 fallback 资格 | [会话与防重放](docs/architecture.md#会话历史与防重放) |
 | system 仅过滤已知宿主能力声明并定点兼容改写已知 Safe Mode 单句；4.30 文案处理不是 4.30 宿主兼容证明；`content_429_candidate` 是候选遥测，不是上游根因 | [过滤与 429 边界](docs/architecture.md#system-过滤与-429-的证据边界)，[#14 / #19 排障](docs/troubleshooting.md#rate_limit--quota-与-14) |

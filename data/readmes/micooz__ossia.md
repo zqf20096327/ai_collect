@@ -24,9 +24,9 @@ Ossia is AI-native music notation software that gives AI agents the tools and gu
 
 Ossia connects to popular AI agents (see [Connect an agent](#2-connect-an-agent) for the full list). It also lets you:
 
-- Create scores for piano, guitar, ukulele, violin, ensembles, and more.
+- Create scores for piano, guitar, ukulele, violin, ensembles, and more, including numbered notation.
 - Import MusicXML, MIDI, PDF, and images of scores, with help from an Ossia OMR service where appropriate.
-- Export scores or audio as PDF, PNG, SVG, MIDI, and WAV.
+- Export scores or audio as PDF, PNG, SVG, MusicXML, MIDI, and WAV.
 - Annotate individual score elements and draw freely.
 - Browse scores on touchscreens.
 - Share scores on your local network.
@@ -35,41 +35,53 @@ Ossia connects to popular AI agents (see [Connect an agent](#2-connect-an-agent)
 
 Start with an existing score or a simple idea and work with your agent to arrange or create music for study, teaching, or professional notation.
 
-### Create a score
+### Create scores
 
 <img src="docs/readme-assets/case-find-score.webp" alt="Creating a Bach score" width="720">
 
 Create a score for Bach's <em>Sheep May Safely Graze</em>, BWV 208.
 
-### Arrange a score
+<img src="docs/readme-assets/case-import-image.webp" alt="Importing and checking an image of a score" width="720">
+
+Import this score image, check it carefully against the original, and correct any errors.
+
+<img src="docs/readme-assets/case-import-pdf.webp" alt="Agent transcribing and checking a PDF score in Ossia" width="720">
+
+Ask an agent to transcribe a PDF score without online OMR, then check and refine the result against the original.
+
+### Arrange scores
 
 <img src="docs/readme-assets/case-arrange.webp" alt="Arranging a score for piano four hands" width="720">
 
 Arrange <em>Sheep May Safely Graze</em> for piano four hands and save it as a new score.
 
-### Compose a melody and accompaniment
+<img src="docs/readme-assets/case-guitar-tab.webp" alt="Arranging guitar tablature with chord diagrams" width="720">
+
+Arrange <em>Hollow Knight</em> as a new guitar tablature score and add chord diagrams.
+
+<img src="docs/readme-assets/case-jianpu.webp" alt="Bach’s Prelude in C major in numbered notation" width="720">
+
+Convert Bach’s Prelude in C major, BWV 846, to numbered notation as a new score.
+
+### Compose music
 
 <img src="docs/readme-assets/case-compose.webp" alt="Composing a melody with harmony and accompaniment" width="720">
 
 Write a beautiful melody, add harmony, and create an accompaniment part.
 
-### Import an image of a score
+<img src="docs/readme-assets/case-original-piano.webp" alt="Creating and refining an original piano piece with an agent" width="720">
 
-<img src="docs/readme-assets/case-import-image.webp" alt="Importing and checking an image of a score" width="720">
+Create a 16-bar original piano piece, then refine its melody and dynamics through conversation.
 
-Import this score image, check it carefully against the original, and correct any errors.
-
-### Analyze and transpose
+### Study scores
 
 <img src="docs/readme-assets/case-transpose.webp" alt="Analyzing the key and transposing a score" width="720">
 
 What key is <em>Hollow Knight</em> in? Transpose it to A minor.
 
-### Arrange for guitar tablature
+<img src="docs/readme-assets/case-harmony-analysis.webp" alt="Analyzing and marking harmony in Bach’s Prelude in C major" width="720">
 
-<img src="docs/readme-assets/case-guitar-tab.webp" alt="Arranging guitar tablature with chord diagrams" width="720">
-
-Arrange <em>Hollow Knight</em> as a new guitar tablature score and add chord diagrams.
+Analyze and mark the harmony in Bach’s Prelude in C major, BWV 846.
 
 > AI can make mistakes. Review the result carefully and refine it through follow-up requests.
 

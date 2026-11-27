@@ -12,6 +12,11 @@ as an MCP server for LLMs.
 > on iOS 27, sends only what HealthKit added since the last sync, and starts a
 > sync from the app, a Home Screen widget or Siri. It needs a FreeReps server of the same release, 2.2. See
 > [iOS app](#ios-app).
+>
+> **FreeReps for iOS 2.3, which signs in to a server without Tailscale, is in
+> App Store review.** Until it is released, the App Store carries 2.2, which
+> reaches a server through Tailscale only; keep Tailscale enabled on the server
+> until the app is updated.
 
 ## Dashboard Features
 
@@ -149,7 +154,7 @@ frontend dependency versions in
 
 ## Prerequisites
 
-- **[Tailscale](https://tailscale.com/)** — FreeReps uses Tailscale for authentication and TLS natively (via [tsnet](https://tailscale.com/kb/1244/tsnet)). There are no passwords or API keys — access is controlled by your tailnet. Tailscale must be set up before running FreeReps.
+- **A way to reach and authenticate to the server**, one of the two in [Access](#access): [Tailscale](https://tailscale.com/) (the default; no passwords or API keys, access is controlled by your tailnet), or application login behind a reverse proxy that terminates TLS.
 - **An iPhone with Apple Health data**, sending it through the [FreeReps iOS app](#freereps-ios-app) or [Health Auto Export](#health-auto-export-ios).
 - **[mcp-proxy](https://github.com/sparfenyuk/mcp-proxy)** (optional) — Needed only by an MCP client that speaks stdio alone; it bridges stdio to the HTTP endpoint. Install with `brew install mcp-proxy` or `pip install mcp-proxy`.
 - **`lzfse`** (optional, macOS) — Required by `freereps-upload` for reading `.hae` files. `brew install lzfse`.
@@ -160,11 +165,59 @@ frontend dependency versions in
 git clone https://github.com/meltforce/FreeReps.git
 cd FreeReps/server
 cp config.example.yaml config.yaml
-# Edit config.yaml — set database password, enable Tailscale
+# Edit config.yaml — set the database password, choose Tailscale or application login
 docker compose up -d
 ```
 
 To use the pre-built image from Docker Hub instead of building locally, replace the `app` service's `build: .` with `image: meltforce/freereps:latest` in `docker-compose.yml`.
+
+## Access
+
+Two modes; `config.yaml` selects one.
+
+**Tailscale (default).** With `tailscale.enabled: true` FreeReps joins the
+tailnet as its own node ([tsnet](https://tailscale.com/kb/1244/tsnet)), serves
+HTTPS under `https://<hostname>.<tailnet>.ts.net` and identifies each request by
+the Tailscale login behind it. There is nothing to sign in to and no API key.
+
+**Application login.** An `auth:` block switches on sign-in through an OIDC
+provider, local passwords or both, and personal access tokens for everything
+that is not a browser. With `tailscale.enabled: false` the server listens on
+plain HTTP at `server.port` and belongs behind a reverse proxy that terminates
+TLS; `auth.base_url` is the address users reach. The keys are in
+[`server/config.example.yaml`](server/config.example.yaml).
+
+Without Tailscale the server can ensure neither that it is private nor that the
+connection is encrypted. Both are the operator's responsibility: terminate TLS
+in front of it, do not publish the plain-HTTP port, and decide who can reach the
+address.
+
+- **Accounts.** `accounts.policy: closed` (default) admits only existing
+  users; `oidc_auto` creates a user at the first OIDC login, optionally limited
+  by `allowed_email_domains`. `oidc.link_by_email: true` signs an existing user
+  in whose login equals the provider's email claim — which carries the users of
+  a Tailscale installation over when the provider is a Tailscale IdP. The
+  first user with a Tailscale login is admin; `auth.initial_admin` names the
+  admin of a fresh installation.
+- **Tokens.** **Settings → Account** creates tokens (`freereps_pat_…`), sent as
+  `Authorization: Bearer <token>`. Scope `api` is for the iOS app, Health Auto
+  Export and `freereps-upload`; scope `mcp` is for `/mcp`, which a browser
+  session does not satisfy.
+- **iOS app.** From app 2.3.0, **Sign In** in the app's settings opens the server's login in
+  a browser sheet and receives a token of its own (scope `api`, named after
+  the device, no expiry); **Sign Out** revokes it. The handoff is an
+  authorization code flow with PKCE: `/app-login/authorize`, then
+  `POST /api/v1/app-login/token`.
+- **Command line**, for an instance without OIDC or without a browser at hand:
+
+  ```bash
+  freereps auth create-user [--admin] <username>      # password from stdin; needs methods: [password]
+  freereps auth create-token --user <login> --name <name> --scope api|mcp [--expires 90d]
+  ```
+
+With both `auth:` and Tailscale enabled, a request without session or token
+falls back to the Tailscale identity. Without either, every request is user 1:
+local development only.
 
 ## Data Sources
 
@@ -210,8 +263,9 @@ HealthKit on the iPhone and delivers it over three paths, which can be combined:
 4. Save it. **Settings → Ingest** lists the last 25 deliveries with the row
    counts each one carried.
 
-The iPhone reaches the server over the tailnet, so the automation needs no API
-key of its own — Tailscale authenticates the request. The payload shape FreeReps
+On a Tailscale installation the automation needs no API key — Tailscale
+authenticates the request. With [application login](#access), add the header
+`Authorization: Bearer <token>` (scope `api`) to the automation. The payload shape FreeReps
 accepts is written down in
 [`server/specs/hae-rest-api.md`](server/specs/hae-rest-api.md).
 
@@ -420,8 +474,8 @@ Protocol, over two transports:
 
 - **stdio**, for a client that starts the binary itself.
 - **Streamable HTTP** at `/mcp`, served by the same HTTP server as the
-  dashboard and behind the same Tailscale identity middleware, so each user
-  sees only their own data.
+  dashboard and behind the same authentication ([Access](#access)), so each
+  user sees only their own data.
 
 There is no SSE endpoint. `/mcp/sse` matches no route, so the request reaches
 the dashboard handler and the response is HTML — which a client reports as a
@@ -467,7 +521,8 @@ Add to your Claude Code MCP config:
 `/mcp` speaks Streamable HTTP as soon as the server is running. A client that
 can address an HTTP MCP endpoint needs nothing else — the URL is
 `https://freereps.your-tailnet.ts.net/mcp`, and Tailscale authenticates the
-request.
+request. With [application login](#access) the client sends a token with scope
+`mcp` as `Authorization: Bearer <token>`.
 
 For a client that only speaks stdio, [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy)
 bridges the two:
@@ -615,6 +670,8 @@ cd web && npm ci && npm run build && cd ..
 go run ./cmd/freereps -config config.yaml -demo
 ```
 
+With an `auth:` block that includes `methods: [password]`, set `FREEREPS_DEMO_PASSWORD` as well: the demo data belongs to user 1, and that variable gives it the login `demo` with that password. Without it no account can see the data.
+
 This seeds the database with 90 days of generated health data — heart rate, sleep, workouts, activity rings and strength sessions with sets, reps and effort ratings. The data is deterministic and idempotent — restarting with `-demo` or `FREEREPS_DEMO=true` won't create duplicates.
 
 The server will be available at `http://localhost:8080`. To tear down:
@@ -686,8 +743,8 @@ curl -sSL https://raw.githubusercontent.com/meltforce/FreeReps/main/server/scrip
 
 ## API Reference
 
-Every route below sits behind the Tailscale identity middleware and answers for
-the calling user only. `/api/v1/version` is the exception — it answers without
+Every route below requires an authenticated caller ([Access](#access); a token
+needs scope `api`) and answers for the calling user only. `/api/v1/version` is the exception — it answers without
 an identity, so a health check needs no credentials.
 
 | Endpoint | Method | Description |

@@ -31,14 +31,19 @@ Open source · Use it online or run it yourself · Uses your own LLM
 
 [Features](#-what-it-can-do-for-you) · [Screenshots](#-screenshots) · [Try it](#-quick-start) · [FAQ](#-faq)
 
+<p align="center">
+  <img src="docs/readme/camera-check-en.gif" height="460" alt="Camera form check: a side-view squat; the first rep is too shallow and it says “Go lower” on the spot, the second rep reaches depth and the count goes up (AI-generated footage; the skeleton, count and cue are computed by IronM)" />
+  <img src="docs/readme/chat-answer-en.gif" height="460" alt="Answers from your data: asked “I only slept 5 hours last night, should I still train?”, it compares sleep and resting heart rate with your usual and says train at about 70% (IronM web app in Chinese; a real answer from the simulation test with simulated data)" />
+</p>
+
 <img src="docs/readme/home.png" width="190" alt="Home: today's AI workout with the weight for each exercise" />
-<img src="docs/readme/plan.png" width="190" alt="AI workout planner: weights from your log" />
+<img src="docs/readme/plan.png" width="190" alt="AI workout planner: the weight to use for every exercise" />
 <img src="docs/readme/live.png" width="190" alt="Workout logger with camera form check" />
 <img src="docs/readme/messages.png" width="190" alt="Messages: IronM's suggestions take effect only when you confirm" />
 
 </div>
 
-- 📷 **It watches you train through your camera**: the moment your back rounds on a squat, it tells you out loud
+- 📷 **It watches you train through your camera**: the moment a squat rep is too shallow, it tells you out loud
 - 🧠 **A plan that's only yours**: it remembers your injuries, equipment, sleep and every set you've done, and works out the weight for your next one
 - ✋ **Every change asks you first**: plan tweaks and calorie changes are suggestions; nothing takes effect until you confirm, and you can always undo
 - 🔓 **Open source and free**: bring your own LLM, and keep all your data on your own machine if you like
@@ -102,22 +107,23 @@ Real conversations from a two-week simulation test. The model is DeepSeek and th
 
 ### 🏋️ Training
 - 📷 **AI form check with your camera**: 71 exercises, automatic rep counting, cues mid-rep; the video never leaves your phone
-- 🎬 **Train along with creators**: drop in a video where a fitness creator explains their workout and get a plan you can follow: first the creator's original (each exercise tagged with the second it's mentioned and the exact words), then a copy adapted to your equipment, injuries and time
-- 📋 **AI workout planner**: built step by step from your level, goal, days, equipment and injuries, with the reason for each step; or pick one of 24 ready-made training plans by name
+- 🎬 **Train along with creators**: upload a video where a fitness creator explains their workout and get a plan straight away: first the creator's original (each exercise tagged with the second it's mentioned and the exact words), then a copy IronM adapts to your equipment, injuries and time
+- 📋 **AI workout planner**: built step by step from your level, goal, days, equipment, injuries and any health conditions found in your checkups, with the reason for each step; or pick one of 24 ready-made training plans by name
 - 🎥 **Workout video analysis**: upload a clip of yourself training; it finds each rep's problems and the second they happen, and IronM tells you how to fix them. The video isn't uploaded
 - 🌅 **A daily check**: decides how you train today from your sleep, heart rate and what you've told it
 - 🧳 **Temporary changes**: travel, illness or a deload week, with start and end dates; your normal plan comes back automatically
 - ⏱️ **Workout logger**: log set by set, tap a number to fill it in, rest timer between sets, a share card when you finish
-- 📈 **Weights and next-session targets**: exercises you've logged show the weight to use; new ones are marked "find your weight" with how to find it the first time. After each session it sets next time's targets from your log
+- 📈 **Weights and next-session targets**: every exercise in your plan shows the weight to use this time. Ones you've done are worked out from your log, with each set from last time; new ones get a conservative starting weight from your sex, body weight, age and training level. After each session it sets next time's targets from your log
 - 🏃 **Cardio by calories**: want to burn an extra N kcal a week? It works out from your body weight how long to walk, jog or cycle, and puts it in your plan
-- 📖 **Exercise library**: 220 exercises, about half with images and animations, all with alternatives; 34 kinds of equipment, recognised from a photo
+- 📖 **Exercise library**: 220 exercises browsed by body part, about half with images and animations, all with alternatives; 34 kinds of equipment browsed by what they train, recognised from a photo
 
 ### 🥗 Food
-- 📸 **Log a meal with a photo or a sentence**: snap a photo or say "had a bowl of beef noodles for lunch". Calories come from the food database, not from a model's guess
+- 📸 **Log a meal with a photo or a sentence**: snap a photo or say "had a bowl of beef noodles for lunch", and log the same meal more than once if you ate twice. Calories come from the food database, not from a model's guess
+- 👆 **Tap a suggestion to use it**: when IronM suggests a few meals, each has a "log this" button that logs exactly what was suggested, calories included; suggested exercise swaps have a "swap to this" button
 - 🍱 **Diet plan library**: 16 full-day diet plans you can apply in one tap. Portions scale to your calorie target automatically, and you can undo
 - 🧮 **Built around you**: say "I mostly eat takeout and don't eat pork", and IronM picks four meals a day from the recipes while the system sets the portions. Daily calories land within 8% of your target, protein is covered, and nothing you avoid is included. Nothing changes until you confirm
 - 🎯 **Follows your goal**: switch from fat loss to muscle gain and IronM checks whether your diet plan still fits the new goal; if not, it offers a card to switch plans
-- 🥚 **Foods and recipes**: 159 foods, 81 recipes (home cooking, packed lunches, takeout and canteen, vegetarian, weight gain), 12 common takeout and canteen meals
+- 🥚 **Foods and recipes**: 159 foods, 81 recipes (home cooking, packed lunches, takeout and canteen, vegetarian, weight gain), 12 common takeout and canteen meals; each shows how much of its calories come from protein, carbs and fat, so you can see at a glance whether it's high-protein
 - 🍔 **Chain restaurant menus**: every regular McDonald's item with the nutrition data from its official site; search and log it directly instead of letting a model guess
 - ✏️ **Your own entries**: your own foods (copied from the label), exercises and plans, each with an optional photo; usable for logging meals, workouts and planning
 - 🔥 **Calorie target**: based on your basal metabolic rate. IronM suggests changes from your records and nothing changes until you confirm, with hard limits in code: never below your BMR, at most 300 kcal per change, at most 500 kcal in total
@@ -135,14 +141,16 @@ Real conversations from a two-week simulation test. The model is DeepSeek and th
 
 ### ❤️ Health data
 - 🧪 **Lab report reading**: lab results and checkup reports read from a photo (via [mirobody](https://github.com/thetahealth/mirobody))
+- 🩸 **Checkups feed your training and diet**: blood count, liver and kidney function, lipids, uric acid, blood sugar and more. It first works out what each result means for you, then applies it when planning workouts and meals, e.g. high uric acid steers away from high-purine food and sugary drinks; borderline results waiting for a retest only get a heads-up and don't change your plan
 - ⌚ **Watches and Apple Health**: import your data; every metric is compared with your own usual
 - 😴 **Today's sleep and heart rate**: see today's numbers on Home, tap for the last week or month, and log them yourself if nothing synced
 
 ### 🧩 Also
-- 🔔 **Messages**: the bell at the top holds IronM's adjustments and system messages, each saying what changed and why. Confirm or decline suggestions, undo changes that already took effect, and search by keyword or date
+- 🔔 **Messages**: in the bell at the top, IronM tells you what it changed and why, like a chat. Reply "OK" or "Not now" to suggestions waiting for you, undo changes that already took effect, open any message to see why it did that, and search by keyword or date
 - 🎙️ **Ask by voice**: tap the mic next to the input box and speak; the text fills in and you can edit it before sending. Speech is transcribed on the server with a self-hosted model: free, and the recording is deleted right after
 - 🏅 **Badges**: lightest week, squatting 1.5× your body weight, 8 weeks in a row… It only rewards what you've done and never nags
-- 🧠 **Long-term memory**: remembers your injuries, equipment, schedule and preferences. If it gets something wrong, delete it under "Me"
+- 🧠 **Long-term memory**: remembers your injuries, equipment, schedule and preferences, plus what it suggested and what it promised to follow up on, even across conversations. If it gets something wrong, delete it under "Me"
+- 🌦️ **Weather**: when you ask whether to train outdoors, what to wear or how much to drink, it checks the weather in your city first
 - 📚 **Sources**: an evidence base of 125 entries: Chinese dietary guidelines, China's National Health Commission guidance, ACSM, ISSN, NEJM randomised trials… Ask why and it tells you the source
 - 🛡️ **Safety floor**: emergencies, critical values, pregnancy, high blood pressure and injuries are handled by hard-coded rules
 - 📦 **Your data, your call**: export everything or delete your account at any time
@@ -156,13 +164,13 @@ Five tabs at the bottom: Home, IronM, Library, Records, Me. The mobile app in pr
 
 | Page | What's there |
 |---|---|
-| 🏠 Home | What to train today (with the weather), whether it was adjusted, start a workout, quick check-in; today's meals, tick what you ate as planned or log something else by photo or voice; today's sleep and resting heart rate; this week's plan; trending on the leaderboard |
+| 🏠 Home | What to train today (with the weather), a body map lighting up the muscles today's workout hits, exercises with images in a swipeable row; whether it was adjusted, start a workout, quick check-in; today's food and body data side by side; a card for each day this week; leaderboard trends in the top bar |
 | 🐧 IronM | Chat by typing or voice; preview cards for plan changes, meals and goal changes; weekly report; send photos and workout videos |
-| 🔔 Messages | IronM's adjustments and system messages; suggestions waiting for you at the top; what changed and why; search by keyword or date |
-| 📖 Library | Exercises, equipment, foods and recipes, training plan library (train along with creators at the top), diet plan library; your own entries at the bottom of each page |
-| 📊 Records | Sessions this week, total time, PRs, compared with last week; body data trends; training timeline and check-in photos; badge wall |
+| 🔔 Messages | IronM explains what it changed and why, message by message; suggestions waiting for you at the bottom, answered with "OK" or "Not now"; open one to see why; search by keyword or date |
+| 📖 Library | Exercises by body part; equipment by what it trains, or recognised from a photo; foods, recipes and chain menus each with a protein/carbs/fat bar; training plans showing how many sessions a week and the order they rotate (train along with creators at the top); diet plans with a day's four meals; your own entries at the bottom of each page |
+| 📊 Records | How much you trained this week / this month / all time, one row per body part; a muscle map by week and by day; recent sessions and check-in photos; weekly report; body data trends; badge wall |
 | 👤 Me | Profile and goal, equipment and place, city and weather, body data, things it remembers, data import, model settings, account and privacy |
-| 📋 Training plan | The week's schedule; swap exercises, change sets and reps, reorder; the weight to use (or "find your weight") and next-session targets for each exercise |
+| 📋 Training plan | The week as swipeable photo cards; for the chosen day, each exercise shows this time's weight and last time's sets, tap one for details or to swap it; reorder, ask IronM to change it, next-session targets |
 | ⏱️ Workout | Set-by-set logging, rest timer, add a set, stopwatch; camera form check |
 | 🍱 Food log | Today's calorie balance and how the target is calculated; log each meal as planned or what you actually ate; diet plan |
 
@@ -173,7 +181,7 @@ Five tabs at the bottom: Home, IronM, Library, Records, Me. The mobile app in pr
 <table>
 <tr>
 <td align="center"><img src="docs/readme/home.png" width="200" alt="Home: today's AI workout with the weight for each exercise" /><br/><sub><b>Home</b><br/>Today's workout, with the weight to use</sub></td>
-<td align="center"><img src="docs/readme/plan.png" width="200" alt="AI workout planner: weights from your log" /><br/><sub><b>Training plan</b><br/>Weights from your log, "find your weight" for new ones</sub></td>
+<td align="center"><img src="docs/readme/plan.png" width="200" alt="AI workout planner: the weight to use for every exercise" /><br/><sub><b>Training plan</b><br/>The weight to use for every exercise</sub></td>
 <td align="center"><img src="docs/readme/live.png" width="200" alt="Workout logger with camera form check" /><br/><sub><b>Workout logger</b><br/>Camera form check, tap a number to fill it in</sub></td>
 <td align="center"><img src="docs/readme/messages.png" width="200" alt="Messages: IronM's suggestions take effect only when you confirm" /><br/><sub><b>Messages</b><br/>Suggestions take effect only when you confirm</sub></td>
 </tr>

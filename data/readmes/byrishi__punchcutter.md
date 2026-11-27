@@ -4,6 +4,8 @@
 
 [![skills.sh](https://skills.sh/b/byrishi/punchcutter)](https://skills.sh/byrishi/punchcutter) [![Docs](https://img.shields.io/badge/docs-byrishi.github.io-5f6b2f)](https://byrishi.github.io/punchcutter/) [![License: MIT](https://img.shields.io/badge/license-MIT-5f6b2f)](LICENSE) [![Works with](https://img.shields.io/badge/works%20with-Claude%20%C2%B7%20ChatGPT%20%C2%B7%20Codex%20%C2%B7%20Cursor-5f6b2f)](#install)
 
+[![byrishi/punchcutter MCP server](https://glama.ai/mcp/servers/byrishi/punchcutter/badges/score.svg)](https://glama.ai/mcp/servers/byrishi/punchcutter)
+
 **A type foundry that lives inside Claude, ChatGPT, Codex and other AI agents.** Describe a typeface, or write on a sheet of paper and send a photo. Punchcutter draws it, spaces it, kerns it, tests it and hands back a real font family with its own Studio app.
 
 Every word in the images on this page is set in a font Punchcutter made. **Docs: [byrishi.github.io/punchcutter](https://byrishi.github.io/punchcutter/)** · Guides: [Getting started](https://byrishi.github.io/punchcutter/getting-started.html) · [Handwriting and photos](https://byrishi.github.io/punchcutter/handwriting.html) · [Use your font](https://byrishi.github.io/punchcutter/using.html) · [CLI](https://byrishi.github.io/punchcutter/cli.html)

@@ -225,7 +225,7 @@ JSON reports carry `$schema`; `leaklens schema` prints the contract. Details: [d
 
 ## Installation
 
-The PyPI package is `leaklens-ml`; the installed command is `leaklens`. The floor is Python 3.10 (`requires-python`), and CI runs 3.10, 3.11, 3.12 and 3.14 on Linux. Python 3.13 is outside the matrix and is not claimed as verified. The package is pure Python and installs on Windows, Linux and macOS. On Windows use `py -3 -m pip ...` if `python` is not on PATH; if pip reports `externally-managed-environment`, create a virtual environment first.
+The PyPI package is `leaklens-ml`; the installed command is `leaklens`. The floor is Python 3.10 (`requires-python`), and CI runs 3.10, 3.11, 3.12 and 3.14 on Linux, plus the native backend startup test on Windows and macOS. Python 3.13 is outside the matrix and is not claimed as verified. The package is pure Python and installs on Windows, Linux and macOS. On Windows use `py -3 -m pip ...` if `python` is not on PATH; if pip reports `externally-managed-environment`, create a virtual environment first.
 
 Optional extras:
 
@@ -281,6 +281,7 @@ The Action installs the CLI and runs `leaklens --scan` on a file or folder. It d
 | `fail-under` | optional | unset | minimum trust score (0-100); when set, the step also fails on a score below it |
 | `baseline` | optional | unset | baseline file to compare against; findings are labelled `new`/`unchanged`/`changed`/`resolved` |
 | `fail-on-new` | optional | unset | fail when a non-diagnostic finding is new relative to `baseline` |
+| `sarif` | optional | unset | path for a SARIF 2.1.0 report, for `github/codeql-action/upload-sarif` |
 
 ```yaml
 name: leakage
@@ -304,7 +305,7 @@ The step fails when the scan exits `1`: a high-severity finding, or a trust scor
           fail-under: 80
 ```
 
-`baseline` and `fail-on-new` are unreleased, so a workflow that sets them must use `@main` until the next tag. Record the baseline once from a reviewed run (`leaklens --scan . --write-baseline --baseline leaklens-baseline.json`), commit it, and let CI fail only on findings that appear after it. A baseline labels findings; it does not suppress an active high-severity finding — use a documented [suppression](docs/BASELINES.md#suppressions) for an accepted one.
+`baseline` and `fail-on-new` are unreleased, so a workflow that sets them must use `@main` until the next tag. Record the baseline once from a reviewed run (`leaklens --scan . --write-baseline --baseline leaklens-baseline.json`), commit it, and let CI fail only on findings that appear after it. `--write-baseline` still applies the normal gate, so it exits `1` when it records a high-severity finding — the file is written, and that exit is expected. A baseline labels findings; it does not suppress an active high-severity finding — use a documented [suppression](docs/BASELINES.md#suppressions) for an accepted one.
 
 ```yaml
       - uses: eyadstein/leaklens@main
@@ -312,6 +313,30 @@ The step fails when the scan exits `1`: a high-severity finding, or a trust scor
           path: .
           baseline: leaklens-baseline.json
           fail-on-new: true
+```
+
+`sarif` writes the same SARIF 2.1.0 report as `--sarif` and leaves the exit contract unchanged, so a code-scanning upload can run after the step. It is unreleased too, so pin `@main` until the next tag. The uploading job needs `security-events: write`; fork pull requests receive a read-only token, so this example uploads on `push` only:
+
+```yaml
+name: leakage
+on: [push, pull_request]
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  leaklens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: eyadstein/leaklens@main
+        with:
+          path: .
+          sarif: leaklens.sarif
+      # Fork PRs cannot write security events; upload where the token can.
+      - if: always() && github.event_name == 'push'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: leaklens.sarif
 ```
 
 Pin a tag or a full commit SHA for reproducible CI. `@main` tracks the default branch and therefore unreleased changes.
@@ -368,9 +393,18 @@ The base install covers CSV/JSON/JSONL datasets, code scanning, split checks and
 | Image near-duplicates | `leaklens images` | `[images]` | exit 1 on a high-severity finding |
 | SQL lineage | `--sql` | `[sql]` | exit 1 on a high-severity finding |
 | Model arena | `--arena` | `[arena]` | writes `models/best.joblib` |
-| API, UI, workspace | `uvicorn`, `streamlit`, `leaklens workspace` | `[app]` | not a scan gate |
-| Public live-scan API | `uvicorn leaklens.public_api:app` | `[api]` | not a scan gate |
+| API, UI, workspace | `python -m leaklens.api`, `streamlit`, `leaklens workspace` | `[app]` | not a scan gate |
+| Public live-scan API | `python -m leaklens.public_api` (or `uvicorn leaklens.public_api:app`) | `[api]` | not a scan gate |
 | LLM explanations | `--llm` | local Ollama by default | never changes findings, score or exit |
+
+The API runs natively with Python; Docker is an optional deployment choice:
+
+```sh
+python -m pip install "leaklens-ml[api]"
+python -m leaklens.public_api            # http://127.0.0.1:8000/health
+```
+
+`LEAKLENS_HOST` (default `127.0.0.1`), `LEAKLENS_PORT` (default `8000`) and `LEAKLENS_LOG_LEVEL` change the bind; see [docs/LIVE_SCANNING.md](docs/LIVE_SCANNING.md) for limits, reverse-proxy and Docker instructions.
 
 If an optional dependency is missing, the command raises an `ImportError` that names the extra, and `leaklens doctor` lists which extras are importable. The base install remains fully usable. Scanning is offline and CPU-first by default; only an explicitly configured remote `--llm` provider, an install command or an MLflow run you start uses the network.
 

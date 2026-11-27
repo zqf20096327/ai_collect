@@ -20,7 +20,9 @@ runtime dependencies**.
 > credential is available in this environment. See
 > [Known limitations](#known-limitations).
 
-## What Phase 2 added
+## Features
+
+### What Phase 2 added
 
 Phase 0–1 proved the machinery: task lifecycle, persistent storage, an
 append-only audit log, structured logs, redaction, and a CLI. Phase 2 adds
@@ -37,7 +39,7 @@ the parts that make it an agent system rather than a task tracker.
 | **Cancellation & recovery** | cooperative cancellation between steps, checkpoints, idempotency, and resume that survives a real process restart | `aegis/recovery.js` |
 | **Typed config** | validated config with credential-shaped fields stripped on read | `aegis/config.js` |
 
-## What Phase 3 added — the Chief
+### What Phase 3 added — the Chief
 
 Phase 2's Orchestrator runs one task. Phase 3 adds the layer above it:
 a **chief** that takes a whole goal, splits it into a dependency graph

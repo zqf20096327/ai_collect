@@ -17,6 +17,7 @@
   <a href="https://github.com/hamedgitty/bloks/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/hamedgitty/bloks/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="macOS, Windows and Linux" src="https://img.shields.io/badge/desktop-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-6b7280">
   <a href="https://apps.apple.com/app/bloks-ai-agents/id6804453451"><img alt="iPhone app on the App Store" src="https://img.shields.io/badge/iPhone-App_Store-6b7280"></a>
+  <a href="https://play.google.com/store/apps/details?id=dev.bloks.app"><img alt="Android app on Google Play" src="https://img.shields.io/badge/Android-Google_Play-6b7280"></a>
   <img alt="Node 22+" src="https://img.shields.io/badge/node-22%2B-6b7280">
   <a href="https://discord.gg/FhV3SuGYfS"><img alt="Discord: Bloks community" src="https://img.shields.io/badge/discord-Bloks_community-5865f2"></a>
 </p>
@@ -44,9 +45,9 @@ Agents stream their replies, show you what they are running, and keep
 what they learn in plain files you can read and edit.
 
 The [iPhone app](https://apps.apple.com/app/bloks-ai-agents/id6804453451)
-pairs with the desktop app. Nothing runs on the phone: it is a window onto
-the agents on your computer, with approvals you answer from the Lock
-Screen or your wrist.
+and the [Android app](https://play.google.com/store/apps/details?id=dev.bloks.app) pair with the desktop app. Nothing runs on
+the phone: it is a window onto the agents on your computer, with
+approvals you answer from the Lock Screen or your wrist.
 
 Using Bloks, or thinking of sending a fix? Come and say hello in the
 [Bloks Discord](https://discord.gg/FhV3SuGYfS): it is where people help
@@ -54,8 +55,8 @@ each other, talk ideas through, and agree on a change before writing it.
 
 ## 📣 Bloks 3 is out
 
-**Bloks 3 is out for Mac, Windows and Linux, and on the App Store for
-iPhone and Apple Watch.** An Android app is coming soon.
+**Bloks 3 is out for Mac, Windows and Linux, on the App Store for iPhone
+and Apple Watch, and [on Google Play](https://play.google.com/store/apps/details?id=dev.bloks.app) for Android.**
 
 Thank you to everyone who reported a bug, tested a build or sent code for
 this release. A lot of what is in it started as one of your issues, and
@@ -643,7 +644,8 @@ Download it from [bloks.dev](https://bloks.dev) or the
 build is universal (Apple silicon and Intel), signed and notarized, so it
 opens without a Gatekeeper warning. Windows and Linux builds are
 unsigned, which on Windows means SmartScreen warns on first run. The
-iPhone app is [on the App Store](https://apps.apple.com/app/bloks-ai-agents/id6804453451).
+iPhone app is [on the App Store](https://apps.apple.com/app/bloks-ai-agents/id6804453451),
+and the Android app [on Google Play](https://play.google.com/store/apps/details?id=dev.bloks.app).
 A packaged build updates itself.
 
 Or build it from source:
@@ -709,7 +711,7 @@ for an update. To do it by hand on a Mac or Linux:
 | Grok CLI | `curl -fsSL https://x.ai/cli/install.sh \| bash`, then `grok login` | yes |
 | Cursor | `curl https://cursor.com/install -fsS \| bash`, then `cursor-agent login` (the Cursor CLI, not the editor) | yes |
 | Cline | `npm i -g --prefix ~/.local cline` (3.0.68 or newer), then `cline auth` | yes |
-| Antigravity | `curl -fsSL https://antigravity.google/cli/install.sh \| bash`, then `agy` | yes |
+| Antigravity | `curl -fsSL https://antigravity.google/cli/install.sh \| bash` (1.5.13 or newer), then `agy` | yes |
 | OpenRouter | Sign in from Settings, in your browser | no |
 | Gemini, Grok, Kimi, Llama, DeepSeek, Mistral, Groq | Paste a key in Settings | no |
 | Custom (OpenAI-compatible) | Paste a base URL and one or more keys | no |
@@ -742,24 +744,23 @@ each turn. If the host refuses it, the turn stops and says so.
 An agent's own browser and its computer (Cloud box, Local VM, or this
 Mac's screen) reach it as tools on Claude Code, on Codex, and on the ACP
 agents that take tool servers: Devin, OpenCode, Gemini CLI, Cursor, Grok
-CLI and Command Code. An agent working in a container or over SSH still
+CLI, Command Code and Antigravity. An agent working in a container or over SSH still
 has both: they run on this computer and it reaches them through Bloks.
-The API models reach a cloud box through Bloks, and nothing else. Pi,
-Cline and Antigravity get neither yet. On those, the agent's settings
+The API models reach a cloud box through Bloks, and nothing else. Pi and
+Cline get neither yet. On those, the agent's settings
 say so beside **Its own browser** and **Computer**, the agent is told it
 has no browser or screen rather than promised one, and its turns never
 hold the Local VM from agents that could use it. On a Linux server with
 no display, the agent's browser runs headless.
 
 Connected apps and the MCP servers you attach to an agent reach it on
-Antigravity too. Antigravity's headless mode cannot take an agent's own servers, so a turn that has
-any runs through `agy acp` instead, which can: the agent gets exactly
-the apps and servers its settings grant, their keys and headers never
-on a command line, and anything agy would ask about comes to you as an
-approval card, answered by the agent's approval mode like any other. A
-server agy cannot reach stops the turn and says why; agy 1.5.14 takes
-stdio servers there but not HTTP ones, so an attached HTTP server is
-one of those. Turns without apps or servers run as before.
+Antigravity too. Antigravity runs through `agy acp`, so the agent gets
+exactly the apps and servers its settings grant, their keys and headers
+never on a command line, and anything agy would ask about comes to you
+as an approval card, answered by the agent's approval mode like any
+other. A server agy cannot reach stops the turn and says why; agy 1.5.14
+takes stdio servers but not HTTP ones, so an attached HTTP server is
+one of those.
 
 An MCP server you add as a command is looked for on this computer, never
 run to check it. If the program is not there, Settings, Plugins says
@@ -816,7 +817,8 @@ is a window onto Bloks on your computer: the same agents, their chats,
 and approval cards you answer with a tap. Nothing runs on the phone, so
 it is paired with each workspace you want on it. Pairing takes about a
 minute, with both on the same wifi, and works the same from a Mac, a
-Windows PC or Linux; the app calls it "your Mac" either way.
+Windows PC or Linux; the app calls it "your Mac" either way. The
+[Android app](https://play.google.com/store/apps/details?id=dev.bloks.app) pairs the same way, with the same steps.
 
 **On your computer**, in the workspace you want on the phone, open
 Settings, **Phone and devices**. Until a phone is paired, it walks you

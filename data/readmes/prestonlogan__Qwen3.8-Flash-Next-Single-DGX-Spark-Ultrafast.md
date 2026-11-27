@@ -214,7 +214,7 @@ Put overrides in `.env` (see `.env.example`).
 | `MTP_QSA_GUIDE_LOCAL` | `14336` | Recent draft KV pages always kept |
 | `MTP_QSA_GUIDE_WIDTH` | `2048` | Selected distant draft KV pages kept, at most 2048 |
 | `MTP_QSA_GUIDE_MIN_CONTEXT` | `65536` | Context length where guided drafting starts |
-| `QSA_PREFILL_BACKEND` | `auto` (`v1.1*`) | Sparse attention prefill backend: optimized where supported, original otherwise. `optimized` is unsafe above 32K |
+| `QSA_PREFILL_BACKEND` | `auto` (`v1.1*`) | Sparse attention prefill backend. `auto`: the optimized kernel where it applies, the original otherwise, per request. `optimized` is strict: any prefill the optimized kernel can't run (over 32,768 tokens, or sparse eager prefill such as a highly repetitive prompt) fails that request with a 503. Use `optimized` only to benchmark the kernel |
 | `PROPOSER` | `mtp` | `mtp` (the checkpoint's MTP head) or `dflash2` (incoai's DFlash2 drafter, 1.2 GB more; not tested with images) |
 | `SPEC` | profile's | Draft tokens per round; `0` turns speculation off |
 | `PARALLEL` | profile's (4) | Most requests decoded together |

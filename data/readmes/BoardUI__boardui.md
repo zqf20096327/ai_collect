@@ -10,7 +10,7 @@
 
 BoardUI is a React design system for agentic interfaces: the parts an AI product needs and the parts every dashboard needs, in one visual language, as source files in your project. This repository is the whole free tier, and its homepage is a working AI chat on your own model key.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBoardUI%2Fboardui&env=AI_API_KEY&envDescription=Your+model+provider+key%3A+OpenAI%2C+Anthropic%2C+Google%2C+OpenRouter%2C+or+Vercel+AI+Gateway.+The+provider+is+read+from+the+key+itself.&envLink=https%3A%2F%2Fwww.boardui.com%2Fcomponents%2Fchat-starter&project-name=boardui-chat-starter&repository-name=boardui-chat-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBoardUI%2Fboardui&env=AI_API_KEY&envDescription=Your+model+provider+key%3A+OpenAI%2C+Anthropic%2C+Google%2C+OpenRouter%2C+Groq%2C+xAI+or+Vercel+AI+Gateway.+The+provider+is+read+from+the+key+itself.&envLink=https%3A%2F%2Fwww.boardui.com%2Fcomponents%2Fchat-starter&project-name=boardui-chat-starter&repository-name=boardui-chat-starter)
 
 Click the button, paste one API key when Vercel asks for it, and the first deploy already answers.
 
@@ -27,7 +27,7 @@ This repository is generated from BoardUI's source and takes no pull requests. S
 
 ## What's in this repository
 
-- All 69 free items as source: base components, application blocks, tokens and type scale. The catalogue is below.
+- All 90 free items as source: base components, application blocks, tokens and type scale. The catalogue is below.
 - The app: a chat at `/`, a dashboard with the two free charts, and sign-in and sign-up screens, all built from the components in this repository. Chat history stays in the visitor's browser. No database.
 - `app/api/chat/route.ts`, which reads your key server-side and streams replies. The key never reaches the browser.
 
@@ -80,6 +80,23 @@ Cursor and most other clients take the same server in their MCP config:
 ```
 
 Then ask in plain words. "Install every free BoardUI component" installs the whole free catalog in one go. "Add a data table and stat cards to the dashboard" installs just those and wires them in. The rules in `AGENTS.md` keep whatever it builds on BoardUI's tokens and type scale. Setup for VS Code, Codex and the rest is at [boardui.com/mcp](https://www.boardui.com/mcp).
+
+### As an agent skill
+
+The BoardUI skill teaches an agent the components, tokens and patterns, so it installs real BoardUI components instead of hand-building lookalikes. It lives in [`plugins/boardui/skills/boardui`](plugins/boardui/skills/boardui) and installs with the skills CLI, for Claude Code, Codex, Cursor and the other agents it supports:
+
+```bash
+npx skills add BoardUI/boardui
+```
+
+In Claude Code it also installs as a plugin, which brings the MCP server along:
+
+```text
+/plugin marketplace add BoardUI/boardui
+/plugin install boardui@boardui
+```
+
+`npx boardui@latest skill` installs the same skill straight from boardui.com. More at [boardui.com/skill](https://www.boardui.com/skill).
 
 ### With the CLI
 
@@ -180,9 +197,10 @@ The everyday building blocks.
 
 | Component | What it is | Install |
 | --- | --- | --- |
+| [Accordion](https://www.boardui.com/components/accordion) | Sections that expand in place in divided, contained and separated styles, with a smooth height and blur transition, built on React Aria. | `npx boardui@latest add accordion` |
 | [Announcement](https://www.boardui.com/components/announcement) | Dismissible announcement card used in the sidebar footer. | `npx boardui@latest add announcement` |
 | [Avatar](https://www.boardui.com/components/avatar) | Image or initials avatar in multiple sizes and tints. | `npx boardui@latest add avatar` |
-| [Badge](https://www.boardui.com/components/badge) | Counter pills and the Kbd shortcut hint. | `npx boardui@latest add badge` |
+| [Badge](https://www.boardui.com/components/counter#badge) | Renamed to Counter: installs Counter plus a Badge re-export for existing imports. | `npx boardui@latest add badge` |
 | [Breadcrumb](https://www.boardui.com/components/breadcrumb) | Icon-capable breadcrumb trail. | `npx boardui@latest add breadcrumb` |
 | [Button](https://www.boardui.com/components/button) | Primary, secondary, ghost, and danger buttons in three sizes with icon support. | `npx boardui@latest add button` |
 | [Button Group](https://www.boardui.com/components/button-group) | Row of secondary-style buttons fused into one bordered control with hairline dividers and selectable items. | `npx boardui@latest add button-group` |
@@ -191,31 +209,50 @@ The everyday building blocks.
 | [Checkbox Card](https://www.boardui.com/components/checkbox) | Bordered selectable card driven by a checkbox. | `npx boardui@latest add checkbox-card` |
 | [Chip](https://www.boardui.com/components/chip) | Status/delta chips in bold and soft variants across the accent palette. | `npx boardui@latest add chip` |
 | [Close Button](https://www.boardui.com/components/close-button) | Compact dismiss button for banners, modals, and chips. | `npx boardui@latest add close-button` |
+| [Color Picker](https://www.boardui.com/components/color-picker) | Saturation field, hue and opacity rails, hex field and presets, inline or behind a swatch popover, on React Aria's color components. | `npx boardui@latest add color-picker` |
+| [Combobox](https://www.boardui.com/components/combobox) | Text field that filters a compact list as you type, picking one row or several as removable tags, with sections, custom values and Input's field states, built on React Aria. | `npx boardui@latest add combobox` |
+| [Command Palette](https://www.boardui.com/components/command-palette) | ⌘K palette of searchable commands with sections, icons and shortcuts, built-in or custom filtering, on React Aria's Autocomplete and Menu. | `npx boardui@latest add command-palette` |
+| [Context Menu](https://www.boardui.com/components/context-menu) | Right-click, long-press and Shift+F10 menu anchored to the pointer, with icons, shortcuts, submenus and checkable rows, on React Aria's Menu. | `npx boardui@latest add context-menu` |
+| [Counter](https://www.boardui.com/components/counter) | Numeric counter pill for nav counts and unread totals. | `npx boardui@latest add counter` |
+| [Date Calendar](https://www.boardui.com/components/date-calendar) | Inline month calendar for a date or a range, on Date Picker's month panel, with today marked and unavailable days struck through, on React Aria's Calendar. | `npx boardui@latest add date-calendar` |
 | [Date Picker](https://www.boardui.com/components/date-picker) | Single-date picker with month navigation, built on React Aria. | `npx boardui@latest add date-picker` |
 | [Date Range Picker](https://www.boardui.com/components/date-picker) | Two-month range picker sharing the date-picker chrome. | `npx boardui@latest add date-range-picker` |
 | [Divider](https://www.boardui.com/components/divider) | Horizontal content divider with single-line, double-line, filled, and aligned variants. | `npx boardui@latest add divider` |
-| [Dropdown](https://www.boardui.com/components/dropdown) | Composable popover menu (trigger, panel, groups, rows, dividers) built on React Aria — the recipe behind the sidebar team/account menus. | `npx boardui@latest add dropdown` |
+| [Drawer](https://www.boardui.com/components/drawer) | Panel that slides in from any edge over a dimmed page, for filters, details and bottom sheets, sharing Modal's header, body and actions. | `npx boardui@latest add drawer` |
+| [Dropdown](https://www.boardui.com/components/dropdown) | Composable popover menu (trigger, panel, groups, rows, dividers) in a roomy or compact density, built on React Aria: the recipe behind the sidebar team and account menus. | `npx boardui@latest add dropdown` |
 | [File Upload](https://www.boardui.com/components/file-upload) | Drag-and-drop file upload with validation, animated progress, and a completion callback. | `npx boardui@latest add file-upload` |
 | [Icon Button](https://www.boardui.com/components/icon-button) | Square icon-only button in two sizes. | `npx boardui@latest add icon-button` |
 | [Input](https://www.boardui.com/components/input) | Text input with label, hint text, error states, and leading icon support. | `npx boardui@latest add input` |
 | [Input OTP](https://www.boardui.com/components/input-otp) | One-time-code field with a monospace box per digit, paste distribution and autofill support. | `npx boardui@latest add input-otp` |
-| [Kbd](https://www.boardui.com/components/badge) | Keyboard shortcut hint pill. | `npx boardui@latest add kbd` |
+| [Kbd](https://www.boardui.com/components/counter) | Keyboard shortcut hint pill. | `npx boardui@latest add kbd` |
 | [Link Button](https://www.boardui.com/components/link-button) | Inline text action styled like a link — primary/secondary variants, three sizes, icon support, renders <a> or <button>. | `npx boardui@latest add link-button` |
 | [Meeting Scheduler](https://www.boardui.com/components/date-picker) | Date + time-slot scheduler popover. | `npx boardui@latest add meeting-scheduler` |
+| [Meter](https://www.boardui.com/components/meter) | A level within a known range (storage, seats, quotas) with status tones, drawn on Progress's track and built on React Aria. | `npx boardui@latest add meter` |
+| [Modal](https://www.boardui.com/components/modal) | Dialog over a dimmed page with a header, scrolling body and actions, plus an alert dialog for destructive confirms. | `npx boardui@latest add modal` |
 | [Notification](https://www.boardui.com/components/notification) | Dismissible notification with status icons, avatars, action buttons, and timed countdown. | `npx boardui@latest add notification` |
+| [Number Field](https://www.boardui.com/components/number-field) | Number input with minus and plus steppers, locale-aware currency, percent and unit formatting, and limits, on React Aria's NumberField. | `npx boardui@latest add number-field` |
 | [Pagination](https://www.boardui.com/components/pagination) | Numbered pagination with prev/next and ellipsis collapsing. | `npx boardui@latest add pagination` |
+| [Popover](https://www.boardui.com/components/popover) | Free-form content anchored to a trigger, with an optional arrow, smart positioning and the menu family's motion, built on React Aria. | `npx boardui@latest add popover` |
+| [Progress](https://www.boardui.com/components/progress) | Progress bar and ring, determinate or indeterminate, with an eased fill and a layered light sweep, built on React Aria. | `npx boardui@latest add progress` |
 | [Radio](https://www.boardui.com/components/radio) | React Aria radio group with the gradient selected dot, two sizes, and the bare RadioDot glyph for menu rows. | `npx boardui@latest add radio` |
 | [Radio Card](https://www.boardui.com/components/radio) | Bordered selectable card driven by a radio — the radio flavor of Checkbox Card. | `npx boardui@latest add radio-card` |
+| [Search Field](https://www.boardui.com/components/search-field) | Pill or rounded search input with a clear button that fades in, Escape to clear, and a loading state, on React Aria's SearchField. | `npx boardui@latest add search-field` |
 | [Segmented Control](https://www.boardui.com/components/segmented-control) | Pill-style segmented control (Weekly / Monthly / Yearly switchers). | `npx boardui@latest add segmented-control` |
-| [Select](https://www.boardui.com/components/select) | React Aria select with styled trigger, non-modal popover, and free-form item content. | `npx boardui@latest add select` |
+| [Select](https://www.boardui.com/components/select) | React Aria select with styled trigger, a compact non-modal menu, and free-form item content. | `npx boardui@latest add select` |
+| [Skeleton](https://www.boardui.com/components/skeleton) | Content-shaped placeholders with a layered light sheen that size themselves to real content and blur it in once loaded. | `npx boardui@latest add skeleton` |
 | [Slider](https://www.boardui.com/components/slider) | Single-value and min/max range sliders with exact-value bubbles and keyboard controls. | `npx boardui@latest add slider` |
 | [Social Button](https://www.boardui.com/components/social-button) | Sign-in buttons for 24 providers, with brand logos, three colour treatments and an icon-only form. | `npx boardui@latest add social-button` |
+| [Spinner](https://www.boardui.com/components/spinner) | Orbiting light drawn in three layers (a crisp arc, a tight glow and a wide bloom) in five sizes and any text colour, announced as loading. | `npx boardui@latest add spinner` |
 | [Status Dot](https://www.boardui.com/components/chip) | Colored status indicator dot used inside selects and tables. | `npx boardui@latest add status-dot` |
 | [Switch](https://www.boardui.com/components/switch) | Skeuomorphic toggle switch in two sizes. | `npx boardui@latest add switch` |
 | [Switch Card](https://www.boardui.com/components/switch) | Bordered settings row driven by a switch. | `npx boardui@latest add switch-card` |
 | [Table](https://www.boardui.com/components/table) | Static table primitives matching the dashboard tables. | `npx boardui@latest add table` |
 | [Tabs](https://www.boardui.com/components/tabs) | Underline and pill tab variants built on React Aria. | `npx boardui@latest add tabs` |
+| [Tag Group](https://www.boardui.com/components/tag-group) | Selectable or removable tags in Chip's colours, with keyboard navigation and an empty state, on React Aria's TagGroup. | `npx boardui@latest add tag-group` |
 | [Textarea](https://www.boardui.com/components/textarea) | Multiline text field with auto-grow, character count, and Input's label, hint and states. | `npx boardui@latest add textarea` |
+| [Time Field](https://www.boardui.com/components/time-field) | Time of day typed segment by segment in Input's field, with 12 and 24 hour cycles, seconds and limits, on React Aria's TimeField. | `npx boardui@latest add time-field` |
+| [Toast](https://www.boardui.com/components/toast) | toast() calls from anywhere and a Toaster region that stacks them as Notification cards, with actions, updates, limits and pause on hover. | `npx boardui@latest add toast` |
+| [Token Input](https://www.boardui.com/components/token-input) | Prompt field where @ adds files and people and / runs commands as atomic tokens, with suggestion menus at the caret, undo, IME-safe editing, and copy and paste that keep tokens. Behaviour ported from vercel-labs/ui (Apache-2.0). | `npx boardui@latest add token-input` |
 | [Tooltip](https://www.boardui.com/components/tooltip) | Light-surface tooltip built on React Aria. | `npx boardui@latest add tooltip` |
 | [Tree View](https://www.boardui.com/components/tree-view) | Nested folders and structured content with expandable branches, selection, guide lines, and keyboard navigation. | `npx boardui@latest add tree-view` |
 
@@ -234,6 +271,7 @@ Tokens, type scale, global styles, utilities, and the agent rules.
 | [Directional scrolling](utils/scroll-direction.ts) | Logical horizontal scroll offsets and item alignment for RTL and LTR carousels and tab strips. | `npx boardui@latest add scroll-direction` |
 | [Global styles](styles/globals.css) | Tailwind entry css: dark-mode variant, base resets, component animations, and table styling. Imports theme.css and typography.css. | `npx boardui@latest add globals` |
 | [Logo](components/foundations/brand/logo.tsx) | BoardUI brand mark placeholder — swap with your own logo component. | `npx boardui@latest add logo` |
+| [Scroll fade](components/foundations/scroll-fade/scroll-fade.tsx) | Progressive top blur and surface fade for internal scroll regions, easing in over the first 24px scrolled. | `npx boardui@latest add scroll-fade` |
 | [Template copy](components/foundations/template-copy/template-copy.tsx) | Optional application translations for template labels, sample content, and accessible names, preserving identifiers and input values. | `npx boardui@latest add template-copy` |
 | [Theme tokens](https://www.boardui.com/components/color) | Color primitives, semantic tokens (text/background/border/foreground/chart), radii, shadows, and button gradient utilities. | `npx boardui@latest add theme` |
 | [Typography tokens](https://www.boardui.com/components/typography) | The full Figma type scale as composite text-{family}-{weight} Tailwind utilities. | `npx boardui@latest add typography` |

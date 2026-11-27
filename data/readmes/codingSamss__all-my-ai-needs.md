@@ -18,18 +18,18 @@ all-my-ai-needs/
     ├── antigravity/                # Antigravity 平台真源 → ~/.gemini/config
     │   ├── README.md  runtime.yaml
     │   ├── skills.meta.yaml         # repo-only 同步分层真源
-    │   └── skills/ (15)
+    │   └── skills/ (14)
     ├── claude/                     # Claude 平台真源 → ~/.claude
     │   ├── README.md  runtime.yaml
     │   ├── skills.meta.yaml         # repo-only 同步分层真源
-    │   ├── skills/ (23)
+    │   ├── skills/ (22)
     │   ├── mods.meta.yaml           # 可选 Mod 清单，默认 manual-only
     │   ├── mods/pixel-buddy/        # 原创/授权源码、来源哈希和点名安装器
     │   └── .claude-plugin/plugin.json
     └── codex/                      # Codex 平台真源(归档留存) → ~/.codex
         ├── README.md  runtime.yaml  config.toml
         ├── skills.meta.yaml         # repo-only 同步分层真源
-        └── skills/ (21)
+        └── skills/ (20)
 ```
 
 ## 核心模型
@@ -49,7 +49,6 @@ all-my-ai-needs/
 | 前端设计 `frontend-design` | `gsap` `fireworks-tech-graph` `ian-xiaohei-illustrations` `mono-color` |
 | API 测试 `api-testing` | `apifox-cli` `apifox-test-case` |
 | 社交阅读与收藏整理 `social-reading` | `bilibili` `bird-twitter` `bird-bookmark-folders` `reddit` `linuxdo` `xiaohongshu` |
-| macOS 维护 `macos-local` | `mole-mac-cleanup` |
 | 点名 `manual-only` | `aihot` |
 
 ## 同步模型

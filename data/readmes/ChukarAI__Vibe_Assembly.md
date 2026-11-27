@@ -90,12 +90,16 @@ cargo install --path crates/va-cli
 
 The release binaries are:
 
-- `target/release/vibe-assembly`
-- `target/release/vibe-assembly-desktop`
+- Windows desktop: `Vibe Assembly.exe`
+- Windows CLI: `vibe-assembly.exe`
+- Linux CLI (x86_64, headless): `Vibe Assembly Linux`
 
-Both support `--version` and `--help` without starting an interactive runtime.
-Desktop also supports `-V` / `-h`, rejects unknown options, and lists all
-launch and design-preview flags in its help output.
+Linux currently ships the headless CLI only. The GPUI desktop and Win32
+computer-use overlay remain Windows-only.
+
+Both CLIs support `--version` and `--help` without starting an interactive
+runtime. Desktop also supports `-V` / `-h`, rejects unknown options, and lists
+all launch and design-preview flags in its help output.
 
 ## Quick start
 

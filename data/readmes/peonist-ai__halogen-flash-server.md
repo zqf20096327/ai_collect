@@ -54,7 +54,13 @@ a quality trade. Since 0.6.0 there are two draft sources, the model's own
 draft head and the request's own text (prompt lookup), and the guarantee
 covers both.
 
-0.20.7: the concurrency mode is now the default: several requests at once get up to about 30% more total throughput than the previous default mode, a single request decodes as fast as before or faster on both checkpoints, and a temperature-0 reply no longer depends on how many other requests are running; plus a faster draft head. The checkpoints are 0.20.5's
+**Qwen3.8-27B** runs in the same image: put `qwen38-27b-ht4.hgn` (12.8 GiB) in your models folder and name it with
+`HALOGEN_CHECKPOINT`. Decode 37.9 tok/s on one request with drafting (15.1 without), prefill 578 / 605 / 530 tok/s at 2,048 /
+8,192 / 32,768 tokens, measured on the published image at its defaults on three machines, the mean (see
+[Measured](docs/performance.md#0210-qwen38-27b-new-and-flash-next-unchanged)). Images and LoRA adapters work on it too;
+[the Qwen3.8-27B page](docs/qwen3.8-27b.md) has the files and the setup.
+
+0.21.0: Qwen3.8-27B now runs in the same image as Qwen3.8-Flash-Next, with image input and LoRA adapters; name its checkpoint and the server serves it. Flash-Next is unchanged
 ([CHANGELOG](CHANGELOG.md)).
 
 Since 0.7.0 the engine also opens a **llama.cpp GGUF** of this model directly:
@@ -102,7 +108,7 @@ podman run --rm -p 8731:8731 \
   --ipc=host --ulimit memlock=-1:-1 \
   -e HALOGEN_DOWNLOAD=peonist-ai/halogen-qwen3.8-flash-next \
   -v ~/halogen-models:/models \
-  ghcr.io/peonist-ai/halogen-flash-server:0.20.7
+  ghcr.io/peonist-ai/halogen-flash-server:0.21.0
 ```
 
 The weights come from
@@ -136,6 +142,28 @@ The preview image is built from 0.18.14 and does not carry later fixes.
 It is a preview: prefill slows past roughly 80-90k tokens of context, and
 speculative decoding is opt-in (`HALOGEN_FLINT_SPEC=1`) and greedy-only.
 Speeds, options and limits: [Flint preview](docs/flint-preview.md).
+
+### Inkling-2-Mini preview
+
+A separate image tag serves Thinking Machines Lab's Inkling-2-Mini (Apache-2.0,
+with the model's Acceptable Use Policy) as a preview, with image input and the
+model's full 1,048,576-token context; `:latest` above is unchanged. Download
+the converted weights (about 19 GB), then start it:
+
+```bash
+hf download peonist-ai/halogen-inkling-2-mini --local-dir ~/halogen-models
+
+podman run --rm -p 8731:8731 \
+  --device /dev/kfd --device /dev/dri --group-add keep-groups \
+  --security-opt seccomp=unconfined --ipc=host --ulimit memlock=-1:-1 \
+  -v ~/halogen-models:/models:ro \
+  ghcr.io/peonist-ai/halogen-flash-server:0.20.7-inkling-preview
+```
+
+It is a preview: no generative benchmark was run on it, it serves
+`/v1/chat/completions` and `/v1/models` only, and stop strings, logprobs and
+the penalties are refused for now.
+Speeds, options and limits: [Inkling-2-Mini preview](docs/inkling-preview.md).
 
 ---
 

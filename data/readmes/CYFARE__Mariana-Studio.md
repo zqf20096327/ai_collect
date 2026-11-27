@@ -7,7 +7,7 @@
 <p align="center"><em>Into The Depths of AI's Ocean</em></p>
 
 <p align="center">
-  <a href="VERSION.txt"><img src="https://img.shields.io/badge/version-2.3.2-0b7285" alt="Version 2.3.2"></a>
+  <a href="VERSION.txt"><img src="https://img.shields.io/badge/version-2.3.3-0b7285" alt="Version 2.3.3"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/devices-CUDA%20%7C%20XPU%20%7C%20MPS%20%7C%20CPU-555" alt="CUDA, XPU, MPS and CPU">
@@ -37,8 +37,8 @@ the code that implements it.
 
 - **One workspace** — data, training, fine-tuning, chat, agents, IDE, evaluation
   and deployment behind a single local UI.
-- **Research with receipts** — Sprint-DRV, SAINT, NCM and AML/AMP each have a
-  dedicated whitepaper and runbook.
+- **Research with receipts** — Sprint-DRV, SAINT, AXIOM, NCM and AML/AMP each
+  have a dedicated whitepaper and runbook.
 - **Small-GPU friendly** — automatic CUDA → Intel XPU → Apple MPS → CPU
   selection; measured up to 5.57× training throughput at ~61% less peak memory
   on an 8 GB consumer GPU.
@@ -53,6 +53,7 @@ the code that implements it.
 | --- | --- |
 | [Sprint-DRV](docs/whitepapers/sprint-drv.md) | Single-pass hybrid training: one backbone forward for prefix-AR, diffusion, verifier and MTP, with the legacy two-pass baseline and measured throughput/memory. |
 | [SAINT](docs/whitepapers/saint.md) | Adaptive hierarchical discrete/continuous thought memory: curricula, policy learning, ablations and honest limits. |
+| [AXIOM](docs/whitepapers/axiom.md) | Connector algebra plus a domain-adaptive corpus codec: English operators, a lossless dictionary for any text and language, DNA/protein packing, an identity fallback, and the evaluation protocol. |
 | [NCM](docs/whitepapers/ncm.md) | Multiscale residual VQ and parallel next-concept generation. |
 | [AML and AMP](docs/whitepapers/aml-amp.md) | The portable agent document language and local HTTP/JSON runtime protocol. |
 
@@ -65,7 +66,7 @@ states the hardware and protocol that produced it.
 | --- | --- |
 | **Home** | Live GPU, memory, disk and job telemetry, recent work and quick actions. |
 | **Models** | Discover and download checkpoints, GGUF/ONNX models, Hugging Face repos, Ollama and llama.cpp models, and OpenAI-compatible endpoints. |
-| **Train** | Corpus inspection, Smart Options, Sprint-DRV/Legacy/NCM training, live loss, pause/save and a direct handoff to Chat. |
+| **Train** | Corpus inspection, Smart Options, Sprint-DRV/Legacy/NCM training, the AXIOM corpus codec, live loss, pause/save and a direct handoff to Chat. |
 | **Fine-tune** | LoRA, final-layer or full fine-tuning for Mariana and Hugging Face models, with dataset discovery and a validated plan. |
 | **Chat** | Persistent streaming chats with local or remote models, images and file previews, dictation, a context meter, and a leader-planned agent swarm or Solo mode. |
 | **Agents** | Canvas-first AML/AMP agent designer with debugger, schedules, templates and live runs. |
@@ -119,7 +120,7 @@ verified by a numeric parity test. Runner commands and caveats are in
 | Set up a new machine | [docs/setup.md](docs/setup.md) |
 | Train, fine-tune or distill | [README_training.md](README_training.md) · [docs/distillation.md](docs/distillation.md) |
 | Fine-tune on a 6-8 GB GPU | [docs/low-vram-finetuning.md](docs/low-vram-finetuning.md) |
-| Sprint-DRV, SAINT and NCM runbooks | [docs/fast-training.md](docs/fast-training.md) · [docs/latent-language.md](docs/latent-language.md) · [docs/ncm.md](docs/ncm.md) |
+| Sprint-DRV, SAINT, AXIOM and NCM runbooks | [docs/fast-training.md](docs/fast-training.md) · [docs/latent-language.md](docs/latent-language.md) · [docs/axiom.md](docs/axiom.md) · [docs/ncm.md](docs/ncm.md) |
 | Agents and the coding IDE | [docs/agentic.md](docs/agentic.md) · [docs/ide.md](docs/ide.md) |
 | Export and serve | [docs/export.md](docs/export.md) |
 | Update the checkout | [docs/update.md](docs/update.md) |

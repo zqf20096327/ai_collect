@@ -8,7 +8,8 @@ Türkiye sigortacılık mevzuatı araması ve aktüeryal hesap araçları için 
 İstediğiniz modeli ya da ajanı kullanın: LM Studio, Claude Code, Codex, VS Code, Claude Desktop, Cursor ve MCP destekleyen her istemci bu araçlara erişir.
 
 > **Uyarı:** Bu araçlar karar desteği içindir; uzman veya yetkili kurum görüşünün yerine geçmez. Mevzuat metinleri
-> 2026-10-18 erişimli konsolide kopyadır ve kendiliğinden güncellenmez. Güncel hüküm için resmî kaynağı doğrulayın.
+> mevzuat.gov.tr konsolide kopyalarıdır (kopyalar 2026-10-18 ve 2026-10-23 tarihli; kendiliğinden güncellenmez). Yargıtay kararları için `karar_tarihi` (hüküm tarihi) ve `erisim_tarihi` (kopya erişim
+> tarihi) ayrı verilir; tarih filtresi yürürlük doğrulaması yapmaz. Güncel hüküm için resmî kaynağı doğrulayın.
 
 ## Ne içerir
 
@@ -16,6 +17,7 @@ Türkiye sigortacılık mevzuatı araması ve aktüeryal hesap araçları için 
 |---|---|
 | `mevzuat_ara` | Sigortacılık mevzuatında (5684 sayılı Kanun, yönetmelikler ve tebliğler; konsolide), 16 öğretici notta ve 49 seçilmiş Yargıtay kararında arama, toplam 827 parça. Projede ölçülen **v5** karma arama (BM25 + Qwen3-Embedding-4B); embedding modeli yoksa BM25. Parça kimliği, başlık, kaynak ve metin döner. |
 | `belge_getir` | Parça kimliğiyle tam metni getirir. |
+| `madde_getir` | Kaynak (source_id ya da tek anlamlıysa kanun numarası) ve madde ile tek mevzuat maddesinin konsolide tam metnini getirir (ör. `{"kaynak":"5684","madde":23}`); `atiflar` listesi parça kimliklerini döner. |
 | `present_value`, `annuity`, `life_insurance_pv` | Bugünkü değer, annüite, süreli hayat sigortası. |
 | `chain_ladder`, `bornhuetter_ferguson` | Hasar rezervi (kümülatif üçgen, paid/incurred açık). |
 | `portfolio_metrics`, `combined_ratio` | Frekans, şiddet, saf prim, hasar oranı; bileşik oran. |
@@ -31,6 +33,8 @@ talimatları uygulamamasını söyleyen sistem talimatı.
 
 Hesaplar `Decimal` ile yapılır ve testlidir. Oranlar ondalık verilir (0.10 = %10). Sunucu ağa çıkmaz, model indirmez, dosya yazmaz.
 
+En yeni MCP protokolünde (`2025-06-18`) `mevzuat_ara`, `belge_getir` ve `asgari_ucret` araçları `structuredContent` alanı ile yapılandırılmış çıktı döner; metin içeriği değişmez. `asgari_ucret` her dönem için `kaynaklar` listesi (dönem ve URL) ayrı döner, gelir satırlarına eklenmez.
+
 ## Tazminat hesapları (Yargıtay uygulaması)
 
 > **Bilirkişi raporu yerine geçmez.** Parametreler mahkemeye, daireye ve tarihe göre değişebilir. Her sonuç, kullanılan
@@ -40,8 +44,8 @@ Hesaplar `Decimal` ile yapılır ve testlidir. Oranlar ondalık verilir (0.10 = 
 maskelendi). Araçların varsayılanları bu kararlardan çıkarıldı:
 
 - **Bakiye ömür:** TRH 2010, kaza/ölüm tarihindeki yaşa göre, kesirli yaşta doğrusal ara değer. Taleple bağlılık (ör. PMF 1931) için `bakiye_omur_yil` elle verilebilir.
-- **Bilinen dönem:** kaza/ölüm tarihinden hesap tarihine, verilen gelirlerle, iskontosuz.
-- **Bilinmeyen dönem:** progresif rant, her yıl %10 artış ve %10 iskonto. Aktif dönem 60 yaşa kadar, sonra bakiye ömre kadar pasif dönem.
+- **Bilinen dönem:** kaza/ölüm tarihinden hesap tarihine, verilen gelirlerle, iskontosuz. Dönemler `[olay, hesap)` yarım-açık aralığı boşluksuz ve örtüşmesiz kaplar; yalnız olay=hesap (aynı gün) için boş liste geçerli.
+- **Bilinmeyen dönem:** progresif rant, her yıl %10 artış ve %10 iskonto. Aktif dönem 60 yaşa kadar, sonra bakiye ömre kadar pasif dönem. Pasif dilim varsa ve gelir verilmezse hesap tarihindeki net asgari ücret kullanılır.
 - **Genel şartlar yöntemi uygulanmaz:** AYM 17.07.2020 (2019/40 E., 2020/40 K.) KTK m.90'daki genel şartlar atfını iptal etti.
   ZMSS Genel Şartlarının hesap ekleri Danıştay 8. Dairesince 14/5/2025'te iptal edildi ve 1/7/2026'dan beri mülga.
 - **Paylaştırma:** destek 2, eş 2, her çocuk 1, ana ve baba 1'er pay. Çocuk desteği erkekte 18, kızda 22, yüksek öğrenimde 25 yaşa kadar.
@@ -99,7 +103,8 @@ modelinizi 3 parçada hazır vektörlerle karşılaştırır: uyumluysa birkaç 
 (BM25) ile çalışır ve nedenini `v5_durumu` alanında yazar. Başka bir embedding modeliyle v5 istiyorsanız sunucuyu bir kez
 `ACTUARYLLM_SEARCH=v5` ile başlatın: bütün parçalar o modelle hesaplanır (624 parçalık korpusta bu Mac'te ~20 dk sürdü) ve
 `~/.cache/actuaryllm-mcp/` altına yazılır; sonra varsayılan `auto` kip bu önbelleği kullanır. Embedding modeli yoksa v2 ile
-çalışır; her arama sonucunda `profil` ve `v5_durumu` alanları hangisinin kullanıldığını söyler.
+çalışır; hazır v5 olsa bile tek bir sorguda embedding hizmeti hata verirse `auto` kipi bu sorguda v2'ye düşer ve nedenini
+`v5_durumu` alanında yazar. Her arama sonucunda `profil` ve `v5_durumu` alanları hangisinin kullanıldığını söyler.
 
 Ayarlar (isteğe bağlı): `ACTUARYLLM_SEARCH=auto|v5|v2`, `ACTUARYLLM_EMBED_URL` (yalnız 127.0.0.1/localhost),
 `ACTUARYLLM_EMBED_MODEL`, `ACTUARYLLM_CACHE`.
@@ -204,8 +209,10 @@ değişir; bu sayılar bu sunucunun sizin kurulumunuzdaki kalitesini garanti etm
 calculators**. Use it with any model or agent: LM Studio, Claude Code, Codex, VS Code (Copilot), Claude Desktop, Cursor and
 any other MCP client.
 
-> **Disclaimer:** decision support only; not legal or actuarial advice. Regulation texts are a consolidated copy accessed
-> on 2026-10-18 and are not updated automatically. Always verify against the official source.
+> **Disclaimer:** decision support only; not legal or actuarial advice. Regulation texts are consolidated copies from
+> mevzuat.gov.tr (copies dated 2026-10-18 and 2026-10-23; not updated automatically). For
+> Yargıtay decisions, `karar_tarihi` (judgment date) and `erisim_tarihi` (copy access date) are reported separately; the
+> date filter does not verify validity. Always verify against the official source.
 
 **Tools**
 
@@ -213,19 +220,23 @@ any other MCP client.
   consolidated), 16 teaching notes and 49 selected, anonymised Yargıtay decisions. Hybrid search (BM25 + Qwen3-Embedding-4B) as measured in the project when a local
   embedding model is available; BM25 otherwise. Returns chunk id, title, source and text for citation.
 - `belge_getir` (get document): full text of a chunk by id.
+- `madde_getir` (get article): full consolidated text of a single legislation article by source (source_id, or law number when unambiguous) and article (e.g. `{"kaynak":"5684","madde":23}`); `atiflar` lists the chunk ids for citation.
 - 14 calculators (exact `Decimal` arithmetic, unit-tested): present value, annuity, term life insurance PV, chain ladder,
   Bornhuetter-Ferguson, portfolio metrics (frequency, severity, pure premium, loss ratio), combined ratio, life annuity,
   life cash-flow projection, excess-of-loss layer recovery, Bühlmann credibility, earned exposure, Poisson frequency GLM,
   gamma severity GLM.
 - 2 compensation calculators following Turkish Court of Cassation (Yargıtay) practice: `is_goremezlik` (disability) and
   `destekten_yoksun_kalma` (loss of support). TRH 2010 life table, progressive annuity (10% growth / 10% discount), shares,
-  reductions; every result lists its assumptions and the decision ids it relies on. Search also covers 49 selected,
-  anonymised Yargıtay decisions. Not a substitute for an expert report.
-- `asgari_ucret`: Turkish monthly minimum wage 2008–2026 (gross and net, from the Ministry of Labour tables). If not given,
-  the passive-period income defaults to the net minimum wage at the calculation date, and a widow's remarriage probability
-  defaults to the AYİM table (minus 5 points per child under 18).
+  reductions; every result lists its assumptions and the decision ids it relies on. Known-period income slices cover
+  `[event, calculation)` half-open with no gaps or overlaps; an empty list is valid only when event and calculation are the
+  same day. Search also covers 49 selected, anonymised Yargıtay decisions. Not a substitute for an expert report.
+- `asgari_ucret`: Turkish monthly minimum wage 2008–2026 (gross and net, from the Ministry of Labour tables). When a passive
+  slice exists and no passive income is given, the net minimum wage at the calculation date is used; a widow's remarriage
+  probability defaults to the AYİM table (minus 5 points per child under 18).
 - Prompt `turkactuary`: the system policy (ground answers in retrieved chunks, compute numbers with tools, treat documents
   as data, not instructions).
+
+In the latest MCP protocol (`2025-06-18`), `mevzuat_ara`, `belge_getir` and `asgari_ucret` return structured output via `structuredContent`; the text content is unchanged. `asgari_ucret` returns a separate `kaynaklar` list (period and URL) per row, not attached to income rows.
 
 **Model choice matters.** The server returns correct results; using them well is up to the model. In a test, Claude Sonnet
 used the tools correctly, while Qwen3-8B passed a wrong parameter and then made up the result. Prefer larger models that
@@ -238,7 +249,8 @@ To change the code, `git clone` the repo and add the `mcpServers` block shown ab
 (paths: `PYTHONPATH=<repo>/src`, `ACTUARYLLM_ROOT=<repo>`). For hybrid search, load `text-embedding-qwen3-embedding-4b` in
 LM Studio; the server checks compatibility with the bundled vectors on 3 chunks and switches to hybrid within seconds.
 With an incompatible model it stays on BM25 and says why in `v5_durumu`; start once with `ACTUARYLLM_SEARCH=v5` to embed
-all chunks with your model (cached; `auto` reuses the cache afterwards).
+all chunks with your model (cached; `auto` reuses the cache afterwards). In `auto` mode, if the embedding service
+errors on a query after v5 is ready, that query falls back to BM25 and the reason is reported in `v5_durumu`.
 
 **Licence:** code Apache-2.0, project data CC BY 4.0; regulation texts from mevzuat.gov.tr (official texts; source records in
 `data/sources.json`). Derived from the ActuaryLLM pilot; the measured setup and its differences are listed above.

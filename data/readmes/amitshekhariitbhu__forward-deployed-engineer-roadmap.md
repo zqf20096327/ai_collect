@@ -219,6 +219,7 @@ In this step, we will learn how an LLM goes from answering questions to actually
 
 - [What is an AI Agent? How It Works](https://outcomeschool.com/blog/ai-agent)
 - [How does Function Calling work in LLMs?](https://outcomeschool.com/blog/how-does-function-calling-work-in-llms)
+- [How does Constrained Decoding work?](https://outcomeschool.com/blog/constrained-decoding)
 - [What is an AI Agent Loop?](https://outcomeschool.com/blog/ai-agent-loop)
 - [What is a ReAct Agent?](https://outcomeschool.com/blog/react-agent)
 - [What is a Plan-and-Execute Agent?](https://outcomeschool.com/blog/plan-and-execute-agent)
@@ -235,6 +236,7 @@ In this step, we will learn how an LLM goes from answering questions to actually
 - [What is AI Orchestration?](https://outcomeschool.com/blog/ai-orchestration)
 - [How do Computer-Use Agents work?](https://outcomeschool.com/blog/how-do-computer-use-agents-work)
 - [How do Browser Agents work?](https://outcomeschool.com/blog/how-do-browser-agents-work)
+- [How does a deep research agent work?](https://outcomeschool.com/blog/deep-research-agent)
 
 ### Step 7: Agentic Engineering and Building Fast with Coding Agents
 
@@ -264,6 +266,7 @@ In this step, we will learn how to keep an AI system safe inside a customer's en
 - [How do LLM Guardrails work?](https://outcomeschool.com/blog/how-do-llm-guardrails-work)
 - [What is Prompt Injection in LLMs and How Do We Defend Against It?](https://outcomeschool.com/blog/prompt-injection-in-llms)
 - [What is jailbreaking in LLMs?](https://outcomeschool.com/blog/jailbreaking-in-llms)
+- [What is data poisoning in AI?](https://outcomeschool.com/blog/data-poisoning)
 - [How does LLM Watermarking work?](https://outcomeschool.com/blog/how-does-llm-watermarking-work)
 
 ### Step 10: Latency and Cost in Production
@@ -352,6 +355,7 @@ In this step, we will see everything come together in one of the most requested 
 - [How does a voice agent decide when to end the call?](https://outcomeschool.com/blog/call-ending-in-voice-agents)
 - [How do pronunciation dictionaries fix how TTS says names and brands?](https://outcomeschool.com/blog/pronunciation-dictionaries-for-tts)
 - [How does keyword boosting help ASR recognize domain words?](https://outcomeschool.com/blog/keyword-boosting-in-asr)
+- [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
 - [How does a voice AI agent answer a phone call?](https://outcomeschool.com/blog/phone-calls-in-voice-agents)
 - [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
 - [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)

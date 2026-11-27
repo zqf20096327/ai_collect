@@ -93,8 +93,8 @@
     <td width="60%" valign="top">
       <strong>全网官网定时巡检 · AI 逐条匹配与日程联动</strong>
       <br /><br />
-      • <b>官网招聘板定时巡检</b>：订阅目标公司官网公开招聘页，按设定周期自动拉取新岗位与下架状态<br />
-      • <b>带理由的精准匹配</b>：结合你的真实履历与求职方向打分，直接给出一句对口理由与醒目的「留意」硬伤提示<br />
+      • <b>官网招聘板定时巡检与去噪</b>：订阅目标公司官网公开招聘页，按设定周期自动拉取新岗位与下架状态；入池自动拦截跨行业噪声，并为长期未复检的国内岗位自动收敛过期状态<br />
+      • <b>带理由的精准匹配</b>：结合你的真实履历与求职方向分批评估（单轮 20 岗、5 格进度实时反馈），极简呈现对口理由、简历佐证与「留意」硬伤提示，自动跳过已评估岗位<br />
       • <b>全流程推进 + 系统日程</b>：新机会 → 已投递 → 面试中 → Offer 一屏掌控，面试时间与 Offer 答复截止自动写入系统日历与提醒事项
     </td>
     <td width="40%" valign="top">
@@ -222,28 +222,28 @@
 - **方式一：在 DeepSeek Harness 桌面端 / Web 界面直接安装（推荐）**
   打开 DeepSeek Harness → 左侧栏进入 **插件** → 点击 **添加插件** → 填入：
   - `dsh-niuma-broker`，或
-  - 从 GitHub Releases 下载的 `dsh-niuma-broker-0.1.2.tgz` **本地绝对路径**
+  - 从 [GitHub Releases](https://github.com/Nimbus318/dsh-niuma-broker/releases/latest) 下载的 `dsh-niuma-broker-0.1.6.tgz` **本地绝对路径**
   点击 **安装**，完成后点击 **立即启用** 即可。
 
 - **方式二：使用 DSH CLI 安装（DSH `0.2.2-rc.5` 必须带 `--profile`）**
   - **桌面端（`desktop` profile）**：先打开一次 DeepSeek Harness Desktop 完成初始化，再**完全退出**桌面端，运行以下命令后重新打开桌面端：
 
 ```bash
-# 从 Releases 离线包安装
-dsh plugin --profile desktop add /path/to/dsh-niuma-broker-0.1.2.tgz
-
-# 或从 npm 安装
+# 从 npm 安装（推荐）
 dsh plugin --profile desktop add dsh-niuma-broker
+
+# 或从 Releases 离线包安装
+dsh plugin --profile desktop add /path/to/dsh-niuma-broker-0.1.6.tgz
 ```
 
   - **Web 端（`web` profile）**：
 
 ```bash
-# 从 Releases 离线包安装
-dsh plugin --profile web add /path/to/dsh-niuma-broker-0.1.2.tgz
-
-# 或从 npm 安装
+# 从 npm 安装（推荐）
 dsh plugin --profile web add dsh-niuma-broker
+
+# 或从 Releases 离线包安装
+dsh plugin --profile web add /path/to/dsh-niuma-broker-0.1.6.tgz
 ```
 
 > 若终端尚未将 `dsh` 加入 `PATH`，macOS 下桌面端内置 CLI 位于 `/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh`。

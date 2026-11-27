@@ -21,6 +21,22 @@ Native llama.cpp can keep generating past end-of-generation tokens with
 for benchmarks that need a fixed token count; it rejects a non-empty grammar,
 and the other runtimes reject it. See [runtime parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters).
 
+Native llama.cpp also supports per-occurrence `frequencyPenalty`, a
+`penaltyLastN` history window and token-level `logitBias`. Check
+`(await engine.capabilities).samplerControls` before using these options. It
+also supports `typicalP`, `topNSigma`, XTC (`xtcProbability`,
+`xtcThreshold`), dynamic temperature (`dynatempRange`, `dynatempExponent`)
+and Mirostat (`mirostat`, `mirostatTau`, `mirostatEta`), plus DRY repetition
+penalties (`dryMultiplier`, `dryBase`, `dryAllowedLength`, `dryPenaltyLastN`,
+`drySequenceBreakers`).
+
+Native llama.cpp can report the log-probability of every generated token, with
+the most probable alternatives, on streamed chat completions and raw generation:
+set `GenerationParams(topLogprobs: 5)` after checking
+`(await engine.capabilities).supportsTokenLogprobs`. The values come from the
+model's raw distribution, before sampling settings. See
+[runtime parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters).
+
 Choose [direct llamadart, Genkit, or Flutter Edge AI](https://llamadart.leehack.com/docs/integrations/choosing-an-api)
 for your application. Genkit is a
 [separate package](https://github.com/leehack/llamadart/tree/main/packages/genkit_llamadart);
@@ -40,7 +56,7 @@ LFM2 replies cut off at a reported length limit expose raw `partialToolCalls` di
 
 ```yaml
 dependencies:
-  llamadart: ^0.21.0
+  llamadart: ^0.22.0
 ```
 
 ```bash
@@ -61,10 +77,10 @@ companion shares its core's `MAJOR.MINOR` and constrains `llamadart` to it.
 
 ```yaml
 dependencies:
-  llamadart: ^0.21.0
-  llamadart_llama_cpp_flutter: ^0.21.0 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.21.0 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.21.0 # Apple image generation, opt-in
+  llamadart: ^0.22.0
+  llamadart_llama_cpp_flutter: ^0.22.0 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.22.0 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.22.0 # Apple image generation, opt-in
 ```
 
 Pairing rules, the SwiftPM bootstrap and the privacy manifest are in
@@ -197,7 +213,7 @@ Current default runtime pins:
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v1.0.0-4` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.20.0` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.94` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.95` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.20.0` |
 
 The Web backend reuses cached HTTP(S) projectors through the pinned bridge.

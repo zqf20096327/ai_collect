@@ -1049,7 +1049,7 @@ curl -fsSL .../install.sh | sudo bash -s -- --mode=docker
 
 ```bash
 git clone --depth 1 https://github.com/chu0119/Pojun.git pojun && cd pojun
-cp .env.example .env      # 至少改 POSTGRES_PASSWORD；POJUN_TAG 可钉到具体版本（如 v0.4.122）
+cp .env.example .env      # 至少改 POSTGRES_PASSWORD；POJUN_TAG 可钉到具体版本（如 v0.4.123）
 docker compose up -d      # → http://127.0.0.1:8787
 ```
 
@@ -1133,6 +1133,14 @@ CGO_ENABLED=0 go build -o pojun-hostd ./cmd/pojun-hostd   # 可选：特权安�
 **页面一键更新**（系统配置 → 版本与更新）：下载 → SHA256 校验 → 冒烟测试 →
 原子换装 → 失败自动回滚到上一版。升级只换程序不动数据，schema 幂等迁移。
 
+- **进度跨刷新**：下载进度在进程内，但「进行中/阶段/百分比/版本」与「上次结果
+  （running/staged/failed）」都会随 `/api/update/check` 返回；刷新页面后会自动
+  接回 SSE，重复点更新遇到 409 也会接入现有进度，而不是只弹一句错误。
+- **更新专用代理**：`更新专用代理` 设置（或 `POJUN_UPDATE_PROXY`）只作用于
+  版本检查 / 整包下载 / hostd 跟随升级。解析顺序：页面设置 → `POJUN_UPDATE_PROXY`
+  → 装机代理（`POJUN_INSTALL_PROXY`）→ 全局代理 → 直连。**不改变任务的目标流量
+  出口**；页面「测试」会真实请求一次 GitHub Release（20s 超时，固定地址）。
+
 ---
 
 ## 配置速查
@@ -1198,6 +1206,20 @@ server {
     }
 }
 ```
+
+**内置 HTTPS 与证书管理（opt-in）**：新装与存量升级**默认仍是纯 HTTP**，不会自动
+切换；需要 HTTPS 时到「系统 → 设置 → HTTPS 与证书」显式启用。启用后同一个 `:8787`
+端口同时接受 `https://` 与明文 HTTP：远程明文 301 到 HTTPS，本机回环明文直通
+（兼容同机 nginx/健康检查）。证书模式下：自签（一键「启用 HTTPS（自签）」，本地
+CA 可下载）、导入 PEM（证书链 + 未加密私钥）、Let's Encrypt ACME（域名或公网 IP，
+HTTP-01 / TLS-ALPN-01，IP 证书 shortlived 自动续期）。
+
+- 自签首次访问需信任 CA（设置页「下载本地 CA」），或 `curl -k https://127.0.0.1:8787/api/health` 自检。
+- 默认 HTTP 不受本功能影响：Docker Desktop、非同机反向代理、脚本/健康检查都按原样工作。
+- **启用 HTTPS 后**：Docker/非同机反代如果回源不是回环地址，明文会被 301；反代请改用
+  `https://` 回源并关闭上游证书校验，或在设置页把模式改回 `off`。进不了设置页时可用
+  命令行逃生阀 `-tls=off` 临时恢复明文（只覆盖本次进程，不写库）。
+- 启用后健康检查、`start.sh`/`start.bat` 的 `http://127.0.0.1:8787` 仍不受影响（回环直通）。
 
 **监听地址与暴露面**：控制台能在宿主机执行命令，所以默认只绑回环 `127.0.0.1:8787`，
 其他主机不可达。
@@ -1303,7 +1325,7 @@ HexStrike 工具桥（150+ 安全工具桥接）/ Context7 文档检索。
 | 交付 | Markdown | 公文级 Word（封面/目录/复测/流量证据/修复路线图）+ 一漏洞一 docx |
 | 部署 | 多服务 / K8s 依赖 | Go 单体 + PostgreSQL + 内嵌前端；单机可跑 |
 
-### 截至 v0.4.122，只有破军把它们放进同一条闭环
+### 截至 v0.4.123，只有破军把它们放进同一条闭环
 
 这里说「只有」不是营销口号，而是指**组合能力**：单独看每一项都能找到相似实现，
 但同时满足「目标闸门 + 证据分级 + 确定性回归 + 上下文分层 + 范围硬约束 + 出口回执

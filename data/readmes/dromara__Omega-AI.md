@@ -63,6 +63,67 @@ public static void main(String[] args) {
 
 ## Demo展示
 
+### Omega-mini-dit-v2（260M参数文生图）
+##### 文本编码器 CLIP-GmP-ViT-L-14
+##### 图像自编码解码器（VAE） Flux2.1 VAE
+##### 特征对齐(REPA) Dinov2
+##### 预测目标速度场 velocity flow matching
+##### 支持分辨率 512*512
+##### 完全开源可复现:代码、数据、模型、训练策略
+##### 权重下载 ：https://www.modelscope.cn/models/haylee2024/Omega-mini-dit-v2
+注：示例图参数 seed=123，cfg=2.0
+<table>
+  <tr>
+    <td width="25%" align="center"><img src="images/0_0_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+    <td width="25%" align="center"><img src="images/4_5_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+    <td width="25%" align="center"><img src="images/5_1_T_0_1.png" alt="输入图片说明" width="200" height="200"></td>
+    <td width="25%" align="center"><img src="images/9_2_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+  </tr>
+  <tr>
+    <td><p>A cat</p></td>
+    <td><p>A dog</p></td>
+    <td><p>a cat wearing sunglasses</p></td>
+    <td><p>a car runing on the sand.</p></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/0_0_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/1_5_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/3_4_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/3_3_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+  </tr>
+  <tr>
+    <td><p>a vibrant anime mountain lands</p></td>
+    <td><p>a highly detailed anime landscape,big tree on the water, epic sky,golden grass,detailed</p></td>
+    <td><p>A yellow mushroom grows in the forest</p></td>
+    <td><p>the cambridge shoulder bag</p></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/5_1_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/7_3_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/8_1_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/10_0_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+  </tr>
+  <tr>
+    <td><p>A man with short hair wearing a dark blazer and a patterned scarf is standing in front of a blurred background.</p></td>
+    <td><p>Half human, half robot, repaired human</p></td>
+    <td><p>A beautiful girl with golden hair, cool and sunny</p></td>
+    <td><p>Full body shot, a French woman, Photography, French Streets background, backlighting, rim light, Fujifilm.</p></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/15_0_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/16_4_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/13_2_T_0.png" alt="输入图片说明" width="200" height="200"></td>
+    <td align="center"><img src="images/14_0_T_1.png" alt="输入图片说明" width="200" height="200"></td>
+  </tr>
+  <tr>
+    <td><p>a photo of a stop sign above a fork</p></td>
+    <td><p>a vibrant plant with star-shaped orange flowers blooming amidst lush green leaves. The plant is potted in a terracotta container that sits on a wooden shelf. Around it, other houseplants contribute to a small indoor garden atmosphere.</p></td>
+    <td><p>Happy dreamy owl monster sitting on a tree branch, colorful glittering particles, forest background, detailed feathers.</p></td>
+    <td><p>Great Wall of China under a Van Gogh-inspired starry sky.</p></td>
+  </tr>
+</table>
+
+
 ### Omega-mini-dit（130M参数文生图）
 #### [基于dit_b/1+va-vae+clip+repa+sprint+rms](https://gitee.com/dromara/omega-ai#omega-mini-dit%E6%96%87%E7%94%9F%E5%9B%BE)
 #### [OmegaDiT pytorch版本：https://github.com/yongchuan/OmegaDiT](https://github.com/yongchuan/OmegaDiT)

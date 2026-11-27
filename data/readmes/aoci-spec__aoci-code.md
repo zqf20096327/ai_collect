@@ -6,7 +6,7 @@
 
 🇺🇸 English | [🇨🇳 简体中文](README.zh-CN.md)
 
-![Status](https://img.shields.io/badge/status-v0.2.0--rc4-brightgreen)
+![Status](https://img.shields.io/badge/status-v0.2.0--rc5-brightgreen)
 ![Runtime](https://img.shields.io/badge/runtime-local--first-blue)
 ![MCP](https://img.shields.io/badge/MCP-9%20tools-6f42c1)
 ![License](https://img.shields.io/badge/license-FSL--1.1--MIT-blue)
@@ -47,7 +47,7 @@ atomic.go[CG9L]: F:Provides durable replace CAS, create CAS, atomic writes, and 
 
 **The first index takes a while.** The agent reads every managed file and writes one entry per file: about an hour per 200,000 lines of code, depending on the model and the agent's speed. It runs in batches and resumes where it stopped if interrupted.
 
-**Have a database? Index it too.** MySQL and PostgreSQL are supported, and openGauss 6.0.5 with constraints. MySQL means 5.7.6 and later; MariaDB is not supported. Build the code index first, then the database index. With code and table-level knowledge delivered together, the agent understands the system more completely.
+**Have a database? Index it too.** MySQL and PostgreSQL are supported, and openGauss 6.0.5 and SQLite with constraints. MySQL means 5.7.6 and later; MariaDB is not supported. Build the code index first, then the database index. With code and table-level knowledge delivered together, the agent understands the system more completely.
 
 **Local only: read-only on your system, no Internet, no stored credentials.** AOCI-CODE reads your source code and database table structures, never business data. It writes its index files and its own state inside the project directory, plus the status page's registration in your user cache directory. It never reaches the Internet and uploads nothing: the only connections it opens are to the database you declare, for catalog metadata, and to its own loopback status page. Database credentials are referenced by environment-variable name and never stored. The index text is written locally by your own agent through the model channel you already use; AOCI-CODE adds no new data exit.
 
@@ -93,7 +93,7 @@ The agent starts the panel in the background with `aoci ui --detach --json` and 
 
 Why the restart: the index is written through AOCI's MCP tools, and the session that ran `init` has not loaded the MCP server `init` just wrote. A host that loads MCP servers dynamically may not need a restart; [Host integration](#host-integration) explains how to tell.
 
-If your project has a database (PostgreSQL and MySQL are supported, plus constrained openGauss 6.0.5), index it as well. Declare the source as described under [Database Cognition](#database-cognition), provide the connection-string environment variable in the host environment (AOCI stores no credentials), then send:
+If your project has a database (PostgreSQL and MySQL are supported, plus constrained openGauss 6.0.5 and SQLite), index it as well. Declare the source as described under [Database Cognition](#database-cognition), for a server database provide the connection-string environment variable in the host environment (AOCI stores no credentials; a SQLite source names its file with `--path` instead), then send:
 
 ```text
 Build the AOCI database index for this project.
@@ -133,7 +133,7 @@ Because these files are plain text in the repository, Git versions them. While t
 
 ## Manual integration
 
-Get AOCI-CODE from the canonical source or use a signed package from GitHub Releases. Before using a prebuilt binary, follow the basic, recommended, or full verification level in the [installation guide](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/install.md#signed-github-release-packages), and report which level completed. Give this README and the verified binary's stable absolute path to a coding agent you trust, such as Codex, Claude Code, Cursor, or OpenCode. The agent can follow the in-project instructions to initialize AOCI, integrate MCP, and build the first index.
+Get AOCI-CODE from the canonical source or use a signed package from GitHub Releases. Before using a prebuilt binary, follow the basic, recommended, or full verification level in the [installation guide](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/install.md#signed-github-release-packages), and report which level completed. Give this README and the verified binary's stable absolute path to a coding agent you trust, such as Codex, Claude Code, Cursor, or OpenCode. The agent can follow the in-project instructions to initialize AOCI, integrate MCP, and build the first index.
 
 How long the first index takes depends on repository size. A normal integration is four steps: prepare the binary, have the agent or yourself initialize the target repository, ask the host to "build the index," and verify alignment. After that you do not need to end every request with "maintain the index." The project rules and the MCP workflow have the agent maintain the index incrementally whenever managed objects change.
 
@@ -149,16 +149,16 @@ and other models can use AOCI-CODE when the agent or host running them supports
 standard stdio MCP and can follow the tool contract; a model name alone does not
 establish compatibility.
 
-The signed-package route and executable verification commands are in the [installation guide](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/install.md#signed-github-release-packages). The source-build route is below.
+The signed-package route and executable verification commands are in the [installation guide](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/install.md#signed-github-release-packages). The source-build route is below.
 
 ### Current release: use a verified package or build from source
 
 > [!IMPORTANT]
-> AOCI-CODE v0.2.0-rc4 is the current release. It is Fair Source/source-available software under FSL-1.1-MIT; see [LICENSE](LICENSE). Build from canonical source or use a signed package from the [v0.2.0-rc4 GitHub Release](https://github.com/aoci-spec/aoci-code/releases/tag/v0.2.0-rc4) after following the [release verification procedure](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/install.md#signed-github-release-packages).
+> AOCI-CODE v0.2.0-rc5 is the current release. It is Fair Source/source-available software under FSL-1.1-MIT; see [LICENSE](LICENSE). Build from canonical source or use a signed package from the [v0.2.0-rc5 GitHub Release](https://github.com/aoci-spec/aoci-code/releases/tag/v0.2.0-rc5) after following the [release verification procedure](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/install.md#signed-github-release-packages).
 
-The signed Release binary identifies itself as `aoci version 0.2.0-rc4`. A
+The signed Release binary identifies itself as `aoci version 0.2.0-rc5`. A
 source build identifies the exact checkout instead and may report a development
-version such as `v0.2.0-rc4-1-g<short-commit>` (plus `-dirty` when applicable),
+version such as `v0.2.0-rc5-1-g<short-commit>` (plus `-dirty` when applicable),
 together with its Git commit. These are different build inputs, not a version
 conflict.
 
@@ -167,11 +167,11 @@ Release assets:
 
 ```bash
 gh auth login
-gh release download v0.2.0-rc4 --repo aoci-spec/aoci-code
+gh release download v0.2.0-rc5 --repo aoci-spec/aoci-code
 ```
 
 For an anonymous download, open the
-[v0.2.0-rc4 Release page](https://github.com/aoci-spec/aoci-code/releases/tag/v0.2.0-rc4)
+[v0.2.0-rc5 Release page](https://github.com/aoci-spec/aoci-code/releases/tag/v0.2.0-rc5)
 in a browser and download the archive and verification assets you need.
 
 To build from source, clone the canonical repository, build the binary, and keep the resulting path stable:
@@ -641,7 +641,7 @@ Boundaries: it binds loopback addresses only (any other bind is refused), answer
 | `aoci index agent guide` | Enters the deterministic host-agent workflow |
 | `aoci capabilities` | Shows the capabilities the current binary provides |
 | `aoci doctor` | Diagnoses the repository and host integration |
-| `aoci database` | Explicitly configures and validates PostgreSQL/MySQL/openGauss schema evidence |
+| `aoci database` | Explicitly configures and validates PostgreSQL/MySQL/openGauss/SQLite schema evidence |
 | `aoci database source access` | Read-only check of whether the external environment has provided a database credential reference; does not return the credential value |
 | `aoci database cognition bootstrap` | Adds Database Cognition to an aligned Code-only Volumes project |
 | `aoci cognition plan` | Read-only preview of a bootstrap or Legacy-to-Volumes migration plan |
@@ -738,7 +738,7 @@ AOCI-CODE can bring database structure under the same index and the same governa
 
 ```text
 Explicit database command
-  → Read-only PostgreSQL/MySQL/openGauss system catalogs
+  → Read-only PostgreSQL/MySQL/openGauss system catalogs, or a SQLite file opened read-only
   → Canonical schema evidence
   → Human acceptance of the evidence hash
   → The host model writes table-level FRAS from complete evidence
@@ -869,7 +869,7 @@ Search, ASTs, LSP, code graphs, and RAG are good at structural and retrieval que
 - **Drift detection.** Distinguishes Missing, Orphan, Stale, Unbaselined, line-ending changes, curation differences, and sources held out of authoring (empty, binary, oversize).
 - **Governed updates.** Candidates enter the formal files through source binding, plan, validation, review, CAS, atomic writes, Baseline, and recovery workflows.
 - **Delivery attestation.** Chunk, cursor, receipt, and challenge prove that the Whole-Index was delivered in full.
-- **Database Cognition.** Table-level entries built and governed from explicitly accepted PostgreSQL/MySQL/openGauss schema evidence.
+- **Database Cognition.** Table-level entries built and governed from explicitly accepted PostgreSQL/MySQL/openGauss/SQLite schema evidence.
 - **System projections.** Lineage, narrow Relations, database-to-code Impact, Snapshot, and Evolution observations derived from the authoritative index and its bindings without duplicating authoritative state; Impact traverses only explicit model-authored R relationships.
 
 AOCI-CODE complements existing tools rather than replacing them.
@@ -894,7 +894,7 @@ The recommended combination: AOCI-CODE provides the global semantic prior; code 
 | **Index files** | UTF-8 plain-text Cognition Volumes, diffable and versionable with Git |
 | **Machine state** | JSON/JSONL, SHA-256, Baseline, manifest, receipt, ledger, and recovery |
 | **Write safety** | Cross-process locks, CAS, same-directory temporary files, platform-atomic replacement, and fail-closed behavior |
-| **Database** | Core operation does not depend on a business database; optional PostgreSQL/MySQL/openGauss schema evidence uses pure-Go drivers |
+| **Database** | Core operation does not depend on a business database; optional PostgreSQL/MySQL/openGauss/SQLite schema evidence uses pure-Go drivers |
 | **System cognition** | Lineage, Relations, Impact, Snapshot, and Evolution projections derived on demand from authoritative assets |
 | **Execution modes** | Agent-native, Deterministic-only |
 
@@ -952,19 +952,19 @@ No. The current capability is a narrow relation projection, not an independent g
 
 | Topic | Document |
 | --- | --- |
-| First use | [Getting Started](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/getting-started.md) |
-| Installation, upgrade, and rollback | [Install](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/install.md) · [Upgrade](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/upgrading.md) · [Rollback](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/rollback.md) · [Uninstall](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/uninstall.md) |
-| Agents and hosts | [Agent Integrations](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/agent-integrations.md) · [Windows Host Agent](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/windows-host-agent.en.md) |
-| Whole-Index and refresh | [Overview Delivery](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/overview-delivery.md) · [Cognition Refresh](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/cognition-refresh.md) |
-| Cognition Volumes | [Volumes](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/cognition-volumes.md) · [Volumes Contract](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/spec/public/aoci-cognition-volumes-v1.txt) |
-| System Cognition | [System Cognition Runtime Contract](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/spec/public/aoci-system-cognition-runtime-v1.txt) |
-| Managed Scope | [Managed Scope and Budget](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/managed-scope-and-budget.md) · [Safe Inventory](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/safe-inventory-and-scope-refresh.md) |
-| Database | [Database Evidence](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/database-evidence.md) · [Database Cognition Authoring](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/database-cognition-authoring.md) |
-| Lifecycle | [Getting Started](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/getting-started.md) · [Upgrade](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/upgrading.md) · [Cognition Refresh](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/cognition-refresh.md) |
-| Formats and protocols | [Index Format](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/spec/public/aoci-index-format-v1.txt) · [Cognition Volumes Spec](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/spec/public/aoci-cognition-volumes-v1.txt) · [Object FRAS v2](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/spec/public/aoci-object-fras-v2.txt) |
-| Research and release | [Supply Chain](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/docs/supply-chain.md) |
+| First use | [Getting Started](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/getting-started.md) |
+| Installation, upgrade, and rollback | [Install](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/install.md) · [Upgrade](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/upgrading.md) · [Rollback](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/rollback.md) · [Uninstall](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/uninstall.md) |
+| Agents and hosts | [Agent Integrations](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/agent-integrations.md) · [Windows Host Agent](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/windows-host-agent.en.md) |
+| Whole-Index and refresh | [Overview Delivery](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/overview-delivery.md) · [Cognition Refresh](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/cognition-refresh.md) |
+| Cognition Volumes | [Volumes](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/cognition-volumes.md) · [Volumes Contract](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/spec/public/aoci-cognition-volumes-v1.txt) |
+| System Cognition | [System Cognition Runtime Contract](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/spec/public/aoci-system-cognition-runtime-v1.txt) |
+| Managed Scope | [Managed Scope and Budget](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/managed-scope-and-budget.md) · [Safe Inventory](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/safe-inventory-and-scope-refresh.md) |
+| Database | [Database Evidence](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/database-evidence.md) · [Database Cognition Authoring](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/database-cognition-authoring.md) |
+| Lifecycle | [Getting Started](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/getting-started.md) · [Upgrade](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/upgrading.md) · [Cognition Refresh](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/cognition-refresh.md) |
+| Formats and protocols | [Index Format](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/spec/public/aoci-index-format-v1.txt) · [Cognition Volumes Spec](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/spec/public/aoci-cognition-volumes-v1.txt) · [Object FRAS v2](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/spec/public/aoci-object-fras-v2.txt) |
+| Research and release | [Supply Chain](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/docs/supply-chain.md) |
 
-> Documentation and public-contract links are pinned to `v0.2.0-rc4` so they
+> Documentation and public-contract links are pinned to `v0.2.0-rc5` so they
 > remain valid when this README is read from a binary Release archive, which
 > does not include the repository's `docs/` or `spec/public/` directories.
 
@@ -1015,11 +1015,11 @@ If a specific patent number, grant date, or scope has to be disclosed in the fut
 <details>
 <summary>Contributions, security, and license</summary>
 
-Submit focused external contributions through the process in [CONTRIBUTING.md](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/CONTRIBUTING.md). Contributors must have the right to submit their work; accepted contributions are governed by the repository license and any published inbound terms, and maintainers may require additional contributor documentation before merging.
+Submit focused external contributions through the process in [CONTRIBUTING.md](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/CONTRIBUTING.md). Contributors must have the right to submit their work; accepted contributions are governed by the repository license and any published inbound terms, and maintainers may require additional contributor documentation before merging.
 
-Do not disclose suspected vulnerabilities in public Issues. Follow [SECURITY.md](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc4/SECURITY.md); a monitored private reporting channel and clear response ownership remain prerequisites for a public Release.
+Do not disclose suspected vulnerabilities in public Issues. Follow [SECURITY.md](https://github.com/aoci-spec/aoci-code/blob/v0.2.0-rc5/SECURITY.md); a monitored private reporting channel and clear response ownership remain prerequisites for a public Release.
 
-AOCI-CODE v0.2.0-rc4 is Fair Source/source-available software licensed under FSL-1.1-MIT. See [LICENSE](LICENSE) for the governing terms.
+AOCI-CODE v0.2.0-rc5 is Fair Source/source-available software licensed under FSL-1.1-MIT. See [LICENSE](LICENSE) for the governing terms.
 
 </details>
 

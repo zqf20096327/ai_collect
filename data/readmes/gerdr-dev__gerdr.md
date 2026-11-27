@@ -32,6 +32,29 @@ start sessions, hand out work, wait for the replies and read them.
 Not at home in a terminal? Gerdr is an equally good choice, as an app: images, videos and PDFs from the agent show right in the chat, and clicking a path
 opens the file; away from your desk, keep watching and steering from your phone.
 
+## Superagent: takes in the work from outside
+
+Someone asks for something on Slack or Feishu; the secretary puts it in to do. You add a note, click dispatch, and get
+on with your day. The worker messages ops for access and the owner for a merge, and waits; hours later, when it's
+done, it calls you: read its report, click send, and the reply goes back to whoever asked. That is the
+[Superagent panel](https://github.com/gerdr-dev/gerdr-panel-superagent):
+
+- **the secretary takes messages and lines up tasks** — Slack / Feishu DMs, mentions and alerts reach it first; it
+  opens a task, folds the message into one, or lets it go. Say what needs doing and it picks the repository and the agent.
+- **you talk to the worker** — one task, one worker; open the task and you are in its chat. It has the most context and
+  asks the sharpest questions, so nothing gets relayed through the secretary. Tasks that need you float to the top.
+- **the panel does the waiting** — approvals, MR reviews and merges, a colleague's reply: the worker says what it waits
+  for and ends its turn, and the panel wakes it when it comes, across restarts and agent swaps.
+- **memory** — per-repo rules (MRs or not, who approves releases) and who is waiting on what right now, so incoming
+  messages land on the right task.
+- **let it go** — sets of rules by the clock for what may be decided without asking you.
+
+<p align="center"><img src="docs/images/superagent-en.gif" alt="Superagent: work arrives on Slack, goes to to do, gets dispatched, and hours later you click send" width="100%" /></p>
+
+Its UI is in Chinese for now. Install: Settings → Panels → install from GitHub, `https://github.com/gerdr-dev/gerdr-panel-superagent`.
+
+## everything else
+
 **chat**
 
 - **talk while it works** — your message joins the turn that's already running.
@@ -51,10 +74,15 @@ opens the file; away from your desk, keep watching and steering from your phone.
 
 **DIY your own Gerdr**
 
+- **your own workbench** — every project can have its own panels, each a small app: a page on the left, its own
+  assistant on the right. Say "make a weekly metrics overview" and the page gets written. Superagent is just such a
+  panel, yours to bend to how you work; repositories tagged [`gerdr-panel`](https://github.com/topics/gerdr-panel) install in one step.
 - **a UI your agent can change** — the whole interface: add buttons, shortcuts, what gets shown. Just tell the AI;
   no release, no deploy, live at once. Break it and an unbreakable rescue panel gets you back.
 - **TypeScript add-ons** — rename tabs, title panes, add commands and keys; install more from a store.
 - **skills and MCP** — the agent's own, Gerdr's, or both.
+
+<p align="center"><img src="docs/images/panel-en.gif" alt="A panel's assistant writing a new page" width="100%" /></p>
 
 **anywhere**
 

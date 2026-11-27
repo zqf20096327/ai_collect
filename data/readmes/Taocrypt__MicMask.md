@@ -21,6 +21,9 @@ MicMask 在手机本地把你的声音实时转换成另一个音色，并直接
 ## 功能
 
 - **AI 实时变声**：标准 0.3 秒 / 省电 0.5 秒两档，自动测速选档、跟不上时自动降档；半音偏移、检索比例（index）、静音门限、线程数、推理绑大核等可调；变声中可直接切换音色
+- **推理加速（2.1 测试版起）**：声码器可选 ORT / NEON fp16 / 骁龙 NPU，HuBERT 可选上 NPU；NPU 运行库首次使用时经你同意后从官方 Maven 源下载，不随安装包分发
+- **一键性能测试**：实测本机后自动采用最快的声码器、HuBERT 后端和特征 / 合成线程数
+- **音色微调（实验）**：响度跟随（音量起伏跟原声走）、共振峰偏移（音高不变改厚薄）、相位锁定（减轻块边界的轻微嗒嗒声）
 - **导入音色**：社区模型仓库一键下载；手机直接导入 RVC `.pth` + `.index`（本机转换与量化）；兼容 w-okada 导出的 ONNX
 - **生效范围**：自动识别任何正在录音的应用，或手动指定目标应用
 - **普通变声**：低延迟升降调 + 音色效果，内置男变女、萝莉、御姐、大叔、机器人等预设，自定义预设可用分享码分享
@@ -62,7 +65,7 @@ MicMask 在手机本地把你的声音实时转换成另一个音色，并直接
 | --- | --- |
 | Android | 8.0 及以上；Shizuku 注入模式需要 Android 10 及以上 |
 | 架构 | 仅 arm64-v8a |
-| 处理器 | 实测设备为骁龙 8 Gen 3；中端芯片建议使用省电 0.5 秒档 |
+| 处理器 | 实测设备为骁龙 8 Gen 3；中端芯片建议使用省电 0.5 秒档；骁龙平台可选 NPU 加速 |
 | 其他 | 实时注入需要 Shizuku；建议佩戴耳机 |
 
 ## 已知限制
@@ -80,26 +83,17 @@ MicMask 在手机本地把你的声音实时转换成另一个音色，并直接
 
 MicMask **不附带任何音色模型**。在「设置 → 模型仓库」填写仓库地址（models.json 链接、GitHub 或 CNB 仓库），或在 AI 变声页导入本地模型。请只使用你本人的声音或已获得授权的模型。
 
-## 为什么没有 NPU 加速
+## NPU 与推理加速
 
-MicMask 的 AI 变声目前只用 CPU 推理，暂不引入高通 QNN（NPU/GPU）支持。原因来自骁龙 8 Gen 3 真机实测（2026-11-23）：
+2.1 测试版起，AI 实时变声可以把部分推理交给骁龙 NPU（QNN HTP）：
 
-- CPU 已经够快：前台 4 线程下 hubert 约 64–68ms、音色合成器约 115–124ms，远低于 300ms 延迟目标。
-- GPU（QNN）能跑，但只能吃到模型的一部分，反而比 CPU 慢 3–6 倍。
-- NPU（QNN HTP）在普通 App 进程里可以调用，但现有模型的算子（动态形状、MatMulInteger、QLinearConv 等）大多不被支持；转成静态 QDQ 后 hubert 能整图上 NPU，却要约 860ms/次且输出偏差很大；合成器在 QNN 上无法建会话。
-- 引入 QNN 运行库会让安装包从约 33MB 增大到约 75MB，而目前换不来任何收益。
+- **声码器**：自动 / ORT / NEON fp16 / NPU。自动会实测几种方式取最快；NEON fp16 需要 ARMv8.2 半精度指令。
+- **HuBERT 用 NPU**：独立开关；首次使用会在本机改写并编译模型，不比 CPU 快或校验不通过就自动留在 CPU。
+- **NPU 组件**：高通 QNN 运行库按高通自己的许可发布，不属于 MicMask 的开源部分，不随 APK 或仓库分发；首次开启时经你同意后，从 Maven Central 或其国内镜像下载官方包并逐个校验。
+- 支持的骁龙平台按 SoC 自动匹配 HTP 版本（V68–V81）。联发科等非骁龙芯片只用 CPU：天玑 9300 系实测 NNAPI 和 WebGPU 都比 CPU 慢，所以不接。
+- 出错或校验不通过会自动退回 CPU 通路，不影响出声。
 
-完整数据、日志与模型转换脚本见 [qnntest/results](qnntest/results/README.md)。
-
-### 自己测一测
-
-如果你的设备是骁龙 8 Gen 2 / 8 Gen 3 / 8 Elite 等带 HTP 的高通芯片，欢迎帮忙测试 NPU 能不能跑出突破：
-
-1. 从 [qnntest-3 测试包](https://github.com/Taocrypt/MicMask/releases/tag/qnntest-3) 下载 `MicMask-qnntest-3.apk`（独立包名，不影响正式版）和 `hubert_qnn_a16w8.onnx`。
-2. 安装后点「选择模型文件」导入 onnx；装了 Shizuku 和正式版的，也可以「从 MicMask 复制模型」。测试时保持界面在前台，先跑 App 进程，有 Shizuku 再跑 shell 进程。
-3. 点「复制日志」，贴到 [Issue](https://github.com/Taocrypt/MicMask/issues) 里，标题写上机型和芯片。如果某个模型在 NPU 上比 CPU 快且误差小，我们会重新评估加入 NPU 支持。
-
-自己转换模型可参考 `qnntest/convert/` 下的脚本。
+各机型实测数据、日志与转换脚本见 [qnntest/results](qnntest/results/README.md)。实测延迟口径仍以「骁龙 8 Gen 3 标准档实测约 300 ms」为准，其他机型以你自己的性能测试为准。
 
 ## 从源码构建
 
@@ -121,7 +115,7 @@ MicMask 的 AI 变声目前只用 CPU 推理，暂不引入高通 QNN（NPU/GPU�
 
 - [atri-vc](https://github.com/spider996/atri-vc)：本项目的起点，实时 RVC 安卓实现
 - [RVC-Android](https://github.com/ouor/RVC-Android)：安卓端 RVC 推理方案参考
-- [mobile-rvc](https://github.com/nasuiyile/mobile-rvc)：手机端实时变声参考
+- [mobile-rvc](https://github.com/nasuiyile/mobile-rvc)：手机端实时变声参考；原生 NEON fp16 声码器内核移植自该项目，响度跟随、共振峰偏移、相位锁定三项参数也参考了它的实现（MIT，声明见 NOTICE.md）
 - [RVC WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)：Retrieval-based Voice Conversion 音色转换
 - [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)：文本转语音
 - [ONNX Runtime](https://github.com/microsoft/onnxruntime)：端侧推理引擎

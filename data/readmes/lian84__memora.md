@@ -101,7 +101,7 @@ limitations.
 - PDF, DOCX, XLSX and PPTX generation without LibreOffice.
 - SSRF-safe web research through Brave or SearXNG, with numbered citations.
 - Scheduled automations with cron/timezone, run history and optional MCP access.
-- Single-user login, browser notifications, optional Telegram delivery and an IT/EN/FR interface.
+- Single-user login, browser notifications, optional Telegram delivery and bidirectional Telegram sessions, plus an IT/EN/FR interface.
 - One-click update from Administration with a mandatory encrypted backup.
 - Responsive layout, chat side panel and runtime administration.
 
@@ -148,6 +148,7 @@ See [Install, restore and update](docs/INSTALL.md).
 - [Administration](docs/ADMINISTRATION.md)
 - [Memory](docs/MEMORY.md)
 - [Automations](docs/AUTOMATIONS.md)
+- [Telegram](docs/TELEGRAM.md)
 - [Backup](docs/BACKUP.md)
 - [Readable export](docs/EXPORT.md)
 - [Updates](docs/UPDATES.md)

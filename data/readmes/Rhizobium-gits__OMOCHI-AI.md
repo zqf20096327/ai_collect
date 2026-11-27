@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/Rhizobium-gits/OMOCHI-AI/releases/latest"><img src="https://img.shields.io/github/v/release/Rhizobium-gits/OMOCHI-AI?style=for-the-badge&labelColor=0d0d10&color=26262c&label=release" alt="Release"></a>
   <a href="https://github.com/Rhizobium-gits/OMOCHI-AI/releases"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FRhizobium-gits%2FOMOCHI-AI%2Fstats%2Fstats.json&query=%24.total&label=downloads&style=for-the-badge&labelColor=0d0d10&color=26262c" alt="downloads"></a>
+  <a href="https://auralune.tech/"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FRhizobium-gits%2FOMOCHI-AI%2Fstats%2Fstats.json&query=%24.site&label=via%20auralune.tech&style=for-the-badge&labelColor=0d0d10&color=e6c56b" alt="via auralune.tech"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-26262c?style=for-the-badge&labelColor=0d0d10&logo=apple&logoColor=white" alt="macOS 14+">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-26262c?style=for-the-badge&labelColor=0d0d10" alt="License: MIT"></a>
   <a href="https://github.com/Rhizobium-gits/OMOCHI-AI/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rhizobium-gits/OMOCHI-AI/ci.yml?branch=main&style=for-the-badge&labelColor=0d0d10&label=CI" alt="CI"></a>
@@ -119,8 +120,8 @@ Claude のおもちに「仲間を 2 人作って分担して。ChatGPT（Codex�
    **[OmochiAI.dmg をダウンロード](https://github.com/Rhizobium-gits/OMOCHI-AI/releases/latest/download/OmochiAI.dmg)**（いつも最新版。[Releases の最新版](https://github.com/Rhizobium-gits/OMOCHI-AI/releases/latest) のページからも同じものを取れます。`.zip` もあり、中身は同じ）
 2. **アプリケーションフォルダに入れる**
    .dmg を開き、**OMOCHI AI** を隣の **Applications** へドラッグします
-3. **初回だけ「このまま開く」**
-   アプリケーションフォルダの OMOCHI AI を開くと、初回だけ macOS が「開けません」と止めます（Apple の公証を受けていない個人の開発物のため）。ダイアログを閉じ、**システム設定 › プライバシーとセキュリティ** の下の方にある「このまま開く」を押してください。2 回目からは普通に開けます
+3. **開く**
+   アプリケーションフォルダの OMOCHI AI を開きます。Developer ID で署名し Apple の公証を受けているので、「インターネットからダウンロードされたアプリケーションです」と出たら「開く」を押すだけです（2.0.2 から。2.0.1 までの版は、初回だけ **システム設定 › プライバシーとセキュリティ** の「このまま開く」が必要でした）
 4. **AI にログイン**
    初めて開くと「アカウントと AI」の画面が出ます。使う AI の「ログイン…」を押すと公式のログインがターミナルで始まるので、ブラウザでログインするだけです。入っていない AI は「入れてログイン…」で、実行するコマンドを見せて許可を求めてから入れます
 
@@ -440,7 +441,7 @@ flowchart LR
 ```
 
 > [!NOTE]
-> **システム設定のスイッチがオンなのに「許可してください」と出る・PC 操作が動かない・起動や更新のたびにフォルダの許可を聞かれる** のは、仮の署名（ad-hoc）の版を入れ替えたためです。macOS は署名の中身（cdhash）でアプリを見分けるので、更新すると前の版に付いた許可が効かなくなります（スイッチはオンのまま残る）。「まとめて許可する」で消して許可し直してください。
+> **システム設定のスイッチがオンなのに「許可してください」と出る・PC 操作が動かない・起動や更新のたびにフォルダの許可を聞かれる** のは、仮の署名（ad-hoc）の版（2.0.1 までの配布版や、固定の署名にしていないソースからのビルド）を入れ替えたためです。macOS は仮の署名の版を署名の中身（cdhash）で見分けるので、更新すると前の版に付いた許可が効かなくなります（スイッチはオンのまま残る）。「まとめて許可する」で消して許可し直してください。2.0.2 からの配布版は Developer ID で署名しているので、同じ署名の版への更新では許可が続きます（2.0.1 以前から上げたときだけ、一度許可し直します）。
 
 ## 聞き取り（文字起こし・翻訳・議事録）
 
@@ -489,7 +490,7 @@ Claude Code に設定してある MCP サーバー（`~/.claude.json` やプロ�
   - 新しい版があると、見えているおもちが吹き出しで **「新しい版 … が出たよ」** と知らせます（入力先は奪いません）。「見る」で変わったところを確かめ、「アップデートする」を押したときだけ入れ替えます。「この版は知らせない」でその版だけ外せ、✕ なら次の確認でまた知らせます
   - 新しい版を見つけている間は、メニューの「アップデートを確認…」が「⬆︎ 新しい版 … があります…」になります。前に確かめた日時もこのメニューに出ます
 - 新しい版があれば **「アップデートする」** を押すと、GitHub のリリースから新しい版（.zip）をダウンロードし、`SHA256SUMS.txt` のチェックサム・中身（OMOCHI AI のその版か）・コード署名を確かめてから入れ替え、開き直します（設定・おもち・会話は残ります）。押さなければ何もしません
-  - **固定の署名**（[更新のたびに許可を求められないようにする](#更新のたびに許可を求められないようにする)）で入れているときは、新しい版をこの Mac の固定の署名で署名し直してから入れ替えるので、macOS の許可がそのまま続きます。途中で macOS が「codesign がキーを使おうとしています」と確かめるので「許可」を押してください。その鍵がキーチェーンに無いときは、配布版の仮の署名のまま入れ替えます
+  - **固定の署名**（[更新のたびに許可を求められないようにする](#更新のたびに許可を求められないようにする)）で入れているときは、新しい版をこの Mac の固定の署名で署名し直してから入れ替えるので、macOS の許可がそのまま続きます。途中で macOS が「codesign がキーを使おうとしています」と確かめるので「許可」を押してください。その鍵がキーチェーンに無いときは、配布版の署名のまま入れ替えます
   - 作業中のおもちがいるときは入れ替えません。アプリを書き換えられない場所（.dmg の中など）から開いているときや、macOS が入れ替えを止めたとき（システム設定 › プライバシーとセキュリティ › アプリ管理）は、ダウンロードページを案内します
 - 同じ画面の **「ターミナルでアップデート」** は、実行するコマンド（画面に出ます）をターミナルで動かして上げます。ソースから `scripts/install.sh` で入れていれば、`git pull` → ビルド → 入れ替えになります（自分の署名のまま）
 - 手で入れ替えるなら、.dmg をダウンロードして、[インストール](#ダウンロードとインストール) と同じようにアプリケーションフォルダへドラッグします
@@ -526,7 +527,7 @@ scripts/install.sh
 
 - `scripts/signing.sh create` が OMOCHI AI 専用の署名用の証明書（自己署名）をログインキーチェーンに作り、`scripts/install.sh` がそれで署名して入れます。macOS は「同じ証明書で署名した OMOCHI AI」を同じアプリとみなすので、フォルダ・画面収録・アクセシビリティの許可が、次からの更新でもそのまま続きます
 - 証明書に切り替えた最初の 1 回だけ、許可をもう一度求められます（「まとめて許可する」で）
-- 次からの更新は `scripts/update.sh --source` で入れてください（.dmg・.zip の版はアドホック署名なので、入れ替えると許可を聞き直されます）
+- 次からの更新は `scripts/update.sh --source` で入れてください（.dmg・.zip の版は Developer ID の署名で、この Mac の固定の署名とは別の署名なので、入れ替えると許可を聞き直されます）
 - 確かめるのは `scripts/signing.sh status`、やめるのは `scripts/signing.sh delete`
 
 ## 権限と安全
@@ -546,7 +547,7 @@ scripts/install.sh
 
 - ⌘L はグローバルに使うため、ブラウザのアドレスバー移動と競合します。`settings.json` の `hotKeyPassthroughApps` に bundle ID を入れたアプリが前面の間は ⌘L をそのアプリに返します。他のアプリが先に ⌘L を使っていれば ⌃⌥L に切り替えます
 - アプリを終了すると、実行中のエージェントは中断されます（次回起動時に「中断」として残ります）
-- 配布している .app はアドホック署名なので、新しい版に入れ替えると macOS は別のアプリとみなし、許可をもう一度求めます。**🔐 権限** の「まとめて許可する」で、古い許可を消して許可し直してください
+- 配布している .app は 2.0.2 から Developer ID で署名し、Apple の公証を受けています。2.0.1 以前（仮の署名）から上げたときだけ、macOS は別のアプリとみなして許可をもう一度求めるので、**🔐 権限** の「まとめて許可する」で古い許可を消して許可し直してください。2.0.2 からは、同じ署名の版への更新で許可が続きます
 - ChatGPT・Gemini のおもちの作業フォルダが既定のホームのままだと、Codex のサンドボックスの書ける場所・Gemini の自動で承認する編集の範囲がホーム全体になります。チャットの 📁 で、作業するプロジェクトのフォルダを選んでください
 
 ## ソースからビルド
@@ -563,8 +564,8 @@ scripts/install.sh          # ビルドしてアプリケーションフォル�
 - 先に `scripts/signing.sh create` で署名用の証明書を作っておくと、入れ替えても macOS の許可が続きます（[更新のたびに許可を求められないようにする](#更新のたびに許可を求められないようにする)）
 - 更新は `scripts/update.sh --source`。ビルドだけなら `scripts/build.sh`（→ `dist/OMOCHI AI.app`、この Mac の CPU 用）、テストは `scripts/test.sh`（swift test）
 - アプリのアイコンは `Resources/AppIcon.png`（1024px の正方形）を macOS のアイコンの角丸の枠に収めて作ります
-- 配布物は `scripts/release.sh` で `dist/release/` に作ります（universal の `OmochiAI.dmg`・`OmochiAI-<版>.zip`・`SHA256SUMS.txt`）。`VERSION` と `CHANGELOG.md` を更新してコミット・push し、`scripts/release.sh --publish` で GitHub Releases に公開します
-- **ダウンロード数**：`scripts/downloads.sh` で、リリースごとの数を GitHub から読みます（`.dmg` = ダウンロードして入れた回数、`.zip` = アプリの「アップデートする」と手での .zip。`--traffic` で直近 14 日の閲覧数・clone 数、`--json` で JSON）。README の上のグラフ（1 日ごとのダウンロード）は `scripts/download-chart.py` が作ります。git clone は GitHub が日ごとに数えた人数そのまま、.dmg・.zip は推定です（GitHub は累計しか出さないので、`stats.json` の日ごとの記録 `daily`（その時刻の累計）の間に増えた分と、記録を始める前の版ごとの数 `releases`（その版が最新だった間）を、時間に比例して日に分けます）。右上は累計（バッジと同じ数）です。グラフは同じ `stats` ブランチに `downloads-ja.svg`・`downloads-en.svg`・`downloads-zh.svg` として置きます。バッジは、`.dmg`・`.zip` のダウンロード数と git clone の数（GitHub が数えた、日ごとの clone した人数の合計。ボット・ミラーの clone も入ります。このリポジトリの CI はソースを git でなくアーカイブで取るので入りません）の合計です。`scripts/download-stats.sh` が数え直して `stats` ブランチの `stats.json` に書き（内訳もここに）、GitHub Actions（`.github/workflows/stats.yml`）が毎日動かします。GitHub は clone 数を直近 14 日しか残さないので、日ごとに貯めます。Actions で clone 数を読むには、シークレット `TRAFFIC_TOKEN`（このリポジトリだけ・Administration の読み取りだけの fine-grained のトークン）が要ります。無いときはリリースのダウンロード数だけ数え直し、clone は `scripts/release.sh --publish` か `scripts/download-stats.sh` を手元で動かしたときに足します。手元の Mac で毎日数え直すなら `scripts/download-stats-daily.sh install`（launchd で毎日 10:00 とログインしたとき。gh にログインしているアカウントで clone 数も読む。Mac が起きている日だけ。やめるのは `uninstall`、様子は `status`）。.dmg はどの版も同じ名前なので、`releases/latest/download/OmochiAI.dmg` がいつも最新版を指します
+- 配布物は `scripts/release.sh` で `dist/release/` に作ります（universal の `OmochiAI.dmg`・`OmochiAI-<版>.zip`・`SHA256SUMS.txt`）。アプリは Developer ID で署名し直して Apple の公証を通し、staple します（`scripts/notarize.sh`。Xcode と、Apple Developer Program のアカウント、公証の認証 `OMOCHI_NOTARY_PROFILE` か `OMOCHI_ASC_KEY_ID`・`OMOCHI_ASC_ISSUER_ID`・`OMOCHI_ASC_KEY_PATH` が要ります。無いときは `--ad-hoc` で仮の署名のまま作れます）。`VERSION` と `CHANGELOG.md` を更新してコミット・push し、`scripts/release.sh --publish` で GitHub Releases に公開します
+- **ダウンロード数**：`scripts/downloads.sh` で、リリースごとの数を GitHub から読みます（`.dmg` = ダウンロードして入れた回数、`.zip` = アプリの「アップデートする」と手での .zip。`--traffic` で直近 14 日の閲覧数・clone 数、`--json` で JSON）。README の上のグラフ（1 日ごとのダウンロード）は `scripts/download-chart.py` が作ります。git clone は GitHub が日ごとに数えた人数そのまま、.dmg・.zip は推定です（GitHub は累計しか出さないので、`stats.json` の日ごとの記録 `daily`（その時刻の累計）の間に増えた分と、記録を始める前の版ごとの数 `releases`（その版が最新だった間）を、時間に比例して日に分けます）。右上は累計（バッジと同じ数）です。グラフは同じ `stats` ブランチに `downloads-ja.svg`・`downloads-en.svg`・`downloads-zh.svg` として置きます。バッジは、`.dmg`・`.zip` のダウンロード数と git clone の数（GitHub が数えた、日ごとの clone した人数の合計。ボット・ミラーの clone も入ります。このリポジトリの CI はソースを git でなくアーカイブで取るので入りません）の合計です。`scripts/download-stats.sh` が数え直して `stats` ブランチの `stats.json` に書き（内訳もここに）、GitHub Actions（`.github/workflows/stats.yml`）が毎日動かします。GitHub は clone 数を直近 14 日しか残さないので、日ごとに貯めます。Actions で clone 数を読むには、シークレット `TRAFFIC_TOKEN`（このリポジトリだけ・Administration の読み取りだけの fine-grained のトークン）が要ります。無いときはリリースのダウンロード数だけ数え直し、clone は `scripts/release.sh --publish` か `scripts/download-stats.sh` を手元で動かしたときに足します。手元の Mac で毎日数え直すなら `scripts/download-stats-daily.sh install`（launchd で毎日 10:00 とログインしたとき。gh にログインしているアカウントで clone 数も読む。Mac が起きている日だけ。やめるのは `uninstall`、様子は `status`）。.dmg はどの版も同じ名前なので、`releases/latest/download/OmochiAI.dmg` がいつも最新版を指します。バッジの「via auralune.tech」とグラフ右上の金色の数は、[auralune.tech](https://auralune.tech/) のダウンロードのボタンが押された数（auralune.tech/dl/omochi を通って .dmg へ送った数）です。.dmg の数の内訳なので合計には足しません。`scripts/download-stats.sh` が同じ `stats.json` の `site` に書きます（Actions ではシークレット `AURALUNE_STATS_KEY` で読みます）
 
 ## データの保存場所
 

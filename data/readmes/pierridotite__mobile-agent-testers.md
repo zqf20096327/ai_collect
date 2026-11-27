@@ -17,8 +17,9 @@
 <sub>English · [简体中文](i18n/zh-CN/README.md) · [日本語](i18n/ja/README.md) · [Español](i18n/es/README.md) · [Português](i18n/pt-BR/README.md) · [Tiếng Việt](i18n/vi/README.md) · [Türkçe](i18n/tr/README.md)</sub>
 
 <a href="https://www.linkedin.com/in/pierre-raffalli/"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/linkedin-follow-dark.svg"><img src="assets/linkedin-follow-light.svg" alt="Follow Pierre Raffalli on LinkedIn" width="160" height="54"></picture></a>
-<a href="https://discord.gg/WuaCANscr8"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/discord-join-dark.svg"><img src="assets/discord-join-light.svg" alt="Join us on Discord" width="160" height="54"></picture></a>
+<a href="https://discord.gg/WuaCANscr8"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/discord-join-dark.svg"><img src="assets/discord-join-light.svg" alt="Join us on Discord" width="160" height="54"></picture></a><br>
 <a href="https://trendshift.io/repositories/371956?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-371956" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/371956/daily?language=Python" alt="pierridotite%2Fmobile-agent-testers | Trendshift" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/371956?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-371956" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/371956/daily" alt="pierridotite%2Fmobile-agent-testers | Trendshift" width="250" height="55"/></a>
 
 </div>
 
@@ -64,7 +65,10 @@ The demo app has [11 deliberate bugs](demo-app/BUGS.md). In [one run](docs/runs/
 
 ## What it does
 
-One use per run, set with the inputs above.
+Each persona explores your app like a new user and reports what gets in the way, with numbered screenshots. A run can also follow one feature end to end, reproduce a bug report, write an improvement report, compare two versions or test a website on phones. One use per run, set with the inputs above.
+
+<details>
+<summary>The six uses, one by one</summary>
 
 | Use | What you get |
 |---|---|
@@ -74,6 +78,8 @@ One use per run, set with the inputs above.
 | **Get an improvement report** | Where each persona hesitated, what it expected, what to change first ([brief](briefs/improve.md)). |
 | **Compare two versions** | The same personas on two branches or builds, then one table of goals, scores and issues ([how](docs/compare-versions.md)). |
 | **Test a website on phones** | The same personas in a phone's browser, on any site or web app. It runs on free Linux runners ([configuration](docs/configuration.md)). |
+
+</details>
 
 Any Anthropic-compatible model works, from Claude Haiku to OpenRouter, DeepSeek, Kimi, GLM, MiniMax or Qwen; findings are only as good as the model's reading of screenshots ([docs/cheaper-models.md](docs/cheaper-models.md)). Maestro or Appium run the tests you write; these agents look for what nobody thought to test ([how it compares](docs/compare.md)).
 
@@ -97,7 +103,10 @@ The traces follow Explore-Compile-Replay, my open format that compiles an agent'
 
 ## Real runs
 
-Open-source apps, with nothing planted.
+Open-source apps, with nothing planted. On [LocalSend](https://github.com/localsend/localsend) (Flutter, 100k stars), 20 phones in 14 languages found 46 distinct bugs in 69 minutes, for $4.62 of model usage. One is a blocker: on an iPhone SE in Swedish at the largest text size, you can't send a text message at all.
+
+<details>
+<summary>The three runs: LocalSend, AnkiDroid, Flutter's animations sample</summary>
 
 | App | Phones | What the agents found | Time, model usage |
 |---|---|---|---|
@@ -105,11 +114,13 @@ Open-source apps, with nothing planted.
 | [AnkiDroid](https://github.com/ankidroid/Anki-Android) (Kotlin, 12k stars, release APK) | 10 Android | 43 distinct issues, among them answer buttons cut in half at 200% font and "Get started" left in English in three languages | under 10 min, $4.69 |
 | [Flutter's animations sample](https://github.com/flutter/packages/tree/main/packages/animations/example) | 1 Android, 1 iOS | The same typo, reported by both agents on their own, and an app that ignores dark mode | 19 min, $0.47 |
 
+</details>
+
 34 of LocalSend's 46 bugs had nothing to do with text size or accessibility: broken flows, silent failures, missing translations, tablet layouts. Screenshots, every finding and the commands to run them again: [docs/examples.md](docs/examples.md).
 
 ## Contributing
 
-[11 issues are ready to take](https://github.com/pierridotite/mobile-agent-testers/issues/9), five of them [good first issues](https://github.com/pierridotite/mobile-agent-testers/labels/good%20first%20issue): new personas, a Slack or Discord summary, another agent CLI, web apps, GitLab CI, translations. Comment on the one you take so two people don't build the same thing. [CONTRIBUTING.md](CONTRIBUTING.md) says where each one starts and how to test it offline. Questions: [Discord](https://discord.gg/WuaCANscr8).
+[Issues are ready to take](https://github.com/pierridotite/mobile-agent-testers/issues/9), some of them [good first issues](https://github.com/pierridotite/mobile-agent-testers/labels/good%20first%20issue): new personas, another agent CLI, GitLab CI, translations. Comment on the one you take so two people don't build the same thing. [CONTRIBUTING.md](CONTRIBUTING.md) says where each one starts and how to test it offline. Merged a pull request, or ran it on your app? [Show your work](docs/share.md). Questions: [Discord](https://discord.gg/WuaCANscr8).
 
 ## Hosted version for teams (exploring)
 

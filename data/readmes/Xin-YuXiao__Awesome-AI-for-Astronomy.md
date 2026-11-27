@@ -17,7 +17,7 @@
 </div>
 
 > [!TIP]
-> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 482 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
+> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 494 papers and 67 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
 >
 > [AstroAI Today](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/today.html) collects new arXiv papers on machine learning in astronomy every day. A language model (DeepSeek V4.1 Flash) screens them and writes a one-line TL;DR for each paper and a TL;DR for each week and month. These papers are not reviewed; the curated list below is.
 >
@@ -183,6 +183,7 @@ This list tracks machine learning work in astronomy with public papers, linking 
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [NuSrcAgent: An AI Agent for High-Energy Neutrino Source Searches](https://arxiv.org/abs/2611.33324 "Runs likelihood-based single-source and catalog-stacking searches on public IceCube track data from natural-language requests and records inputs and settings for reruns.") | arXiv 2026 | [Code](https://github.com/beizhouphys/NuSrcAgent) | - |
 | 2026.11 | [MAASAI: A Tool-Augmented Multi-Agent System for Astronomical Data Analysis](https://arxiv.org/abs/2611.31088 "A modular multi-agent system combining foundation-model reasoning, retrieval-augmented knowledge and astronomical tools raises macro-averaged F1 over a commercial-model baseline from 0.53 to 0.72 for extended emission and from 0.37 to 0.88 for source morphology classification.") | arXiv 2026 | - | - |
 | 2026.11 | [automodel: A Skill for Agentic Model Discovery](https://arxiv.org/abs/2611.24347 "An agent skill gives general-purpose coding agents a model-discovery recipe; with it, commercial agents identify new models in case studies from astrophysics and four other fields.") | arXiv 2026 | [Code](https://github.com/unlayer-ai/automodel) | - |
 | 2026.11 | **GalaxyWiki** [Extracting Published Discussions of 13,616 Galaxies with Language Models](https://arxiv.org/abs/2611.13118 "GPT-5.5 agents extract source-linked discussions from arXiv papers and coordinate matching groups the evidence into 13,616 galaxy entries.") | **WASP 2026 Workshop** | [Code](https://github.com/NolanKoblischke/galaxywiki-paper) | [ACL Anthology](https://aclanthology.org/2026.wasp-1.19/) [Project](https://galaxywiki.nolank.ca/) |
@@ -258,6 +259,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [UNIONS and Euclid: Calibrating point source-galaxy separation for ground-based surveys](https://arxiv.org/abs/2611.34047 "Uses Euclid morphology to train and evaluate a point-source classifier for ground-based UNIONS data across more than 700,000 sources.") | **A&A 2026** | [Code](https://github.com/GFThomas/StarGal_ground_Euclid) | [Journal](https://doi.org/10.1051/0004-6361/202661856) |
 | 2026.11 | [Feature redundancy, redshift, and class-prior effects in SDSS--WISE photometric classification](https://arxiv.org/abs/2611.26310 "Five classifiers and twelve feature scenarios on 3.65 million SDSS–WISE sources quantify how redshift, feature redundancy and class priors alter photometric classification.") | arXiv 2026 | - | - |
 | 2026.11 | **Flow-VAE** [From Non-parametric Statistics to Images: Generating Galaxy Morphologies](https://arxiv.org/abs/2611.19211 "A variational autoencoder and conditional normalizing flow learn to generate galaxy images with specified morphology statistics from 240,000 DESI Legacy Surveys r-band images.") | arXiv 2026 | [Code](https://github.com/xuquanfeng/Galaxy_Flow_VAE) | [Data](https://www.legacysurvey.org/) |
 | 2026.08 | [A General-Purpose VLM Can Teach an Astronomy Foundation Model to Better Recognize Galaxy Morphology](https://arxiv.org/abs/2608.02300 "Distils a general-purpose VLM answering Galaxy Zoo decision tree questions into Zoobot through side tuning, with teacher uncertainty guiding which galaxies are sent for human labels.") | arXiv 2026 | - | - |
@@ -301,6 +303,8 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [Curvature Mismatch and Local Errors in Galaxy Property Estimation](https://arxiv.org/abs/2611.29224 "Tests how embedding curvature affects local physical-property errors from linear probes across five pretrained galaxy encoders.") | arXiv 2026 | - | - |
+| 2026.11 | [Towards three-dimensional dark matter mapping in the extended solar neighbourhood with Gaia Data Release 3 and deep learning](https://arxiv.org/abs/2611.33660 "Trains VNet and ViT-VNet on FIRE-2 simulations to map stellar kinematics to three-dimensional dark matter density and applies the models to Gaia DR3.") | arXiv 2026 | - | - |
 | 2026.11 | [Cross-Dataset Inference of Central-Satellite Classification and Host Halo Masses from Galaxy neighbours with Machine Learning](https://arxiv.org/abs/2611.24803 "XGBoost models trained on IllustrisTNG use ten-neighbour distances and stellar masses with domain alignment to classify centrals and satellites and infer host halo masses in EAGLE.") | arXiv 2026 | - | - |
 | 2026.11 | [The Role of Galactic Shear in Regulating Local Star Formation Efficiency: A Combined MaNGA DynPop and ALMaQUEST Study](https://arxiv.org/abs/2611.22300 "Random forest regression on spatially resolved MaNGA and ALMaQUEST measurements ranks galactic shear as the strongest dynamical correlate of lower local star-formation efficiency, with modest predictive power.") | arXiv 2026 | - | - |
 | 2026.11 | [Unsupervised learning reveals a small number of galaxy formation pathways in IllustrisTNG](https://arxiv.org/abs/2611.17559 "Uses UMAP and k-means on star-formation histories of roughly 10,000 IllustrisTNG galaxies to identify six groups with distinct assembly histories.") | arXiv 2026 | - | - |
@@ -335,6 +339,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | **Lens-Orchestra** [Toward Automated Strong-Lens Modeling with Agentic Workflows: An Application to Euclid Q1 Lenses](https://arxiv.org/abs/2611.33363 "Combines multimodal agents with physical forward modeling for 185 Euclid Q1 strong-lens candidates, yielding 140 usable models in independent human evaluation.") | arXiv 2026 | - | [Catalog](https://github.com/caoxiaoyue/lens-orchestra) |
 | 2026.11 | [Euclid Data Release 1 (DR1). Learning machine learning: Investigating the complementarity and biases of strong gravitational lens finding networks on Euclid data](https://arxiv.org/abs/2611.31231 "Five independently developed CNN and vision-transformer lens finders applied to about 68 million Euclid DR1 galaxies show distinct preferences in Einstein radius and compactness, and their combination recovers over 500 candidates in a 50 deg² calibration set within a 2,000-object inspection budget.") | arXiv 2026 | - | - |
 | 2026.11 | **Blind-FlowSGS** [Probabilistic Inversion of Strong Gravitational Lenses with Flow Matching Priors](https://arxiv.org/abs/2611.28983 "A blind posterior sampler with a flow-matching source prior jointly reconstructs source images and lens parameters, improving on diffusion-based samplers in accuracy and efficiency on simulated Euclid data.") | **NeurIPS 2026 Workshop (ML4PS)** | - | [Project](https://nubivlab.github.io/Blind-FlowSGS/) |
 | 2026.11 | [Euclid Data Release 1 (DR1). Double-source-plane lens candidates](https://arxiv.org/abs/2611.20166 "Machine-learning lens-candidate selection, visual vetting and lens modelling identify 84 double-source-plane candidates in Euclid DR1, including 11 gold candidates with two sets of multiple images.") | arXiv 2026 | - | [Data](https://www.cosmos.esa.int/web/euclid/data-release-dr1) |
@@ -459,15 +464,4 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 | 2020.11 | **Cyclic-Permutation Networks** [Classification of Periodic Variable Stars with Novel Cyclic-permutation Invariant Neural Networks](https://arxiv.org/abs/2011.01243 "Phase-folded light-curve classifiers that are invariant to cyclic permutations.") | **MNRAS 2021** | [Code](https://github.com/kmzzhang/periodicnetwork) | - |
 | 2019.07 | **braai** [Real-bogus Classification for the Zwicky Transient Facility Using Deep Learning](https://arxiv.org/abs/1907.11259 "CNN real-bogus classifier deployed in the ZTF alert pipeline.") | **MNRAS 2019** | [Code](https://github.com/dmitryduev/braai) | - |
 | 2019.04 | [DeepStreaks: Identifying Fast-moving Objects in the Zwicky Transient Facility Data with Deep Learning](https://arxiv.org/abs/1904.05920 "CNN ensemble that identifies streaks from fast-moving near-Earth objects in ZTF images.") | **MNRAS 2019** | [Code](https://github.com/dmitryduev/DeepStreaks) | - |
-| 2019.01 | [SuperNNova: An Open-Source Framework for Bayesian, Neural Network Based Supernova Classification](https://arxiv.org/abs/1901.06384 "Recurrent and Bayesian neural networks for light-curve classification.") | **MNRAS 2020** | [Code](https://github.com/supernnova/SuperNNova) | [Journal](https://doi.org/10.1093/mnras/stz3312) |
-| 2016.03 | **snmachine** [Photometric Supernova Classification with Machine Learning](https://arxiv.org/abs/1603.00882 "Feature extraction and classifier pipeline for photometric supernova typing.") | **ApJS 2016** | [Code](https://github.com/LSSTDESC/snmachine) | [Rubin Study](https://arxiv.org/abs/2107.07531) |
-
-<p align="right"><a href="#contents">Back to contents</a></p>
-
-## Exoplanets
-
-| Date | Paper | Venue | Code | Links |
-|:--|:--|:--|:--|:--|
-| 2026.11 | [Predicting the Orbital Retention of Habitable-Zone Planets Following Stellar Flybys Using Machine Learning](https://arxiv.org/abs/2611.29816 "An XGBoost classifier trained on three-body N-body simulations of stellar flybys predicts whether habitable-zone planets keep fully habitable orbits with a test ROC-AUC of 0.97, about 74 times faster than direct integration.") | arXiv 2026 | - | - |
-| 2026.11 | [NEXONN: Advancing the NEXOTRANS Exoplanet Atmospheric Retrieval Framework with Transformer-Based Neural Posterior Estimation for JWST Transmission Spectroscopy of WASP-39b](https://arxiv.org/abs/2611.23818 "Transformer-conditioned normalizing flows match PyMultiNest posteriors for simulated and JWST WASP-39 b spectra while reducing trained inference to seconds.") | arXiv 2026 | - | - |
-| 2026.11 | [A Homogeneous Benchmark of Exoplanet Mass-Radius Relations](https://arxiv.org/abs/2611.24812 "A unified 963-planet benchmark finds a multi-feature random forest reaches 0.32
+| 2019.01 

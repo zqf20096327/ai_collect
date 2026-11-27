@@ -9,15 +9,15 @@
 `dsh-plugin-agent-browser` · DSH 桌面端插件
 
 <p>
-  <img alt="version 1.4.24" src="https://img.shields.io/badge/version-1.4.24-2563eb?style=flat-square" />
+  <img alt="version 1.5.12" src="https://img.shields.io/badge/version-1.5.12-2563eb?style=flat-square" />
   <img alt="DSH 0.2.2 - 0.3.0" src="https://img.shields.io/badge/DSH-0.2.2%20~%200.3.0-1d4ed8?style=flat-square" />
-  <img alt="11 tools" src="https://img.shields.io/badge/tools-11-0f766e?style=flat-square" />
-  <img alt="196 tests passed" src="https://img.shields.io/badge/tests-196%20passed-16a34a?style=flat-square" />
+  <img alt="14 tools" src="https://img.shields.io/badge/tools-14-0f766e?style=flat-square" />
+  <img alt="335 tests passed" src="https://img.shields.io/badge/tests-335%20passed-16a34a?style=flat-square" />
   <img alt="platform Windows and macOS" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS-475569?style=flat-square" />
   <img alt="license MIT" src="https://img.shields.io/badge/license-MIT-0284c7?style=flat-square" />
 </p>
 
-[什么时候用](#什么时候会用到它) · [快速开始](#快速开始) · [它能做什么](#它能做什么) · [十一个工具](#十一个工具) · [接管](#人机验证与接管) · [安全](#安全与隐私) · [设置页](#设置页) · [配置](#配置) · [文档地图](#文档地图)
+[什么时候用](#什么时候会用到它) · [快速开始](#快速开始) · [它能做什么](#它能做什么) · [十四个工具](#十四个工具) · [接管](#人机验证与接管) · [安全](#安全与隐私) · [设置页](#设置页) · [配置](#配置) · [文档地图](#文档地图)
 
 </div>
 
@@ -62,7 +62,7 @@ DSH 桌面端本来就能开网页：你点开、你操作。这个插件补的�
 | 留下整页证据、把附件下载回来 | | | ✅ 手动 | ✅ 带 sha256 |
 | 遇到人机验证 | | | ✅ | 检测到就交给你 |
 
-浏览器本身不缺，缺的是**给 Agent 用的那一层**：可寻址的元素（`ref`）、可回放的错误（13 个稳定错误码）、可交还的控制权（顶部那条接管按钮）。这三样才是这个插件的正文。
+浏览器本身不缺，缺的是**给 Agent 用的那一层**：可寻址的元素（`ref`）、可回放的错误（21 个稳定错误码）、可交还的控制权（顶部那条接管按钮）。这三样才是这个插件的正文。
 
 判据、计费与边界讨论见 [`docs/design/web-tools-and-agent-browser.md`](docs/design/web-tools-and-agent-browser.md)。
 
@@ -71,14 +71,14 @@ DSH 桌面端本来就能开网页：你点开、你操作。这个插件补的�
 | 能力 | 具体是什么 |
 |---|---|
 | **侧栏里的真浏览器** | Electron `<webview>`，不是截图流、也不是无头浏览器。登录态、Cookie、JS 渲染、跨域 iframe 都是真的，页面就在你眼前 |
-| **快照带 `ref`** | `browser_snapshot` 把无障碍树 + 一张截图一起给模型，可交互元素都带 `[ref=eN]`；点击、输入、悬停直接用 ref，不用猜坐标 |
-| **十一个工具** | 打开 / 快照 / 点击 / 滚动 / 悬停 / 缩放 / 截图 / 输入 / 按键 / 求值 / 下载，覆盖一个正常人会用浏览器做的事 |
+| **快照带 `ref`** | `browser_snapshot` 把无障碍树 + 一张截图一起给模型，可交互元素都带 `[ref=eN]`，能算出稳定路径时还带 `[loc="css:…"]`；点击、输入、悬停直接用 ref/loc，不用猜坐标。树被预算截断时返回 `cursor`，下次带 `cursor` 续读下一段；页面在两次快照之间打印的 console 与未捕获错误会附在末尾（最多 10 条） |
+| **十四个工具** | 打开 / 快照 / 标签页 / 等待 / 点击 / 滚动 / 悬停 / 缩放 / 截图 / 输入 / 按键 / 上传 / 求值 / 下载，覆盖一个正常人会用浏览器做的事 |
 | **验证墙不硬闯** | 检测到 Cloudflare、reCAPTCHA、滑块这类验证页就停下，把控制权交给你；你过完再交还，Agent 会收到一段「你不在时发生了什么」的摘要 |
 | **证据落盘** | 截图默认拼接整页，下载件落盘，两者都带尺寸 / 字节数 / sha256，能直接当报告附件 |
 | **失败不毁现场** | 导航失败自动退回上一页，错误里带 `nav_dns` / `nav_cert` / `nav_blocked` 等具体原因；错误页上不会返回空树假成功 |
 | **过程看得见** | Web 端为截图 / 打开 / 下载各出一张工具卡片，模型调了什么、页面长什么样，一眼可查 |
 | **设置就在 DSH 里** | 装好后「设置」左侧多一页 **浏览器面板**：行为、预算、下载、搜索兜底、会话白名单、本地文件服务六组表单，改完保存即可，不用手改 YAML |
-| **工程化底座** | 动态端口 + 每进程令牌、13 个稳定错误码、取消、策略接缝、196 个单测 |
+| **工程化底座** | 动态端口 + 每进程令牌、21 个稳定错误码、取消、策略接缝、335 个单测 |
 
 ## 快速开始
 
@@ -93,11 +93,11 @@ DSH 桌面端本来就能开网页：你点开、你操作。这个插件补的�
 
 ### 2. 装包
 
-在对话里让 Agent 安装仓库里的 tgz（装完**不需要重启** DSH）：
+在对话里让 Agent 安装仓库里的 tgz（装完通常无需重启；若面板行为还是旧的，说明客户端 bundle 被缓存了，完整重启一次 DSH 即可）：
 
 ```text
 plugin_manager action: install_bundle
-                target: dist/dsh-plugin-agent-browser/dsh-plugin-agent-browser-1.4.24.tgz
+                target: dist/dsh-plugin-agent-browser/dsh-plugin-agent-browser-1.5.12.tgz
 ```
 
 ### 3. 打开面板
@@ -116,19 +116,22 @@ Agent 会自己走完 `browser_open` → `browser_snapshot` → 按 `ref` 点搜
 
 点面板顶部的 **「我来接管」**。此时 Agent 的 `open` / `click` / `type` / `press` / `eval` 全部被拒绝，但 `browser_snapshot` 仍然可用——它得能看见你做了什么。点「交还 Agent」时，面板会先截一张图，把交接摘要交给它。
 
-## 十一个工具
+## 十四个工具
 
 | 工具 | 作用 |
 |---|---|
-| `browser_open` | 打开 http(s) 地址；或传 `path` 打开工作区里的 HTML（自动起只读本地服务） |
-| `browser_snapshot` | 读当前页面的无障碍树（带 `[ref=eN]`）+ 一张截图；`includeImage:false` 可省掉截图 |
-| `browser_click` | 点某个 `ref`；没有 ref 时传 CSS `selector`（失败会分型报告 `not_found` / `multiple` / `occluded` / `disabled`） |
-| `browser_scroll` | 滚动页面或某个容器，返回位置与 `atBottom`；懒加载列表靠它触发 |
+| `browser_open` | 打开 http(s) 地址；或传 `path` 打开工作区里的 HTML（自动起只读本地服务）；`newTab:true` 时在面板里另开一个标签，当前页留在后面不丢 |
+| `browser_tabs` | 列出、切换、关闭面板里的标签页（`action: "list"` / `"switch"` / `"close"`，`tab` 传标签 id）；切换保留每个标签的页面状态，关最后一个会先开一张空白页 |
+| `browser_snapshot` | 读当前页面的无障碍树（带 `[ref=eN]`；能算出稳定路径时紧跟 `[loc="css:…"]`）+ 一张截图；`includeImage:false` 可省掉截图；被字符预算截断时返回 `cursor`，带 `cursor` 再调用可续读下一段（页面变了会返回 `stale_cursor`）；页面自己打印的 console/未捕获错误也会附在末尾（最多 10 条，每次快照清空） |
+| `browser_wait` | 等某个 CSS 选择器或页面文字出现（`gone:true` 等它消失），超时返回 `timedOut`；纯读、无需确认，异步加载先等再快照 |
+| `browser_click` | 点某个 `ref`；ref 过期时改用快照里的 `loc="css:…"`（跨快照有效），或直接传 CSS `selector`（失败会分型报告 `not_found` / `multiple` / `occluded` / `disabled`） |
+| `browser_scroll` | 滚动页面/容器（`dy` / `to` / `container`），或按 `ref` / `loc` / `selector` 把某个元素滚进视口，返回位置、`atBottom`、元素 `rect` 与 `visible` / `fullyVisible` |
 | `browser_hover` | 把指针移到元素上但不按，返回落点与 `grew`；叠卡、悬浮菜单要先 hover 再点 |
 | `browser_zoom` | 缩放页面 25%–300%；缩小会给页面更宽的排版视口，桌面站才塞得进窄侧栏 |
 | `browser_screenshot` | 存 PNG 到工作区 `screenshots/`，返回路径、尺寸、sha256；默认长页拼接成整页图 |
-| `browser_type` | 往输入框写文字，`submit:true` 顺带回车；**密码框一律拒绝**，交给人来输 |
+| `browser_type` | 往输入框写文字（`ref` 或 `loc` 定位），`submit:true` 顺带回车；**密码框一律拒绝**，交给人来输 |
 | `browser_press` | 按一个键或组合键；`Alt+Left` / `Alt+Right` / `F5` 会走面板的导航动作 |
+| `browser_upload` | 把工作区里的文件放进页面的 `<input type=file>`：写动作、站点首次确认；单文件 2 MiB / 合计 4 MiB / 最多 5 个，路径不许出工作区 |
 | `browser_eval` | 在页面里求值（不够用时才用，永远不要用它绕过登录或验证）；可整体关闭 |
 | `browser_download` | 把附件下到工作区 `downloads/`，返回路径、字节数、sha256；可执行类扩展名会被拒 |
 
@@ -183,7 +186,7 @@ client 半 · 侧栏 tab / 四态徽章 / 三张工具卡片 / <webview>
 
 ![设置 → 浏览器面板：顶部是桥的状态行，下面是行为、预算、下载、搜索兜底、会话白名单、本地文件服务六组字段](docs/assets/settings-page.png)
 
-顶部那行现况（桥 `http://127.0.0.1:6549` · 工具 11 个 · 面板 client 1 个）就是排查入口：数字不对，先看插件有没有加载，再看是不是有别的后端在抢面板。
+顶部那行现况（桥 `http://127.0.0.1:6549` · 工具 14 个 · 面板 client 1 个）就是排查入口：数字不对，先看插件有没有加载，再看是不是有别的后端在抢面板。
 
 | 分组 | 能改什么 | 保存后 |
 |---|---|---|
@@ -228,6 +231,18 @@ client 半 · 侧栏 tab / 四态徽章 / 三张工具卡片 / <webview>
 | `activation` | `auto` | `auto` 只有需要页面的动作才展开面板；`always` 每次都亮；`manual` 要你自己先开 |
 | `evalEnabled` | `true` | 是否允许 `browser_eval` 在页面里跑任意 JS；不可信页面建议关 |
 | `searchFallback.enabled` | `false` | 导航失败时附上同站候选（按次计费，默认关，绝不自动打开） |
+| `approvals.mode` | `first-touch` | 写动作（输入、提交、下载、脚本）在同站点第一次出现时问一次；`off` 回到 1.4.x 的直接执行 |
+| `approvals.timeoutMs` | `30000` | 确认条等待时长，超时按「拒绝」处理，不执行 |
+| `approvals.sensitiveSites` | `[]` | 这些站点每次都问，即使选过「本会话允许本站」 |
+| `dialogs.mode` | `record` | 页面 `alert/confirm/prompt` 默认被拦截并记录（`confirm` 答否、`prompt` 答取消），页面不冻结；`off` 恢复原生弹窗（会冻结到人点掉） |
+
+## 写动作确认（`approvals`，默认开启）
+
+读动作从不打扰：`open`、`snapshot`、`scroll`、`hover`、`screenshot`、普通链接近导航都直接执行。五类写动作会在一处**站点 × 会话**粒度上问一次：输入文字（type）、会提交表单的点击/Enter（submit）、下载（download）、页面脚本（eval）、上传文件（upload）。确认条长在面板顶部，三个按钮「允许一次 / 本会话允许本站 / 拒绝」，Enter 等于拒绝；面板不可见时立即失败而不是干等 30 秒；你点「我来接管」的那一瞬，待确认的写动作自动作废。
+
+页面里的 JS 弹窗（`alert` / `confirm` / `prompt`）默认由注入守卫拦截并记录，不会冻结页面、也不会擅自点「确定」；内容会出现在随后那次操作的结果里（`blocked dialogs`），可用 `dialogs.mode` 切回原生行为（[`docs/tickets/041`](docs/tickets/041-js-dialogs.md)）。
+
+写动作的结果带三态 `effect`：成功是 `committed`；在命令离开宿主前失败（参数、审批、策略、人工相位）是 `none`，重试是安全的；面板已经把命令拉走却丢了回执（超时、取消、被接管、插件停止）是 `unknown`，此时工具报 `action_unknown`（不可重试），hint 会要求先 `browser_snapshot` 核对页面再决定——**不要重发同一动作**。这条规则对 `submit` / `download` / `eval` 尤其重要（[`docs/spec/004`](docs/spec/004-capability-admission-spec.md) §4 B4、[`docs/tickets/042`](docs/tickets/042-action-effect-tri-state.md)）。
 
 ## 已知限制
 
@@ -235,18 +250,21 @@ client 半 · 侧栏 tab / 四态徽章 / 三张工具卡片 / <webview>
 - **一个 profile 只能启用一个浏览器后端**。两套插件都注册 `browser_*` 工具，宿主会拒绝第二次注册；启用前先停掉另一个。
 - **DSH 窗口在后台或最小化时不绘制**，也不接收合成输入：点击会"没反应"、截图会超时。把窗口切到前台即可，这不是插件 bug。
 - **跨域 iframe 只能给占位**，里面的元素必须用坐标点；canvas 同理。
-- **验证墙可能漏报**。检测器按 URL / 标题 / DOM / 文案判断，真实 Cloudflare 挑战页有漏报记录（[`docs/tickets/033`](docs/tickets/033-challenge-detection-gap.md)）；上线按"检测可能不触发，请人工接管"使用。
+- **验证墙可能漏报**。检测器按 URL / 标题 / DOM / 文案判断；1.5.x 补上了「正在进行安全验证 / 验证您是人类」这类文案、`challenge-platform` iframe 与打开后 2 秒内的二次复检，并已在 `nopecha.com/demo/cloudflare` 真站回归通过（`needs_human` → 脚本被拒 → 人工过墙后恢复，[`docs/tickets/033`](docs/tickets/033-challenge-detection-gap.md)）；其他厂商的墙尚未取样，上线仍按「检测可能不触发，请人工接管」使用。
+- **写动作确认按站点判断，不按登录态**：面板读不到 HttpOnly Cookie，所以无法区分「登录后的页面」；只好用「站点首次写动作」这个可观测信号代替（[`docs/spec/003`](docs/spec/003-first-touch-approval-spec.md)）。
+- **只覆盖五类写动作**：输入、会提交表单的点击/Enter、下载、脚本、上传。非表单按钮的副作用（比如「删除」按钮发 `fetch`）按读处理，不会被拦。
 - **`browser_download` 走宿主侧 `fetch`，不带页面 Cookie**：需要登录态才能下载的链接会拿到登录页而不是文件。
 - **`target=_blank` 的附件是黑洞**：点了既不导航也不落盘，附件一律用 `browser_download({ url })`。
-- **取消只保证"不再等、不再下发新命令"**，已经发到页面里的动作不会撤销。
+- **取消只保证"不再等、不再下发新命令"**，已经发到页面里的动作不会撤销；写动作若已被面板拉走，取消后返回 `action_unknown`（可能已执行，先 snapshot 核对）。
 - **整页拼接有上限**：默认 10000 CSS 像素、最多 16000 设备像素行，超了会停下并在结果里标 `truncated`。
+- **JS 弹窗只覆盖页面脚本期**：守卫在 `dom-ready` 后注入，内联脚本在解析期弹的窗、以及 `beforeunload` 的「页面留人」仍未处理（前者需 preload 探针，后者需宿主 `will-prevent-unload`）；普通 `alert/confirm/prompt` 已拦截并记录。
 
 更多已知问题与处置见[用户手册 · 故障排查](dist/dsh-plugin-agent-browser/README.md#故障排查)。
 
 ## 仓库结构
 
 ```
-plugin/         插件源码 —— 11 个工具、快照引擎、桥、守卫、注入脚本，以及 20 余个单测
+plugin/         插件源码 —— 14 个工具、快照引擎、桥、守卫、注入脚本，以及 20 余个单测
 dist/           打包产物 —— 可安装的 tgz、装机版 README、cordis.patch.yml
 demo/           本地测试夹具 —— V2/V3/V4 直接跑的那几个文件
 tools/          工程工具 —— pack（打包）、check-docs（文档一致性）、testsite（本地测试站）、case-run（案例探针与夹具）
@@ -258,15 +276,15 @@ screenshots/    运行截图 —— 案例证据与复跑留档
 
 | 文档 | 内容 |
 |---|---|
-| [用户手册](dist/dsh-plugin-agent-browser/README.md) | 安装 / 升级 / 卸载、全部配置字段、11 个工具、故障排查 |
+| [用户手册](dist/dsh-plugin-agent-browser/README.md) | 安装 / 升级 / 卸载、全部配置字段、14 个工具、故障排查 |
 | [与内置联网工具的分工](docs/design/web-tools-and-agent-browser.md) | 三层能力对比、`search → fetch → open` 判据、计费风险 |
 | [为什么不复用官方浏览器工具](docs/design/browser-use-contract.md) | 48 行互斥锁、MCP provider、三条路线对比 |
 | [技术规格](docs/spec/001-agent-browser-plugin-spec.md) | 工具契约、状态机、快照格式、安全边界 |
 | [官方对齐规格](docs/spec/002-official-alignment-spec.md) | B1–B11 / M1–M5 / U1–U7 与版本线 1.1.0–1.4.3 |
-| [决策记录](docs/decisions/README.md) | 9 篇：通道选型、为什么不用 CDP、动态端口与令牌…… |
-| [取证与验收](docs/cases) | 探针结果、快照引擎、接管、打包、spec 审计、四套案例集 |
-| [ticket 列表](docs/tickets) | 34 张，含失败模式与验收证据 |
-| [发布说明](docs/release/release-notes-1.4.md) | 1.4.3 产物、行为变化、未验证项、回滚 |
+| [决策记录](docs/decisions/README.md) | 10 篇：通道选型、为什么不用 CDP、动态端口与令牌、首次写动作确认…… |
+| [取证与验收](docs/cases) | 探针结果、快照引擎、接管、打包、spec 审计、五套案例集（含首写确认 F1–F12） |
+| [ticket 列表](docs/tickets) | 47 张，含失败模式与验收证据 |
+| [发布说明](docs/release/release-notes-1.5.md) | 1.5.x 产物、行为变化、未验证项、回滚 |
 | [工作区日志](PROGRESS.md) | 开发期进度、踩坑、下一步 |
 
 ## 开发
@@ -274,7 +292,7 @@ screenshots/    运行截图 —— 案例证据与复跑留档
 仓库是纯 JS，**没有构建步骤**；插件源码在 `plugin/`，发布产物在 `dist/`。
 
 ```bash
-# 单测（196 例）
+# 单测（335 例）
 node --test --test-timeout=60000 plugin/test/*.test.mjs
 
 # 打包 tgz

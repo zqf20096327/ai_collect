@@ -37,12 +37,12 @@ flowchart LR
 
     subgraph SecurityLayer["Camada de Segurança Nativa"]
         PIN["PIN de 6 dígitos"]
-        OSVault["Windows DPAPI / Linux Secret Service\n+ ZeroizeOnDrop"]
+        OSVault["PIN: Windows DPAPI / Linux Secret Service\n+ ZeroizeOnDrop"]
     end
 
     subgraph Gateway["KeyHybrid Local Gateway (Go :8090)"]
         Proxy["Reverse Proxy Multimodal\n/v1/chat, /v1/audio, /v1/videos"]
-        AES["AES-256-GCM\n(~/.keyhybrid/.master.key)"]
+        AES["AES-256-GCM\n(~/.keyhybrid/.master.key.wrapped:\nDPAPI no Windows, Secret Service no Linux)"]
         DB[("SQLite local\nsecret_key = enc:v1:...")]
     end
 
@@ -66,8 +66,8 @@ flowchart LR
 ## Pilares de segurança
 
 - **Isolamento por alias (`kh-<alias>`)**: nenhuma ferramenta externa vê a chave real; o gateway descriptografa em RAM só no instante da chamada HTTPS.
-- **Criptografia dupla em repouso**: AES-256-GCM no SQLite com chave mestra local (`0600`) + DPAPI/Secret Service para credenciais e PIN, com `Zeroize` em Rust.
-- **Fallback de guardrail**: se a OpenRouter recusar um modelo (`HTTP 404`), o gateway reroteia para `openrouter/auto` sem quebrar o agente.
+- **Criptografia em repouso**: AES-256-GCM no SQLite com chave mestra local. No Windows a chave mestra é selada por DPAPI; no Linux fica no chaveiro do sistema (Secret Service), destravado no login, e o arquivo guarda só um marcador ([#40](https://github.com/in100tiva/KeyHybrid/issues/40)), então copiar `~/.keyhybrid` sozinho já não abre o cofre. Limite: com o chaveiro destravado, qualquer processo da sua sessão lê o item. Se o chaveiro for recriado, o cofre volta pelo `.khvault`: mantenha o backup em dia. Sem Secret Service (container) a chave fica em arquivo `0600` em claro, com aviso em todo boot. O hash Argon2id do PIN vai para o keyring do SO (Windows Credential Manager/Secret Service) e para um arquivo `0600`, com `Zeroize` em Rust.
+- **Sem troca silenciosa de modelo**: o modelo pedido vai ao provedor como veio; se ele recusar (`HTTP 404`, guardrail da OpenRouter), o erro volta ao cliente como veio. O `default_model` da chave só entra quando o pedido não traz modelo.
 
 ## Download
 
@@ -117,7 +117,7 @@ curl http://127.0.0.1:8090/v1/chat/completions \
   -d '{"model":"openrouter/auto","messages":[{"role":"user","content":"oi"}]}'
 ```
 
-Chaves de serviço (Vercel, Supabase, GitHub), `kh run` e limitações conhecidas: **[docs/USAGE.md](docs/USAGE.md)**.
+Chaves de serviço (Vercel, Supabase, GitHub), `kh run`, `kh list` e limitações conhecidas: **[docs/USAGE.md](docs/USAGE.md)**.
 
 ## Rodar com Docker
 
@@ -158,7 +158,7 @@ Guia completo em **[docs/INSTALL.md](docs/INSTALL.md)**.
 
 | Item | Status |
 | --- | --- |
-| CI (Go + Rust + SvelteKit) | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — `gofmt`, `go vet`, `go build`, `go test -race`, `svelte-check`, build estático, `cargo fmt --check` e `cargo clippy -D warnings` |
+| CI (Go + Rust + SvelteKit) | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — `gofmt`, `go vet`, `go build`, `go test -race`, `govulncheck`, `svelte-check`, build estático, `cargo fmt --check`, `cargo clippy -D warnings` e `cargo audit` |
 | Revisão de dependências | [`.github/workflows/dependency-review.yml`](.github/workflows/dependency-review.yml) — barra PRs que adicionam dependências com severidade alta |
 | Releases automatizadas | [`.github/workflows/release.yml`](.github/workflows/release.yml) — binários cross-compiled, checksums e notas de release categorizadas por tag `v*` |
 | Procedência dos artefatos | Build provenance assinado pelo GitHub (`actions/attest-build-provenance`) em cada binário e checksum — ver [SECURITY.md](SECURITY.md#verificação-de-artefatos) |

@@ -6,7 +6,7 @@
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-22c55e.svg)](pyproject.toml)
 [![wasabihu/sessfork MCP server](https://glama.ai/mcp/servers/wasabihu/sessfork/badges/score.svg)](https://glama.ai/mcp/servers/wasabihu/sessfork)
 
-**English** · [简体中文](README.zh-CN.md) · [Native Rust Moli MCP](rust/sessfork-mcp/README.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/) · [Stress Benchmarks](docs/benchmarks.md)
+**English** · [简体中文](README.zh-CN.md) · [Native Rust CDP MCP](rust/sessfork-mcp/README.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/) · [Stress Benchmarks](docs/benchmarks.md) · [Security Audit Report](docs/security-report.md)
 
 **Fork live Chrome auth sessions (Cookies + LocalStorage) into headless AI agent browsers — zero window focus theft, zero runtime dependencies.**
 
@@ -70,7 +70,7 @@ uv tool install -e .
 
 ---
 
-## 5 Real-World Copy-Paste Examples
+## 6 Real-World Copy-Paste Examples
 
 Once installed, you don't even have to remember CLI flags. Copy any prompt below straight to your AI agent — or run the 1-line command directly.
 
@@ -120,6 +120,15 @@ sessfork x.com --browser arc
 sessfork console.cloud.google.com --profile "Profile 1"
 ```
 
+### 6. Feed Live Sessions Straight into `agent-browser` (Zero Profile Copy)
+
+Because `sessfork` writes standard Playwright `storageState` JSON (`0600`), you can pass a single domain's `HttpOnly` cookies + `localStorage` straight into [`vercel-labs/agent-browser`](https://github.com/vercel-labs/agent-browser) without copying a multi-GB Chrome profile or restoring unrelated tabs:
+
+```bash
+sessfork example.com --target none --state-file ~/.sessfork/agent-browser.json
+agent-browser --state ~/.sessfork/agent-browser.json open https://example.com
+```
+
 ---
 
 ## Architecture & Highlights
@@ -137,7 +146,7 @@ sessfork console.cloud.google.com --profile "Profile 1"
 
 ## Stress Benchmarks (`chrome-headless-shell` vs. `moli` + Node vs. `moli` + Rust `sessfork-mcp`)
 
-![Chrome Headless Shell vs Moli + Node MCP vs Moli + Rust sessfork-mcp Benchmark](docs/assets/benchmark-v014-en.png)
+![Single-Host AI Browser Ceiling: 56 Chrome vs 160 Moli Parallel Agents with Rust sessfork-mcp](docs/assets/benchmark-v022-en.png)
 
 Measured locally on Apple Silicon (`macOS 26.6.2 arm64`, M5 24 GB, Python 3.14.7, `@playwright/mcp@0.0.85`, `moli 1.1.27`, `sessfork-mcp 0.1.4`) via [`scripts/stress_test.py`](scripts/stress_test.py) (zero external requests). Full methodology & 3-way breakdown in **[docs/benchmarks.md](docs/benchmarks.md)**.
 

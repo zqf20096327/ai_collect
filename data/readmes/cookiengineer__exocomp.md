@@ -25,7 +25,7 @@ Quark on Deep Space 9, trying to sell you an Exocomp robot:
 > Why hire when you can own? The Exocomp isn't just a tool... it's so much more!
 > 
 > - Supervised task queue functionality
-> - Multiple agent roles as `architect`, `coder`, `exploiter`, `planner`, `reproducer`, `reverser`, `summarizer`, `tester`, `threathunter`, `webresearcher`, `webscanner`
+> - Multiple agent roles as `architect`, `coder`, `exploiter`, `pentest-lead`, `software-lead`, `reproducer`, `reverser`, `summarizer`, `tester`, `threathunter`, `webresearcher`, `webscanner`
 > - Precision repairs of broken code with unit tests
 > - Cross-agent communication via `changelog`, `bugs` and `requirements` tools
 > - Self-replicating short lived agents in malicious environments
@@ -44,19 +44,20 @@ Exocomp uses multiple [Agent Roles](./source/agents/Roles.go):
 
 *Software Development*
 
-| Role                                          | Lifecycle | Default Model                       | Description                                      |
-|:----------------------------------------------|:---------:|:-----------------------------------:|:-------------------------------------------------|
-| [planner](./source/agents/planner.yaml)       | long      | `deepseek-v4-pro:cloud`             | writes with humans and plans project phases      |
-| [architect](./source/agents/architect.yaml)   | short     | `huihui_ai/Qwen3.8-abliterated:27b` | defines software specifications                  |
-| [coder](./source/agents/coder.yaml)           | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements specifications into code              |
-| [webresearcher](./source/agents/webresearcher.yaml) | short | `huihui_ai/Qwen3.8-abliterated:27b` | summarizes public writeups, docs and advisories |
-| [summarizer](./source/agents/summarizer.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | reads long texts and summarizes them             |
-| [tester](./source/agents/tester.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements unit tests, writes bug reports        |
+| Role                                                | Lifecycle | Default Model                       | Description                                     |
+|:----------------------------------------------------|:---------:|:-----------------------------------:|:------------------------------------------------|
+| [software-lead](./source/agents/software-lead.yaml) | long      | `deepseek-v4-pro:cloud`             | writes with humans and plans software phases    |
+| [architect](./source/agents/architect.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | defines software specifications                 |
+| [coder](./source/agents/coder.yaml)                 | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements specifications into code             |
+| [webresearcher](./source/agents/webresearcher.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | summarizes public writeups, docs and advisories |
+| [summarizer](./source/agents/summarizer.yaml)       | short     | `huihui_ai/Qwen3.8-abliterated:27b` | reads long texts and summarizes them            |
+| [tester](./source/agents/tester.yaml)               | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements unit tests, writes bug reports       |
 
 *Pentesting*
 
 | Role                                              | Lifecycle | Default Model                       | Description                                   |
 |:--------------------------------------------------|:---------:|:-----------------------------------:|:----------------------------------------------|
+| [pentest-lead](./source/agents/pentest-lead.yaml) | long      | `deepseek-v4-pro:cloud`             | scopes, plans, delegates and reports pentests |
 | [exploiter](./source/agents/exploiter.yaml)       | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements exploits in CGo                    |
 | [reproducer](./source/agents/reproducer.yaml)     | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements findings into Go unit tests        |
 | [reverser](./source/agents/reverser.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | translates binaries or code into Go/CGo code  |
@@ -78,21 +79,24 @@ to beat the context length and agent memory limitations of locally run models.
 
 Check the unit tests on whether the Tools can be relied on or not.
 
-| Tool                                           | Unit Tests?                                | Description                                         | Agent Roles                                                        |
-|:-----------------------------------------------|:------------------------------------------:|:----------------------------------------------------|:------------------------------------------------------------------:|
-| [Agents](./source/tools/agents/Agents.go)             | [Yes](./source/tools/agents/Agents_test.go) [1]   | manages contractor lifecycle and profile switch     | all roles                                                          |
-| [Assets](./source/tools/assets/Assets.go)             | [Yes](./source/tools/assets/Assets_test.go)       | stores and imports recon assets                     | `exploiter`, `planner`, `reproducer`, `reverser`, `threathunter`, `webscanner` |
-| [Bugs](./source/tools/bugs/Bugs.go)                 | [Yes](./source/tools/bugs/Bugs_test.go)         | manages documentation of discovered bugs            | `planner`, `architect`, `coder`, `tester`                          |
-| [Changelog](./source/tools/changelog/Changelog.go)       | [Yes](./source/tools/changelog/Changelog_test.go)    | manages documentation of development changelog      | `coder`, `tester`, `exploiter`, `reverser`                         |
-| [Containers](./source/tools/containers/Containers.go)     | [Yes](./source/tools/containers/Containers_test.go)   | manages podman containers                           | `exploiter`, `reproducer`, `reverser`, `threathunter`              |
-| [Files](./source/tools/files/Files.go)               | [Yes](./source/tools/files/Files_test.go)        | interacts with files and folders                    | all roles                                                          |
-| [Humans](./source/tools/humans/Humans.go)             | [Yes](./source/tools/humans/Humans_test.go)       | asks questions and requests temporary capabilities  | all roles                                                          |
-| [Findings](./source/tools/findings/Findings.go)         | [Yes](./source/tools/findings/Findings_test.go)     | stores findings, imports scanner results and evidence | `exploiter`, `planner`, `reproducer`, `threathunter`, `webscanner` |
-| [Programs](./source/tools/programs/Programs.go)         | [Yes](./source/tools/programs/Programs_test.go)     | interacts with installed programs                   | all roles                                                          |
-| [Requirements](./source/tools/requirements/Requirements.go) | [Yes](./source/tools/requirements/Requirements_test.go) | manages specifications of implementations           | `planner`, `architect`, `coder`, `tester`                          |
-| [Shell](./source/tools/shell/Shell.go)               | [Yes](./source/tools/shell/Shell_test.go)        | manages interactive PTY sessions inside the sandbox | `exploiter`, `reverser`, `threathunter`, `webscanner`              |
-| [Skills](./source/tools/skills/Skills.go)             | [Yes](./source/tools/skills/Skills_test.go)       | loads and Unloads Agent Skills [2]                  | `planner`                                                          |
-| [Websites](./source/tools/websites/Websites.go)         | [Yes](./source/tools/websites/Websites_test.go)     | fetches websites in Reader Mode                     | `exploiter`, `threathunter`, `webresearcher`, `webscanner`         |
+| Tool                                                        | Unit Tests?                                             | Description                                           | Agent Roles                                                                                          |
+|:------------------------------------------------------------|:-------------------------------------------------------:|:------------------------------------------------------|:----------------------------------------------------------------------------------------------------:|
+| [Agents](./source/tools/agents/Agents.go)                   | [Yes](./source/tools/agents/Agents_test.go) [1]         | manages contractor lifecycle and profile switch       | all roles                                                                                            |
+| [Assets](./source/tools/assets/Assets.go)                   | [Yes](./source/tools/assets/Assets_test.go)             | stores and imports recon assets                       | `exploiter`, `pentest-lead`, `software-lead`, `reproducer`, `reverser`, `threathunter`, `webscanner` |
+| [Browser](./source/tools/browser/Browser.go)                | [Yes](./source/tools/browser/Browser_test.go)           | controls headless Chromium and exports cookies        | `exploiter`, `reproducer`, `webresearcher`, `webscanner`                                             |
+| [Bugs](./source/tools/bugs/Bugs.go)                         | [Yes](./source/tools/bugs/Bugs_test.go)                 | manages documentation of discovered bugs              | `software-lead`, `architect`, `coder`, `tester`                                                      |
+| [Changelog](./source/tools/changelog/Changelog.go)          | [Yes](./source/tools/changelog/Changelog_test.go)       | manages documentation of development changelog        | `coder`, `tester`, `exploiter`, `reverser`                                                           |
+| [Containers](./source/tools/containers/Containers.go)       | [Yes](./source/tools/containers/Containers_test.go)     | pulls, inspects and executes in podman containers     | `exploiter`, `reproducer`, `reverser`, `threathunter`                                                |
+| [Facts](./source/tools/facts/Facts.go)                      | [Yes](./source/tools/facts/Facts_test.go)               | stores observations and negative results              | `pentest-lead`, `exploiter`, `reproducer`, `reverser`, `threathunter`, `webresearcher`, `webscanner` |
+| [Files](./source/tools/files/Files.go)                      | [Yes](./source/tools/files/Files_test.go)               | interacts with files and folders                      | all roles                                                                                            |
+| [Humans](./source/tools/humans/Humans.go)                   | [Yes](./source/tools/humans/Humans_test.go)             | asks questions and requests temporary capabilities    | all roles                                                                                            |
+| [Findings](./source/tools/findings/Findings.go)             | [Yes](./source/tools/findings/Findings_test.go)         | stores findings, imports scanner results and evidence | `exploiter`, `pentest-lead`, `software-lead`, `reproducer`, `threathunter`, `webscanner`             |
+| [Processes](./source/tools/processes/Processes.go)          | [Yes](./source/tools/processes/Processes_test.go)       | starts detached scans and listeners                   | `exploiter`, `reproducer`, `reverser`, `threathunter`, `webscanner`                                  |
+| [Programs](./source/tools/programs/Programs.go)             | [Yes](./source/tools/programs/Programs_test.go)         | interacts with installed programs                     | all roles                                                                                            |
+| [Requirements](./source/tools/requirements/Requirements.go) | [Yes](./source/tools/requirements/Requirements_test.go) | manages specifications of implementations             | `software-lead`, `architect`, `coder`, `tester`                                                      |
+| [Shell](./source/tools/shell/Shell.go)                      | [Yes](./source/tools/shell/Shell_test.go)               | manages interactive PTY sessions inside the sandbox   | `exploiter`, `reverser`, `threathunter`, `webscanner`                                                |
+| [Skills](./source/tools/skills/Skills.go)                   | [Yes](./source/tools/skills/Skills_test.go)             | loads and Unloads Agent Skills [2]                    | `pentest-lead`, `software-lead`                                                                      |
+| [Websites](./source/tools/websites/Websites.go)             | [Yes](./source/tools/websites/Websites_test.go)         | fetches websites in Reader Mode                       | `exploiter`, `threathunter`, `webresearcher`, `webscanner`                                           |
 
 - [1] Requires `llama.cpp` with `huihui_ai/Qwen3.8-abliterated:27b` at `Q4_K_M` quantization and 32GB VRAM GPU with `vulkan` support.
 - [2] Implements `SKILL.md` support, in compliance with [agentskills.io/specification](https://agentskills.io/specification).
@@ -149,7 +153,7 @@ EXOCOMP_AGENT=/tmp/exocomp-agent go run ./cmds/exocomp-web/main.go web;
 ### Configuring
 
 It's possible to provide a global default configuration inside the file `~/.config/exocomp/config.yaml`,
-which is inherited by the `planner` mode agent.
+which is inherited by the `software-lead` mode agent.
 
 Provider-specific configurations are delegated to sub-agents if they have a model
 configured with provider which is setup in the global configuration file.
@@ -159,7 +163,7 @@ aliases can be maintained in a provider-specific manner.
 
 ```yaml
 name: "Peanut Hamper"
-role: "planner"
+role: "software-lead"
 model: "deepseek-v4-pro:cloud"
 providers:
   deepseek-v4-pro:cloud:
@@ -211,8 +215,8 @@ working for the agent you're talking with.
 ```bash
 cd /path/to/project-root;
 
-# Agent type planner is defaulted
-exocomp-web web --role=planner;
+# Agent type software-lead is defaulted
+exocomp-web web --role=software-lead;
 ```
 
 Take a look at the [USAGE.md](./docs/USAGE.md) for more details.
@@ -228,7 +232,7 @@ that supports the OpenAI compatible endpoints. Take a look at the
 ### Supported Models
 
 Due to the nature of pentesting and cyber security related tasks, it is heavily
-recommended to use `deepseek-v4-pro:cloud` as the model for the `planner` agent
+recommended to use `deepseek-v4-pro:cloud` as the model for the `software-lead` agent
 and to use the following model for the hired short-lived contractor agents.
 
 `Qwen3.8-abliterated` is tested and verified to work with typical malware reverse

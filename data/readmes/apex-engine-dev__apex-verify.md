@@ -8,11 +8,14 @@
   <a href="https://github.com/marketplace/actions/apex-verify-ai-change-checker"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/marketplace-apex--verify-blue?logo=github"></a>
   <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
   <a href="https://github.com/apex-engine-dev/apex-verify/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/apex-engine-dev/apex-verify?style=social"></a>
+  <a href="https://glama.ai/mcp/servers/apex-engine-dev/apex-verify"><img alt="apex-verify MCP server on Glama" src="https://glama.ai/mcp/servers/apex-engine-dev/apex-verify/badges/score.svg"></a>
 </p>
 
 <p align="center"><img src="docs/assets/demo.gif" alt="Terminal: the agent says done and npm test passes; apex verify, with no API key, uses the signed-in Claude Code to write checks and answers NOT READY: a run of spaces should become one dash, expected hello-world, actual hello----world" width="800"></p>
 
 <p align="center">A real run, no API key: the agent's own test passes, and 8 checks written from the task say otherwise.</p>
+
+<p align="center"><b>On 200 AI-written changes to 23 real open-source libraries, with no API key: 106 of 107 wrong changes caught</b> (<a href="#does-it-work-the-honest-numbers">numbers and limits</a>).<br>Found a change it got wrong? <a href="https://github.com/apex-engine-dev/apex-verify/issues/new/choose">Send us the case</a>: we rerun every one and add the good ones to the benchmark. If it saved you a bad merge, a ⭐ helps others find it.</p>
 
 ## Try it now
 
@@ -57,6 +60,7 @@ We collected AI-written changes and knew which were wrong from hidden tests Apex
 
 - **It helps most where tests are thin.** On the small projects the tests caught almost nothing and the checks did the work. On real libraries the tests are good, and the checks close the gap: in the latest run (0.3.1, no key) only 1 of 107 wrong changes got through ([details](benchmark/results/real-libraries-experiments)).
 - **Out-of-date tests no longer count as a regression without a second look.** When a library's old test asserts exactly what the task asks to change, 0.3.1 says so (`unknown`, "update the test") instead of `not ready`. That cut false alarms on real libraries from 25 to 17 in 100 with no wrong change let through.
+- **What the research says, and what we tried.** We reviewed the published work on AI-written tests ([summary in the changelog](CHANGELOG.md)). The two practices with the best evidence, writing checks without seeing the change and counting only checks that fail on the old code and pass on the new, are what Apex verify does. Two more ideas from that work were measured here: agreement across three independent sets of checks (all three agreed on 101 of 107 blocks; it saved 1 false alarm in 93, so it is opt-in with `APEX_VOTE=1`) and rerunning a failing check to rule out flakiness (on by default; none was flaky in the benchmark) ([details](benchmark/results/real-libraries-experiments)).
 - **False alarms are still the open problem.** In the 0.2.4 run, 13 in 100 good changes that pass a real library's tests were stopped by a generated check; in about 7 of 10 of those the change really did not do what the task says, which leaves 4 or 5 in 100 as the checker's own mistakes (that rests on our reading of the tasks, so quote both). Three attempts to cut it did not beat the unchanged tool ([details](benchmark/results/false-alarms-real-libraries)). `APEX_MODE=warn` or `fail-on: never` never blocks.
 - **It still misses things**: about a third of wrong changes on the small projects.
 - **No key, no loss:** with a signed-in Claude Code as the checker, 0.3.0 stopped 19 of 31 wrong changes on the public small projects, against 16 for the Gemini API checker on the same changes, and stopped none of the 48 good ones ([details](benchmark/results/no-key-claude-cli)). One run, so "about as good".
@@ -127,6 +131,13 @@ The task is the pull request's title and description. It fails the job on `not r
 - **Prove correctness.** It raises the bar; a check can be wrong in both directions.
 - **Replace review or CI.** It runs next to them (and *in* CI with the Action).
 - **Send your code anywhere but the checker you choose**: your task and the relevant source files (about 24 KB at most) go to that model. No telemetry.
+
+## Where to find it
+
+- [GitHub Marketplace](https://github.com/marketplace/actions/apex-verify-ai-change-checker) (the Action)
+- [Glama MCP directory](https://glama.ai/mcp/servers/apex-engine-dev/apex-verify) (the `verify_change` MCP tool)
+- [Awesome Testing](https://github.com/TheJambo/awesome-testing#ai--llm-testing), AI & LLM Testing
+- Write-up: [Are AI-written tests really tests?](https://dev.to/amit_spitzer/are-ai-written-tests-really-tests-what-the-research-says-and-what-happened-when-we-tested-it-4ph5)
 
 ## Questions
 

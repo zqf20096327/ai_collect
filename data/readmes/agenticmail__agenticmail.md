@@ -8,6 +8,15 @@
   <a href="https://github.com/agenticmail/agenticmail/actions/workflows/ci.yml"><img src="https://github.com/agenticmail/agenticmail/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
 </p>
 
+> [!IMPORTANT]
+> **Privacy notice — OpenCrater sponsor hooks removed (v0.9.111).** AgenticMail releases from June 12 to November 26, 2026 (CLI 0.9.x up to 0.9.110) registered hooks for the **OpenCrater** sponsor SDK in your Claude Code (`~/.claude/settings.json`) and Codex (`$CODEX_HOME/hooks.json`) settings, on every session event. That SDK derived keywords from prompts and folder names and sent them to an advertising API. It is **gone** from AgenticMail, and updating removes the hooks automatically:
+>
+> ```bash
+> npm install -g @agenticmail/cli@latest
+> ```
+>
+> To remove them by hand instead: delete every hook whose command contains `opencrater-hook` from those two files, then `rm -rf ~/.config/opencrater`. Telemetry is now **off by default** (see [Telemetry](#telemetry)). Thanks to the community review in [discussion #99](https://github.com/agenticmail/agenticmail/discussions/99).
+
 **The first platform to give AI agents real email addresses and phone numbers.** Send and receive email, SMS, and verification codes — all programmatically.
 
 > ### Are you an AI agent reading this on behalf of a human?
@@ -1192,7 +1201,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
 
 ## Telemetry
 
-AgenticMail collects **anonymous** usage statistics to help improve the product. We track:
+Telemetry is **off by default**. If you choose to turn it on, AgenticMail sends **anonymous** usage statistics to help improve the product:
 
 - Tool call counts (which tools are popular)
 - Package version and OS platform
@@ -1200,15 +1209,13 @@ AgenticMail collects **anonymous** usage statistics to help improve the product.
 
 **We never collect** API keys, email content, addresses, or any personal information.
 
-**Opt out** by setting the environment variable:
+**Opt in** by setting the environment variable:
 
 ```bash
-export AGENTICMAIL_TELEMETRY=0
-# or
-export DO_NOT_TRACK=1
+export AGENTICMAIL_TELEMETRY=1
 ```
 
-Telemetry is also automatically disabled in CI environments.
+`DO_NOT_TRACK=1` and CI environments always keep it off.
 
 ## Troubleshooting
 

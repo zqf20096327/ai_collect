@@ -60,6 +60,15 @@ import fickling
 fickling.hook.activate_safe_ml_environment()
 ```
 
+Pass `warn_on_stale_references=True` to `activate_safe_ml_environment()`, `always_check_safety()`,
+or the `check_safety()` context manager to warn when a module still holds an original pickle loader.
+The scan is off by default because walking module globals can be slow when many modules are loaded.
+It skips lazy imports because resolving them can run module initialization code.
+
+The hook allows nested unpicklers such as `torch.storage._load_from_bytes` by default so it can
+load pickled tensor storage. Pass `allow_nested_unpicklers=False` to disable that category.
+A standalone `FicklingMLUnpickler` rejects these helpers by default.
+
 To remove the protection:
 
 ```python
@@ -242,7 +251,7 @@ Your file is most likely of this format:  PyTorch v1.3
 ['PyTorch v1.3']
 ```
 
-Check out [our examples](https://github.com/trailofbits/fickling/tree/master/example)
+Check out [our examples](https://github.com/trailofbits/fickling/tree/HEAD/example)
 to learn more about using fickling!
 
 ## More information

@@ -6,48 +6,48 @@
 
 ## 运行预览
 
-以下预览通过 Windows 上的 Avalonia 窗口离屏渲染生成，展示与 X-Xray 对齐的亮暗主题、独立工作区及面板底部常驻的版权信息。
+以下预览展示石墨绿配色在亮色和暗色下的图片工作区。
 
-**清透白 · 图片工作区**
+**石墨绿 · 亮色**
 
 ![X.SuperResolution 亮色主题：图片工作区与增强设置](docs/screenshots/workspace-light.png)
 
-**石墨灰 · 暗色主题**
+**石墨绿 · 暗色**
 
-![X.SuperResolution 暗色主题：算法选择、输出设置与任务操作](docs/screenshots/workspace-dark.png)
+![X.SuperResolution 暗色主题：算法选择、画质设置与任务操作](docs/screenshots/workspace-dark.png)
 
 ## 功能
 
 - **三种增强引擎**：切换 Waifu2x、Real-ESRGAN、SRMD，并选择对应模型、倍率和降噪参数。
-- **批量任务队列**：一次添加多张图片，查看单张进度、处理状态及耗时，支持停止任务和清理队列。
-- **输出可配置**：导出 PNG、JPG 或 WEBP，自定义保存目录；点击“输出目录”文字可打开当前文件夹。
+- **批量任务队列**：一次添加多张图片，分别查看进度、状态与耗时。同时运行 1–4 条任务，默认 1 条。停止操作会取消正在执行的任务并停止派发后续任务。
+- **输出可配置**：在系统设置里选择 PNG、JPG 或 WEBP，设置保存目录和文件名后缀。点击目录路径可打开文件夹。
 - **性能参数**：选择 GPU 设备、分块大小、线程配置及 TTA。
 - **运行记录**：查看批次耗时、处理日志和设备信息；批次结束时记录完成情况与本批次实际使用的完整输出目录。
 - **界面响应**：任务列表按可视范围创建行，后台导入文件及准备引擎，合并日志与进度通知，降低大批量任务对界面的影响。
-- **桌面体验**：左侧导航区分图片增强与运行记录，红绿灯窗口按钮、太阳／月亮主题切换、简体中文与英文语系，版权信息常驻右侧面板内部底部。
+- **桌面体验**：石墨绿、克莱因蓝、竞速红、青柠绿和电光紫各有亮暗两款。左下角的系统设置分为通用、界面和关于。界面页可切换配色、语言和本机字体；顶栏支持快捷切换中英文及同组亮暗外观。关于页包含功能说明、版本和 GitHub 项目链接。
+- **系统托盘**：托盘菜单可打开主界面或退出应用。启用“关闭窗口时最小化到托盘”后，关闭窗口会保留正在运行的批次。
 
 ## 系统与运行环境
 
 当前仓库面向 **Windows 10 / 11 x64** 提供发布脚本，使用 **.NET 10**。目标电脑需要支持 Vulkan 的 GPU 及相应的 x64 显卡驱动。
 
-| 构建包 | .NET 运行时 | 模型文件 |
-| --- | --- | --- |
-| 完整包 `full` | 已包含，无需单独安装 .NET | 已包含 |
-| 精简包 `thin` | 需要安装 .NET 10 x64 Runtime | 需要另行补齐 |
+两款绿色版均内置 .NET 运行时和所需的原生运行库，解压后即可启动 `X.SuperResolution.exe`。Full 随附全部内置模型，Thin 只省去模型文件。使用 Thin 处理图片前，将所需引擎的模型目录放到主程序旁。
 
-两种发布模式均将托管程序集和原生引擎合并到单个 `X.SuperResolution.exe`，并复制所需的 `vcomp140.dll`；Full 模式同时内置 .NET 运行时。模型文件仍位于程序旁，需要保持完整的目录结构。
+托管版和 NativeAOT 安装包均包含全部内置模型。NativeAOT 将应用预编译为原生 EXE，NCNN、OpenMP 和图形库以 DLL 随包分发。
 
 ## 快速开始
 
 1. 从 [Releases](https://github.com/X-Lucifer/X.SuperResolution/releases) 下载适合的发行包，安装或解压到有写入权限的目录。
 2. 启动 `X.SuperResolution.exe`，点击 **添加图片**。支持 PNG、JPG、JPEG、WEBP，单张上限为 50 MB。
-3. 在 **增强设置** 中选择引擎、模型、放大倍率和降噪参数。可用选项随引擎变化。
-4. 选择输出格式与保存目录。默认保存到程序目录下的 `output` 文件夹。
+3. 在 **增强设置** 中选择引擎、模型、放大倍率和降噪参数。Waifu2x 的 CUNet 可用 1× 仅降噪，两套 UpConv 模型从 2× 起步，最高可选 32×。Real-ESRGAN 的 animevideov3 支持 2×、3× 和 4×，x4plus 系列使用原生 4×，保留完整画面。
+4. 在 **系统设置 → 通用** 选择输出格式、目录与文件名后缀。首次启动使用 PNG 和 `_out`，保存在程序目录下的 `output` 文件夹。
 5. 点击 **开始增强**，在任务队列查看进度，在 **运行记录** 查看日志与耗时。
 
-输出文件命名为 `原文件名_out.扩展名`。相同输出路径已有文件时会覆盖，请在需要保留多个结果时选择不同的输出目录。
+同一批次的输出重名或与队列中的输入路径相同时，程序会追加 `_2`、`_3` 等编号。已有的同名历史输出在新结果写入成功后替换。
 
-主题、语系与输出目录会保存在程序目录下的 `settings.json` 中。
+系统设置自动保存到程序目录下的 `settings.json`，包括主题、界面字体、语言、输出目录、格式、后缀、默认引擎、GPU、线程配置、并发数和关闭行为。下次启动时，工作区会打开选定的 Waifu2x、Real-ESRGAN 或 SRMD 引擎。已有配置会沿用亮暗主题、语言和输出目录，原默认模型会转换为其所属引擎。具体模型在工作区选择，每个批次使用点击开始时的参数。
+
+使用可选的 `realesrnet-x4plus` 时，将同名的 `.param` 和 `.bin` 文件放入 `models` 目录。重启后即可在工作区的 Real-ESRGAN 模型列表中选择它。
 
 ## 模型与目录
 
@@ -91,26 +91,22 @@ dotnet run --project .\X.SuperResolution\X.SuperResolution.csproj --no-build
 
 ## 构建发布包
 
-发布脚本需要 .NET 10 SDK、7-Zip（`7z` 命令）以及上述 Visual C++ OpenMP 运行库。生成安装程序还需要 NSIS 3 Unicode、MSVC C++ 编译器和 Windows SDK；安装包脚本会自动查找这些工具。
+准备 .NET 10 SDK、7-Zip、NSIS 3 Unicode、MSVC C++ 桌面开发工具和 Windows SDK。在仓库根目录运行以下命令即可发布。
 
 ```powershell
-# 完整包：包含运行时与模型
-.\scripts\publish-win-x64-full.ps1
-
-# 精简包：不包含运行时与模型
-.\scripts\publish-win-x64-thin.ps1
-
-# Windows 无边框安装程序：自动发布 Full 单文件客户端后打包
-.\scripts\build-installer.ps1
+.\scripts\release-win-x64.ps1
 ```
 
-| 产物 | 输出路径 |
-| --- | --- |
-| 完整包 | `artifacts/packages/X.SuperResolution-win-x64-full.7z` |
-| 精简包 | `artifacts/packages/X.SuperResolution-win-x64-thin.7z` |
-| 安装程序 | `artifacts/installer/X.SuperResolution-Setup-<版本>-win-x64.exe` |
+四个发行文件都在 `artifacts/release/` 目录下。
 
-Full 与 Thin 分别发布到 `artifacts/publish/win-x64-full/` 和 `artifacts/publish/win-x64-thin/`。安装程序采用石墨／雾白无边框界面，自动生成版本、文件清单与主题资源，支持原位升级，并在卸载时保留图片、output 和 settings.json。更多选项见 [installer/README.md](installer/README.md)。
+| 文件名 | 内容 |
+| --- | --- |
+| `X.SuperResolution-win-x64-full.7z` | 含全部内置模型的绿色版 |
+| `X.SuperResolution-win-x64-thin.7z` | 仅省去模型的绿色版 |
+| `X.SuperResolution-win-x64.exe` | 含全部内置模型的托管版安装包 |
+| `X.SuperResolution-win-x64-NativeAOT.exe` | 含全部内置模型的 NativeAOT 安装包 |
+
+单独生成一种包或复用已有发布目录的命令见[安装包构建说明](installer/README.md)。
 
 ## 常见问题
 
@@ -120,7 +116,7 @@ Full 与 Thin 分别发布到 `artifacts/publish/win-x64-full/` 和 `artifacts/p
 | 原生引擎无法加载或缺少 `vcomp140.dll` | 确认使用 x64 程序，并保留发行包中的运行库；源码运行时按上述步骤复制 OpenMP 运行库。 |
 | 找不到模型或模型加载失败 | 检查模型目录名称、位置及 `.param` / `.bin` 文件是否完整，并确认所选模型与当前引擎匹配。 |
 | 图片没有进入任务队列 | 检查文件格式和单张大小限制；超出限制的提示可在运行记录中查看。 |
-| 不知道结果保存在哪里 | 查看增强设置中的输出目录；默认位置为程序目录下的 `output`。 |
+| 不知道结果保存在哪里 | 查看系统设置中的输出目录；默认位置为程序目录下的 `output`。 |
 
 ## 第三方项目
 

@@ -33,13 +33,6 @@
 Happy Transformer makes it easy to fine-tune and perform inference with NLP Transformer models.
 
 
-## Upcoming Version 4.0.0 
-
-Version 4.0.0 is in the final stages of development. 
-It's a complete rewrite of the library with many new features.
-It includes breaking changes, and so we recommend you set the version to <4.0.0 in your requirements.   
-
-
 ## Tasks 
 
 | Tasks                    | Inference | Training   |

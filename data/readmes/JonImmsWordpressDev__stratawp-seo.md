@@ -1300,6 +1300,7 @@ stratawp-seo/
 │   ├── class-competitors.php          Competitor watch: daily RSS/sitemap scans, homepage title/H1/schema diffs
 │   ├── class-content-scorer.php       Quality scoring for generated content
 │   ├── class-cost-tracker.php         Per-provider/model token + USD tracking
+│   ├── class-crawl-abilities.php      Site Crawl ability callbacks (run crawl, issues, apply fix, canonical status)
 │   ├── class-crawl-budget-report.php  Crawl-budget-by-post-type queries + daily reconciliation
 │   ├── class-crawl-files.php          Crawlers & Files page: edit /llms.txt (auto/custom) and /robots.txt (auto/append/replace)
 │   ├── class-crawl-issues.php         Site-crawl issue storage (status, resolution, ignore lists)
@@ -1366,6 +1367,7 @@ stratawp-seo/
 │   ├── class-visibility-funnel.php    AEO × crawl × visit joins; funnel stage rates for dashboard/queue
 │   ├── class-voice-profile.php        Voice profile CPT + system prompt injection
 │   ├── trait-ability-defs.php         Definitions of the 13 abilities (schemas, write flags, callbacks)
+│   ├── trait-crawl-ability-defs.php   Definitions of the 4 Site Crawl abilities (run crawl, issues, apply fix, canonical status)
 │   ├── trait-digest-send.php          Digest email template rendering + send
 │   │
 │   ├── aeo/                      4 AEO sub-scorers
@@ -1519,8 +1521,4 @@ SWPS_Image_Provider (abstract)
 - Per-entry summary uses (in order): plugin meta description → Yoast meta → RankMath meta → post excerpt → trimmed first paragraph (~200 chars at sentence boundary).
 - Filterable via `swps_llms_txt_content` and `swps_llms_txt_post_limit`.
 
-### Sitemap Manager (`SWPS_Sitemap_Manager`)
-
-- Generates `/sitemap_index.xml` and per-type sub-sitemaps (`{post_type}-sitemap.xml`, `{taxonomy}-sitemap.xml`, `author-sitemap.xml`).
-- Each sub-sitemap respects the `swps_sitemap_exclude_{key}` option.
-- `urls_per_page`
+### Sitemap Manager (

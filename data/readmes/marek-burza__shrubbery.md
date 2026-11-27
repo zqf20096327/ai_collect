@@ -59,13 +59,13 @@ The `workspace/` directory (git-ignored) contains:
 
 **Model wrapper**: `model.py` - `NumeraiModel` binds an estimator to its feature and target names and exposes the `__call__(live_features, live_benchmark_models)` signature of Numerai's model upload. `fit` and `predict` leave out `feature_country`, and `unpack_numerai_features` decodes the int8 features and prepends the era (the `date` column) as the first column, as the number of weeks since the Unix epoch. In v6.0 the data has no index (`numerai_ticker` and `date` are ordinary columns), so `predict` returns a single `prediction` column on the input's `RangeIndex`, and the runner joins `numerai_ticker` and `date` back on (`NumeraiRunner.predict_with_ids`). The IDs are attached outside the artifact because it carries `NumeraiModel` by value, so a change to `predict` reaches only newly trained artifacts.
 
-**Data layer**: `ingest.py` downloads/caches the Numerai datasets and reads feature sets and training targets. `augmentation.py` finds the riskiest features (largest change in target correlation between the first and second half of the eras).
+**Data layer**: `ingest.py` downloads/caches the Numerai datasets and reads feature sets and training targets.
 
 **Numerai API**: `napi.py` - shared `NumerAPI` client, model id resolution, saving of predictions to CSV in the shape of Numerai's v6.0 example notebook `hello_numerai.ipynb` (live: `numerai_ticker,prediction`, diagnostics: `numerai_ticker,date,prediction`), which raises on duplicate IDs or a `prediction` that is NaN or outside `[0, 1]`, and upload of tournament and diagnostic predictions with retries and back-off.
 
 **Persistence**: `utilities.py` stores and loads the `NumeraiModel` with cloudpickle, registering every loaded `shrubbery.*` module for by-value pickling so the artifact carries its code rather than import paths, and refuses to load anything that is not a `NumeraiModel`.
 
-**Support**: `constants.py` (column names, random seed), `observability.py` (logger, warning filters, and for `numerai-run` the logging to both the console and a dated `workspace/logs/<YYYYmmddHHMMSS>.log`, with stdout logged at `INFO` and stderr (incl. warnings) at `WARNING` via `LoggerWriter`), `scores.py` (the `numerai-scores` tool, see Tools).
+**Support**: `constants.py` (column names and indices, workspace subdirectories), `observability.py` (logger, warning filters, and for `numerai-run` the logging to both the console and a dated `workspace/logs/<YYYYmmddHHMMSS>.log`, with stdout logged at `INFO` and stderr (incl. warnings) at `WARNING` via `LoggerWriter`), `scores.py` (the `numerai-scores` tool, see Tools).
 
 **Models**: The models (`scikit-learn`-compatible regressors) evolve frequently - ensemble models (e.g. `LightGBM`, `XGBoost`, `Random Forest`, `ResNet`, `FNN`, `Wide & Deep`) get added/removed and are subject to hyperparameter tuning, embedder strategies change (e.g. concatenation of embeddings to features), feature exposure neutralization, shared configuration drifts. 
 

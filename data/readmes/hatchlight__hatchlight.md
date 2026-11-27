@@ -82,7 +82,7 @@ reference in new scenes.
 **Your own styles.** Load LoRAs and your own SDXL or SD 1.5 checkpoints, or
 train an SDXL LoRA from your pictures: Hatchlight writes the captions, shows
 sample pictures while it learns, and lets you keep an earlier step. Already
-have models in ComfyUI, AUTOMATIC1111, Forge or Stability Matrix? Point
+have models in ComfyUI, AUTOMATIC1111, Forge, Forge Neo, SwarmUI or Stability Matrix? Point
 Hatchlight at that folder and it uses them where they are, without copying.
 From Hugging Face, `hatchlight install hf:owner/repo` (or a
 `hatchlight://hf/owner/repo` link) adds a catalog model, an SDXL or SD 1.5
@@ -113,6 +113,9 @@ settings that made it, and you can search it.
   <img src=".github/assets/gallery.webp" alt="The gallery: every picture made, in a grid" width="68%">
   <img src=".github/assets/phone.webp" alt="Hatchlight on a phone: the chat with a bottom bar" width="28%">
 </p>
+
+A short guided tour, offered after the first picture and kept under
+**Tutorial**, shows where models, styles, cloud keys and the gallery are.
 
 The interface speaks English and Brazilian Portuguese, works on phones and
 tablets as well as desktops, and can be used with the keyboard and a screen
@@ -196,7 +199,8 @@ tool score how much a picture shows the same character as earlier ones, and
 say what differs.
 
 Other apps can use your models too: Hatchlight answers OpenAI's image API
-and AUTOMATIC1111's, so Open WebUI, SillyTavern, LibreChat and scripts make
+and AUTOMATIC1111's, so Open WebUI, LibreChat and scripts (OpenAI) and
+SillyTavern (AUTOMATIC1111, the API Forge and SD.Next answer too) make
 pictures with it. See [Use it from other apps](docs/other-apps.md).
 
 ## Your data

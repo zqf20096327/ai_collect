@@ -90,6 +90,23 @@ var completion = await client.GetResponseAsync("hello");
 Console.WriteLine(completion.Text);
 ```
 
+`IChatClient` picks the endpoint and the max token parameter by the model of each request (`ChatOptions.ModelId`, or the model passed to `AsChatClient()`):
+
+- Endpoint: the models of the multimodal whitelist (qwen3.5 / qwen3.6 series, qwen3.7-plus / qwen3.7-flash, qwen3.8 and later series, qwen3-vl, qwen3-omni, gui-plus, kimi-k2.5 and later kimi models, deepseek-v4.1 and later deepseek models) are called via the multimodal API (`MultimodalParameters`), all the other models (e.g. qwen-plus, qwen-max, qwen3.7-max, deepseek-v4-pro, glm-5.3) via the text API (`TextGenerationParameters`), including the models supplied directly by third parties (e.g. `xiaomi/mimo-v2.6-pro-ultraspeed`) even when they accept images. Calling the wrong one fails with 400 "url error", and the endpoint does not follow the model version: qwen3.7-max is a text model, qwen3.8-max is a multimodal one.
+- `ChatOptions.MaxOutputTokens` is sent as `max_completion_tokens` for the models that read it (qwen3.5 and later series, qwen-mt, tongyi-xiaomi-analysis, deepseek-v4-pro and later deepseek models, glm-5.x, kimi-k2.5 and later kimi models, MiniMax-M2.5), which limits the reasoning output and the answer together. It is sent as `max_tokens` for all the other models (e.g. qwen-plus, qwen-max, qwen3-vl-plus, gui-plus), because they silently ignore `max_completion_tokens`; `max_tokens` limits the answer only on thinking models.
+
+Set `AdditionalProperties["useVl"]` / `AdditionalProperties["useMaxCompletionTokens"]` to `true` / `false` to force the mapping, e.g. when a new model appears before the whitelist is updated.
+
+The endpoint can also be fixed for every request of a chat client: `AsChatClient(modelId, useVl)` takes a non-nullable `bool`, `true` for the multimodal API and `false` for the text API. Leave the argument out, or pass `null` as the options of `AsChatClient(modelId, options)`, to decide it by the model.
+
+The endpoint whitelist is shipped with the SDK, so it can lag behind the models the service releases. To pick the endpoint by what the service reports instead, turn on `AutoSyncModelList` through `AsChatClient(modelId, options)`: a model is looked up in the [model list](#model-list) (`GET /api/v1/models?model=<modelId>`) the first time it is used, and it goes to the multimodal API when the service lists it with the `VU` or `Multimodal-Omni` capability and Bailian hosts it (except for `qwen3.8-2.4t-a95b`: the service lists it as a text model although the multimodal API serves it, the SDK corrects that). The looked up models are cached for the lifetime of the process and shared by every chat client of it, so each model costs one extra request per process. When the service does not list the model, or the lookup fails, the chat requests go on with the whitelist and the model is not looked up again for a minute. Nothing is requested when the option is off, or when `useVl` already decides the endpoint.
+
+```csharp
+var chatClient = dashScopeClient.AsChatClient(
+    "qwen3.7-plus",
+    new DashScopeChatClientOptions(AutoSyncModelList: true));
+```
+
 #### ToolCall
 
 ```csharp
@@ -303,6 +320,8 @@ Client level configuration also applies to the WebSocket API (e.g. CosyVoice), w
 - [Multimodal Embedding](#multimodal-embedding) - tongyi-embedding-vision-plus/flash, qwen3-vl-embedding, qwen2.5-vl-embedding, multimodal-embedding-v1. For embedding texts, images and videos into one vector space
 - [Text Rerank](#text-rerank) - qwen3-rerank, qwen3.7-text-rerank, gte-rerank-v2, qwen3-vl-rerank. For refining the documents recalled by a vector search
 - [Omni-Modal Translation (Qwen-MT-Uni)](#omni-modal-translation-qwen-mt-uni) - qwen-mt-uni. For translating texts, documents, images and audio
+- [Decision Model (System One)](#decision-model-system-one) - decision-model. For classification, yes/no judgement and scoring with a single forward pass, without generating text
+- [Model List](#model-list) - Query the models of Bailian: capabilities, modalities, features, prices and token limits
 
 
 ## Text Generation
@@ -687,7 +706,7 @@ var request = new ModelRequest<MultimodalInput, IMultimodalParameters>()
 Notes on using `json_schema`:
 
 - Only a few models support `json_schema` (e.g. qwen3.7/qwen3.8 series). Check the [structured output doc](https://docs.bailian.console.aliyun.com/zh/model-studio/qwen-structured-output) before using it, otherwise fall back to `json_object`.
-- qwen3.x series models are called via the multimodal API (`MultimodalParameters`), while qwen-max and other legacy models are called via the text API (`TextGenerationParameters`).
+- Among them, qwen3.7-plus / qwen3.7-flash and the qwen3.8 series are called via the multimodal API (`MultimodalParameters`), while qwen3.7-max is called via the text API (`TextGenerationParameters`): the endpoint does not follow the model version.
 - Unlike `json_object`, `json_schema` does not require the prompt to contain the word "json".
 - In the `IChatClient` (Microsoft.Extensions.AI) integration, when `ChatResponseFormat.ForJsonSchema(...)` is used: whitelisted models (qwen3.7/qwen3.8 series) are automatically mapped to `json_schema`; other models fall back to `json_object` (the schema is ignored). Set `AdditionalProperties["useJsonSchema"]` to `true`/`false` to force the mapping (similar to `useVl`), e.g. when a new model supports `json_schema` before the whitelist is updated. `ChatResponseFormat.Json` is always mapped to `json_object`.
 
@@ -2388,167 +2407,100 @@ await foreach (var b in chat.GetAudioAsync())
 
 Beyond the audio loop the session also supports text input and history injection (`CreateItemAsync` with message items), function calling (`Tools` in the session config, execute the call and write the result back with a `function_call_output` item, then trigger the next turn with `CreateResponseAsync`), interrupting the model (`CancelResponseAsync`), and managing the conversation (`RetrieveItemAsync` / `DeleteItemAsync`). The 3.1 plus model additionally takes `InputAudioTranscription.Language` / `OutputAudio.Language` (both directions of translation-like control) and `MaxHistoryTurns`; smart_turn accepts `VoiceprintAudioUrls` for speaker enhancement. The session ends when it is disposed — there is no session.finish.
 
-## Real-Time Live Translation (Qwen-Livetranslate-Realtime)
-The qwen3.5 / qwen3.8-livetranslate-flash-realtime models translate live speech (and video frames) into a target language. Create a session with `CreateLiveTranslateSocketSessionAsync`, configure the translation and stream the source audio:
+## Real-Time Multimodal Conversation (Qwen-Omni-Realtime)
+The qwen3.8-omni-flash-realtime, qwen3.5-omni-plus-realtime and qwen3.5-omni-flash-realtime models understand speech, images (video frames) and text, and answer in speech and text - with function calling, remote MCP tools and web search on top. Create a session with `CreateOmniRealtimeSocketSessionAsync` (same `/api-ws/v1/realtime` endpoint, event-based messages). The Bailian documentation serves qwen3.8-omni-flash-realtime on the workspace domain only, configure `WorkspaceId` on the client for it:
 
 ```csharp
-using var translator = await dashScopeClient.CreateLiveTranslateSocketSessionAsync("qwen3.5-livetranslate-flash-realtime");
-await translator.UpdateSessionAsync(
-    new LiveTranslateSession
+using var chat = await dashScopeClient.CreateOmniRealtimeSocketSessionAsync("qwen3.8-omni-flash-realtime");
+await chat.UpdateSessionAsync(
+    new OmniRealtimeSession
     {
-        InputAudioFormat = "pcm", // or opus
-        SampleRate = 16000,
-        InputAudioTranscription = new LiveTranslateTranscription(
-            Model: "qwen3-asr-flash-realtime", Language: "zh"), // Model = null disables the source echo
-        TurnDetection = new LiveTranslateTurnDetection { Threshold = 0.2f, SilenceDurationMs = 1000 },
-        Translation = new LiveTranslateTranslation
+        Voice = "Tina", // the default; the voices a model takes are listed in the Bailian documentation, an unsupported one fails the response
+        Instructions = "你是个人助理小云，请你准确且友好地解答用户的问题，始终以乐于助人的态度回应。", // system prompt of the session
+        TurnDetection = new OmniRealtimeTurnDetection
         {
-            Language = "en", // target language, defaults to en
-            Corpus = new LiveTranslateCorpus
-            {
-                // hotwords: the source phrase always translates to the given target phrase
-                Phrases = new Dictionary<string, string> { ["博客园"] = "Cnblogs" }
-            }
+            Type = "server_vad", // or "semantic_vad": backchannel responses and background noise do not end a turn
+            Threshold = 0.5f,
+            SilenceDurationMs = 800
         }
+        // set TurnDetection = null instead for the manual mode (push-to-talk, see below)
     });
 
-// consume the events while the audio streams in (see below), then send the audio and finish
-await using var audio = File.OpenRead("speech.pcm");
-await translator.AppendAudioAsync(audio);
-// AppendImageAsync(frame) sends video frames as base64 jpg (at most 2 per second, qwen3.8 only)
-await translator.FinishAsync(); // the server finishes the remaining translation, then ends the session
+// consume the events while the audio streams in (see below), then send the audio
+await using var audio = File.OpenRead("speech.pcm"); // raw pcm, 16kHz 16bit mono
+await chat.AppendAudioAsync(audio);
+// the server only detects the end of the speech after some silence, which a live microphone keeps
+// delivering: with a recorded clip keep appending silence until the response is done
+// AppendImageAsync(frame) sends video frames as base64 jpg, about one per second
 ```
 
-The source text arrives as `conversation.item.input_audio_transcription.*` events and the translated text as `response.audio_transcript.text` / `.delta` events (`Text` + `Stash` accumulate the interim translation, the final one arrives in `response.audio_transcript.done` and `response.done`); the synthesized translation audio is available via `GetAudioAsync()`:
+In the VAD mode the server detects the speech boundaries, commits the audio and triggers the response by itself: the recognized speech arrives as `conversation.item.input_audio_transcription.delta` events (`Text` is the confirmed part, `Stash` the tentative remainder), the response text as `response.audio_transcript.delta` events, the audio as `response.audio.delta` (base64 pcm, 24kHz — also available decoded via `GetAudioAsync()`), and a turn ends with `response.done` carrying the usage:
 
 ```csharp
-await foreach (var e in translator.GetEventsAsync())
+var consuming = Task.Run(async () =>
 {
-    switch (e.Type)
+    // ReSharper disable once AccessToDisposedClosure
+    await foreach (var e in chat.GetEventsAsync())
     {
-        case "conversation.item.input_audio_transcription.completed":
-            Console.WriteLine($"Source: {e.Transcript} ({e.Language}, {e.Emotion})");
-            break;
-        case "response.audio_transcript.done":
-            Console.WriteLine($"Translated: {e.Transcript}");
-            break;
+        switch (e.Type)
+        {
+            case "conversation.item.input_audio_transcription.delta":
+                Console.WriteLine($"Heard: {e.Text}{e.Stash}");
+                break;
+            case "response.audio_transcript.delta":
+            case "response.text.delta": // text only responses, see the modalities below
+                Console.WriteLine($"Said: {e.Delta}");
+                break;
+            case "conversation.item.created" when e.Item?.Type == "mcp_approval_request":
+                await chat.RespondToMcpApprovalAsync(e.Item.Id); // approve the MCP tool call the server waits for
+                break;
+        }
     }
-}
-```
-
-The qwen3.8 model takes a different shape: `OutputModalities` plus `Audio.Input.TurnDetection` (speaker_detection separates speakers, the source and the translation items are correlated via `PreviousItemId`), and voice cloning (`EnableVoiceClone` + `VoiceCloneOptions.Frequency` never / once / always, with `Voice` set to "default" or a pre-cloned voice id) works on both models. In the manual mode (`TurnDetection = null`) the buffered audio is submitted with `CommitAudioAsync()`, which triggers the translation automatically.
-
-### Non-realtime translation (qwen3-livetranslate-flash)
-The qwen3-livetranslate-flash models translate an audio / video file in one shot. They **cannot be called via the DashScope API** - they are only served on the OpenAI compatible endpoint (`/compatible-mode/v1/chat/completions`), which the SDK exposes as the generic `OpenAiCompatibleGetChatCompletionAsync` / `OpenAiCompatibleGetChatCompletionStreamAsync` methods (the livetranslate models only support the streaming mode). Prefer the DashScope methods (or the Microsoft.Extensions.AI integration) whenever the model supports both styles; use the OpenAI compatible family only when it does not:
-
-```csharp
-var chunks = dashScopeClient.OpenAiCompatibleGetChatCompletionStreamAsync(
-    new OpenAiCompatibleChatRequest
-    {
-        Model = "qwen3-livetranslate-flash",
-        Messages =
-        [
-            new OpenAiCompatibleChatMessage
-            {
-                Role = "user",
-                Content =
-                [
-                    // an audio file; a video goes in a video_url part (Url)
-                    new OpenAiCompatibleChatContentPart(
-                        Type: "input_audio",
-                        InputAudio: new OpenAiCompatibleChatInputAudio(Data: audioUrl, Format: "wav"))
-                ]
-            }
-        ],
-        Modalities = ["text", "audio"], // audio output is optional, ["text"] also works
-        Audio = new OpenAiCompatibleChatAudioOptions(Voice: "Cherry", Format: "wav"),
-        StreamOptions = new OpenAiCompatibleChatStreamOptions(IncludeUsage: true), // usage in the last chunk
-        TranslationOptions = new OpenAiCompatibleTranslationOptions(SourceLang: "zh", TargetLang: "en")
-    });
-
-var text = new StringBuilder();
-await foreach (var chunk in chunks)
+});
+await using var file = File.Create("response.pcm");
+await foreach (var b in chat.GetAudioAsync())
 {
-    text.Append(chunk.Choices[0].Delta?.Content); // the translated text, delta by delta
-    var audio = chunk.Choices[0].Delta?.Audio?.Data; // the base64 wav deltas, when audio output is on
-    var usage = chunk.Usage; // present in the last chunk with IncludeUsage
+    file.WriteByte(b);
 }
 ```
 
-## Recorded Speech Recognition
-
-### qwen3-asr-flash
-Recognize an audio file (up to 5 minutes) with `GetMultimodalGenerationAsync`, passing the audio url (or a base64 data uri) as the audio content and the options in `AsrOptions`. A system message provides context (background text, entity word lists) that improves the recognition of proper nouns. The recognized text is in the message content, the language and emotion of the audio are in the annotations.
+In the manual mode (`TurnDetection = null`, sent as an explicit `turn_detection` null) nothing happens until the audio is committed and the response is requested, e.g. for a push-to-talk button. Text goes in the same way, as a user message item: `CreateItemAsync` with `Type: "message"`, `Role: "user"` and an `input_text` content, followed by `CreateResponseAsync()`:
 
 ```csharp
-var response = await dashScopeClient.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+await chat.UpdateSessionAsync(new OmniRealtimeSession { TurnDetection = null });
+await using var audio = File.OpenRead("speech.pcm");
+await chat.AppendAudioAsync(audio);
+await chat.AppendImageAsync(await File.ReadAllBytesAsync("frame.jpg")); // optional: the frames of the turn, after its audio started
+var itemId = await chat.CommitAudioAsync(); // turns the audio (and the images) into a user message item
+var response = await chat.CreateResponseAsync(); // completes at response.done, after the streamed deltas
+Console.WriteLine(response.Output![0].Content![0].Transcript);
+```
+
+### Function calling and MCP tools
+Configure `Tools` in the session: a `function` tool is executed by the client, a `mcp` tool is a remote MCP server (public https, streamable HTTP) whose tools the server discovers and executes. The two can be combined, neither with the web search (`EnableSearch`). A response that needs a function ends with `function_call` items in its output: execute them, write the results back and trigger the next response:
+
+```csharp
+await chat.UpdateSessionAsync(
+    new OmniRealtimeSession
     {
-        Model = "qwen3-asr-flash",
-        Input = new MultimodalInput()
+        TurnDetection = null,
+        Tools = new List<OmniRealtimeTool>
         {
-            Messages =
-            [
-                MultimodalMessage.System([MultimodalMessageContent.TextContent("This is a recording of a classical Chinese poem")]),
-                MultimodalMessage.User([MultimodalMessageContent.AudioContent(audioUrl)])
-            ]
-        },
-        Parameters = new MultimodalParameters()
-        {
-            AsrOptions = new AsrOptions { Language = "zh", EnableItn = true }
+            new(
+                Type: "function",
+                Function: new OmniRealtimeFunction(
+                    "get_current_weather",
+                    "当你想查询指定城市的天气时非常有用。",
+                    new { type = "object", properties = new { location = new { type = "string" } }, required = new[] { "location" } }))
         }
     });
-
-var choice = response.Output.Choices[0];
-Console.WriteLine($"Recognized: {choice.Message.Content[0].Text}");
-Console.WriteLine($"Language: {choice.Message.Annotations![0].Language}, emotion: {choice.Message.Annotations[0].Emotion}");
-Console.WriteLine($"Audio duration: {response.Usage?.Seconds}s, tokens: {response.Usage?.TotalTokens}");
+// ... append and commit the audio asking for the weather, then:
+var response = await chat.CreateResponseAsync();
+var call = response.Output!.First(o => o.Type == "function_call");
+// execute the function, then:
+await chat.CreateItemAsync(
+    new OmniRealtimeItem { Type = "function_call_output", CallId = call.CallId, Output = "北京今天天气为霾转晴，气温4/-4℃，微风" });
+var answer = await chat.CreateResponseAsync();
 ```
 
-### Fun-ASR-Flash / Qwen-Audio-3.x-ASR-Flash
-Fun-ASR-Flash and Qwen-Audio-3.x-ASR-Flash models transcribe recorded audio files with sentence / word level timestamps on the same endpoint, but with typed contents and a sentence based response: call `GetMultimodalGenerationAsync` (or `GetMultimodalGenerationStreamAsync`, which returns intermediate results when the audio is at least 1 minute long; words with `Fixed` set to `false` may still be revised). The audio goes into an `InputAudioContent` (a publicly accessible url or a base64 data uri), previous turns of the conversation go into `InputTextContent` / `AssistantTextContent` as the context, and the result is in `Output.Text` / `Output.Sentence` instead of `Output.Choices`.
-
-```csharp
-var response = await dashScopeClient.GetMultimodalGenerationAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
-    {
-        Model = "qwen-audio-3.1-asr-flash",
-        Input = new MultimodalInput()
-        {
-            Messages =
-            [
-                MultimodalMessage.User([MultimodalMessageContent.InputTextContent("Please recite Cong Jun Xing")]),
-                MultimodalMessage.Assistant([MultimodalMessageContent.AssistantTextContent("Which one would you like to hear?")]),
-                MultimodalMessage.User([MultimodalMessageContent.InputAudioContent(audioUrl)])
-            ]
-        },
-        Parameters = new MultimodalParameters()
-        {
-            Format = "mp3",
-            SampleRate = "16000",
-            Vocabulary = new Dictionary<string, int> { ["青海"] = 5, ["楼兰"] = 5 }, // instant hot words, weight 1~5 or 50
-            SpeakerDiarizationEnabled = true // qwen-audio-3.1-asr-flash only, returns Output.Sentences with SpeakerId
-        }
-    });
-
-Console.WriteLine($"Recognized: {response.Output.Text}");
-foreach (var sentence in response.Output.Sentences ?? [response.Output.Sentence!])
-{
-    Console.WriteLine($"Speaker {sentence.SpeakerId}: {sentence.Text} [{sentence.BeginTime}ms ~ {sentence.EndTime}ms]");
-}
-```
-
-### Long audio files (file transcription)
-Transcribe long audio files asynchronously with the file transcription models (qwen3-asr-flash-filetrans, qwen-audio-3.x-asr-flash-filetrans, fun-asr, paraformer-v2): submit a task with `CreateSpeechTranscriptionTaskAsync`, poll it with `GetSpeechTranscriptionTaskAsync`, and download the JSON result file from the `TranscriptionUrl` (valid for 24 hours) once the task succeeds. Which input members and parameters each model family supports varies, see `SpeechTranscriptionParameters` for the details — qwen3-asr-flash-filetrans takes a single `FileUrl` and returns `Output.Result`, while the other models take urls in `FileUrls` and return per-file results in `Output.Results` (Paraformer accepts multiple urls in one task).
-
-```csharp
-var task = await dashScopeClient.CreateSpeechTranscriptionTaskAsync(
-    new ModelRequest<SpeechTranscriptionInput, SpeechTranscriptionParameters>()
-    {
-        Model = "paraformer-v2",
-        Input = new SpeechTranscriptionInput() { FileUrls = [audioUrl] },
-        Parameters = new SpeechTranscriptionParameters()
-        {
-            DisfluencyRemovalEnabled = true, // remove filler words
-            DiarizationEnabled = true, // speaker diarization, result carries speaker_id
-            SpeakerCount =
+For an MCP tool use `new OmniRealtimeTool(Type: "mcp", ServerLabel: "deepwiki", ServerUrl: "https://mcp.deepwiki.com/mcp", RequireApproval: "always")` instead. The tools are discovered right after the session was updated (`mcp_list_tools.*` events; only responses created after `mcp_list_tools.completed` can use them). With `RequireApproval` set to `always` (the default) the server asks before each call with a `conversation.item.created` event carrying an `mcp_approval_request` item - answer it with `RespondToMcpApprovalAsync(itemId, approve: true)` while consuming the events, as in the loop above (`never` executes without asking). The `CreateResponseAsync` in flight then completes with a response whose output holds the `mcp_call` items (`Output`, or `Error` when 

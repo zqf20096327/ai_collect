@@ -107,7 +107,7 @@ command word gets a written answer instead.
 | Command | What it does | Access |
 |---|---|---|
 | `/help` | List the commands | anyone |
-| `/review` | Run (or re-run) a full review | write |
+| `/review` | Run (or re-run) a full review. On a closed or merged PR it replies with a notice and runs nothing; reopen the PR to review it. | write |
 | `/summary` | Post the PR summary when the PR has none, for example after it was deleted. If one is already there, the bot replies that it did nothing. | write |
 | `/describe` | Suggest a PR title and description, as a comment to copy in. The PR is never edited. | write |
 | `/changelog` | Draft a CHANGELOG entry (Added, Changed, Fixed, Security…), as a comment to copy in | write |
@@ -236,6 +236,13 @@ Create the GitHub App before starting the bot; its credentials go in `.env`.
    registered at the channel root, and the smee client forwards it to the bot's
    local `/api/webhook`.
 
+   The installer also has two optional fields. **Organization** registers the
+   App under that organization instead of your personal account. **GitHub
+   address** (default `https://github.com`) takes a plain `https://host` and
+   changes where the manifest is sent. The bot's support for other addresses is
+   still in progress and untested on a real instance
+   ([#1487](https://github.com/devops-thiago/ThrillhouseBot/issues/1487)).
+
    <details>
    <summary>Offline alternative: serve the installer locally</summary>
 
@@ -264,7 +271,8 @@ Create the GitHub App before starting the bot; its credentials go in `.env`.
 
 > Once the bot is running, `install.html` on its own URL
 > (`https://<your-host>/install.html`, or `http://localhost:8080/install.html`)
-> detects the URL and builds the manifest for you.
+> detects the URL and builds the manifest for you. It has the same two optional
+> fields; left empty, its GitHub address is the one the bot is configured with.
 
 ### Option B: manual registration
 
@@ -272,11 +280,18 @@ Create the GitHub App before starting the bot; its credentials go in `.env`.
 |---|---|
 | Webhook URL | `https://<your-host>/api/webhook` |
 | Webhook secret | Random string |
-| Repository permissions | Pull requests: R/W, Checks: R/W, Contents: Read, Issues: R/W, Actions: Read, Commit statuses: Read |
+| Repository permissions | Pull requests: R/W, Checks: R/W, Contents: R/W, Issues: R/W, Actions: Read, Commit statuses: Read |
 | Organization permissions | Members: Read (shows installation-wide dashboard counters to organization members) |
 | Subscribe to events | Pull request, Issue comment, Pull request review comment, Check suite, Status, Repository |
 | Identifying and authorizing users | Enabled (for dashboard login) |
 | Callback URL | `https://<your-host>/api/auth/callback` |
+
+Contents R/W is there for one operation: GitHub refuses to resolve a review
+thread without it, although its documentation does not say so. The bot writes no
+file, commit or branch. An app registered with Contents: Read keeps reviewing,
+but cannot resolve its own threads; change it under **Settings → Developer
+settings → GitHub Apps → your app → Permissions & events → Repository
+permissions**, then accept the new permission on each installation.
 
 ## Configuration
 
@@ -346,6 +361,19 @@ it errors, returns an empty or cut response, or is skipped at
 posted, each with its confidence capped at medium and a line saying it was not
 verified. Under `balanced` strictness such a finding cannot request changes on
 its own. The summary states how many findings went unverified.
+
+`REVIEW_AGENT_PROMPT_ENABLED=true` adds a collapsed **Agent prompt** block to each
+**inline** finding comment, built from the title, description and suggestion
+already there. It makes no model call. File-level threads do not get the block.
+The description is repeated up to 1,000 characters, and a comment the block
+would push past GitHub's size limit is posted without it.
+
+`REVIEW_BATCHED_INLINE_REVIEW_ENABLED=true` opens one pending pull request review
+per round, attaches each inline finding to it and submits it once, instead of
+posting each inline comment on its own. If GitHub does not take the submit, the
+pending review is deleted and a separate review lists its findings by file and
+line. A reply in a finding's thread waits until the pending review is submitted
+or deleted, for at most two minutes.
 
 `REVIEW_SUMMARY_VERIFICATION_ENABLED=true` adds one call after the summary call.
 The summary call does not see the diff, so it can describe something the change
@@ -603,6 +631,15 @@ both.
 
 ### Summary comment
 
+With `REVIEW_AGENT_NEXT_STEPS_ENABLED` on, the summary also carries a short
+**Agent next steps** block at the top (under the heading, above the overview): head SHA and
+whether it changed since the last edit, how many findings are still open, names of required checks
+that are not green yet, situation-specific command hints, and a fixed **on this pull request** cheat
+sheet titled from the configured bot login (`GITHUB_BOT_LOGINS`) with `@`-mentions (`/review`,
+`/summary`, `/help`, `resolved` vs `/resolve`, auto-review). It is
+deterministic and uses no extra model call, so agents need no repository AGENTS.md; when the
+manifest line lists open findings, the block points at that line instead of repeating file paths.
+
 Each PR has one summary comment. The first round posts it; every later round
 finds it by its `<!-- thrillhousebot:summary -->` marker (or, for a summary
 posted before 0.7.0, by its heading) and replaces its body, so it always
@@ -615,6 +652,20 @@ finding once instead of posting a second delta comment. It also names the thread
 round posted for earlier "Things to double-check" items, and says how many new findings
 went only under "Things to double-check". The review keeps its verdict;
 a definite review refusal preserves the same outcome as a regular comment.
+
+The comment also carries one hidden, machine-readable line listing the open
+findings: `<!-- thrillhousebot:findings v=1 [...] -->`. Each entry gives the
+finding's `key` (the one in its thread marker), `file`, `line`, `risk`,
+`confidence`, `status` (`open`), `thread`, `hasSuggestion` and `carried` (open
+since an earlier review), most severe first. `thread` is `true` when the review
+is set to open an inline thread for the finding: it posts inline, its file is
+part of the pull request and it is within the per-run comment cap. It is
+`false` for a finding listed under "Things to double-check", on a file outside
+the pull request, or past the cap. The summary is written before the review
+posts, so a thread GitHub then refuses still reads `true`; the review body lists
+that finding. The cap counts threads that landed, so after a refusal a finding
+past the cap can still get a thread while it reads `false`. An empty list is `[]`. The list stops at 100 entries or 16,000
+characters, and `omitted=N` after `v=1` counts the entries left out. It contains no model-written text.
 
 The risk counts, Key Findings and "Things to double-check" cover the round's
 new findings and every earlier finding still open, each listed once and marked
@@ -747,6 +798,11 @@ strict, and an ambiguous comment leaves the finding held:
 One comment may name several findings; each is matched on its own. A finding
 with neither title nor description cannot be named, so fix it or reply on its
 thread if it has one. The next review records a named finding resolved.
+
+The bot's reply says which open findings on record the comment matched, and for
+a `path:line` named with a different title it shows the title on record. A title
+also matches as the summary comment's source holds it (`&#96;` for a backtick,
+`&lt;` for `<`, `\|` for `|`), so text copied through the API names its finding.
 
 **On a finding's own review thread**, reply `@thrillhousebot resolved` (the
 `path:line` and title are optional there, since the thread names the finding).
@@ -1195,7 +1251,7 @@ again. Commands such as `/describe` or `/improve` send nothing.
   "schema_version": 1,
   "event": "review.completed",
   "timestamp": "2026-09-29T12:00:00Z",
-  "bot": { "name": "thrillhousebot", "version": "0.9.2" },
+  "bot": { "name": "thrillhousebot", "version": "0.9.3" },
   "repository": "octo/repo",
   "pull_request": { "number": 42, "head_sha": "0123abc…", "url": "https://github.com/octo/repo/pull/42" },
   "session_url": "https://bot.example/session/…",
@@ -1221,6 +1277,25 @@ PR title is sent. `NOTIFICATIONS_WEBHOOK_INCLUDE_CONTENT=true` adds
 `pull_request.title` and `review.finding_list` (up to 25 findings, most severe
 first, each with `severity`, `file`, `line` and `title`); descriptions and code
 are never sent. `session_url` is built from `DASHBOARD_URL`.
+
+`NOTIFICATIONS_WEBHOOK_INCLUDE_OPEN_FINDINGS=true` adds `review.openFindings`
+to the `json` format, with or without content: every finding still open on the pull request, including ones carried from earlier
+rounds, as the summary comment's findings manifest lists them.
+
+```json
+"openFindings": {
+  "v": 1,
+  "entries": [
+    { "key": "1a2b3c4d", "file": "src/A.java", "line": 12, "risk": "high",
+      "confidence": "high", "status": "open", "thread": true,
+      "hasSuggestion": false, "carried": false }
+  ]
+}
+```
+
+The entry fields, order and limits are the manifest's; `omitted` gives how many
+findings the limits left out, and is absent when none were. The entries hold file
+paths and lines but no titles.
 
 **Chat formats.** `slack` and `discord` send one message (verdict, counts, head
 commit, links to the PR and the dashboard session) to an incoming-webhook URL.
@@ -1504,6 +1579,17 @@ Prometheus endpoint on, served on `/metrics` too. Turn them off with
 Log records stay on the console. Set `OTEL_LOGS_ENABLED=true` to export them
 over OTLP to the same endpoint as well.
 
+Every span, metric and log record carries `service.name` (`thrillhousebot`),
+`service.version` and `service.instance.id`. The instance id is the `HOSTNAME`
+environment variable (the pod name on Kubernetes, the container hostname under
+Docker), or a random id generated at startup when `HOSTNAME` is unset, so two
+instances exporting to one backend keep separate series and sums across them add
+up. To choose it, or to add other resource attributes, set
+`OTEL_RESOURCE_ATTRIBUTES`, for example
+`OTEL_RESOURCE_ATTRIBUTES=service.instance.id=bot-eu-1,deployment.environment.name=prod`.
+A random id changes on every restart, which starts new series; set `HOSTNAME` or
+`service.instance.id` to something stable where that matters.
+
 OTLP export is at-least-once: when an export fails after the collector has
 received it, Quarkus sends the batch again (up to three attempts, not logged),
 so a span or metric point can reach the backend twice. Quarkus also uses the
@@ -1629,118 +1715,12 @@ and counts skips per reason in the dashboard summary
    refused the task (overload or shutdown); redeliver the webhook from GitHub.
 
 A `/review` from a user with write access bypasses the draft, label,
-base-branch and rate-window gates, but not `/pause`.
+base-branch and rate-window gates, but not `/pause`, and it does not review a
+closed or merged pull request.
 
 ## Responsible use and security
 
 AI review is advisory. The model raises false positives and misses real bugs, so
 confirm a finding before acting on it.
 
-Pull request diffs go to the endpoint you configure. Use an HTTPS endpoint with
-an API key, and read the provider's data-retention policy before sending it
-private code. To keep code on your network, see
-[Restricted-network deployment](#restricted-network-deployment).
-
-Set `AI_API_KEY`, `GITHUB_PRIVATE_KEY` and the webhook secret through your
-environment or a secret manager, and never commit them. Treat
-`NOTIFICATIONS_WEBHOOK_URL` and `NOTIFICATIONS_WEBHOOK_SECRET` the same way; see
-[Outgoing notifications](#outgoing-notifications) for exactly what a
-notification sends.
-
-To report a vulnerability, see [SECURITY.md](SECURITY.md).
-
-## Known limitations
-
-- **GitHub only.** No GitLab or Bitbucket.
-- **Large diffs.** A review splits a big PR into up to `REVIEW_MAX_AI_CALLS - 1`
-  batch calls, keeping one for the summary; files that still do not fit are named,
-  not dropped. See [AI call budget](#ai-call-budget) and **Batching** under
-  Commands.
-- **Pure renames.** Files GitHub reports as `renamed` with no changes and no
-  patch are left out of the review input; the summary lists a short rollup
-  (`N pure renames omitted…`). A rename with edits is reviewed.
-- **Single process.** OAuth sessions, the WebSocket replay buffer, the per-PR
-  auto-review window, the findings a superseded review hands to its replacement,
-  verdicts held on pending CI and the claims the verifier rejected on a head are
-  kept in memory: lost on restart and not shared between replicas. Review
-  history and cost totals are stored in PostgreSQL. Multiple replicas are not
-  supported.
-- **Dashboard access.** GitHub OAuth only, for users who can read a repository
-  where the app is installed; no admin UI or guest mode. Access is checked
-  against GitHub's repository permissions and cached for five minutes; an
-  uninstall, a suspension or a removed repository applies at once. GitHub lets
-  only the owner of a private app sign in with it, so anyone else needs the app to be public; set
-  `GITHUB_ALLOWED_ACCOUNTS` then, because anyone can install a public app.
-- **Production database.** Container and native builds use PostgreSQL. H2 is for
-  `quarkus:dev` and the tests only, and its driver is not packaged in the image.
-- **OpenAI-compatible APIs only.** The endpoint must implement the
-  chat-completions API that LangChain4j expects.
-- **Review output.** At most `THRILLHOUSEBOT_REVIEW_MAX_REVIEW_COMMENTS` (50)
-  inline comments per review. Lockfiles (`*.lock`, `package-lock.json`,
-  `pnpm-lock.yaml`, `go.sum`), minified bundles and sourcemaps, generated code
-  (`*.generated.*`, protobuf output) and build or vendor directories (`target/`,
-  `node_modules/`, `dist/`, `build/`, `out/`, `.next/`, `vendor/`,
-  `__pycache__/`, `.venv/`, `bin/`, `obj/`) are skipped by default and named in
-  the summary's scope note; build manifests (`pom.xml`, `build.gradle`,
-  `Cargo.toml`, `package.json`, `build.zig`) are reviewed. See
-  `THRILLHOUSEBOT_REVIEW_IGNORED_FILES` and
-  [Repository configuration](#repository-configuration).
-- **Security scan.** The [security scan](#security-scan) matches a short list of
-  patterns on added lines. It does not replace GitHub secret scanning or push
-  protection: it reads neither git history nor unchanged lines, and a credential
-  in another format is left to the model review. A secret finding has no code
-  anchor (that would store the value), so when an older round's finding is no
-  longer in the round the bot compares against, it counts as present while its
-  file stays in the diff; a reply on its thread or `@thrillhousebot resolved`
-  clears it.
-- **Self-hosted.** There is no managed offering.
-
-## Verifying a release
-
-Release images and binary tarballs are signed with cosign (keyless, through
-Sigstore) and carry build-provenance attestations. To check a release:
-
-```bash
-# Signature
-cosign verify \
-  --certificate-identity-regexp='https://github.com/devops-thiago/ThrillhouseBot.*' \
-  --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
-  ghcr.io/devops-thiago/thrillhousebot:v0.9.2
-
-# Provenance (image)
-gh attestation verify oci://ghcr.io/devops-thiago/thrillhousebot:v0.9.2 \
-  --repo devops-thiago/ThrillhouseBot
-
-# Provenance (a downloaded binary)
-gh attestation verify thrillhousebot-v0.9.2-linux-amd64.tar.gz \
-  --repo devops-thiago/ThrillhouseBot
-```
-
-## Operations
-
-[docs/OPERATIONS.md](docs/OPERATIONS.md) covers what the bot stores and what
-it keeps only in memory, the single-replica limit, the health endpoints with
-Compose and Kubernetes probes, restarts, backups, and going back to an earlier
-release.
-
-## Upgrading
-
-Only the latest release receives fixes, including security fixes. To upgrade,
-read the release's section in [CHANGELOG.md](CHANGELOG.md), then point your
-deployment at the new image tag and restart it:
-
-```bash
-docker compose pull && docker compose up -d
-```
-
-Each release's notes start with what changes for an existing installation:
-new or renamed settings, changed defaults and database changes. Database
-changes are Flyway migrations that run on startup; back up the database first.
-Flyway arrived in v0.9.0: a database created before it is recorded as version 1
-(the v0.8.0 schema) on its first v0.9.0 start, so upgrade to v0.9.0 from v0.8.x
-(see [docs/OPERATIONS.md](docs/OPERATIONS.md#upgrades-and-database-changes)).
-New settings default to the previous behaviour unless the notes say otherwise. If
-you pin a version with `IMAGE_TAG` in `.env`, set it to the new tag before
-pulling.
-
-[docs/VERSIONING.md](docs/VERSIONING.md) describes 
+Pull request diffs go to the 

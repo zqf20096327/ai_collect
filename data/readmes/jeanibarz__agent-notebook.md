@@ -137,11 +137,11 @@ For a guided, checked setup of lessons, ideas or both, an agent can follow [`exa
 
 **Check it worked:** start a fresh session and give it a task. The agent should run `nb list` and open a notebook that fits. After the task, `nb show <shelf>` should show its votes and any lesson it added. For the hooks, see [Verify it's working](https://github.com/jeanibarz/agent-notebook/blob/main/docs/harness-setup.md#verify-its-working) and `nb stats`.
 
-**Optional hooks for Claude Code** inject the index at session start, hand the same index to each subagent, and nudge the retrospective at the stop. They ship in the package. Copy them somewhere stable, then print a hooks block with your paths filled in:
+**Optional hooks for Claude Code** inject the index at session start, hand the same index to each subagent, and nudge the retrospective at the stop. They ship in the package. Copy them somewhere stable (the three `.sh` scripts run `nb-claude-hook.mjs`, so keep the four files together), then print a hooks block with your paths filled in:
 
 ```sh
 mkdir -p ~/.agent-notebook/hooks
-cp "$(npm root -g)/agent-notebook/examples/hooks/claude-code/"nb-*.sh ~/.agent-notebook/hooks/
+cp "$(npm root -g)/agent-notebook/examples/hooks/claude-code/"nb-* ~/.agent-notebook/hooks/
 chmod +x ~/.agent-notebook/hooks/*.sh
 sed -e '/^  "\/\//d' -e "s|/ABSOLUTE/PATH/examples/hooks/claude-code|$HOME/.agent-notebook/hooks|" "$(npm root -g)/agent-notebook/examples/hooks/claude-code/settings.json"
 ```
@@ -229,6 +229,13 @@ nb path   [<shelf>] [--json]             print the notebooks dir, or a shelf's r
 nb path   --usage [--json]               print the resolved usage-log path (to tail -F or back it up)
 nb config [--json]                       print the effective (post-clamp) NB_* tunables + the NB_DIR/NB_SESSION/NB_ASCII string env vars as name=value (--json: tunables keyed by name, string vars under `environment`)
 nb enabled [--why] [--json]              print `on` or `off`: whether the agent-facing loop (hooks, retrospective, text `nb list`) is on in this directory
+nb project [--why] [--json]              print the project name of this directory (empty line when there is none)
+nb place  [--json]                       say where this directory's lessons live and why, and list the project folders under ~/.agent-notebook/projects
+nb place  own [--json]                   give this project its own notebook: create ~/.agent-notebook/projects/<project>/ and move its shelves there
+nb place  shared [--json]                move this project's shelves back to the shared notebook and remove its folder
+nb brief  [--max-chars N] [--session <id>] [--hook <label>] [--json]  print what an assistant should see at the start of a session: instructions, the notebook index (default budget 9000 characters)
+nb retro  --session <id> [--work-dir <dir>] [--hook <label>] [--json]  print the end-of-task retrospective text the first time it is called for a session, nothing afterwards
+nb status [--json]                       say whether chats start the notebook here: two plain lines, then the details (read-only; exit 0 only when it is running)
 nb list   [prefix] [--limit N]          index notebooks richest-first: one line each (name, lesson count, description)
 nb ls     [prefix] [--limit N]          alias of `nb list`
 nb shelves [prefix] [--limit N]         alias of `nb list`
@@ -258,12 +265,16 @@ Every `show` line starts with a short stable id — pass that id (or a unique pr
 
 | Variable | Default | What it does |
 |---|---|---|
-| `NB_DIR` | `~/.agent-notebook/notebooks` | where the notebooks and the usage log live |
+| `NB_DIR` | `~/.agent-notebook/notebooks` | where the notebooks and the usage log live; set, it is used for every project, and the project folders under `~/.agent-notebook/projects/` are not used (`nb place`) |
 | <a id="nb-max-lines"></a>`NB_MAX_LINES` | `50` | lines per shelf, the cap (1–5000) |
 | `NB_MAX_CHARS` | `200` | characters per lesson (20–2000); a `maxChars` in `<notebooks folder>/.nb.json` wins over it |
 | `NB_NEAR_DUP` | `0.5` | how similar an add must be to an existing lesson to print a merge note; `0` turns it off |
 | `NB_SESSION` | unset | a session id logged with each call; four of the five `nb stats` signals and the surfacing metrics need it |
 | `NB_ENABLED` | unset | `0`/`false`/`no`/`off` switches the agent loop off for one process, over `git config nb.enabled` |
+| `NB_RETRO_EXTRA_PROMPT` | unset | `nb retro`: absolute path of a text file (at most 64 KiB) appended to the retrospective, with `{project}` and `{session}` filled in |
+| `NB_RETRO_TTL_DAYS` | `7` | `nb retro`: days before an old `.retro-<session>` marker is removed |
+| `NB_PROJECT_SLUG` | unset | the project name (`nb project` shows it); unset, it comes from the git `origin` remote as `owner-repo`, else the repository's folder. `nb brief` groups the index into this project's, domain and global shelves; `nb retro` fills `{project}` |
+| `NB_GLOBAL_SHELF` | `global` | `nb brief` with a layered index: the bare shelf shown as the global layer |
 | `NB_ASCII` | unset (locale decides) | ASCII digits instead of Unicode blocks in the `nb stats` sparkline |
 | `NB_USAGE_RING` | `5000` | usage-log rows kept |
 | `NB_STALE_LOCK_MS` | `10000` | milliseconds before a crashed process's lock is taken over |
@@ -277,7 +288,7 @@ Every `show` line starts with a short stable id — pass that id (or a unique pr
 | `NB_COVERAGE_HI` | `0.5` | share of add attempts that are new lessons, at or above which `nb stats` reads coverage as high |
 | `NB_RECALL_MISS_HI` | `0.2` | share of add attempts blocked as duplicates (a stored lesson did not reach the agent), at or above which `nb stats` reads it as high |
 
-The example tools in [`examples/`](examples/README.md) read their own: `NB_BIN` (which `nb` the hooks run), `NB_RETRO_TTL_DAYS` (retrospective sentinel lifetime), `NB_GIT_AUTOCOMMIT` and `NB_GIT_SESSION_TRAILER` (git wrapper), `NB_BACKUP_PUSH_TIMEOUT` and `NB_BACKUP_GIT_LOCK_WAIT` (backup script). `nb` itself ignores them. The hooks' remaining variables are in [their README](examples/hooks/claude-code/README.md#configuration-environment).
+The example tools in [`examples/`](examples/README.md) read their own: `NB_BIN` (which `nb` the hooks run), `NB_GIT_AUTOCOMMIT` and `NB_GIT_SESSION_TRAILER` (git wrapper), `NB_BACKUP_PUSH_TIMEOUT` and `NB_BACKUP_GIT_LOCK_WAIT` (backup script). `nb` itself ignores them. The hooks' remaining variables are in [their README](examples/hooks/claude-code/README.md#configuration-environment).
 
 ## Programmatic use
 

@@ -24,7 +24,7 @@ Corebrum Synapse turns ROS 2 robots into agent-native machines. Speak, type, or 
 
 With Corebrum Synapse, your robot can describe what it sees, follow intent ("go check the front door"), run skills you author, and respond to natural language across the agent platforms you already use. **One ROS 2 workspace, one config, many agents.**
 
-**Building a robot from parts?** Start with the **[hardware getting started guide](docs/hardware.md)** — reference BOM (Jetson or Pi / RADXA / LattePanda / x86+Arduino), L298N GPIO wiring for `/cmd_vel` and `/odom`, RealSense, then OpenClaw and other agents.
+**Building a robot from parts?** Start with the **[hardware getting started guide](docs/hardware.md)** — reference BOM (Jetson Orin or Thor / Pi / RADXA / LattePanda / x86+Arduino), L298N GPIO for `/cmd_vel`, **IMU RealSense (D455/D456) + Isaac VIO** on Jetson for mapping odometry (instead of motor dead-reckon `/odom`), then OpenClaw and other agents. See [docs/mapping.md](docs/mapping.md) and [corebrum-os jetson-vio](https://github.com/Corebrum/corebrum-os/blob/master/docs/installation/jetson-vio.md).
 
 ## Supported AI Agent platforms
 
@@ -204,8 +204,10 @@ synapse hermes doctor        # validate ~/.hermes/config.yaml
 synapse agy setup            # register Corebrum Synapse MCP for Antigravity CLI
 synapse agy doctor           # validate mcp_config.json + skill
 synapse agy run "list topics"  # one prompt on your Antigravity subscription
+synapse embodiment setup     # compute, GPIO, odom source (vio / wheel / rtabmap_visual)
+synapse start vio            # Jetson: Isaac cuVSLAM + IMU RealSense (before mapping when odomSource=vio)
 synapse up real              # real robot stack
-synapse up real --map        # real robot + RTAB-Map + Nav2
+synapse up real --map        # RTAB-Map + Nav2 (uses saved odom source; VIO sets external /odom)
 synapse up real --eyes       # real robot + on-display robot eyes
 synapse up sim-amr           # simulated AMR (Gazebo + RViz, headless on Jetson)
 synapse up sim-amr --nav2    # AMR + Nav2 for navigate_to missions

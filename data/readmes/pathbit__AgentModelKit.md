@@ -21,7 +21,7 @@ Abra um terminal na pasta do projeto. O npmjs é o caminho principal. Use `@late
 
 ```console
 npx --yes @pathbit/agentmodelkit@latest opencode
-npx --yes @pathbit/agentmodelkit@0.0.1 opencode vscode copilot
+npx --yes @pathbit/agentmodelkit@0.0.3 opencode vscode copilot
 ```
 
 Use **↑↓** para navegar, **Espaço** para marcar cada cliente e **Enter** para confirmar a seleção. Pressione **A** para marcar todos ou limpar a seleção. O assistente pede o plano ou a conexão e o token quando necessário.
@@ -39,12 +39,16 @@ Para configurar o OpenCode em outra pasta, acrescente `--project-dir <pasta>`.
 
 ## Outras formas de executar
 
+No npm 12 ou posterior, os comandos abaixo habilitam apenas a origem
+informada. No npm 11 ou anterior, use o mesmo comando sem a opção
+`--allow-remote=root` ou `--allow-git=root`. [Opções oficiais do npm][npm-source-options].
+
 ### Pelo GitHub Release
 
 Use o arquivo `.tgz` de uma versão publicada. Node.js e o `npx` que vem com ele bastam.
 
 ```console
-npx --yes https://github.com/pathbit/AgentModelKit/releases/download/v0.0.1/pathbit-agentmodelkit-0.0.1.tgz opencode
+npx --yes --allow-remote=root https://github.com/pathbit/AgentModelKit/releases/download/v0.0.3/agentmodelkit-0.0.3.tgz opencode
 ```
 
 ### Direto do código no GitHub
@@ -52,7 +56,7 @@ npx --yes https://github.com/pathbit/AgentModelKit/releases/download/v0.0.1/path
 Com [Git instalado][git-download], execute a versão em desenvolvimento da branch `main`.
 
 ```console
-npx --yes "git+https://github.com/pathbit/AgentModelKit.git#main" opencode
+npx --yes --allow-git=root "git+https://github.com/pathbit/AgentModelKit.git#main" opencode
 ```
 
 ## Uso direto e automação
@@ -150,7 +154,7 @@ Para executar a CLI do kit, instale [Node.js 24+ com npm e npx](https://nodejs.o
 Na raiz do projeto, execute para gerar a seleção e os índices locais.
 
 ```console
-npx @pathbit/agentdevkit@0.0.40 init
+npx @pathbit/agentdevkit@0.0.41 init
 ```
 
 Na primeira execução, a CLI acrescenta um bloco de referência gerenciado ao `AGENTS.md`.
@@ -172,6 +176,7 @@ O projeto usa a Licença MIT. Leia o texto completo em [LICENSE](LICENSE).
 
 A licença permite usar, modificar e distribuir o software, inclusive para fins comerciais, desde que os avisos de direitos autorais e da licença acompanhem as cópias. O software é fornecido sem garantia.
 
+[npm-source-options]: https://docs.npmjs.com/cli/v12/commands/npm-install/#allow-remote
 [npm-package]: https://www.npmjs.com/package/@pathbit/agentmodelkit
 [github-releases]: https://github.com/pathbit/AgentModelKit/releases
 [git-download]: https://git-scm.com/install/

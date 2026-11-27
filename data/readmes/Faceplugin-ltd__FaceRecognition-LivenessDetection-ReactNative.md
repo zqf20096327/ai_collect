@@ -16,7 +16,7 @@ Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [R
 - [ ] Clone [FaceRecognition-LivenessDetection-ReactNative](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-ReactNative)
 - [ ] `yarn`, then `cd example && yarn`
 - [ ] Place the native runtimes — [Get the runtimes](#get-the-runtimes)
-- [ ] `python run_android` (or `python run_ios` on macOS) with a **physical** phone connected
+- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone connected
 - [ ] The demo ships with license keys for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS)
 
 ## Introduction
@@ -115,8 +115,8 @@ cd FaceRecognition-LivenessDetection-ReactNative
 yarn
 cd example && yarn
 # place the AAR and the iOS frameworks — see above
-python run_android
-python run_ios          # macOS
+python run_android.py
+python run_ios.py          # macOS
 ```
 
 From `example` you can also use `yarn android` / `yarn ios --device`.

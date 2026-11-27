@@ -39,7 +39,7 @@ If `/docs` redirects to `/docs/` and `/docs/` is the intended search URL, check 
 
 For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
 
-**Verify a first monitoring event.** [Run one Betterloop pageview on localhost](examples/betterloop-first-pageview.md) with the ready-to-copy test page in your Free project. [Check a deployed site](https://betterloopai.com/docs/install#verify) with the same snippet. To count pageviews from your own Vite bundle, use the [pageview-only example](examples/betterloop-first-pageview.md#count-pageviews-from-a-vite-bundle). For several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
+**Verify a first monitoring event.** [Run one Betterloop pageview on localhost](examples/betterloop-first-pageview.md) with the ready-to-copy test page in your Free project. [Check a deployed site](https://betterloopai.com/docs/install#verify) with the same snippet, or use the [pageview-only example for Vite](examples/betterloop-first-pageview.md#count-pageviews-from-a-vite-bundle). Once Betterloop receives an event, [read the pageview count in Claude Code](examples/betterloop-first-pageview.md#read-the-pageview-count-in-claude-code). For several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
 
 **Test that a browser edit persists.** In a fresh private browser session, open [Plainer’s editable launch checklist](https://plainer.app/try/from-agent-guide). Add a line such as “Confirm Retry restores the controls,” reload, and check that the line is still there. To keep the edit in a free account, choose **Sign up** in the note. Open the email verification link in the same private window, then sign in there.
 
@@ -100,7 +100,7 @@ In a new project folder, paste the system prompt into your coding agent. Then [t
 
 [Run the RegressGuard quick start](https://github.com/fainir/regressguard#quick-start) with Python 3.11 or later. Run the same three cases against two sets of saved model replies. The baseline passes all three. The changed replies fail two and return exit code `1`. The stub runs locally without an API key.
 
-[Watch the 54-second Hired in 60 drill](https://youtu.be/frJjFcm0njk) for a related Python interview example that shows how a failing test exposes a bad edit.
+Try the [free Python interview question in your browser](https://hiredin60.com/lessons/117/?utm_source=github&utm_medium=readme&utm_campaign=coding-agent-ai-code-practice). Predict the result, then reveal the counterexample to an AI edit that sorts the items. The [54-second walkthrough](https://youtu.be/frJjFcm0njk) shows the same case.
 
 [Try the free React Reset exercise](https://hiredin60.com/lessons/090/#react-state-practice) to test whether a filter toggle and results badge share the same state.
 
@@ -2616,9 +2616,4 @@ The external intelligence loop should run on a schedule and produce:
 - warnings that existing assumptions may be stale
 
 Recommended feed categories:
-- open-source orchestration runtimes and workflow engines
-- open-source model gateways and inference infrastructure
-- open-source memory, retrieval, and artifact systems
-- open-source sandbox, browser, and execution infrastructure
-- open-source eval, trace, and observability systems
-- open-source science reproducibility, experiment registry, and dat
+- open-source orchestration runtimes and workflow 

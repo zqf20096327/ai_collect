@@ -8,6 +8,12 @@
 <h3 align="center">The browser agent that tells the model less.</h3>
 
 <p align="center">
+  <a href="https://selfbrowse.ai/">selfbrowse.ai</a> ·
+  <a href="https://selfbrowse.ai/docs/">Documentation</a> ·
+  <a href="https://pypi.org/project/selfbrowse/">PyPI</a>
+</p>
+
+<p align="center">
   <a href="https://pypi.org/project/selfbrowse/"><img src="https://img.shields.io/pypi/v/selfbrowse" alt="PyPI version"></a>
   <a href="https://pypi.org/project/selfbrowse/"><img src="https://img.shields.io/pypi/pyversions/selfbrowse" alt="Python versions"></a>
   <a href="https://github.com/rinshadkk/selfbrowse/actions/workflows/ci.yml"><img src="https://github.com/rinshadkk/selfbrowse/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -44,7 +50,7 @@ selfbrowse "Open news.ycombinator.com and tell me the title of the top story."
 #8 button "Accept"
 ```
 
-The model replies `click {"ref": 7}`. On 13 tasks with a local qwen3.8, the first model call averaged 1,128 tokens with Selfbrowse and 13,467 with browser-use.
+The model replies `click {"ref": 7}`. On 13 tasks with Claude Haiku 5.5, the first model call averaged 2,306 tokens with Selfbrowse and 17,703 with browser-use.
 
 **Less of your data.** Passwords, emails, phone numbers, card numbers and (with Presidio) names reach the model as placeholders such as `<secret:pw>` and `<EMAIL_1>`. The model types the placeholder and Selfbrowse swaps in the real value at the keyboard, on the same site only. In a check with a local model, the form was filled with the real values in 5 of 5 runs and the model saw them in 0 of 5.
 
@@ -55,7 +61,7 @@ The model replies   type {"ref": 2, "text": "<EMAIL_1>"}
 The page receives   priya.raman@acme.com
 ```
 
-**Less repetition.** Selfbrowse remembers the clicks that worked on each site and replays the trusted ones without calling the model. On a multi-page lookup repeated four times, the third and fourth runs took 3 model calls and about 11 seconds, against 7 to 9 calls and 55 to 79 seconds without learning.
+**Less repetition.** Selfbrowse remembers the clicks that worked on each site and can replay the trusted ones without calling the model. In small tests on a demo shop with qwen3.8 and Claude Haiku 5.5, replay rarely triggered and we measured no reliable saving. Treat it as experimental.
 
 ```
    1. goto {"url": "https://shop.example.com"}  [845 in / 65 out]
@@ -126,26 +132,20 @@ There are fourteen runnable scripts in [examples/](https://github.com/rinshadkk/
 
 ## Measured against other agents
 
-The same tasks, model and browser for each library, behind one proxy that counts every token. Code judges success (the demo shop's state, or a fact from the site's own API), never the agent's own claim.
+Selfbrowse and browser-use ran the same 13 tasks (a demo shop and real sites) on Claude Haiku 5.5 through the Anthropic API, 2 runs per task, with the same browser and limits. Code judges success (the demo shop's state, or a fact from the site's own API), never the agent's own claim. Tokens are what the model itself reported for every call, input plus output, added up over the run. Measured on 25 November 2026.
 
-| Model and tasks | Library | Passed | Tokens sent per task | Seconds per task |
-|---|---|---|---|---|
-| qwen3.8, local, 13 tasks (demo shop and real sites) | **Selfbrowse** | 12/13 | **11,810** | **54** |
-| | browser-use 0.13.14 | 12/13 | 34,613 | 167 |
-| Claude Haiku 4.5, 6 demo-shop tasks, 2 runs each | **Selfbrowse** | **11/12** | **11,452** | **11** |
-| | browser-use | 7/12 | 70,133 | 47 |
-| qwen3.8, local, 6 real sites | **Selfbrowse** | **6/6** | **66,195** | **84** |
-| | Fastbrowse 0.10.0 | 4/6 | 160,574 | 171 |
-| Claude Sonnet 5.5, 6 real sites | **Selfbrowse** | 5/6 | 22,474 | 22 |
-| | browser-use | **6/6** | 27,311 | 22 |
+| Library | Passed | Tokens per task | Input | Output | First model call | Model calls | Seconds per task |
+|---|---|---|---|---|---|---|---|
+| **Selfbrowse** | 26/26 | **19,520** | 18,931 | 589 | **2,306** | 5.3 | **7** |
+| browser-use 0.13.14 | 26/26 | 66,661 | 64,768 | 1,893 | 17,703 | **4.5** | 14 |
 
 What this does and does not show:
 
-- **The gap is largest on small and local models**, where Selfbrowse sent 3 to 6 times fewer tokens than browser-use. On Claude Sonnet 5.5 the two were close, and browser-use passed one more task.
-- **These are small samples.** Most rows are one run per task, so a single flaky result moves a row. Treat them as measurements, not a ranking.
-- Selfbrowse makes more model calls per task than browser-use and sends far less per call.
-- Some of browser-use's failures on Haiku 4.5 were output-format errors, not wrong answers. It ran with default settings.
-- Fastbrowse picks actions with a hosted decision model whose tokens are not counted here.
+- **Selfbrowse used 3.4 times fewer tokens**, and fewer on all 13 tasks, from 1.3 to 6.6 times. It was also faster on 12 of the 13.
+- **Each Selfbrowse call is small, but it makes more of them** (5.3 against 4.5), which is why the gap in total tokens is smaller than the gap in the first call.
+- **Both passed every run.** This run does not separate them on success.
+- **Tokens are not cost.** Much of the input for both libraries was served from the prompt cache, which is billed at a lower rate.
+- **This is a small sample:** one model, 2 runs per task, one machine. Treat it as a measurement, not a ranking.
 
 The harness, per-run data and versions are in [benchmarks/compare](https://github.com/rinshadkk/selfbrowse/tree/main/benchmarks/compare), so you can rerun it on your own models. More detail, and three showcase tasks on live sites with their cost per run, are in [Tests and benchmarks](https://github.com/rinshadkk/selfbrowse/blob/main/docs/benchmarks.md).
 
@@ -190,11 +190,11 @@ The model is told only the names. `--allow-domain` means the values can be typed
 
 ## Limits
 
-Selfbrowse is early software (0.1). What we know it does not do well yet, or have not checked:
+Selfbrowse is early software (0.3). What we know it does not do well yet, or have not checked:
 
 - **Not supported yet:** closed shadow roots, and vision (`--vision` is a stub, so canvas-only pages cannot be read).
 - **Partly supported:** a saved flow cannot replay an upload or a drag. Drag does not cover sliders, canvas drawing, or drop targets that a library listens for at the page root. Custom dropdowns match visible text only, and choices that need scrolling inside the list are found only once they exist in the page. Uploads use only the files you pass with `--file`.
-- **Learning helps routine jobs you repeat.** It gave no saving across different tasks on one site, and research-style tasks learn little.
+- **Learning has no measured saving yet.** In small tests on a demo shop with qwen3.8 and Claude Haiku 5.5, replay rarely triggered and we measured no reliable saving. Research-style tasks learn little.
 - **Hard forms vary.** The same Google Flights prompt took 7 steps in one run and more than 30 in two others.
 - **Guardrails reduce risk; they are not guarantees.** Pattern matching for personal data and injection misses things. A hosted model still sees any page text you do not mask. Only a local model keeps page content on your machine.
 - **Secrets tied to a site are only as strong as the tie.** In the desktop app, a My info form with a Website field types its values only on that site and its subdomains. A form without one still types anywhere, and replaying a saved flow does not check the site yet. The library's `sensitive_sites` is checked at typing time, and `--allow-domain` remains the stricter fence.

@@ -3,7 +3,7 @@
 > **MIT License; your outputs remain yours.** You may use, modify, redistribute and sell the app, including in paid products and services, without individual permission from FURU. Retain the copyright and MIT license notices in copies or substantial portions of the software. External API fees and third-party terms are separate. / **アプリはMITライセンス。成果物の権利は従来どおり利用者に帰属します。** アプリの利用・改変・再配布・販売、有料商品やサービスへの組み込みに、FURUへの個別許可は不要です。ソフトウェアの複製または重要な部分には著作権表示とMITの許諾表示を残してください。外部API料金と第三者の条件は別です。
 
 
-> Current source version: **v8.2.1** / 現在のソース版: **v8.2.1**
+> Current source version: **v8.2.2** / 現在のソース版: **v8.2.2**
 
 MCP-compatible production AI can use this same manga engine to create multipage works in color or monochrome, carry character/prop/background references across pages, and save PNG + JSON. / MCP対応の制作AIから同じ漫画エンジンを使い、人物・小道具・背景を引き継いだカラー／白黒の複数ページ作品を作り、PNG＋JSONで保存できます。
 
@@ -64,7 +64,11 @@ The API connection dialog shows the usage, OpenAI API and Gemini API manuals in 
 
 ## Introduction video / 紹介動画
 
-[Watch the narrated v8.2.1 introduction / v8.2.1のナレーション付き紹介動画を見る（note）](https://note.com/happy_duck780/n/ndf063558c1f5)
+**v8.2.2 full introduction / v8.2.2 全体紹介**
+
+https://github.com/user-attachments/assets/34a671b6-45c4-45b7-82fe-f94191a786a4
+
+[Watch in HD on YouTube / YouTubeで高画質版を再生](https://www.youtube.com/watch?v=rZRBy1C6wQ4) / [Read the guide on note / noteで使い方を読む](https://note.com/happy_duck780/n/ndf063558c1f5)
 
 ## Application screen and output / 操作画面と生成例
 
@@ -450,4 +454,4 @@ During four-panel A4 placement, if fitting the panels edge to edge would create 
 | Scenario enhancement / シナリオ強化 | Select expression, body, effects, background, camera, dialogue and story direction independently. The selected model compares each candidate with the original in a separate text API call, checks exact evidence quotes and rejects regressions. At most two candidates are authored; gains, partial gains and retention of the original are shown separately. Extra text API fees apply. The review is not a guarantee of artistic quality; read the comparison and inspect the image. Revert remains available. Documentary direction preserves facts in both tones. / 表情、身体、演出、背景、カメラ、セリフ、物語演出を個別選択します。候補作成後、同じ選択モデルの別の文章API呼出しで元台本と比較し、引用を照合して退行を拒否します。候補作成は最大2回で、改善・一部改善・元台本保持を区別して表示します。追加の文章API料金がかかります。比較判定は絵の品質保証ではないため、比較ログと生成画像を確認してください。強化前へ戻す操作も使えます。ドキュメンタリーは両方の結末で事実を保持します。 |
 | STEP3 prompt / プロンプト | Choose color/monochrome, assemble and review, then directly edit the full final prompt. Copies, TXT, Web JSON and ordinary API generation use that edited document. / カラー／白黒を選び、組立・整合性確認後、参照指示を含む最終全文を直接編集できます。コピー・TXT・Web JSON・通常API生成は編集した全文を使います。 |
 | STEP4 image / 画像 | Generate in the app, choose available quality and size settings, stop subsequent automatic correction, or use the copied prompt manually on the provider's Web UI. API-generated PNG downloads automatically embed a separate API-image production record with the actual model and output hash. / アプリ内で生成し、利用可能な品質・サイズを選択し、後続の自動修正を停止できます。コピーしたプロンプトを公式Web画面で手動利用する経路もあります。API生成PNGには、実際のモデルと出力画像ハッシュを含むAPI画像専用の制作情報を自動保存します。 |
-| Review and history / 検査・履歴 | Automatic repair OFF skips image QA. ON inspects panel count, dialogue, balloon order and speaker tails, character identity, anatomy, camera, props, surface orientation and medium compliance in one request. It observes readable and partly readable text separately from expected dialogue; printed objects are not speech balloons. Coherent environmental text is allowed unless it materially changes the story. Missing evidence remains unverified. At most one correction addresses material defects; there is no second camera audit, reinspection or 
+| Review and history / 検査・履歴 | Automatic repair OFF skips image QA. ON inspects panel count, dialogue, balloon order and speaker tails, character identity, anatomy, camera, props, surface orientation and medium compliance in one request. It observes readable and partly readable text separately from expected dialogue; printed objects are not speech balloons. Coherent environmental text is all

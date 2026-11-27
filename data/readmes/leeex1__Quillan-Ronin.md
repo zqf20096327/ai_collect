@@ -39,7 +39,7 @@ tags:
 | **Fleet scale** | Flagship ~1B · Mini ~0.8B · Dragon ~1B |
 | **Donor fusion** | Qwen 0.6B + Llama ~1B + BitNet 2B-4T + Falcon3 ~1B → Flagship & Mini **as a group** |
 | **Benchmark tracks** | **A** = harness on a third-party frontier base · **B** = our own WSP checkpoints |
-| **Current status** | Native checkpoints trained and verified; four-donor cross-match fusion in progress |
+| **Current status** | Native checkpoints trained and smoke-tested (J1-J5); four-donor no-training fusion falsified (board #1384-1386), no fused artifact verified; model work in progress |
 
 ---
 
@@ -589,8 +589,8 @@ The Quillan cognitive engine mathematically and philosophically synthesizes mult
 * **Open Quantum Systems (Lindblad Master Equation):** Used in **JQLD (Joshua's Quantum Leap Dynamo)** to model the dynamic, time-continuous evolution of thought, injecting controlled noise to explore alternative reasoning branches.
 
 ### 🕸️ 3. Systems, Chaos & Control Theory
-* **Emergentism (Emergence over Command):** Intelligence is not hardcoded but arises from the interactions of **9,000,000,000 Quantized Micro-Agents** and 34 macro-personas reaching consensus.
-* **Non-Linear Dynamics (Kuramoto Model):** Used in the **DQSO (Dynamic Quantum Swarm Oscillation)** formula to mathematically synchronize the phases (consensus) of the massive 9B micro-agent swarm.
+* **Emergentism (Emergence over Command):** Intelligence is not hardcoded but arises from the interactions of **9,520,000,000 Quantized Micro-Agents** and 34 macro-personas reaching consensus.
+* **Non-Linear Dynamics (Kuramoto Model):** Used in the **DQSO (Dynamic Quantum Swarm Oscillation)** formula to mathematically synchronize the phases (consensus) of the massive 9.52B micro-agent swarm.
 * **Control Theory (PID & LQR):** The **Lee-Mach-6 Token Velocity Governor** uses a PID (Proportional-Integral-Derivative) controller to dynamically balance reasoning speed vs. cognitive depth. The **QPS (Quantum Process Synthesis)** uses Algebraic Riccati Equations for optimal multi-step trajectory control.
 
 ### 🏛️ 4. Philosophy of Mind
@@ -671,7 +671,7 @@ ARCHITECTURAL_MAPPING = """
 ║  │ 3. THE COUNCIL & THE SWARM (Tier 2 & Tier 3)                                   │  ║
 ║  │  [ROUTER] BitLinear (hidden_dim → 34) + Gumbel-Softmax + Z-Loss + Cap-Loss     │  ║
 ║  │  [MoE] 34 Evolvable Experts using STE 1.58b weights and 8-bit Activations      │  ║
-║  │  [SWARM] CouncilExpertSwarm: 9 Billion virtual micro-agents per expert.        │  ║
+║  │  [SWARM] CouncilExpertSwarm: 272M virtual micro-agents per expert (9.52B across 35 swarms).        │  ║
 ║  │          Input, Matrices (A/B), and Variance are ALL fully quantized!          │  ║
 ║  └────────────────────────────────────────────────────────────────────────────────┘  ║
 ║        │                                                                             ║
@@ -738,7 +738,7 @@ Think of Quillan as a vast, multi-layered digital brain with three core function
 * **Reasoning:** Thought is governed by a **5-Wave Penta-Process Diffusion Pipeline**. Complex queries are routed away from fast-path heuristics and pushed through a deep, iterative refinement loop. Low-confidence tokens undergo rigorous masked-transformer refinement, ensuring every decision is auditable, logically sound, and geometrically validated.
 
 ### 2. The Swarm (The Parallel Processor) ⚡
-* **Engine:** The core computational power is distributed across **9,000,000,000 (9 Billion) Quantized Micro-Agents across 35 Swarms**. This enables **massively parallel processing** and fine-grained, specialized task execution using hyper-efficient **TurboQuant High-Fidelity Cache** and 1.58-bit BitNet quantization.
+* **Engine:** The core computational power is distributed across **9,520,000,000 (9.52 billion) Quantized Micro-Agents across 35 Swarms**. This enables **massively parallel processing** and fine-grained, specialized task execution using hyper-efficient **TurboQuant High-Fidelity Cache** and 1.58-bit BitNet quantization.
 * **Exploration:** The system leverages **🌐 Web of Thought (WoT)** exploration, dynamically generating and evaluating $20+$ distinct solution branches in parallel. **Vectorized Gumbel Routing** ensures that compute is only spent where informational entropy demands it, preserving system capacity through an overflow-safe residual path.
 
 ### 3. The Protocol (The Enhancement & Safety Layer) 🚀
@@ -1024,4 +1024,4 @@ The following table reports **Track A**: the **Quillan v5.4.0-ONI Cognitive Harn
 | **Search Agent**          | HLE w/ tool        |   45.5 |            43.4 |         45.8 |           49.8 |         50.2 |         48.3 |             **pending re-test** |
 |                           | BrowseComp         |   65.8 |            67.8 |         59.2 |           53.9 |         74.9 |         78.6 |             **98.9** |
 |                           | BrowseComp-zh      |   76.1 |            62.4 |         66.8 |           60.9 |           -- |         70.3 |             **97.5** |
-|                           | WideSearch         |   76.8 |            76.4 |         68.0 |           57.9 |         
+|          

@@ -69,7 +69,12 @@ surface-based analysis and integration with 3D Slicer.
 
 ## Installation
 
-Clone the repository and enter the project directory:
+> **Recommended:** For the easiest setup and interactive use, we recommend running
+> DDSurfer through the **SlicerDSpace** 3D Slicer extension — see the
+> [SlicerDSpace Official Website](https://neurodmri.github.io/SlicerDSpace/)
+> ([GitHub](https://github.com/NeuroDMRI/SlicerDSpace)).
+
+For command-line use, clone the repository and enter the project directory:
 
 ```bash
 git clone https://github.com/NeuroDMRI/DDSurfer.git
@@ -147,6 +152,7 @@ Default paths:
 | `--max-gpu-gib 24` | GPU allocation budget for inference in GiB; default: 24. |
 | `--auto-mask` | Generate a missing brain mask with FreeSurfer SynthStrip; default: off. |
 | `--preprocess-jobs 2` | Run independent DTI stages concurrently; default: 1. |
+| `--no-surface-refinement` | Disable default native-space surface refinement. |
 | `--post-process` | Use source-built or installed FreeSurfer surface tools; default: off. |
 | `--postprocess-backend` | Select `auto` (default), `native` or `freesurfer`. |
 | `--keep-cache` | Retain intermediate files and detailed stage logs. |

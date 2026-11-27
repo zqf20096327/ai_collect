@@ -57,7 +57,6 @@ a separate setting that stays off unless you turn it on. The
 | `packages/charts` | Chart components |
 | `src-tauri` | Tauri 2 shell, Rust commands and native macOS and Windows code |
 | `services/tracker-python` | Activity capture and local storage |
-| `browser-extension` | Archived Chrome extension experiment; the app does not use it |
 | `integrations/skills` | Agent skill for reading Drifty records |
 
 Drifty Cloud's server (accounts, billing, cloud AI, sync and leaderboard) and
@@ -95,6 +94,17 @@ npm test              # web, Python and Rust tests
 A source build uses the same app identifier as the official app, so quit the
 official Drifty before running one. Windows source builds work but are not
 documented here yet.
+
+## Roadmap
+
+- [x] AI time tracking for Mac (Apple Silicon)
+- [x] For Windows
+- [x] For iPhone — [App Store](https://apps.apple.com/app/id6824176729)
+- [x] For AI agents — [Drifty skill](integrations/skills/drifty/SKILL.md)
+- [ ] For Intel Mac — [Waitlist](https://drifty.so/intel-mac/)
+- [ ] For Linux — [Waitlist](https://drifty.so/linux/)
+- [ ] For Android — [Waitlist](https://drifty.so/android/)
+- [ ] For Teams — [Limited beta](https://drifty.so/teams/)
 
 ## Community
 

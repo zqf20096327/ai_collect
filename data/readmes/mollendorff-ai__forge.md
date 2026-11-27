@@ -235,6 +235,8 @@ For tighter integration, `forge mcp` is an MCP server with 23 tools (validate, c
 
 With a file path, the server reads and writes as you, and only inside the folder it starts in; `"args": ["mcp", "--root", "/path/to/models"]` names the folder, and `--any-path` lifts the limit ([docs/MCP.md](docs/MCP.md#keeping-files-inside-one-folder)). [docs/MCP.md](docs/MCP.md) describes each tool, and [Forge with an AI](docs/guide/ai.md) has rules to put in your project's `AGENTS.md` or `CLAUDE.md`. `forge serve` runs a REST API for validate, calculate, audit, export and import ([docs/FEATURES.md](docs/FEATURES.md#http-rest-api-server)).
 
+MCP Registry name: mcp-name: io.github.mollendorff-ai/forge
+
 ## Quick start
 
 ```bash
@@ -307,9 +309,18 @@ Forge's results are checked against engines it does not control, and none of the
 
 Clippy runs in pedantic mode and CI fails on a warning.
 
+## How this is built
+
+One maintainer directs AI coding agents (Claude); the agents write most of the code and the docs. What makes that work is not the agents but the rules they work under, which the maintainer wrote and the agents cannot switch off.
+
+- **The maintainer decides what Forge is.** What gets built and in what order is each lane's roadmap; a design choice that changes what Forge promises is an [ADR](docs/architecture/) the maintainer accepts; every pull request is merged by the maintainer, and Excel's answers, where they are needed, come from the maintainer's own Excel.
+- **The agents work in lanes.** Several sessions run at once, each in one lane (the engine, the manual, new features, the architecture) with the paths it owns and its own roadmap ([AGENTS.md](AGENTS.md), [`.asimov/project.yaml`](.asimov/project.yaml)). Work one finds in another's lane goes on that lane's backlog, not into its pull request. [docs/SESSIONS.md](docs/SESSIONS.md) is how a session works.
+- **The rules hold every change.** 100% test coverage of lines, functions and regions; Clippy's pedantic, nursery and cargo groups on the newest and the oldest supported Rust; every test inline in the file it tests; no file over 1,500 lines. There is no way round them: [`validation/repo/src/no_skipping.rs`](validation/repo/src/no_skipping.rs) counts each one (a lint allowed, a test ignored, code compiled only for the coverage run), and every count is held at zero.
+- **Nothing is taken on an agent's word.** The numbers are checked against engines Forge does not control ([above](#how-we-know-the-numbers-are-right)); the pages are run, so a command in this README that stops printing what it shows fails CI; and each prompt in [docs/PROMPTS.md](docs/PROMPTS.md) was tried by a fresh agent that had never seen Forge before it went in.
+
 ## Status and known limitations
 
-Forge is a release candidate (v10.0.0-rc.35) and an R&D prototype: read its claims as hypotheses to check, not facts to trust. It was built with AI assistance under the author's direction (Claude is listed as a co-author in `Cargo.toml`). Do not rely on it for real financial decisions without checking the results independently.
+Forge is a release candidate (v10.0.0-rc.36) and an R&D prototype: read its claims as hypotheses to check, not facts to trust. It was built with AI assistance under the author's direction (Claude is listed as a co-author in `Cargo.toml`). Do not rely on it for real financial decisions without checking the results independently.
 
 Forge began in 2025 as the core of a trading-engine idea, built closed-source for a few months. Making the YAML calculator showed it was worth more as a financial-modelling tool, and it was opened under MIT OR Apache-2.0 in February 2026; it is not a trading engine and does not plan to become one ([ADR-063](docs/architecture/ADR-063-ORIGIN-OF-FORGE.md)).
 

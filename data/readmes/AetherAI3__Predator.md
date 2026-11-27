@@ -53,6 +53,7 @@ flowchart LR
 - [Nano language and its search mechanics](#nano-language-and-its-search-mechanics)
 - [Defensive swarm and watchdog](#defensive-swarm-and-watchdog)
 - [AgentPool, CircuitPool, and Protocol 1](#agentpool-circuitpool-and-protocol-1)
+- [GenPool wake/sleep learning plans](#genpool)
 - [Ways to work with Aether](#ways-to-work-with-aether)
 - [Read the evidence and source data](#read-the-evidence)
 
@@ -463,6 +464,43 @@ flowchart LR
 
 The native software check and its receipt remain the evidence gate. The public record has not established a measured JEV contribution; an adapter in source or an offline preflight is not a provider call. See the [Crucible evidence contract](docs/research/crucible-evidence-contract.md).
 
+<a id="genpool"></a>
+
+### GenPool: the wake/sleep learning controller
+
+**v0 · opt-in · plan-only.** GenPool sits beside AgentPool and CircuitPool. It takes pinned mission and corpus candidates from operators or agents and prepares the next learning cycle for Model 1. Its objective is to turn verified experience into better models and reusable capability, while planning efficient parallel trials on declared compute.
+
+The **sleep cycle** is the organizing loop: freeze an experience window, consolidate it, propose material and learning recipes, plan independent evaluation, then either release a qualified candidate or keep the current champion. In v0, freezing, consolidation, planning, and release-decision checks run locally; material generation, training, evaluation runs, and checkpoint release remain unexecuted plans.
+
+| Part of the cycle | What GenPool checks or plans |
+| :--- | :--- |
+| **Evidence and material** | Pins sources and provenance; builds minimal-witness, furthest-checkpoint, contrast, and plateau views; protects source-family splits before generation. Atlas M1 screens and M2 replicates evidence when Atlas is available. Native verification supplies labels; energy scores cannot supply an answer or reward. **M1/M2 are funnel stages, not Model 1/Model 2.** |
+| **Learning recipes** | Plans SFT/LoRA, distillation, DPO, RFT, RLVR, and controller trials from a pinned parent. Generated scenarios remain proposals until checked. Combining adapters creates a new candidate whose expected lift starts unknown. |
+| **Parallel compute** | Calculates VRAM fit, isolated trial branches and destinations, placement, budget reservations, backpressure, and an evaluation reserve configurable up to 90% of the planning budget. Plan-only makes no real reservations. Memory, throughput, and price stay labelled assumed until measured. AgentPool worker slots are API-call capacity, not GPU capacity; CircuitPool contributes read-only model, usage, and replay views. |
+| **Lift and observability** | Keeps expected, pilot, and confirmed lift separate; expected lift stays unknown without comparable evidence. Emits a plan and a validated projection for the Atlas Observatory. Promotion needs candidate-specific held-out evidence, contamination checks, confirmed positive lift, and a passed uplift gate; otherwise the champion and generation label stay unchanged. |
+
+<details>
+<summary><strong>Audited implementation snapshot and next Model 1 steps · November 25, 2026</strong></summary>
+
+Both source-pin hardening changes are merged:
+
+| Implementation | Audited merge | What it establishes |
+| :--- | :--- | :--- |
+| [Predator #508](https://github.com/AetherAI3/AETHER-PREDATOR-M/pull/508) | `ecbfb6e9` | The PM1 lane supplies the sealed-family manifest as a committed blob. IDs are seed-qualified. GenPool verifies the commit, lane reachability, path, blob identity, and returned bytes with Git replace objects disabled; missing or mismatched protection fails closed. The configurable evaluation reserve may reach 0.9. |
+| [Atlas #195](https://github.com/AetherAI3/AETHER-ATLAS/pull/195) | `81f5f7ba` | The scoreboard's pinned-count source check requires `lane_ref` and a reachable commit, independently hashes the blob bytes, and disables Git replace objects and environment overrides. |
+
+*Implementation links require repository access.* These pins establish source identity and lineage; they do not establish training lift.
+
+The next integrations are reviewed separately:
+
+1. **PM1 trace adapter:** read per-pin trace runs and reject a run whose seed lies outside its split's declared range.
+2. **Training-material pin:** pin PM1's 668-row training file by commit and blob, then hash it without parsing its contents in GenPool.
+3. **E006-F plan:** prepare the LoRA pass through GenPool after those integrations are audited, still plan-only.
+
+</details>
+
+**Execution remains blocked.** GenPool v0 refuses every runner and `--execute`, even with an authorized spend record. Actual training needs explicit owner spend approval plus separately reviewed executor wiring. The proposed approximately $5 GPU probe and any subsequent capped run each need approval; producing a plan grants none. v0 does not train, call paid generators, rent compute, submit IBM jobs, or release a checkpoint.
+
 ## Defensive swarm and watchdog
 
 **Proposed architecture.** The swarm fans out evidence work across scoped workers. A local watchdog can pause or observe and fail closed; the receiving owner's policy gate controls any response.
@@ -489,6 +527,18 @@ The workers return evidence and scoped recommendations; fanout does not multiply
 Attribute only as far as defense requires: **anomaly → compromised session or host → activity cluster → probable campaign or TTP → human actor**. A high-confidence local compromise can justify containment before campaign attribution is known. Automatic action must fit the receiver's pre-authorized local policy; otherwise the gate observes, preserves evidence, or asks for review.
 
 The watchdog and response flow are design direction. [SAFETY.md](SAFETY.md) distinguishes required policy from controls demonstrated in code; this section does not claim a deployed autonomous response feature.
+
+### BLU3 watchdog terminal demo
+
+The left terminal sends a signed AntiFlock test event that reports a route change. The right terminal shows the enrolled BLU3 receiver handling it on the same Windows machine.
+
+![Two terminals showing a signed route change, Nano pausing, Atlas QOTC coordinating three workers, and a single owner alert](docs/media/predator-blu3-canary-demo.gif)
+
+Nano returned `PAUSE`. Atlas QOTC ran on the receiver's CPU and ordered checks for three sources. AgentPool read the signed route, endpoint, and identity evidence in parallel. The receiver requested review until independent evidence supported the change. CircuitPool then admitted the owner-authorized `ALERT_OWNER` action.
+
+The receiver reopened its inbox and processed the same signed event again. The inbox still held one alert. Removing the owner's grant sent the case back to `REQUEST_REVIEW`.
+
+This recording uses synthetic evidence sent over Windows loopback. The watchdog, QOTC planner, worker dispatch, policy checks, and inbox writes ran live in the local development build.
 
 <a id="clean-worktrees-and-unlimited-context"></a>
 <a id="predator-rc-browser-views-and-ctf-work"></a>
@@ -595,18 +645,33 @@ Another lab may reach Gen4 first; that is why the map is drawn now. Model labs n
 ### The three engines, in plain words
 
 **1. Adaptive energy tokenizer (Nano): turns "stuck" into a small search.**
+
+<p align="center">
+  <a href="docs/assets/engine-nano-tokenizer.svg"><img src="docs/assets/engine-nano-tokenizer.svg" width="960" alt="Nano encodes a saved halt as bounded tool-call choices, assigns hand-written energy estimates without seeing the answer, and updates the next choice from blind feedback. A verifier-confirmed hit stops the search. The scripted reader improved search efficiency; Model 1's PL1 test showed no lift over random hints."></a>
+</p>
+
 - *What it does.* It writes the point where Model 1 got stuck as a handful of choices: here, which tool calls the pin should hold. Each choice gets one number, the energy: a guess at how close it is, made without seeing the answer.
 - *Why "adaptive".* After every try it narrows where to look next, from a one-word answer: miss, colder, warmer or hit. Its first version is called the lockpick.
 - *Where it stands.* With a scripted reader in Model 1's place, on 260 test stuck points, the lockpick reached a verified claim in about 2 tries, where random search needed about 23 (a miss counted as 32). Adding every possible call at once, the brute-force way, also took about 2. With Model 1 reading its hint (PL1, below), it did no better than a random hint: 15 against 11 to 19. Its score is hand-written for this one lane.
 - *Why features, not position.* Recorded Gen3 outcomes follow the attack mechanism, not where a candidate sits in a list ([search order](#search-order)). That agrees with how the tokenizer works: it describes a stuck point by its features.
 
 **2. Brute-force engine: tries candidates, does not think.**
+
+<p align="center">
+  <a href="docs/assets/engine-classical-search.svg"><img src="docs/assets/engine-classical-search.svg" width="960" alt="The classical engine replays one candidate's tool calls, receives blind feedback, and tries another candidate while the 32-try budget remains. A scripted reader makes a candidate claim; only independent verification ends with a hit. Exhaustion stops without a hit. No model runs inside the engine, and the optional quantum sampler is not wired into this loop."></a>
+</p>
+
 - *What it does.* It runs the search Nano wrote, one candidate at a time. A plain evaluator replays the candidate's tool calls into the pin, and a blind score answers miss, colder or warmer. No model sits inside it. For a hit, a scripted reader makes a claim from the candidate and the verifier must confirm it. It stops at a hit or after 32 tries.
 - *The same idea, exact, in other code.* When a problem is small, brute force checks every option. The 400-pin mission's selection step (R1) cut the pins into blocks of 16, checked all 65,536 keep-or-park combinations of each block, then checked the winner a second way. All on an ordinary CPU.
 - *Where quantum could fit.* A quantum sampler could become one more source of candidates (the quantum oracle). It is not in this loop, and nothing here is a quantum result.
 - *A rule worth reusing.* Check every option once, then mostly explore with a little digging: in the Gen2 swarm, 90/10 found the most, and more digging mostly re-found the same hits ([search order](#search-order)). A first replay against Gen3's current next-test rule favoured it on one recorded mission (P18); it is not wired into Gen3 yet.
 
 **3. AQRC, the Adaptive Quantum Reconstruction Compiler (ATLAS): rebuilds a trained network's checked steps as small parts that run on their own.**
+
+<p align="center">
+  <a href="docs/assets/engine-aqrc-reconstruction.svg"><img src="docs/assets/engine-aqrc-reconstruction.svg" width="960" alt="AQRC checks that a toy-network step repeats across retraining, keeps its function, and affects the output when broken. Passing steps are reconstructed through bypass, linear, low-rank, or simulated 3-qubit routes, compared with a same-size classical baseline, and retained only if behavior matches. These are toy-network simulator results; AQRC has not compiled Model 1 or run on quantum hardware."></a>
+</p>
+
 - *What it does.* It watches a trained network work and finds the steps inside it. It keeps only steps that pass three checks: they come back when the network is trained again, they do the same job, and breaking them breaks the output. Each kept step is rebuilt as a small part, kept only if it behaves like the original.
 - *Why "adaptive" and "quantum".* For each part it picks how to run it: pass straight through, a plain linear map, a compressed (low-rank) version of that map, or a 3-qubit quantum circuit. Each is judged against a classical version of the same size, and the classical options often win. The quantum compiler it builds on turns a QUBO scorecard into a circuit a device can run; on the IBM [Fez pilot](#joint5-compiler-the-ibm-fez-hardware-result) its joint5 path used 28.5 % fewer two-qubit gates, though not at every size in simulation.
 - *Where it stands.* Toy networks only (parity, addition, a small 3-SAT puzzle), on a classical simulator, with many negative results. By its own record, nothing in AQRC itself has run on quantum hardware. It has never compiled a step of Model 1's. In the loop its job is design: turn a step Model 1 proved into a part the system can replay.
@@ -873,51 +938,4 @@ No quantum advantage is claimed or demonstrated anywhere on this page. The hardw
 
 **Evidence flows onward.** Four hardware-delivered briefings (one from ibm_fez, three from ibm_kingston under the secret key) were re-checked from their signed receipts, decoded, matched to the bank, turned into a compact typed message, read by a frontier model, and scored by a deterministic checker: **4 of 4 correct end to end**. The typed-message format passed **12 of 12 held-out tasks** with zero formatting errors. The hardware programme used **254 of the 600 free seconds** and about **$18.65 of a $50 model budget**.
 
-The simulator milestone it builds on, **three fresh 400-agent runs at three shots with a capped six-shot re-send** (1,199 of 1,200 intact first try, 1,200 of 1,200 after re-send), remains the research baseline, kept in full in the [guide](docs/research/quantum-comm-ops.md#earlier-simulator-milestone).
-
-</details>
-
-<a id="measured-on-fixtures-no-quantum-computer-time-what-the-agents-measured"></a>
-
-<details>
-<summary><strong>Measured on fixtures, no quantum-computer time: what the agents measured (November 1)</strong></summary>
-
-### Measured on fixtures, no quantum-computer time: what the agents measured
-
-On November 1 the programme measured the **agents** on either side of the delivery step, on fixture tasks with known answers, following the same [lockpick](#crucible-adaptive-quantum-threat-modeling) Crucible uses.
-
-| Lockpick | What it means for the 400-agent loop | Measured November 1 (fixtures, no quantum-computer time) |
-| :--- | :--- | :--- |
-| **Hold tension** | The bank holds every verified record with its receipt; a stronger **encoder** picks each agent's briefing; the **compiler** filters what reaches the agent | **MET for the encoder; the selection-to-agent gate was met only with the compiler filter, not as first registered.** Encoder: about **87%** of an agent's relevant records in its top eight within the agent's evidence pool (keyword search: 38%). A scripted agent verified **5 of 110** briefings without the filter and **99 of 110** with it. [Details](docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening) |
-| **Feel many pins** | 400 cheap agents each take one briefing (one IBM job, 5 s) and report **HIT / MISS / REJECT** with a short reason | **NOT MET on price.** Best mid-cost model **12 of 12** at about **63%** of the frontier price; a free-tier model **7 of 12** at about **2%**. Target: 11 of 12 at a quarter of the price or less. [Details](docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening) |
-| **Keep the pins that bind** | The program's own check decides; a verdict counts only when it type-checks and its receipt matches; disagreement is recorded as a split | **MET.** Plain majority **9 of 12**; reliability-weighted vote **12 of 12**. [Details](docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening) |
-| **Set the binding pin** | Each surviving lead gets a **deep cell**: a "think longer" model plus a frontier model | **NOT MET for the "think longer" model**: **0 of 12** at every depth, so deep cells stay frontier-only. A harder task family was found where the frontier model alone verifies **2 of 12**. [Details](docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening) |
-| **Only as many hands as we have** | Deep cells open only up to the machines we have; other leads wait with evidence intact | **NOT RUN.** The narrow-then-deepen comparison stopped at its **$5** cap before any deep cell opened; the mid-cost model verified **9 of the 9** leads it reached, 15 waiting. [Details](docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening) |
-| **Next cycle** | Each cycle's verified records feed the next cycle's briefings | **MET on fixtures.** Three cycles over the same 40 fixture chains: first-try verified **24 → 38 → 39 of 40**, cost per verified record **0.45×** cycle one. Fresh, non-fixture tasks still open. [Details](docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening) |
-
-<p align="center">
-  <a href="docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening"><img src="docs/assets/quantum-comm-ops-compounding.svg" width="960" alt="Compounding measured on fixture tasks with no quantum-computer time: across three cycles over the same 40 chains, agents verified first try 24, then 38, then 39 of 40; hand-offs to the mid-cost model fell from 16 to 2 to 1; and the cost per verified record fell to 0.45 times cycle one."></a>
-</p>
-
-**One cycle now:** bank → encoder → compiler filter → 400 briefings in one IBM job → verified records banked with receipts → weighted vote on disagreements → next cycle from a deeper bank. Delivery *measured on IBM hardware*; encoder, filter, vote and compounding *measured on fixtures*; deep cells **NOT RUN**. The stages were measured separately; no cycle has yet run with the hardware step inside it.
-
-<p align="center">
-  <a href="docs/research/quantum-comm-ops.md"><img src="docs/assets/quantum-comm-ops-agent-loop.svg" width="960" alt="One cycle of the agent loop: the shared evidence bank feeds the encoder, which picks each agent's records (measured on fixtures: about 87 percent of relevant records in the top eight); the compiler drops other chains' and contradicted records (fixtures: 99 of 110 verified with the filter, 5 of 110 without); 400 briefings go out in one IBM job (hardware: 400 of 400 intact, 5 seconds billed); verified records are banked with their receipts; disagreements go to a reliability-weighted vote (fixtures: 12 of 12); deep cells on surviving leads are not run; and the bank feeds the next cycle (fixtures: first-try 24, 38, 39 of 40)."></a>
-</p>
-
-Why it matters: a cheap agent that cannot tell a hard lead is real discards it, so a loop that only narrows would find the easy findings and lose the hard ones; deepening on survivors is the untested hypothesis. For scale, the worker survey projects about **$4 of model calls plus 5 seconds of quantum-computer time** for a 400-agent round with the first-tier worker alone (one call per agent, no escalation), against about **$18** with a frontier model on every agent; the measured third cycle implies roughly **$9–10** per 400 verified records with escalation. These are *modelled* from measured per-call costs, not a measured 400-agent mission. The agent lanes cost about **$24** of model calls; **$42.50** of the model budget had been used at that point (cap $50 then, raised to $75 on November 3; the [status table](#status-november-8-2026) carries the current total).
-
-</details>
-
-<a id="first-compounding-mission"></a>
-
-<details>
-<summary><strong>First compounding mission (November 3–4, 2026): one 40-agent mission, all four lanes, sealed</strong></summary>
-
-### First compounding mission (November 3–4, 2026)
-
-**One 40-agent, three-cycle mission ran all four lanes and sealed them into one package**: 249 records that verify **PASS** with the mission key and **PASS_UNSEALED** without it (Merkle root `sha256:63468836…`; key held off-repo).
-
-- **Attack** (*measured on fixtures, no quantum-computer time*): Qwen3.5-27B on one rented H100; first-try verified **27 → 33 → 34 of 40**, cost per verified 652 → 490 → 467 units (GPU time in the gateway's cost unit, UVT); K-4a **NOT MET** (0.716× where 0.5× was needed), K-4b **MET**.
-- **Repair** (*scripted*): a deterministic re-route of each verified path, 100 counterfactual pairs; no model involved.
-- **Model** (*measured on fixtures, no quantum-computer time*): the frontier model may edit the weights of Qwen3.5-0.8B, which loops to its 512-token cap on 756 of 756 generations (252 tasks × 3 seeds), on CPU and GPU (L-1a **MET**: the failure is reproducible). Both cycles spent their caps on diagnosis and proposed no patch (L-1b **NOT MET**). **No mo
+The simulator milestone it builds on, **three fresh 400-agent runs at three shots with a capped six-shot re-send** (1,199 of 1,200 intact first try, 1,200 of 1,200 after re-send), remains the research baseline, kept in full in the [guide](docs/research/quantum-comm-op

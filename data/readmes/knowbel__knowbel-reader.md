@@ -1,6 +1,6 @@
 # Knowbel Reader
 
-Knowbel Reader is a PDF, EPUB and Markdown reader for studying dense documents: textbooks,
+Knowbel Reader is a PDF, EPUB, Markdown and HTML reader for studying dense documents: textbooks,
 papers, lecture notes, and articles saved from the web. It does everything you'd expect for highlighting and
 note-taking, and adds an AI study layer. You can select a passage and "deep
 dive" into it, ask questions about the whole document, and build a glossary of
@@ -14,9 +14,18 @@ and Linux, but those builds haven't been tried yet.
 ## Features
 
 ### Library
-- Import PDFs, EPUBs and Markdown (`.md`, `.markdown`) (**⌘O**). Importing the
+- Import PDFs, EPUBs, Markdown (`.md`, `.markdown`) and HTML (`.html`, `.htm`, `.xhtml`) (**⌘O**). Importing the
   same content twice opens its existing entry. PDFs and EPUBs also supply
   their embedded title, author, page count and cover.
+- On macOS, the installed app appears in Finder’s **Open With** menu for these
+  formats. Files opened from Finder or dropped on the Dock icon import into
+  the library and open in the reader, whether Knowbel is starting or already
+  running. Existing documents retain their notes and reading position. A batch
+  opens in order, leaving the last successful document visible. Current writing
+  is saved before switching; a failed save keeps the current reader open.
+  Build and install a fresh `.app` to register the associations; the Vite dev
+  server alone does not register them. Knowbel registers as an alternate viewer;
+  users can choose their default app in Finder’s **Get Info → Open with**.
 - Markdown is read natively, with reflowing text, adjustable text size, GFM
   tables and task lists, code, links, and KaTeX equations. The original file
   is kept unchanged. Text highlights, comments, sticky notes, search,
@@ -28,7 +37,15 @@ and Linux, but those builds haven't been tried yet.
     show a placeholder: choosing one Markdown file does not grant access
     to adjacent files. Raw HTML inside Markdown is displayed as inert text.
   - Reimporting the same content keeps its notes; edited content is a new
-    document. PDF export and area selection apply to PDF documents.
+    document. Area captures save a picture with a semantic source anchor.
+    View offers annotated HTML export and Print / Save as PDF (**⌘P**).
+- HTML files use the same native reader and study tools as Markdown, with
+  headings, formatted text, lists, code, tables, figures, and internal links
+  (including footnotes). Original bytes are preserved. Scripts, stylesheets,
+  and hidden content are excluded. Inline SVG diagrams are sanitized and retained;
+  direct video/audio and YouTube/Vimeo players load when clicked. Remote and inline raster images
+  work; relative resources resolve against an HTTP(S) `<base>` when supplied,
+  otherwise local images show a placeholder.
 - An EPUB becomes a PDF when it's added: the browser lays it out (using the
   book's own stylesheets) as a 6×9in paperback set in Literata. The result has real
   text, the book's pictures, working links, and its table of contents as
@@ -39,8 +56,17 @@ and Linux, but those builds haven't been tried yet.
 - **Add from URL**: save a web page (a blog post, an article, documentation)
   as a document, or add a PDF or EPUB straight from a link. Paste a link
   anywhere on the library, drop one in from a browser, or use the button.
-  - A page becomes a PDF the same way an EPUB does, set like the rest of the
-    library. The article is found with Mozilla's Readability (Firefox's
+  - On desktop a URL opens **inside the Knowbel reader** in **Page** mode,
+    using the system web engine (WKWebView on macOS). The site's original CSS,
+    JavaScript, interactive diagrams, animations and controls remain live.
+    No separate browsing window opens. Selecting page text shows the same
+    selection toolbar as any other document (Highlight, Note, Ask, Dive,
+    Glossary, colors and styles), and the Highlight and Note tools work
+    directly on the page. Saved marks are painted on the live page; click one
+    to recolor, open its note or remove it. Area capture uses Study text,
+    where pictures are saved. **Study text** opens the saved copy
+    with reflowing text, section navigation, Notebook and the shared study tools.
+    This offline article is found with Mozilla's Readability (Firefox's
     Reader View). Anything Readability drops from inside the article (a code
     sample, a table, a note, words cut from the middle of a paragraph) is
     checked and put back. The page's own navigation, ads and related links
@@ -48,9 +74,11 @@ and Linux, but those builds haven't been tried yet.
   - Figures the page draws with CSS (boxes and arrows in styled HTML) are
     captured as pictures from a render of the page with its own stylesheets.
     Their words stay searchable, so Ask and the glossary can use them.
-  - Pictures are saved into the document. Video, audio and embeds (YouTube,
-    tweets, CodePens, Gists) become a link with a thumbnail, since a PDF can't
-    play them. Formulas are kept as their TeX source.
+    Inline SVG and unsupported image formats are saved as raster images.
+  - Pictures are saved into the document. Direct video/audio and YouTube/Vimeo
+    players can play inside the reader after a click; playback requires a
+    connection. Other embeds (tweets, CodePens, Gists) retain an original-site link. Formulas keep
+    their TeX source and render as equations in the native reader.
   - When something couldn't be kept exactly (a picture that wouldn't
     download, a video saved as a link), you're told before the document
     opens. Otherwise it opens straight away.
@@ -59,8 +87,26 @@ and Linux, but those builds haven't been tried yet.
   - The page is saved as it was the day you added it, with its address, its
     author and date, and **Open original page** in the View menu. Adding the
     same address again offers the saved copy, or a fresh one if it changed.
-  - Known gaps: pages that build their content with JavaScript, and pages
-    behind a sign-in or paywall, can't be saved yet.
+    Article text and pictures are stored together in a self-contained HTML
+    snapshot for offline reading. An unchanged fresh fetch reuses its entry
+    and notes. Articles saved as PDFs by earlier versions remain intact;
+    **Save a fresh copy** adds a native version alongside them.
+  - A site that blocks the ordinary fetch loads inline in Knowbel while its
+    study copy is prepared automatically. Complete verification or sign-in in
+    that pane if required. The running page is handed to the reader without
+    reloading it. The page has a temporary profile and no library or API-key
+    access. No Chromium or Playwright engine is bundled.
+  - The web app uses ordinary fetching; JavaScript-only or protected pages may
+    require importing a saved HTML file. Site verification can still reject an
+    embedded web engine. Page mode follows the site's access rules. It preserves
+    the site's runtime rather than flattening it, but rendering can differ between
+    browser engines, viewport sizes and site versions.
+  - On macOS the original page is also saved, with its scripts, styles, fonts and
+    images, after you first open it (refreshed daily, and when you leave after
+    reading). Offline it replays from that saved page, so animated and interactive
+    figures keep working; **Open saved page** appears if the live page won't load.
+    Anything the page fetches while running (live data, comments) still needs a
+    connection. Study text is a snapshot: JavaScript diagrams become static figures.
 - "Continue reading" brings you back to where you left off.
 - Export and import all your notes as a single backup file.
 
@@ -72,7 +118,7 @@ and Linux, but those builds haven't been tried yet.
 - Table of contents and full-text search (**⌘F**). Highlights and notes live together in Notebook.
 - Bottom-center navigation in both readers, shown while scrolling or hovering
   and faded while idle. PDFs offer typed page numbers (printed labels like
-  "xii" work); Markdown offers a section picker and previous/next sections.
+  "xii" work); Markdown and HTML offer a section picker and previous/next sections.
   **⌥⌘G** focuses the location control. **Back / Forward** (**⌘← / ⌘→**) and
   the history menu retrace jumps in either format.
 - Zoom, two-page view, continuous scrolling, and light/dark themes.
@@ -98,7 +144,7 @@ and Linux, but those builds haven't been tried yet.
 - Organize by source section or named sections; move, reorder, combine notes,
   or attach several saved passages to one thought. Search and filter by type,
   color, or nearby location. Deleted notes can be restored from Trash.
-- **Clarify**, **Shorten**, and **Save takeaway** offer proposals to accept or
+- **Clarify** and **Shorten** offer proposals to accept or
   dismiss. Related notes uses local wording and source matches without an AI request.
 - Saved means the latest content was acknowledged by storage. Failed writes
   keep the current work and offer Retry. Unsent questions and attachments stay
@@ -110,8 +156,10 @@ and Linux, but those builds haven't been tried yet.
 ### AI study tools
 - **Deep Dive**: select text or a region of a page and get an explanation
   that draws on the surrounding text and related passages elsewhere in the
-  document. PDF dives gather up to 15,000 characters of nearby text across
-  page boundaries, favoring the argument leading up to the selection.
+  document. PDFs with up to 60,000 characters of extracted text are read in
+  full, including on follow-ups and nested dives. Larger PDFs gather up to
+  15,000 characters of nearby text across page boundaries, favoring the
+  argument leading up to the selection, plus related passages.
   Answers stream as they arrive, and can be stopped or retried. Ask
   follow-ups or dive deeper into a phrase in an answer to build a tree of nested
   dives; use the map to navigate it and the optional summary to synthesize it.
@@ -251,6 +299,7 @@ How the packaged app differs from the browser version:
 | `npm test`               | Run the unit tests                                        |
 | `npm run test:reader`    | Browser reader regression checks (local Chrome debugger) |
 | `npm run test:desktop-reader` | Cold-start checks in desktop WebKit on macOS (build first) |
+| `npm run test:macos-file-open` | Real macOS file-open events in a temporary app/library (start Vite on port 5178 first) |
 | `npm run lint`           | Lint with oxlint                                          |
 | `npm run build:server`   | Bundle the API server for the desktop app (run by `tauri build`) |
 | `npm run tauri dev` / `build` | Run or package the desktop app                       |

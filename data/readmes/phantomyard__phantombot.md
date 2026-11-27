@@ -44,7 +44,7 @@ Phantombot is the agent runtime of [**Phantomyard**](https://phantomyard.ai):
 - **Real background work** — scheduled tasks, health checks, and notifications
   that survive restarts.
 - **Local control** — persona state and AES-256-GCM encrypted secrets stay on
-  your machine.
+  your machine; runtime features read the vault directly, not the agent's env.
 
 ## PhantomChat team groups
 
@@ -123,6 +123,9 @@ phantombot acp install vscode    # also: zed, jetbrains, opencode
 
 Run `phantombot --help` or `phantombot <command> --help` for the current
 flags — it is always fresher than copied docs.
+
+Inside a turn, every harness reaches these as typed `pbot_*` tools — see
+[Connect MCP integrations](docs/how-to/mcp.md).
 
 ## Learn more
 

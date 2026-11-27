@@ -28,13 +28,13 @@ Use [AWS](docs/setup.md#aws) to rent GPUs in your own account, [Docker Compose](
 ### Docker Compose
 
 ```bash
-curl -fsSL https://github.com/BerriAI/inference-stack/releases/download/v0.4.1/install.sh | bash -s -- docker
+curl -fsSL https://github.com/BerriAI/inference-stack/releases/download/v0.4.2/install.sh | bash -s -- docker
 ```
 
 ### Kubernetes
 
 ```bash
-curl -fsSL https://github.com/BerriAI/inference-stack/releases/download/v0.4.1/install.sh | bash -s -- kubernetes
+curl -fsSL https://github.com/BerriAI/inference-stack/releases/download/v0.4.2/install.sh | bash -s -- kubernetes
 ```
 
 Open [localhost:8080](http://localhost:8080) and sign in as `admin`. The installer tells you where to find the generated password.
@@ -47,7 +47,7 @@ No GPU? Enable **Simulate without a GPU** in the model's **Settings** for canned
 
 Start with 0 models and 0 GPUs in your own account. Requires a paid AWS account with deployment permissions. AWS bills for the launcher from setup and for GPU machines when you add them. Review GPU choices and prices in the UI.
 
-1. [Launch on AWS](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?templateURL=https%3A%2F%2Finference-stack-release-templates-templates-e0eqnr6ih8gk.s3.us-east-2.amazonaws.com%2Freleases%2Fv0.4.1%2Faws-stack.yaml&stackName=inference-stack). Enter an **Admin password** of at least 20 characters, keep the other defaults, acknowledge IAM permissions, and choose **Create stack**.
+1. [Launch on AWS](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/review?templateURL=https%3A%2F%2Finference-stack-release-templates-templates-e0eqnr6ih8gk.s3.us-east-2.amazonaws.com%2Freleases%2Fv0.4.2%2Faws-stack.yaml&stackName=inference-stack). Enter an **Admin password** of at least 20 characters, keep the other defaults, acknowledge IAM permissions, and choose **Create stack**.
 2. Wait for **CREATE_COMPLETE**, then open **Outputs → OpenInferenceStack**. Sign in as `admin` with that password.
 3. Open **Deployments**, choose a model, select an **AWS GPU**, and choose **Add GPU and deploy** after reviewing its price.
 4. When **Ready**, choose **Try in LiteLLM**. Sign in with the same password, select the model in **Chat**, and send a message.

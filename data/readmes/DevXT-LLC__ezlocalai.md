@@ -220,7 +220,9 @@ binary used by the installed reference. It also builds the native Qwen TTS
 worker from the pinned llama.cpp tree and sets `QWEN_TTS_BIN` to its installed
 executable. No Python interpreter or binding library is required at runtime.
 Downloads and licenses are managed by `cmake/CudaAudioDependencies.cmake` and
-the SHA-256 lock file beside it. Models remain in the mounted model cache.
+the platform SHA-256 manifests beside it. Microsoft’s NuGet package supplies
+the ONNX Runtime headers. The pinned PyPI wheels supply the native libraries.
+Models remain in the mounted model cache.
 
 Current CPU/CUDA large-v3-turbo and Qwen inference comparisons are documented
 in `tests/fixtures/audio_deployment_README.md`. Configure
@@ -454,21 +456,17 @@ The native executable and CUDA compose configuration preload configured LLMs by 
 `LLAMA_CPP_START_TIMEOUT` defaults to `3600` in CUDA compose and governs engine startup after native acquisition. Hub requests have separate downloader timeouts.
 The default CUDA build targets compute capabilities 8.6, 8.9 and 12.0 and builds llama.cpp in parallel. llama.cpp, stable-diffusion.cpp and ACE-Step are built with `GGML_NATIVE=OFF`, a portable AVX2/FMA/F16C x86-64 baseline, so the image runs on any fleet CPU rather than only on CPUs like the build host. The GB10 image (`docker-compose-gb10.yml`) uses the same Dockerfile with `EZLOCALAI_PLATFORM=gb10`. Override `EZLOCALAI_LLAMA_CPP_CMAKE_ARGS` or `EZLOCALAI_LLAMA_CPP_JOBS` in `.env` for other architectures or job counts.
 
-The default engine revision is llama.cpp release v1.0.0 (`b1b770d90d94cad9e9ea5b993bdbc383a522fb28`). It is newer than the Python reference’s xllamacpp engine, `aa94f2086147cd4bfbcff818ce998dffce5fcb39`. The C++ management tool, platform Dockerfiles and Compose builds use the same default; `EZLOCALAI_LLAMA_CPP_REF` remains an explicit override. Remove or update an older explicit `.env` pin to adopt v1.0.0. To rebuild that revision in the CUDA image:
+The default engine revision is llama.cpp release v1.1.0 (`171527522610996f5f0acf12334e185156ca8f44`). It is newer than the Python reference’s xllamacpp engine, `aa94f2086147cd4bfbcff818ce998dffce5fcb39`. The C++ management tool, platform Dockerfiles and Compose builds use the same default; `EZLOCALAI_LLAMA_CPP_REF` remains an explicit override. Remove or update an older explicit `.env` pin to adopt v1.1.0. To rebuild that revision in the CUDA image:
 
 ```bash
-EZLOCALAI_LLAMA_CPP_REF=b1b770d90d94cad9e9ea5b993bdbc383a522fb28 docker compose -f docker-compose-cuda.yml build
+EZLOCALAI_LLAMA_CPP_REF=171527522610996f5f0acf12334e185156ca8f44 docker compose -f docker-compose-cuda.yml build
 ```
 
-v1.0.0 brings CUDA few-row quantized matrix multiplication, fused recurrent
-state snapshots, and scheduler/graph reuse that may help Qwen3.8-27B prefill and
-MTP verification. The managed patches preserve its GPU-resident MTP catch-up:
-only the bounded verification prefix and rewind tail are downloaded for cache
-resume, instead of the full target hidden matrix. Checkpoints share immutable
-owners, including their speculative state, and the cache budget counts shared
-backing once. Qwen's 262,144 context limit, Q4 KV default, model quantization,
-draft length and sampling settings remain unchanged. GPU throughput needs a
-controlled benchmark with the deployed model before claiming a speedup.
+v1.1.0 adds Inkling 2 Mini support and refactors llama-server's slot scheduler.
+The managed patches retain named prompt caching, bounded checkpoint storage,
+MTP resume and opt-in Ada Q4 KV fusion on the new engine. The upstream
+`draft-dflash` launch option still selects the appropriate driver for the
+loaded draft head.
 
 The engine parser also accepts v1's FP8 KV format (`f8_e4m3`). This change
 checks parsing only; native `KV_CACHE_TYPE` policy retains its existing accepted
@@ -823,6 +821,48 @@ Text, vision and embedding acquisition use C++ Hub listing and local-folder down
 
 `EMBEDDING_SERVER` delegates to another ezlocalai service with `EMBEDDING_SERVER_API_KEY`. The API preserves current dimensions/encoding fields on delegation, applies reference dimension trimming and normalization for local results, and keeps embedding work outside the LLM request queue. `embedding_reference` verifies 86 cases captured from executing the current reference schema and embedding methods. Real model output equivalence has not been established.
 
+### Inkling 2 Mini
+
+Set these values in `.env` to run Inkling 2 Mini for text and image chat:
+
+```dotenv
+DEFAULT_MODEL=unsloth/Inkling-2-Mini-GGUF
+QUANT_TYPE=UD-Q4_K_M
+```
+
+The model defaults to a 262,144-token context in both native and Compose
+launches. Set `LLM_MAX_TOKENS` or `LLAMA_CPP_CONTEXT` for a different context.
+Inkling supports a window of up to 1,048,576 tokens, including generated tokens,
+and larger windows require more KV memory.
+[Model card](https://huggingface.co/thinkingmachines/Inkling-2-Mini)
+
+The native worker uses `UD-Q4_K_M` when the quant is unset. Set it in `.env` to
+override the Compose profile's general quant default. The downloader uses the
+current root GGUF and `mmproj-F16.gguf` from Unsloth. For manual downloads, use assets from the
+current [Unsloth model repository](https://huggingface.co/unsloth/Inkling-2-Mini-GGUF).
+The default weights take about 16.6 GB plus the projector, KV cache and
+runtime buffers.
+Refresh any cached Inkling weights from before Unsloth updated the root files
+to the mainline format.
+
+Inkling's request defaults are temperature 1.0, top-p 1.0, top-k disabled,
+min-p 0.0 and high reasoning effort. Requests can override sampling and
+`reasoning_effort`.
+
+Automatic KV precision uses `q4_0` for both keys and values. Set
+`KV_CACHE_TYPE` for a different precision. Inkling uses the standard attention
+path because its head dimensions differ from the CUDA Q4 fusion shape used in
+Qwen verification.
+
+Set `LLM_SPECULATIVE_TYPE=dspark` to enable Inkling's DSpark drafter. The worker
+uses the pinned Unsloth Q8_0 draft weights from the shared Hub cache, a
+five-token draft limit, a confidence threshold of zero, and llama.cpp's F16
+draft KV defaults. The `auto` mode keeps Inkling drafting disabled. Use
+`LLAMA_CPP_EXTRA_ARGS` to override the path or limit with `--spec-draft-model`
+or `--spec-draft-n-max`. For a smaller draft KV cache, pass
+`-ctkd q4_0 -ctvd q4_0` in the same setting.
+[llama.cpp v1.1.0 release](https://github.com/ggml-org/llama.cpp/releases/tag/v1.1.0)
+
 ### Managed llama.cpp Checkout
 
 ezlocalai can manage a local llama.cpp checkout without vendoring it into git:
@@ -859,7 +899,7 @@ The output is key/value lines showing each model id, a matching top-level GGUF i
 To pin or update a specific upstream ref:
 
 ```bash
-EZLOCALAI_LLAMA_CPP_REF=b1b770d90d94cad9e9ea5b993bdbc383a522fb28 ./build/llama_cpp_tool update
+EZLOCALAI_LLAMA_CPP_REF=171527522610996f5f0acf12334e185156ca8f44 ./build/llama_cpp_tool update
 ./build/llama_cpp_tool build
 ```
 
@@ -936,10 +976,4 @@ Wan image conditioning uses C++ RGB decoding and Pillow's center-crop/Lanczos al
 
 Video requests use the current API defaults of 18 inference steps and 3.5 guidance. Forwarding tries `IMAGE_SERVER`, then `ROUTER_URL` when this worker lacks video capability, then the configured fallback under the reference availability/resource policy. Router dispatch preserves image and condition inputs; the image-server and fallback paths retain their respective reference field sets. `video_api_reference` replays 398 cases from the actual Python API and clients over native HTTP and checks positive/negative availability caching.
 
-Local video selects the reference's capability-ranked secondary CUDA-visible GPU when present. The C++ driver adapter respects CUDA visibility and requires no toolkit at build time. Video LLM handoff also retries restoration if the initial attempt leaves all prior LLMs unloaded, including when `VIDEO_RELOAD_LLM_AFTER_GENERATION=false`, matching the reference. `video_runtime_reference` covers 2,769 source-derived ranking, placement, policy and restoration cases plus native driver/API integration. Auxiliary model eviction, complete residency/resource admission and real Wan inference remain unverified or incomplete.
-
-Video handoff now unloads idle owned embedding pools and restores them according to `EMBEDDING_KEEP_LOADED`, enablement and delegation settings. Active embeddings are left running; failed restores can retry on the next embedding request. Shared auxiliary hooks and voice/image restoration policies have 3,057 source-derived cases, including API cleanup after generation errors. Persistent voice/image engines, complete resource admission and video retry-time VRAM cleanup remain incomplete.
-
-`CttsRuntime` implements the current CTTS constructor settings, device/memory policy, generation and warmup kwargs, single-sample inference, CPU fallback and cleanup/close ordering. `ctts_runtime_reference` compares 787 source scenarios/1,268 operations, including two gated cross-thread close cases. The optional `ezlocalai_ctts_torch` adapter supplies native CUDA memory and cleanup hooks plus real LibTorch inference mode. `ctts_model_reference` compares three complete CPU audio hashes and an intervening invalid-text error/recovery through the actual worker. This is the constructor prefix through sample-rate initialization, not full CTTS filesystem/cache/warmup or API integration. See `tests/fixtures/ctts_runtime_README.md` for provenance and limits.
-
-`ctts_audio` now implements CTTS mono float32 mixing, separate WAV/streamed-PCM conversion, in-memory audio decoding and tensor layout conversion. The optional LibTorch adapter provides torchaudio-compatible CPU resampling. `ctts_audio_reference` compares 2,122 source cases across strided arrays, quantization/n
+Local video selects the reference's capability-ranked secondary CUDA-visible GPU when present. The C++ driver adapter respects CUDA visibility and requires no toolkit at build time. Video LLM handoff also retries restoration if the initial attempt leaves all prior LLMs unloaded, including when `VIDEO_RELOAD_LLM_AFTER_GENERATION=false`, matching the reference. `video_runtime_reference` covers 2,769 sour

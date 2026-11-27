@@ -66,6 +66,10 @@ activation memory, and CUDA Graph replay reduces launch overhead for fixed shape
 
 For already quantized NVFP4 checkpoints, `mode="packed_nvfp4"` preserves the source
 weight payload and offers GPU recomputation or caching of the backward layout.
+Starting from frozen BF16 weights, `calibrate_packed_layers` tries caller-defined
+groups on calibration samples and packs those that fit the caller's score budget.
+Use `hidden_state_evaluator` to budget the worst relative L2 error across the
+layers and calibration batches you observe.
 See [packed NVFP4 LoRA](docs/PACKED_NVFP4.md) for formats, tested compatibility and
 memory choices. This new mode uses eager training; the existing modes keep their
 CUDA Graph support.
@@ -75,6 +79,10 @@ from nvfp4_training import prepare_lora
 model, optimizer = prepare_lora(model, mode="preserve", rank=16, alpha=16)
 # Use the normal loss.backward() / optimizer.step() loop.
 ```
+
+Models with gated delta-rule linear attention can also accelerate dense prefill
+with either BF16 or packed projection weights. See the
+[inference call site](docs/PACKED_NVFP4.md#gated-delta-rule-prefill).
 
 The unchanged-precision implementation is also available independently as
 `precision_lora`, with only PyTorch as a dependency. See the [LoRA API guide](docs/LORA.md)

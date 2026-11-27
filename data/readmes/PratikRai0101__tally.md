@@ -84,7 +84,7 @@ Tally reads the session logs your agents already write and the usage endpoints y
 
 - One dithered meter per plan, as columns or bars, coloured green → amber → red as usage climbs
 - Choose what each meter tracks: the tightest limit, the session, or the weekly window
-- Label meters with **% used**, the plan's **cost**, or its **tokens** for today / 7 days / 30 days, always or only at high usage
+- Label meters with the limit's **%**, the plan's **cost**, or its **tokens** for today / 7 days / 30 days, always or only at high usage
 - End with a total in dollars or tokens, or hide it
 - Pick which plans appear in the menu bar separately from the panel
 - A small green dot shows while an agent is running
@@ -92,7 +92,7 @@ Tally reads the session logs your agents already write and the usage endpoints y
 
 ### Know when you'll run out
 
-- Every limit shows % used, a reset countdown, and a tick marking where an even pace would put you
+- Every limit shows % used (or % left, if you prefer counting down), a reset countdown, and a tick marking where an even pace would put you
 - **Pace forecasts**: "At this pace you'll hit the limit 8:35 pm, 1h 40m before reset" when you're heading for a lockout, or "On track: about 69% used by reset" when you're not. Session limits use your recent pace; weekly limits use your average since the week began, because nobody codes around the clock
 - **Freshness on every reading**: "live · 2m ago", "last checked 25m ago" or "estimate from logs · 47m ago". If a check fails (an expired token, a locked Keychain, a network blip), Tally keeps your last good numbers, dimmed, and says why
 - **Most headroom** points to the plan with the most room right now

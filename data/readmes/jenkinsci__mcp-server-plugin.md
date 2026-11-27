@@ -122,6 +122,8 @@ Response format:
 }
 ```
 
+`activeConnections` counts the open SSE connections plus the Streamable HTTP sessions the server is holding.
+
 **Recommended client usage:**
 - Poll the health endpoint periodically (e.g., every 10-30 seconds)
 - When the endpoint returns 503 or becomes unreachable, prepare for reconnection
@@ -152,6 +154,8 @@ This endpoint requires authentication (standard Jenkins permissions) and provide
 #### Graceful Shutdown
 
 When Jenkins shuts down, the health endpoint will return `503 Service Unavailable` with a brief grace period before full termination. This allows clients to detect the shutdown and prepare for reconnection.
+
+The wait is 5 seconds by default. Change it with `-Dio.jenkins.plugins.mcp.server.HealthEndpoint.shutdownGracePeriodSeconds=<seconds>`, or set it to `0` to skip it.
 
 #### Transport Recommendation
 

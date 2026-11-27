@@ -2,12 +2,12 @@ English | [繁體中文](README.zh-TW.md)
 
 # Game DNA
 
-**102 game elements for your coding agent. Pick one, bring your browser game, and the agent wires it into your code,
+**103 game elements for your coding agent. Pick one, bring your browser game, and the agent wires it into your code,
 from damage numbers to dynamic lights.**
 
 ### ▶ [Open the gallery](https://game-dna.pages.dev)
 
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![elements](https://img.shields.io/badge/elements-102-orange)](https://game-dna.pages.dev/site/preview/) [![cold-tested](https://img.shields.io/badge/cold--tested-on_unseen_games-brightgreen)](https://game-dna.pages.dev/site/preview/tests/) [![live demo](https://img.shields.io/badge/live_demo-game--dna.pages.dev-ff69b4)](https://game-dna.pages.dev/site/preview/)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![elements](https://img.shields.io/badge/elements-103-orange)](https://game-dna.pages.dev/site/preview/) [![cold-tested](https://img.shields.io/badge/cold--tested-on_unseen_games-brightgreen)](https://game-dna.pages.dev/site/preview/tests/) [![live demo](https://img.shields.io/badge/live_demo-game--dna.pages.dev-ff69b4)](https://game-dna.pages.dev/site/preview/)
 
 <p align="center">
 <a href="https://game-dna.pages.dev/site/preview/#video"><img src="docs/media/promo-cover.jpg" width="720" alt="Watch the Game DNA promo video (35 s)"></a>
@@ -43,7 +43,7 @@ Game DNA gives the agent three things instead of a guess:
 - **a prompt** (at most 600 words) that says where to hook it into *your* game, what not to touch and the usual mistakes;
 - **a way to check it**: self-checks without a browser and acceptance checks you can see.
 
-Every element also has a playable demo. 82 are add-ons that drop into any game (feel, effects, UI, audio,
+Every element also has a playable demo. 83 are add-ons that drop into any game (feel, effects, UI, audio,
 lighting); 20 are systems (battles, map flows, a kart racer) that come as a starter game your agent extends.
 All art is original; most of it is drawn in code.
 
@@ -56,7 +56,7 @@ combined prompt plus a zip of the modules for your agent.
 
 ## The elements
 
-All 102, by category. Click **play** for the element's page with its live demo and prompt. ✦ = the demo uses AI-generated art.
+All 103, by category. Click **play** for the element's page with its live demo and prompt. ✦ = the demo uses AI-generated art.
 
 <a href="https://game-dna.pages.dev/site/preview/dna/horde-survival/"><img src="docs/media/og-horde-survival.jpg" width="360" alt="Horde survival auto-attacker"></a>
 
@@ -106,6 +106,25 @@ All 102, by category. Click **play** for the element's page with its live demo a
 
 </details>
 
+<details><summary><b>Generated art</b> (12)</summary>
+
+| Element | What it does | Demo |
+|---|---|---|
+| **Art-direction lock** ✦ | Generate one style-reference sheet for the game (a character, a prop, a floor patch and an item), lock it. | [play](https://game-dna.pages.dev/site/preview/dna/art-direction-lock/) |
+| **Card illustrations** ✦ | Painted 2:3 card illustrations generated once and locked to one style (light from the top-left, the subject in the upper safe area, a calm darker lower half… | [play](https://game-dna.pages.dev/site/preview/dna/card-art/) |
+| **Expressive portraits** | Hand-made-looking 16-bit bust portraits built from a small seeded spec (head, skin, eyes, brows, mouth, hair style and colour, ears, hood / helmet / circlet… | [play](https://game-dna.pages.dev/site/preview/dna/expressive-portraits/) |
+| **Layered cutout characters** ✦ | HD painted characters built from cut-out parts and moved by a small bone rig in code instead of frame-by-frame drawing. | [play](https://game-dna.pages.dev/site/preview/dna/cutout-characters/) |
+| **Material & normal maps** ✦ | A script turns every generated bitmap with alpha into a height map (alpha distance field rounded into a dome, plus the painting's own local light and dark as… | [play](https://game-dna.pages.dev/site/preview/dna/normal-maps/) |
+| **NPC generator** | Seeded townsfolk built from parts (age, body type, skin, hair style and colour, clothes, hats, glasses or beards, satchels and scarves). | [play](https://game-dna.pages.dev/site/preview/dna/npc-generator/) |
+| **Painted parallax layers** ✦ | The flat background of a side-view HD game becomes 3-5 hand-painted layers (far sky and ridges, drifting clouds, mid hills, near silhouettes, and an opaque… | [play](https://game-dna.pages.dev/site/preview/dna/painted-parallax/) |
+| **Palette-swap variants** | One sprite, many looks without new art: the module finds the sprite's colour ramps (clothing, body, skin, steel, outline) and maps them dark-to-light onto… | [play](https://game-dna.pages.dev/site/preview/dna/palette-swap/) |
+| **Paper doll** | A layered pixel hero (body, hair, hat, top, legs, boots, weapon, shield) with swappable parts and palette tints. | [play](https://game-dna.pages.dev/site/preview/dna/paper-doll/) |
+| **Portrait set with expressions** ✦ | Painted bust portraits for dialogue, generated once: a neutral base per character and each expression made as an edit of that base with the base as… | [play](https://game-dna.pages.dev/site/preview/dna/painted-portraits/) |
+| **Talking portraits** | Portraits animated by the dialogue: a typewriter that owns the line (or follows the game's own). | [play](https://game-dna.pages.dev/site/preview/dna/talking-portraits/) |
+| **UI frames & icon sheet** ✦ | A generated, style-locked UI kit (nine-slice window and small frames, a selection frame, an item slot, a pointer and a 24-icon sheet). | [play](https://game-dna.pages.dev/site/preview/dna/painted-ui/) |
+
+</details>
+
 <a href="https://game-dna.pages.dev/site/preview/dna/damage-pop/"><img src="docs/media/og-damage-pop.jpg" width="360" alt="Modern damage numbers"></a>
 
 <details><summary><b>UI &amp; text</b> (12)</summary>
@@ -124,24 +143,6 @@ All 102, by category. Click **play** for the element's page with its live demo a
 | **Toasts & unlock pop-ups** ✦ | Achievement, quest-update and item-get notices slide in from a screen edge, stack and glide, leave on a visible timer line. | [play](https://game-dna.pages.dev/site/preview/dna/toasts/) |
 | **Turn-order bar** | A strip of small portraits showing who acts next: the current actor sits first in a gold frame and bounces, the next 6-10 units follow in team-coloured frames. | [play](https://game-dna.pages.dev/site/preview/dna/turn-order-bar/) |
 | **World-space HUD** | HUD pieces that live in the world and follow the camera: a ring under every unit's feet with an HP arc whose pale loss segment drains after a hit. | [play](https://game-dna.pages.dev/site/preview/dna/world-hud/) |
-
-</details>
-
-<details><summary><b>Generated art</b> (11)</summary>
-
-| Element | What it does | Demo |
-|---|---|---|
-| **Art-direction lock** ✦ | Generate one style-reference sheet for the game (a character, a prop, a floor patch and an item), lock it. | [play](https://game-dna.pages.dev/site/preview/dna/art-direction-lock/) |
-| **Card illustrations** ✦ | Painted 2:3 card illustrations generated once and locked to one style (light from the top-left, the subject in the upper safe area, a calm darker lower half… | [play](https://game-dna.pages.dev/site/preview/dna/card-art/) |
-| **Expressive portraits** | Hand-made-looking 16-bit bust portraits built from a small seeded spec (head, skin, eyes, brows, mouth, hair style and colour, ears, hood / helmet / circlet… | [play](https://game-dna.pages.dev/site/preview/dna/expressive-portraits/) |
-| **Layered cutout characters** ✦ | HD painted characters built from cut-out parts and moved by a small bone rig in code instead of frame-by-frame drawing. | [play](https://game-dna.pages.dev/site/preview/dna/cutout-characters/) |
-| **Material & normal maps** ✦ | A script turns every generated bitmap with alpha into a height map (alpha distance field rounded into a dome, plus the painting's own local light and dark as… | [play](https://game-dna.pages.dev/site/preview/dna/normal-maps/) |
-| **Painted parallax layers** ✦ | The flat background of a side-view HD game becomes 3-5 hand-painted layers (far sky and ridges, drifting clouds, mid hills, near silhouettes, and an opaque… | [play](https://game-dna.pages.dev/site/preview/dna/painted-parallax/) |
-| **Palette-swap variants** | One sprite, many looks without new art: the module finds the sprite's colour ramps (clothing, body, skin, steel, outline) and maps them dark-to-light onto… | [play](https://game-dna.pages.dev/site/preview/dna/palette-swap/) |
-| **Paper doll** | A layered pixel hero (body, hair, hat, top, legs, boots, weapon, shield) with swappable parts and palette tints. | [play](https://game-dna.pages.dev/site/preview/dna/paper-doll/) |
-| **Portrait set with expressions** ✦ | Painted bust portraits for dialogue, generated once: a neutral base per character and each expression made as an edit of that base with the base as… | [play](https://game-dna.pages.dev/site/preview/dna/painted-portraits/) |
-| **Talking portraits** | Portraits animated by the dialogue: a typewriter that owns the line (or follows the game's own). | [play](https://game-dna.pages.dev/site/preview/dna/talking-portraits/) |
-| **UI frames & icon sheet** ✦ | A generated, style-locked UI kit (nine-slice window and small frames, a selection frame, an item slot, a pointer and a 24-icon sheet). | [play](https://game-dna.pages.dev/site/preview/dna/painted-ui/) |
 
 </details>
 

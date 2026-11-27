@@ -6,8 +6,13 @@
 </p>
 
 <p align="center">
-  An open-source multi-agent coding CLI for your terminal: switch models in one
-  session and finish a goal only when your test passes.
+  An open-source AI coding agent for your terminal: switch models in one
+  session, add subagents when needed, and finish a goal only when your own check passes.
+</p>
+
+<p align="center">
+  <code>npm install -g open-multi-agent-kit --ignore-scripts</code> then run <code>omk</code> in your repo ·
+  <a href="#60-second-start">60-second start</a>
 </p>
 
 <p align="center">
@@ -772,6 +777,12 @@ Release notes live in [RELEASE_NOTES_v2.0.2.md](.github/RELEASE_NOTES_v2.0.2.md)
 Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md)
 first, run `npm run check` and `npm test` before opening a pull request, and
 report security issues as described in [SECURITY.md](SECURITY.md).
+
+## Sponsor
+
+[AdaptOrch.com](https://adaptorch.com/) sponsors OMK.
+Explore its [plans](https://adaptorch.com/#pricing) to support OMK's sponsor.
+OMK remains [MIT-licensed](LICENSE); an AdaptOrch subscription is not required to use it.
 
 ## Star OMK
 

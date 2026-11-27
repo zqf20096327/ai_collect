@@ -330,15 +330,32 @@ Enter to skip; you can add it later from the web UI).
   file name or branch instead of acting on a mishearing.
   Transcription is installed **on first use** — a static ffmpeg, whisper.cpp and
   a 181 MB model — and the topic says so rather than going quiet for minutes.
-  `SHADOK_WHISPER_MODEL` picks a bigger one if your recordings need it.
+  **Which model transcribes is a setting** (version menu → *Dictation*, admin):
+  *Small* (the default, fastest), *Medium* or *Large v3 turbo* (slower, and
+  clearly more accurate outside English — the menu says by how much). Picking
+  one downloads it in the background and shows the progress; until it has
+  arrived, the model that was working keeps transcribing.
+  **The language** is detected from the audio. When that detection is unsure
+  and disagrees with what you have been typing in the conversation, or with
+  your browser's / Telegram's language, the clip is transcribed again in the
+  expected one — a confident detection always stands, so switching language
+  still works. *Spoken language* in the same menu can instead pin one language
+  for the instance, or leave everything to the audio.
   Every download is checked against a SHA-256 pinned in `src/whisper.ts`
   (ffmpeg per platform, the whisper.cpp source, the model at a fixed Hugging
-  Face commit); a mismatch is refused and transcription stays off until the
-  next restart. Only `ggml-small-q5_1.bin` and `ggml-medium-q5_0.bin` have a
-  pinned hash — any other model needs `SHADOK_WHISPER_MODEL_SHA256=<hex>`, or it
-  is refused.
+  Face commit); a mismatch is refused. The three models of the menu are pinned;
+  an operator can still run another with `SHADOK_WHISPER_MODEL=<file>` +
+  `SHADOK_WHISPER_MODEL_SHA256=<hex>` (without the hash it is refused), used
+  whenever nobody chose one in the menu.
   Set `SHADOK_WHISPER_DIR` to a directory shared between containers and one copy
   serves them all.
+- **Live dictation** — by default the 🎙 button uses the browser's own speech
+  recognition (Chrome, Edge, Safari): the words appear in the composer while
+  you speak, in the language of the conversation. The audio then goes to the
+  browser's maker. To keep it on your server, an admin picks version menu →
+  *Web dictation* → *On this server (whisper)*: the clip is transcribed by the
+  local model, after a wait. Other browsers and Telegram/WhatsApp voice notes
+  always use the local model.
 - **Dictate a prompt on the web** — a 🎙 button beside *Send* records your
   microphone and transcribes it with the **same local whisper.cpp** the voice
   notes use (nothing leaves the machine). The text drops into the composer
@@ -411,6 +428,12 @@ Enter to skip; you can add it later from the web UI).
   never a message. Older `#agent=<session>&msg=<id>` links still open. A message
   older than the history shown, or a conversation that was closed, says so
   instead of opening somewhere else.
+- **Who wrote each message** — every bubble opens with a round chip instead of
+  a written name: the person's initials on their own colour (stable across
+  devices, the palette the agent tabs use), the Shadok for the agent and for the
+  cockpit's own messages. Hover it for the full name ("Ada · telegram"). Your
+  own chip uses your account's name, or a plain silhouette in a cockpit with no
+  accounts.
 - **Run the command an agent asks you to** — when an agent writes `! cmd` for
   you to run (typically because it cannot), a ▶ run button sits right on that
   command's code block, beside its copy button — so it runs where it was
@@ -702,8 +725,9 @@ Enter to skip; you can add it later from the web UI).
   `autonomous`). Every attempt — published, refused, expired,
   failed — is written to a **publication log** (who triggered it, who approved
   it, the text, the post URL or LinkedIn's error), readable by anyone who can
-  use the account through the row's **Log** button (the last 50 entries). A pending draft counts as "waiting for an answer" like a
-  dialog (favicon badge, tab blink), and an unapproved draft expires after 7
+  use the account through the row's **Log** button (the last 50 entries). A new pending draft flags its agent as "unread" (amber, cleared by
+  visiting the channel), never as "waiting for an answer": one nobody decides
+  would keep that signal on for good, so the card in the chat is the reminder. An unapproved draft expires after 7
   days. LinkedIn tokens last about 60 days: seven days before expiry the owner
   gets a dismissible banner at the top of the cockpit (and again once it has
   expired) and, when they are the Telegram DM owner, a DM; an expired
@@ -1458,30 +1482,4 @@ carries a **scope**, chosen when you invite:
 - **member** — the invited agent acts **like a person you invite**: it sees,
   drives and measures every agent in the groups it belongs to, spawns more,
   reads its usage. It is not an admin (no account or peer management).
-- **admin** — a member that carries the admin role: it reads what only an admin
-  reads, and may **rewrite a profile's system prompt** from outside (`pilotctl
-  profile-prompt "<text>" --name <profile> --peer B`, i.e. `PUT
-  /profiles/prompt` under its peer token — refused to any other scope). It may
-  also mint a role, born with no secret.
-  What it still cannot do: manage accounts, invite or change peers, or edit a
-  profile's guardrails (deny, allow, secrets, model). Those writes are
-  browser-only, so no machine credential reaches them whatever its role.
-
-**No scope is a key to a Private group.** On a multi-tenant instance an invited
-agent is judged on its NAME exactly like a person, and an admin has no override
-there, so it reaches a Private group the way a person does: a member of that
-group adds it from the group's **gear ▸ members** picker, where invited agents
-appear beside the accounts, marked `agent`. Added, it is a full member — it sees
-and drives that group's agents, starts more **under the group's own Unix user**,
-and reads *and writes* the group's secrets — but it can never change the group or
-who belongs to it (every group write is browser-only). A `restricted`-scope agent
-is not offered: it has no identity of its own on B, so a membership would grant it
-nothing. And because a roster holds bare names, an account and an invited agent
-may never share one — the second of the two is refused at creation.
-
-The narrow scope is what you get when you say nothing — including for a peer
-invited before scopes existed, which stays restricted until an admin widens it.
-A credential already in someone else's hands never widens on its own.
-
-**The scope can be changed afterwards**, from the same panel (the select on the
-agent's row) or `PUT /peers {name, sc
+- **

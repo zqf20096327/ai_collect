@@ -13,7 +13,7 @@ Every AI model has blind spots. Claude Octopus supports twelve external provider
 <p align="center">
   <a href="https://claude.ai"><img src="https://img.shields.io/badge/Claude-Built_with_AI-c96442?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJhMTAgMTAgMCAxIDAgMCAyMCAxMCAxMCAwIDAgMCAwLTIwbTAgMS44YTEuMiAxLjIgMCAwIDEgLjg1LjM1bDEuNSA0LjVhLjYuNiAwIDAgMCAuMzUuMzVsNC41IDEuNWExLjIgMS4yIDAgMCAxIDAgMi4yN2wtNC41IDEuNWEuNi42IDAgMCAwLS4zNS4zNWwtMS41IDQuNWExLjIgMS4yIDAgMCAxLTIuMjcgMGwtMS41LTQuNWEuNi42IDAgMCAwLS4zNS0uMzVsLTQuNS0xLjVhMS4yIDEuMiAwIDAgMSAwLTIuMjdsNC41LTEuNWEuNi42IDAgMCAwIC4zNS0uMzVsMS41LTQuNUExLjIgMS4yIDAgMCAxIDEyIDMuOCIvPjwvc3ZnPg==&labelColor=333" alt="Built with Claude"></a>
   <a href="https://github.com/nyldn/claude-octopus/actions/workflows/test.yml"><img src="https://github.com/nyldn/claude-octopus/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
-  <img src="https://img.shields.io/badge/Version-11.29.1-blue" alt="Version 11.29.1">
+  <img src="https://img.shields.io/badge/Version-11.30.2-blue" alt="Version 11.30.2">
   <img src="https://img.shields.io/badge/Claude_Code-v2.1.14+_required-blueviolet" alt="Requires Claude Code v2.1.14+">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
@@ -45,8 +45,30 @@ saved in the same second.
 Debate saves each run separately, and Factory reports an error if it cannot
 save its report or record completion.
 
+Discover shows the full path to the current research report, including after a
+resume. Intent contracts retain who does the work and who decides whether to
+proceed. Parallel Agents warns when Claude Code needs an update and can continue
+with a ready non-Claude provider.
+
+Codex CLI 0.171.0 and later can pin GPT-6.2 Sol or Astra explicitly.
+Automatic provider routing keeps its existing defaults.
+
+Discover validates external links in fresh shells before fetching them. Expert
+Review keeps valid verdicts when verifier replies include extra metadata. Doc
+Sync records changed documentation and checks in the open pull request.
+
+Design Lineage can find designs saved from Codex, including in projects
+without Git history. The `octopus-security-audit` skill checks local Codex
+skills and plugin metadata in Deep mode. The Parallel migration example uses
+`/octo:parallel` in Claude Code and `$flow-parallel` in Codex.
+
+LiteLLM chat stays eligible when the optional model-list probe receives HTTP
+403. Deliver requires its validated report before marking work complete or
+posting a PR summary. Content Pipeline generates interview questions directly in
+the workflow.
+
 <!-- BEGIN CURRENT RELEASE -->
-> 🆕 **v11.29.1 — Parallel validates plans and loads Octopus in workers. Staged Review shares one snapshot. Spec reports provider readiness, and cost projections handle incomplete metrics.**
+> 🆕 **v11.30.2 — Keep LiteLLM chat eligible after a model-list 403, require the validated Deliver report, and fix Content Pipeline interview guidance.**
 >
 > **Default roster:** Claude Opus 5.5 leads architecture, planning, security reasoning, and final judgment; GPT-5.6 Sol is the independent implementation/review peer; Claude Sonnet 5.5 is the standard Claude seat; Fable 5.1 remains an opt-in judgment escalation. Existing model pins and provider configuration still win. See [the routing strategy](docs/MODEL-ROUTING-STRATEGY.md).
 <!-- END CURRENT RELEASE -->
@@ -69,7 +91,7 @@ save its report or record completion.
 
 | Version | Best Features |
 |---------|--------------|
-| **v11.29.1** (new) | Parallel validates plans and loads Octopus in workers. Staged Review shares one snapshot. Spec reports provider readiness, and cost projections handle incomplete metrics. |
+| **v11.30.2** (new) | Keep LiteLLM chat eligible after a model-list 403, require the validated Deliver report, and fix Content Pipeline interview guidance. |
 | **v9.50** | **Claude Code 2026 compatibility layer** — routines manifest (schedule + GitHub-event automations), SubagentStop quality/cost gate, `/octo:usage` cost attribution, `worktree.bgIsolation` opt-out, Claude Agent SDK seat (introduced with Opus 4.8 and now following the current Opus 5 default), starter skills pack, `/plugin browse` manifest with projected context cost. |
 | **v9.41** | **`/octo:council`** promoted to first-class workflow — structured multi-LLM deliberation with goal modes, adversarial/red-team styles, benchmark-aware persona routing, quorum and critical-veto gates, budget preflight, and gated worktree handoff for approved implementation plans. |
 | **v9** | Up to 10 external provider integrations (Codex, Antigravity CLI, Copilot, Qwen, Ollama, Perplexity, OpenRouter, OrcaRouter, OpenCode, and Grok) alongside the Claude Code host. Structured provider debates and configurable multi-LLM councils. Explicit-only activation by default, with an optional smart router. Agent summary tables show which providers actually contributed. Provider-aware prompt preflight prevents silent oversize failures. Research breadth modes fan out light, standard, or exhaustive investigations. Setup aliases and fuzzy `/octo:*` corrections reduce command friction. Opt-in discipline gates and token compression. Two-stage review. Circuit breakers with automatic provider recovery inside active workflows. Cursor + OpenCode + Codex cross-compatibility. `bin/octopus` CLI. 182 Claude Code capability flags through v2.1.219, including Opus 5, Sonnet 5, and dynamic workflow awareness. |
@@ -858,6 +880,10 @@ Design-review seats and synthesis use versioned JSON v1 contracts for all model-
 ### Tangle adaptive coding supervision
 
 Tangle coding agents are unbounded by default at the wall-clock layer and use a progress-aware stall watchdog. Users can still set an explicit absolute timeout. See [Tangle adaptive coding supervision](docs/tangle-adaptive-timeouts.md).
+
+When a running Develop subtask stops on a quota or authentication error,
+Tangle can retry it on an available, allowed provider. The replacement picks up
+the partial edits in the same worktree.
 
 ### Tangle reconsideration JSON contract
 

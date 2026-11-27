@@ -5,7 +5,7 @@
 **Language models that read, edit and write the weights of other neural networks directly, without gradient descent.**
 
 [![Last commit](https://img.shields.io/github/last-commit/SajjadPSavoji/awesome-weight-space-programming?color=green)](https://github.com/SajjadPSavoji/awesome-weight-space-programming/commits/main)
-![Entries](https://img.shields.io/badge/entries-698-blue)
+![Entries](https://img.shields.io/badge/entries-709-blue)
 ![Updated](https://img.shields.io/badge/updated-daily-orange)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](LICENSE)
@@ -16,18 +16,18 @@
 
 ## 🔥 Recently Added
 
+- **2026-11-26** · [wsp-automode-0.8b](https://github.com/Chiytako/wsp-automode-0.8b) (Other Domains)
+- **2026-11-26** · [Do We Really Need an LLM for Weight-Space Programming? A Deterministic Forward-Only Paradigm and Its Capability Boundaries](https://arxiv.org/abs/2611.34612) (Analyses and Critiques)
+- **2026-11-26** · [Kolpona: An Agentic Framework with Gradient-Free Neuron Programming for RTL Generation](https://arxiv.org/abs/2611.33973) (Repairing behavior)
+- **2026-11-26** · [Fine-Tuning Without Gradients? Closed-Form, LLM-Written Classifiers on a Frozen Encoder](https://arxiv.org/abs/2611.33972) (Classical NLP models)
+- **2026-11-26** · [Cellular Weight-Space Programming: 115 Numbers Find Every Shortest Path in Any Maze](https://comp-minds-research.onrender.com/maze/maze.html) (Writing networks from scratch)
+- **2026-11-26** · [Temporal Weight Surgery: Repairing Video Grounding with LLM Editors](https://arxiv.org/abs/2611.33339) (Other Domains)
+- **2026-11-26** · [OpenWSP: Benchmarking Weight-Space Programming on Open Language Models](https://github.com/MoreiraP12/OpenWSP) (Benchmarks and Evaluations)
+- **2026-11-26** · [Writing stochastic policies straight into neural-network weights](https://github.com/sy4411-sudo/weight-space-programming) (Games)
+- **2026-11-26** · [Weight-space programming of Janus-Pro-1B](https://github.com/dataphysician/janus-pro-1b-wsp) (Other Domains)
+- **2026-11-26** · [Can weight edits improve Swedish language models?](https://github.com/SANGITA-D/can-weight-edits-improve-swedish-lms) (Analyses and Critiques)
+- **2026-11-26** · [lobehub/awesome-wsp](https://github.com/lobehub/awesome-wsp) (Other Curated Lists)
 - **2026-11-25** · [Weight-Space Programming: A Survey and Roadmap](https://github.com/Abelo9996/weight-space-programming-survey) (Weight-space programming)
-- **2026-11-25** · [Sparks of Weight-Space Programming for Robot Foundation Models](https://arxiv.org/abs/2611.31715) (Vision-language-action models)
-- **2026-11-25** · [A Bias in Disguise: Tiny Gradient Edits Stop a Small Language Model's Thinking Loops and Complement a Frontier Model's Weight Edit](https://arxiv.org/abs/2611.33133) (Analyses and Critiques)
-- **2026-11-25** · [Compile, Learn, or Both? When Weight-Space Programming Helps, What It Breaks, and Why Combining It with LoRA Matters](https://doi.org/10.5281/zenodo.24515793) (Analyses and Critiques)
-- **2026-11-24** · [GodfatherTHR/wsp-bf16-loop-stopping](https://github.com/GodfatherTHR/wsp-bf16-loop-stopping) (Analyses and Critiques)
-- **2026-11-24** · [TowerBridge: Bridging the Dual-Encoder Modality Gap via Weight-Space Programming](https://arxiv.org/abs/2611.31233) (Other Domains)
-- **2026-11-24** · [Self-Upgrading Embodied Agents](https://arxiv.org/abs/2611.31117) (Robotics and Control)
-- **2026-11-24** · [Reparameterizing Your Object Detectors for Weight Space Programming](https://arxiv.org/abs/2611.29882) (Other Domains)
-- **2026-11-24** · [PAWP-TTS: Phoneme-Aware Weight Programming for Compact Bilingual English-Nepali Speech Synthesis](https://arxiv.org/abs/2611.29455) (Audio and Speech Models)
-- **2026-11-24** · [Recursive Self-Editing: LLMs Program Their Own Weight Edits for Self-Improvement](https://arxiv.org/abs/2611.29513) (Repairing behavior)
-- **2026-11-24** · [Self-WSP: Can Language Models Improve Themselves Through Weight-Space Programming?](https://arxiv.org/abs/2611.28833) (Repairing behavior)
-- **2026-11-24** · [Where Does a Weight-Editing Agent Help? Blind Diagnosis and Repair of Deployment Faults in Vision Models](https://arxiv.org/abs/2611.28781) (Analyses and Critiques)
 
 ## 🧭 Milestones
 
@@ -40,24 +40,24 @@
 ## Contents
 
 - [🌟 The Original Report](#-the-original-report) (1)
-- [💬 Language Models](#-language-models) (56)
-  - [Repairing behavior](#repairing-behavior) (41)
+- [💬 Language Models](#-language-models) (58)
+  - [Repairing behavior](#repairing-behavior) (42)
   - [Reading and predicting from weights](#reading-and-predicting-from-weights) (2)
-  - [Writing networks from scratch](#writing-networks-from-scratch) (11)
+  - [Writing networks from scratch](#writing-networks-from-scratch) (12)
   - [Implanting behavior (backdoors)](#implanting-behavior-backdoors) (2)
 - [🦾 Robotics and Control](#-robotics-and-control) (19)
   - [Vision-language-action models](#vision-language-action-models) (7)
   - [RL control policies](#rl-control-policies) (11)
-- [🧩 Other Domains](#-other-domains) (42)
-  - [Classical NLP models](#classical-nlp-models) (2)
-- [🎮 Games](#-games) (8)
+- [🧩 Other Domains](#-other-domains) (46)
+  - [Classical NLP models](#classical-nlp-models) (3)
+- [🎮 Games](#-games) (9)
 - [🧪 Quantum Circuits](#-quantum-circuits) (3)
 - [🧪 Diffusion and Generative Media Models](#-diffusion-and-generative-media-models) (1)
 - [🧪 Audio and Speech Models](#-audio-and-speech-models) (2)
-- [🧪 Other Curated Lists](#-other-curated-lists) (2)
-- [📊 Benchmarks and Evaluations](#-benchmarks-and-evaluations) (13)
+- [🧪 Other Curated Lists](#-other-curated-lists) (3)
+- [📊 Benchmarks and Evaluations](#-benchmarks-and-evaluations) (14)
 - [🛠️ Tools, Harnesses and Agent Skills](#-tools-harnesses-and-agent-skills) (20)
-- [🔍 Analyses and Critiques](#-analyses-and-critiques) (45)
+- [🔍 Analyses and Critiques](#-analyses-and-critiques) (47)
 - [📜 Foundations: Weight Programming Before WSP](#-foundations-weight-programming-before-wsp) (190)
   - [Hand-set and compiled weights](#hand-set-and-compiled-weights) (18)
   - [Rule insertion and extraction](#rule-insertion-and-extraction) (12)
@@ -115,7 +115,12 @@
 <a id="repairing-behavior"></a>
 
 <details>
-<summary><b>Repairing behavior (41)</b></summary>
+<summary><b>Repairing behavior (42)</b></summary>
+
+- **[Kolpona: An Agentic Framework with Gradient-Free Neuron Programming for RTL Generation](https://arxiv.org/abs/2611.33973)**  
+  Bangladesh University of Engineering and Technology (BUET) · *Preprint* · 2026-11-25 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.33973)]  
+  Neuron programming writes single neurons in closed form into the weights of open-weight LLMs to remove failure habits, keeping an edit only if fresh-task testbench results favour it. On Qwen3.5-4B, edits to 16 neurons raise VerilogEval v2 pass@1 from 31.7% to 55.4%. Edits also lift HumanEval+ from 84.8% to 91.5%.
 
 - **[WSP Labs: Direct Weight-Space Programming & Alpha M1 on-device machine-control models](https://github.com/JohnnyPBelo/wsp-labs)**  
   JohnnyPBelo · *GitHub* · 2026-11-22 · `💻 code / results`  
@@ -344,7 +349,12 @@
 <a id="writing-networks-from-scratch"></a>
 
 <details>
-<summary><b>Writing networks from scratch (11)</b></summary>
+<summary><b>Writing networks from scratch (12)</b></summary>
+
+- **[Cellular Weight-Space Programming: 115 Numbers Find Every Shortest Path in Any Maze](https://comp-minds-research.onrender.com/maze/maze.html)**  
+  ibiLAB, Luleå University of Technology · *GitHub* · 2026-11-25 · `💻 code / results`  
+  [[Post](https://comp-minds-research.onrender.com/maze/maze.html)] [[Code](https://github.com/arashmh/Cellular-WSP-Maze)] [[Project](https://cellular-wsp-maze.onrender.com)] ![GitHub stars](https://img.shields.io/github/stars/arashmh/Cellular-WSP-Maze?style=social)  
+  An AI agent (Claude Opus 5.5 in Claude Code) set the weights of a neural cellular automaton directly, with no training. 115 of 1,458 weights are non-zero, and 128/128 test mazes are solved exactly. A 208-weight edition solves 1,000/1,000 Maze-Hard test mazes. Includes browser demos.
 
 - **[Looped Weight-Space Programming: LLM-Written Transformers for Long Algorithmic Reasoning](https://github.com/mbzuai-oryx/LoopedWSP)**  
   MBZUAI · *GitHub* · 2026-11-23 · `💻 code / results`  
@@ -543,7 +553,17 @@
 *Classifiers, small decision networks and anything else.*
 
 <details>
-<summary><b>General (40)</b></summary>
+<summary><b>General (43)</b></summary>
+
+- **[wsp-automode-0.8b](https://github.com/Chiytako/wsp-automode-0.8b)**  
+  Chiytako · *GitHub* · 2026-11-26 · `💻 code / results`  
+  [[Code](https://github.com/Chiytako/wsp-automode-0.8b)] [[Model](https://huggingface.co/ChiTako/wsp-automode-0.8b)] ![GitHub stars](https://img.shields.io/github/stars/Chiytako/wsp-automode-0.8b?style=social)  
+  Gradient-free edits of 8 SwiGLU neurons (0.003264% of weights) in layers 15 and 22 of Qwen3.5-0.8B for Allow/Block action classification, with zero-shot and oracle baselines and causal sanity checks. Locked frozen_test real_cf AUROC is 0.8347. A separate LoRA-trained model-soup track reaches 1.0000.
+
+- **[Temporal Weight Surgery: Repairing Video Grounding with LLM Editors](https://arxiv.org/abs/2611.33339)**  
+  Ali Asgarov, Chris Thomas · *Preprint* · 2026-11-24 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.33339)]  
+  A general-purpose LLM reads a video-language model's weights and activations, finds where timestamp errors arise and repairs them without gradients. Three GPT-6 Astra sessions trace a dropped digit in TimeLens-8B to one MLP layer; the largest edit gains 7.9 mIoU on 1,215 unseen questions. Every improving edit beats a random edit of its size.
 
 - **[handwired-brain-transformer](https://github.com/sensein/handwired-brain-transformer)**  
   sensein · *GitHub* · 2026-11-23 · `💻 code / results`  
@@ -559,6 +579,11 @@
   Chien-Yao Wang · *Preprint* · 2026-11-23 · `📝 preprint`  
   [[Paper](https://arxiv.org/abs/2611.29882)]  
   IR-ODWSP edits converged object detectors without backpropagation by lifting layers into function-preserving subspaces and folding back with no added parameters or FLOPs. It improves all 26/26 MS COCO settings across 17 detectors (up to +0.31 APs), +1.42 mAP on COCO-O, +2.95 mAP in zero-image repair and +2.79 AP in label-free weather adaptation.
+
+- **[Weight-space programming of Janus-Pro-1B](https://github.com/dataphysician/janus-pro-1b-wsp)**  
+  dataphysician · *GitHub* · 2026-11-23 · `💻 code / results`  
+  [[Code](https://github.com/dataphysician/janus-pro-1b-wsp)] ![GitHub stars](https://img.shields.io/github/stars/dataphysician/janus-pro-1b-wsp?style=social)  
+  An AI programmer (Kimi K3.1 Pro on Cerebras) rewrites a few neurons of Janus-Pro-1B in closed form, with no gradient training. The depth edit raises visual-question answers from 69% to 100% and 55% to 99% on the final test. Hand and orientation tasks are partial, and image-edit tasks are mostly open.
 
 - **[CodeWeights-IDS](https://github.com/faysalchowdhoury/codeweights-ids)**  
   faysalchowdhoury · *GitHub* · 2026-11-22 · `💻 code / results`  
@@ -750,7 +775,12 @@
 <a id="classical-nlp-models"></a>
 
 <details>
-<summary><b>Classical NLP models (2)</b></summary>
+<summary><b>Classical NLP models (3)</b></summary>
+
+- **[Fine-Tuning Without Gradients? Closed-Form, LLM-Written Classifiers on a Frozen Encoder](https://arxiv.org/abs/2611.33972)**  
+  Md Nasir Uddin, Musa Tur Farazi, Soumik Bhattacharjee, Tishna Sabrina et al. · *Preprint* · 2026-11-25 · `📝 preprint`  
+  [[Paper](https://arxiv.org/abs/2611.33972)]  
+  An LLM design assistant writes programs that read a frozen RoBERTa-large through cloze templates and fit closed-form heads, with no gradients and no encoder weight change. On 11 development datasets it is ahead of full fine-tuning and LoRA at every label budget by 0.3 to 0.6 points on average, and within 0.5 points of prompt-based fine-tuning.
 
 - **[Can Weight-Space Programming Alter Learned Ethical Priorities?](https://arxiv.org/abs/2611.24330)**  
   Kai Yi Ji · *Preprint* · 2026-11-18 · `📝 preprint`  
@@ -769,7 +799,12 @@
 *Weight programming of game-playing networks and board-game policies.*
 
 <details>
-<summary><b>8 entries</b></summary>
+<summary><b>9 entries</b></summary>
+
+- **[Writing stochastic policies straight into neural-network weights](https://github.com/sy4411-sudo/weight-space-programming)**  
+  sy4411-sudo · *GitHub* · 2026-11-23 · `💻 code / results`  
+  [[Code](https://github.com/sy4411-sudo/weight-space-programming)] [[Project](https://doi.org/10.5281/zenodo.24452432)] ![GitHub stars](https://img.shields.io/github/stars/sy4411-sudo/weight-space-programming?style=social)  
+  Each run is one tool-free Codex CLI request that writes or edits the weights of a small policy network for an imperfect-information game. Networks are scored by exact exploitability over the full game tree with OpenSpiel. Claims were preregistered, and all 224 formal runs can be regraded from raw answers.
 
 - **[Compiling Known Rules into Compact Neural Agents: Weight-Space Programming on Unseen Games](https://github.com/JensLehmann/weight-space-programming-games)**  
   JensLehmann · *GitHub* · 2026-11-12 · `💻 code / results`  
@@ -865,53 +900,4 @@
 
 - **[Weight-Space Programming for Audio Models: LLMs Can Directly Edit Audio Model Weights and Compress Them](https://aksy1999.github.io/blog/weight-space-programming-for-audio-models/)**  
   Ishiki Labs Research · *GitHub* · 2026-11-19 · `💻 code / results`  
-  [[Post](https://aksy1999.github.io/blog/weight-space-programming-for-audio-models/)] [[Code](https://github.com/ishikilabsinc/audiowsp)] ![GitHub stars](https://img.shields.io/github/stars/ishikilabsinc/audiowsp?style=social)  
-  Open-source code and blogpost for editing audio model weights in one forward pass and zero backward passes: augmentation-subspace nulling, closed-form readout weights, and compression of a deepfake detector from 318M to 86.8M parameters and Wav2Vec2-Large ASR from 315M to 142M.
-
-</details>
-
-## 🧪 Other Curated Lists
-
-*Curated collections and reading lists on weight-space programming.*
-
-<details>
-<summary><b>2 entries</b></summary>
-
-- **[Weight-Space Programming: Papers, Code, Models and Guides](https://github.com/weightspaceprogramming/reading-list)**  
-  weightspaceprogramming · *GitHub* · 2026-11-23 · `💻 code / results`  
-  [[Code](https://github.com/weightspaceprogramming/reading-list)] [[Project](https://weightspaceprogramming.tech/)] ![GitHub stars](https://img.shields.io/github/stars/weightspaceprogramming/reading-list?style=social)  
-  Annotated collection of 34 resources on representing and constructing programs in neural-network weights: formal compilation, trained weight generators, LLM reasoning over weights, replications and criticism, with a guide site, BibTeX and JSON.
-
-- **[Awesome Weight-Space Programming](https://github.com/Boom5426/Awesome-Weight-Space-Programming)**  
-  Boom5426 · *GitHub* · 2026-11-22 · `💻 code / results`  
-  [[Code](https://github.com/Boom5426/Awesome-Weight-Space-Programming)] ![GitHub stars](https://img.shields.io/github/stars/Boom5426/Awesome-Weight-Space-Programming?style=social)  
-  Curated collection of weight-space programming and weight-centric research covering weight understanding, generation, editing, merging, transfer and continual learning, with a searchable catalog, an interactive research landscape and an evidence matrix.
-
-</details>
-
-## 📊 Benchmarks and Evaluations
-
-*Controlled tests of whether weight access helps.*
-
-<details>
-<summary><b>13 entries</b></summary>
-
-- **[Comprehensive Weight-Space Programming Leaderboard (MinAtar Experiment 5)](https://github.com/opopile/comprehensive-weight-space-programming-leaderboard)**  
-  opopile · *GitHub* · 2026-11-21 · `💻 code / results`  
-  [[Code](https://github.com/opopile/comprehensive-weight-space-programming-leaderboard)] ![GitHub stars](https://img.shields.io/github/stars/opopile/comprehensive-weight-space-programming-leaderboard?style=social)  
-  Consolidates 41 publicly reported WSP MinAtar Experiment 5 evaluations from 22 sources and recomputes them under the Writing Weights Index and weight-space-bench PPO-500M Median formulas. Adds local Gemini 4 Neon (xhigh) runs (WWI 53.9532) and a Seaquest one-sentence prompt-intervention ablation reported at +29.66%.
-
-- **[Weight-Space Programming](https://github.com/Abelo9996/weight-space-programming)**  
-  Abelo9996 · *GitHub* · 2026-11-19 · `💻 code / results`  
-  [[Code](https://github.com/Abelo9996/weight-space-programming)] ![GitHub stars](https://img.shields.io/github/stars/Abelo9996/weight-space-programming?style=social)  
-  Research package testing whether a language-model editor repairs equivalent policy checkpoints, with weights rearranged without changing function, as well as search baselines using the same edit primitives. Includes CNN accuracy readers, a layer-statistics baseline, checked PyTorch transforms for ReLU and tanh networks, and an offline pilot on three CPU tasks.
-
-- **[Training Vision Models for LLM-Driven Weight-Space Programming](https://arxiv.org/abs/2611.26408)**  
-  Timo Ropinski, Sebastian Kranz · *Preprint* · 2026-11-19 · `📝 preprint`  
-  [[Paper](https://arxiv.org/abs/2611.26408)] [[Project](https://viscom.uni-ulm.de/wsp)]  
-  Benchmark of LLM-driven weight-space programming on vision models: five LLMs edit convolutional networks and vision transformers on relabeling and error-correction tasks (Waterbirds, CIFAR-100, PACS, Entity-30), over 2,600 edit processes. Proposes Edit-Ready Training, which rehearses closed-form edits and raises edit success where standard networks are hard to edit.
-
-- **[Lohitha0607/wsp-env](https://github.com/Lohitha0607/wsp-env)**  
-  Lohitha0607 · *GitHub* · 2026-11-18 · `💻 code / results`  
-  [[Code](https://github.com/Lohitha0607/wsp-env)] ![GitHub stars](https://img.shields.io/github/stars/Lohitha0607/wsp-env?style=social)  
-  RL environments where an LLM doctor repairs a damaged network by editing weights without retraining: a 2,410-parameter digit MLP and Qwen3-0.6B with scaled down_proj layers. Reports exam-split
+  [[Post](https://aksy1999.github.io/blog/weight-space-programming-for-audio-models/)] [[Code](https://git

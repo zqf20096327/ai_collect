@@ -2,7 +2,7 @@
 
 AI tools, models and agent tooling that open-source investigators and journalists use, with the limits written next to each one.
 
-**146 entries. Every link was opened on 2026-11-16.**
+**146 entries. Every link was opened on 2026-11-16.** The same entries are on [Hugging Face as a dataset](https://huggingface.co/datasets/Ghongha007/ai-for-osint) you can filter or load in code.
 
 Most AI tool lists tell you what a tool promises. This one also tells you two things that matter more in an investigation: **where your material goes** when you use the tool, and **what is known about how it fails**.
 
@@ -254,7 +254,7 @@ To add a tool, add an object to `research/entries.json` and run `python3 build_r
 - [chat2net](https://github.com/Ghongha007/chat2net): turn a chat or social-media export into a Gephi network
 - [osint-skills](https://github.com/Ghongha007/osint-skills): agent skills for verification, geolocation, chronolocation and fact-checking
 - [verify-mcp](https://github.com/Ghongha007/verify-mcp): an MCP server with keyless, read-only verification lookups
-- [osint-visuals](https://github.com/Ghongha007/osint-visuals): agent skills for evidence graphics: ship and flight tracks, shadow diagrams, 3D scenes, satellite before/after and scroll stories
+- [osint-visuals](https://github.com/Ghongha007/osint-visuals): agent skills for evidence graphics: ship and flight tracks, shadow diagrams, 3D scenes, satellite before/after, scroll stories and source-linked networks
 
 ## Licence
 

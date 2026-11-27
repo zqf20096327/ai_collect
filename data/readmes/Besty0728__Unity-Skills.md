@@ -26,6 +26,13 @@
 ## 💖 Sponsors
 
 <!-- sponsors:start -->
+<details open>
+  <summary>Infistar sponsor banner</summary>
+  <p align="center">
+    <a href="https://www.infistar.cc/register?aff=E96F8GCU&amp;ref_source=link" title="Infistar"><img src="docs/sponsors/infistar-bilingual.png" alt="Unity-Skills × Infistar (无限星河AI)" width="800"></a>
+  </p>
+</details>
+
 <div align="center">
 <table>
   <tr>
@@ -36,8 +43,27 @@
     <td align="center"><a href="https://mirasim.ai" title="Mirasim"><img src="docs/sponsors/mirasim.png" alt="Mirasim" width="96"></a></td>
     <td>Provides substantial API credits for the upcoming v3.0, with continued API support to follow.</td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://www.infistar.cc/register?aff=E96F8GCU&amp;ref_source=link">Infistar (无限星河AI)</a></td>
+    <td>
+      <strong>Unity-Skills × Infistar (无限星河AI)｜低至官方 0.1 折 · Claude, GPT, Gemini, Grok, DeepSeek &amp; more — one key, up to 99% off</strong>
+      <details>
+        <summary>View highlights</summary>
+        <ul>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f4a5/32.png">💥</a> 低至官方 0.1 折，省 99% / Up to 99% off (from 0.1x official pricing)</li>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/2705/32.png">✅</a> 100% 官方纯血可验真 / Official upstreams, 100% genuine &amp; verifiable</li>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/26a1/32.png">⚡</a> 上千线路冗余自动切换 / 1,000+ redundant routes with auto failover</li>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f9e9/32.png">🧩</a> 200+ 模型、16 品牌一个 Key / 200+ models from 16 brands under one key</li>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f3c6/32.png">🏆</a> 100+ 顶级开源项目推荐 / Recommended by 100+ top OSS (up to 100k+ stars)</li>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f3af/32.png">🎯</a> 一个 Key 在 Claude Code / Cursor / OpenCode 中直接驱动 Unity 自动化 / One key for multi-model AI coding in Unity</li>
+          <li><a href="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f381/32.png">🎁</a> Unity-Skills 用户专属链接注册直接送 ¥5 / Sign up via exclusive link for ¥5 free</li>
+        </ul>
+      </details>
+    </td>
+  </tr>
 </table>
 </div>
+
 <p align="center">
   <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#120;&#50;&#49;&#50;&#48;&#48;&#54;&#48;&#50;&#48;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;?subject=Unity-Skills%20Sponsorship%20Inquiry">Become a sponsor →</a>
 </p>

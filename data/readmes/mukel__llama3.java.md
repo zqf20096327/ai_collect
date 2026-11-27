@@ -2,6 +2,10 @@
 
 Practical [Llama 3](https://github.com/meta-llama/llama3), [3.1](https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1) and [3.2](https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/) inference implemented in a single Java file.
 
+> [!TIP]
+> AI for the JVM ? Check [Quixotic AI](https://qxotic.ai) an end-to-end AI stack for the JVM.
+
+
 <p align="center">
   <img width="700" src="https://github.com/user-attachments/assets/69bbf681-ae84-4a46-bcd6-746dbd421a6e">
 </p>

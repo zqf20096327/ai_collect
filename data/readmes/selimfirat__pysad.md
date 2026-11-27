@@ -35,6 +35,7 @@
 <p align="center">
   <a href="https://pysad.readthedocs.io/en/stable/"><b>Documentation</b></a> ·
   <a href="https://pysad.readthedocs.io/en/stable/getting_started.html">Getting started</a> ·
+  <a href="https://pysad.readthedocs.io/en/stable/cheatsheet.html">Quick reference</a> ·
   <a href="https://pysad.readthedocs.io/en/stable/guides/index.html">How-to guides</a> ·
   <a href="https://pysad.readthedocs.io/en/stable/benchmark.html">Benchmarks</a> ·
   <a href="https://pysad.readthedocs.io/en/stable/detectors.html">Detectors</a> ·
@@ -99,7 +100,7 @@ Chain preprocessing, projections, log parsing (`DrainLogParser`), detection, pos
 
 #### Fits your existing ML stack
 
-Wrap any [PyOD](https://github.com/yzhao062/pyod) detector on a sliding window (`ReferenceWindowModel`), drop PySAD detectors into [River](https://github.com/online-ml/river) (`PySADToRiverAdapter`) or scikit-learn (`PySADToScikitLearnAdapter`) pipelines, or score River forecasters (`PredictiveAnomalyDetector`).
+Wrap any [PyOD](https://github.com/yzhao062/pyod) detector on a sliding window (`ReferenceWindowModel`), drop PySAD detectors into [River](https://github.com/online-ml/river) (`PySADToRiverAdapter`) or scikit-learn (`PySADToScikitLearnAdapter`) pipelines, score River forecasters (`PredictiveAnomalyDetector`), or expose any PySAD detector through CapyMoa's streaming interface without installing CapyMoa or Java (`PySADToCapyMoaAdapter`).
 
 </td>
 </tr>
@@ -176,6 +177,7 @@ Use these guides to map your existing workflow to PySAD:
 
 - [Azure AI Anomaly Detector and Metrics Advisor](https://pysad.readthedocs.io/en/stable/guides/migrate_azure.html)
 - [AWS Lookout for Equipment and Kinesis RCF](https://pysad.readthedocs.io/en/stable/guides/migrate_aws.html)
+- [Darts](https://pysad.readthedocs.io/en/stable/guides/migrate_darts.html)
 - [Salesforce Merlion](https://pysad.readthedocs.io/en/stable/guides/migrate_merlion.html)
 - [Alibi Detect](https://pysad.readthedocs.io/en/stable/guides/migrate_alibi_detect.html)
 - [ADTK](https://pysad.readthedocs.io/en/stable/guides/migrate_adtk.html)
@@ -279,7 +281,7 @@ for x in ArrayStreamer().iter(X[100:]):
     score = model.fit_score_partial(x)
 ```
 
-PySAD also provides `PySADToRiverAdapter` and `PredictiveAnomalyDetector` for [River](https://github.com/online-ml/river) pipelines, and `PySADToScikitLearnAdapter` for [scikit-learn](https://scikit-learn.org/) pipelines. Follow the [getting started tutorial](https://pysad.readthedocs.io/en/stable/getting_started.html), [how-to guides](https://pysad.readthedocs.io/en/stable/guides/index.html), and [API reference](https://pysad.readthedocs.io/en/stable/api.html) for full workflows.
+PySAD also provides `PySADToRiverAdapter` and `PredictiveAnomalyDetector` for [River](https://github.com/online-ml/river) pipelines, `PySADToScikitLearnAdapter` for [scikit-learn](https://scikit-learn.org/) pipelines, and `PySADToCapyMoaAdapter` for [CapyMoa](https://github.com/adaptive-machine-learning/CapyMOA) streams without installing CapyMoa or Java. Follow the [getting started tutorial](https://pysad.readthedocs.io/en/stable/getting_started.html), [how-to guides](https://pysad.readthedocs.io/en/stable/guides/index.html), and [API reference](https://pysad.readthedocs.io/en/stable/api.html) for full workflows.
 
 ## Benchmarks & library comparisons
 
@@ -308,6 +310,8 @@ Comparing implementations of the same streaming algorithm under the exact same p
 | `OnlineOneClassSVM` | **0.702** / `0.04 ms` | River `0.469` / **0.01 ms** | **+0.233 AUROC** |
 
 <sub>PySAD, River 0.26.1, CapyMOA 0.15.1, and PyOD 3.6.7 (via `ReferenceWindowModel`) ran on the same computer; StreamAD 0.3.1 requires Python `&lt;3.12` and NumPy 1 (tabled for `LODA` only because StreamAD's `HSTreeDetector`, `RShashDetector`, and `xStreamDetector` invert score orientation). See the full [benchmark results](https://pysad.readthedocs.io/en/stable/benchmark.html) and detailed [library comparisons](https://pysad.readthedocs.io/en/stable/comparisons/index.html) (River, CapyMOA, StreamAD, PyOD, Alibi Detect, and Darts).</sub>
+
+To compare PySAD detectors with River's streaming detectors, run `benchmarks/compare_river_adapter.py`. It scores each PySAD detector through `PySADToRiverAdapter` against River on the same shuffled, scaled ODDS points and writes `docs/benchmark/comparison_river_adapter.csv` with AUROC, AUPR and milliseconds per point for each detector and dataset. River is optional. Without it, the script prints a message and writes nothing.
 
 ## Detectors
 
@@ -381,6 +385,7 @@ These starting points come from the design of each method. They are not benchmar
 | `ABSAD` | Angle-Based Subspace Anomaly Detection (ABSAD) (Zhang et al., 2017) |
 | `DenStream` | DenStream density-based streaming anomaly detector (Cao et al., 2006) |
 | `OnlineKMeans` | Scores each instance by its squared Euclidean distance to the nearest center of the online k-means clustering of Liberty et al. (Liberty et al., 2016) |
+| `StreamingRHF` | Scores each instance with a streaming random histogram forest (Nesic et al., 2022) |
 
 **Univariate**
 
@@ -419,7 +424,7 @@ These starting points come from the design of each method. They are not benchmar
 | Postprocessing | Running and windowed average, max, median and z-score of scores, `DynamicThresholdPostprocessor` (Telemanom), `ThresholdFilter`, `QuantileFilter` |
 | Calibration | `AnomalyLikelihoodProbabilityCalibrator`, `ConformalProbabilityCalibrator`, `GaussianTailProbabilityCalibrator`, `SPOTProbabilityCalibrator` |
 | Composition & Drift | `StreamPipeline` (`\|`), `ModelEnsemble` (`&`) with 5 score ensemblers (`Average`, `Maximum`, `Median`, `AOM`, `MOA`), `DriftAdaptiveDetector`, and 10 drift meters (`ADWINMeter`, `PageHinkleyMeter`, `KSWINMeter`, `DDMMeter`, `EDDMMeter`, `FHDDMMeter`, `HDDMAMeter`, `HDDMWMeter`) |
-| Integrations | `ReferenceWindowModel`, `OneFitModel` (PyOD), `PySADToRiverAdapter`, `PredictiveAnomalyDetector` (River), `PySADToScikitLearnAdapter` (scikit-learn) |
+| Integrations | `ReferenceWindowModel`, `OneFitModel` (PyOD), `PySADToRiverAdapter`, `PredictiveAnomalyDetector` (River), `PySADToScikitLearnAdapter` (scikit-learn), `PySADToCapyMoaAdapter` (CapyMoa) |
 | Evaluation & Plotting | `evaluate_stream`, `AUROCMetric`, `AUPRMetric`, `PrecisionMetric`, `RecallMetric`, `WindowedMetric`, `RollingMetric`, `plot_stream` |
 | Streaming data & Stats | `ArrayStreamer`, `PandasStreamer`, `PolarsStreamer`, `CSVStreamer`, `Data` (17 labeled ODDS datasets, 58 NAB series, ULB credit-card fraud), and running statistics (`AverageMeter`, `VarianceMeter`, `DDSketchMeter`, `OnlinePeriodicityMeter`, etc.) |
 

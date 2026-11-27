@@ -32,7 +32,7 @@ npm install -g @giftsofprometheus/cli
 giftsofprometheus doctor
 ```
 
-Без установки: `npx @giftsofprometheus/cli talks search "evals"`. Пакет публикуется из GitHub Actions с [подтверждением происхождения](https://www.npmjs.com/package/@giftsofprometheus/cli#provenance).
+Запускайте CLI только после такой установки, не через `npx`, `pnpm dlx` или `bunx`: разовые запуски смешивают версии на одной машине, и старая версия может стереть то, что сохранила новая. Пакет публикуется из GitHub Actions с [подтверждением происхождения](https://www.npmjs.com/package/@giftsofprometheus/cli#provenance).
 
 ## Быстрый старт
 
@@ -51,7 +51,7 @@ giftsofprometheus feed                              # подборка по ва
 
 В той же папке лежит `client.json` со случайным идентификатором установки. CLI отправляет его заголовком `X-Client-Id`, чтобы сервис считал запросы без входа одним клиентом в аналитике. С аккаунтом он не связан, удалите файл, чтобы получить новый.
 
-Заголовок `X-Skill-Tail` сообщает сервису, сколько ваших тем `skill personalize` дописал в описание установленного skill (`none`, если CLI не нашёл копию). Сами темы и текст skill не отправляются. Путь к копии, которую последней записал `skill personalize`, CLI хранит в `skill.json` в той же папке. После `skill personalize` CLI также сообщает сервису, удалось ли записать файл.
+Заголовок `X-Skill-Tail` сообщает сервису, сколько ваших тем `skill personalize` дописал в описание установленного skill (`none`, если CLI не нашёл копию). Сами темы и текст skill не отправляются. Путь к копии, которую последней записал `skill personalize`, CLI хранит в `skill.json` в той же папке. После `skill personalize` CLI также сообщает сервису, удалось ли записать файл и откуда взяты темы: из интересов, из активности или из обоих. Согласие на темы из активности CLI хранит в том же `skill.json`.
 
 ## Для AI-агентов: Claude Code, Codex, Cursor
 
@@ -126,9 +126,13 @@ npx skills add giftsofprometheus/giftsofprometheus-cli
 | `talks react <slug-или-id> like\|dislike\|not-interested\|clear [--rec-id UUID]` | Отметить, понравился ли доклад; учитывается в подборке | ✓ |
 | `favorites list [--page n] [--limit n]` | Ваше избранное | ✓ |
 | `favorites add <slug-или-id>` / `remove` | Добавить в избранное или убрать | ✓ |
-| `profile get` | Ваши интересы и текущая задача | ✓ |
+| `profile get` | Ваши интересы, темы из вашей активности и текущая задача | ✓ |
 | `profile update [--interest тема=уровень] [--remove-interest тема] [--query-text текст]` | Изменить интересы (`high`, `interested`, `not_interested`) или текущую задачу; остальное не меняется | ✓ |
 | `feed` | Подборка по вашему профилю | ✓ |
+| `share create --title текст --question текст --file путь` | Загрузить ответ агента черновиком страницы: его видите только вы. Печатает ссылку на предпросмотр и что стоит проверить | ✓ |
+| `share publish <id> [--visibility unlisted\|password\|public] [--password пароль] [--confirm-public]` | Опубликовать черновик: по ссылке (по умолчанию), по ссылке и паролю или публично для поисковиков | ✓ |
+| `share list`, `share get <id>` | Ваши страницы; одна страница с её Markdown | ✓ |
+| `share update <id> [--title] [--question] [--file]`, `share visibility <id> <режим> [--password] [--confirm-public]`, `share delete <id>` | Заменить содержимое (адрес тот же), сменить доступ, удалить страницу | ✓ |
 | `request <путь>` | GET-запрос только на чтение к `/api/knowledge/…` или `/api/account/…`; печатает ответ сервиса как JSON | ✓ |
 | `onboarding topics` | Темы для выбора интересов | |
 | `onboarding deck [--interest тема=уровень] [--query-text текст]` | Новый черновик по темам (`interested`, `not_interested`) и до 8 пронумерованных докладов для оценки | |
@@ -137,7 +141,7 @@ npx skills add giftsofprometheus/giftsofprometheus-cli
 | `login [--start\|--wait]`, `logout`, `whoami`, `doctor` | Вход, выход, текущий аккаунт, проверка настройки. `login --start` сразу печатает ссылку и код, `login --wait` ждёт подтверждения | |
 | `skill [--path]` | Skill для агента | |
 | `skill update [--force]` | Обновить установленные копии skill до версии CLI | |
-| `skill personalize --file <путь>` | Добавить ваши темы в описание skill | ✓ |
+| `skill personalize --file <путь> [--reading agree\|decline]` | Добавить ваши темы в описание skill: интересы, а с вашего согласия и темы из вашей активности | ✓ |
 
 ## Настройки
 

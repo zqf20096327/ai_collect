@@ -175,6 +175,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What are scaling laws (Chinchilla), and how do they guide model size vs training data decisions?
   - Answer: [What are the Chinchilla scaling laws?](https://outcomeschool.com/blog/chinchilla-scaling-laws)
 - Your LLM keeps ignoring your instructions. How do you make it follow structured output formats?
+  - Answer: [How does Constrained Decoding work?](https://outcomeschool.com/blog/constrained-decoding)
 - Your LLM-powered tool hits the context window limit on long documents. How do you handle it?
 - Your LLM does not admit when it does not know the answer. How do you make it say "I don't know"?
 - Your LLM generates responses that are too verbose. How do you control response length?
@@ -556,6 +557,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - Design Memory for a Personal AI Assistant
   - Answer: [AI Agent Memory](https://outcomeschool.com/blog/ai-agent-memory) and [How does ChatGPT remember you?](https://outcomeschool.com/blog/how-does-chatgpt-remember-you)
 - Design a Deep Research Agent
+  - Answer: [How does a deep research agent work?](https://outcomeschool.com/blog/deep-research-agent)
 - Design a Multi-Agent Customer Support System
   - Answer: [Multi-Agent Systems](https://outcomeschool.com/blog/multi-agent-systems)
 - Design an On-Device AI Assistant
@@ -673,7 +675,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [Cloud vs On-Device Model Deployment](https://outcomeschool.com/blog/cloud-vs-on-device-model-deployment)
 - How do you implement fallback strategies when the primary model is unavailable or rate-limited?
 - How do you implement structured output from LLMs reliably in production?
-  - Answer: [How does Function Calling work in LLMs?](https://outcomeschool.com/blog/how-does-function-calling-work-in-llms)
+  - Answer: [How does Function Calling work in LLMs?](https://outcomeschool.com/blog/how-does-function-calling-work-in-llms) and [How does Constrained Decoding work?](https://outcomeschool.com/blog/constrained-decoding)
 - How do you handle long contexts efficiently in production (context compression, prefix caching)?
   - Answer: [How does Prompt Caching work?](https://outcomeschool.com/blog/how-does-prompt-caching-work) and [How does context compaction work?](https://outcomeschool.com/blog/how-does-context-compaction-work)
 - What is semantic routing, and how do you implement it in a multi-model system?
@@ -770,6 +772,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - How do you build trust with users in AI-powered applications?
 - What are adversarial attacks on AI systems, and how do you defend against them?
 - What is data poisoning, and how can it affect AI models?
+  - Answer: [What is data poisoning in AI?](https://outcomeschool.com/blog/data-poisoning)
 - How do you implement content safety filters for AI-generated content?
   - Answer: [How do LLM guardrails work?](https://outcomeschool.com/blog/how-do-llm-guardrails-work)
 - What is responsible AI, and what frameworks exist for implementing it?
@@ -849,6 +852,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How do pronunciation dictionaries fix how TTS says names and brands?](https://outcomeschool.com/blog/pronunciation-dictionaries-for-tts)
 - How do you improve ASR accuracy on domain-specific words like product names, medicine names, and people's names?
   - Answer: [How does keyword boosting help ASR recognize domain words?](https://outcomeschool.com/blog/keyword-boosting-in-asr)
+- How do you make a voice agent work well with different accents and noisy environments?
+  - Answer: [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
 - How do you handle speech recognition (ASR) errors in a voice agent?
   - Answer: [How does a voice agent confirm and correct misheard information?](https://outcomeschool.com/blog/confirm-and-correct-in-voice-agents)
 - How do you handle barge-in (user interruptions) in a voice agent?

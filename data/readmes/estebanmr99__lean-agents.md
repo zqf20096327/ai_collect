@@ -175,7 +175,7 @@ Use `--lang es` to get the rules and replies in Spanish.
 
 Always start with `--dry-run`: it shows every file and command before anything changes. Then run it again without `--dry-run`; it asks which agents, tools, privacy level, language and model profile you want.
 
-- Useful flags: `--all-tools`, `--privacy strict`, `--lang es`, `--profile vertex-gemini`, `--update`, `--uninstall`, `--doctor`, `--json` (with `--dry-run`, `--doctor` or `--adopt`, for agents) (`--help` lists them all).
+- Useful flags: `--all-tools`, `--privacy strict`, `--lang es`, `--profile vertex-gemini`, `--update`, `--uninstall`, `--doctor`, `--preflight` (read-only check for old or duplicate tool copies, tools under several nvm Nodes, a terminal opened before a PATH change, too little disk for the OpenCode 1.x backup, a running OpenCode, and the OpenCode MCP server names (yours print masked as <user-mcp-N>); exit 1 if something blocks setup), `--verbose` (print every command's own output; by default each step is one line and the output goes to a log under `~/.config/lean-agents/logs/`; the log can hold tool output, keep it private), `--json` (with `--dry-run`, `--doctor` or `--adopt`, for agents) (`--help` lists them all).
 - `--adopt`: lists what a hand-built machine already has (MCP servers, Claude hooks and plugins, OpenCode plugins, skills, npm copies under each nvm Node, OpenCode session count), marks each one managed, user, stale, duplicate, drift or wrong-node, and prints the planned action. Alone it changes nothing; env and header values are never read. `--adopt --yes` applies the plan: it backs up every file it edits to `~/.config/lean-agents/adopt-<time>/` (owner-only), re-registers managed MCPs as `<tool Node> <entry>`, checks that each one answers `initialize` and that your own files and the OpenCode session count are unchanged, runs `--doctor`, and undoes itself if anything fails. Removing an old npm copy, a duplicate skill folder or a hand-made stopgap needs a yes (a menu on a terminal, `--confirm-removals` without one); otherwise they are listed and kept. `--keep-backup` keeps the backup after a good run; `--adopt --undo` restores every edited file byte for byte from it.
 - `--upgrade-agent opencode`: dry run for moving OpenCode 1.x to 2.x. Sorts your 1.x config into managed (lean-agents reinstalls it), translatable (a verified 1.x key has a 2.x key: `agent` to `agents`, `mcp` to `mcp.servers`, `compaction.reserved` to `compaction.buffer`, ...) and manual (no proven 2.x equivalent, with the reason); prints the translation table; changes nothing (`--json` for one JSON object). `--upgrade-agent opencode --yes` applies it after a verified backup, and `--upgrade-agent opencode --undo --yes` goes back (below). `--upgrade-agent opencode --backup` (plan first, `--yes` to copy) is the first real step: a permanent backup of your OpenCode 1.x sessions and config, every file sha256-checked and the sessions counted on a copy, then a frozen copy for a later `opencode1`. It only reads the live data, refuses while OpenCode runs or free space is under 2 x size + 1 GB, and never deletes a backup. The opt-in `lean-migrate` skill (`--tools lean-migrate`) walks an agent through it: backup, dry run, apply, doctor, port the manual items, undo on a failure. Guide: [docs/migrate-opencode-v1-to-v2.md](docs/migrate-opencode-v1-to-v2.md).
 - `--install-agent a,b` / `--uninstall-agent a,b` (opt-in): install an agent CLI (`claude`, `opencode-v2`, `copilot-cli`, `cursor`, `antigravity`) from its pinned installer (SHA256-checked before it runs; Linux and macOS, plus Copilot CLI, Antigravity CLI and Cursor CLI on Windows) or remove it again. It shows the plan first (`--dry-run` stops there; `--yes` skips the question). Install records the files the installer created with their SHA256; uninstall deletes only those that still match, or runs `npm uninstall -g`, never the agent's own uninstaller, and leaves your config and data alone. An agent you installed yourself is reported as "not installed by lean-agents" and left alone. OpenCode 1.x is never installed or removed.
@@ -274,7 +274,7 @@ curl -fsSL https://github.com/estebanmr99/lean-agents/releases/latest/download/i
 & ([scriptblock]::Create((irm https://github.com/estebanmr99/lean-agents/releases/latest/download/install.ps1))) -DryRun
 ```
 
-`LEAN_AGENTS_VERSION=1.2.1` pins a release. Once installed, `--dry-run`, `--doctor` and `--uninstall` need no network. A local checkout (`bash install.sh` from a clone) is trusted as it is; only the release download is checksum-verified.
+`LEAN_AGENTS_VERSION=1.2.2` pins a release. Once installed, `--dry-run`, `--doctor` and `--uninstall` need no network. A local checkout (`bash install.sh` from a clone) is trusted as it is; only the release download is checksum-verified.
 
 ## Why
 
@@ -288,7 +288,7 @@ curl -fsSL https://github.com/estebanmr99/lean-agents/releases/latest/download/i
 | --- | --- | --- | --- | --- | --- |
 | Global rules (AGENTS.md) | ✅ | ✅ | ✅ | ✅ | ⚠️ written, load unproven |
 | Subagents by cost tier | ✅ | ✅ | ✅ | ✅ | ✅ flash, pro |
-| RTK (shell output compression) | ✅ | ➖ plugin refused (#179) | ✅ | ✅ | ✅ |
+| RTK (shell output compression) | ✅ | ✅ rtk 1.2.0+ plugin (#478) | ✅ | ✅ | ✅ |
 | Context Mode | ✅ plugin | ✅ MCP | ✅ plugin | ✅ MCP | ➖ skipped (no v2 setup) |
 | Serena + Playwright MCP | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Signed-in browser (opt-in) | ➖ Claude in Chrome | ✅ opt-in | ✅ opt-in | ✅ opt-in | ➖ |
@@ -300,6 +300,8 @@ curl -fsSL https://github.com/estebanmr99/lean-agents/releases/latest/download/i
 | Context compaction | ✅ auto 80% | ✅ native | ✅ native, optional DCP | ➖ | ➖ |
 | Network presets (telemetry, updates, outbound) | ✅ | ✅ updates, sharing | ✅ | ⚠️ updates; telemetry is a reminder | ⚠️ reminders only |
 | Proxy passed to every install command | ✅ | ✅ | ✅ | ✅ | ⚠️ checked in CI, undocumented upstream |
+
+On OpenCode, rtk's own plugin (`plugins/rtk.ts`, rtk 1.2.0 or newer) passes every shell command through `rtk hook opencode`; `--update` regenerates an older one.
 
 ✅ supported · ⚠️ partial · ➖ not available for this agent. Details and verification dates: [docs/compatibility.md](docs/compatibility.md).
 
@@ -559,7 +561,7 @@ lean-agents is glue. The heavy lifting is done by these projects; please star th
 - [x] Parallel agent sessions (`scripts/parallel.mjs`)
 - [x] Warp and Orca agent integrations for users who already have them
 - [x] Antigravity app and CLI on macOS, Linux and Windows (app loading stays VERIFY)
-- [x] `v1.2.1` (latest): VS Code Insiders support.
+- [x] `v1.2.2` (latest): RTK on OpenCode 2, `--upgrade-agent opencode` keeps servers and plugins it used to drop, DCP version kept in step across files, older-rtk warning, doctor fixes. - [x] `v1.2.1`: VS Code Insiders support.
 - [x] `v1.2.0`: rtk on Linux without Homebrew, clearer Node version hints, Code Mode proxy groundwork, Codex CLI spike, Code of Conduct.
 - [x] `v1.1.0`: Savings benchmark, Antigravity/Cursor Windows installers, --add-tools, and team rollout guide.
 - [x] `v1.0.0`: fresh-machine `--everything`, guided OpenCode 1.x to 2.x upgrade with backup and undo, install by the VS Code Copilot agent, update plan and `--update --undo`, summary page; Node.js 22.20 or newer

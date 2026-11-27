@@ -50,6 +50,13 @@ List of **molecules ( small molecules, RNA, peptide, protein, enzymes, antibody,
 
 
 
+
+
+
+* **Simulations of Protein Structure and Dynamics Beyond AlphaFold: From Structure to Function** [2026]  
+B. Singh, G. Alvarez, J. Gaza, E. Rioual, Y. Sugita, and A. Perez.  
+[Wiley Interdiscip. Rev. Comput. Mol. Sci.(2026)](https://doi.org/10.1002/wcms.70091)  
+
 * **From static structures to conformational ensembles: Artificial intelligence for protein sampling and dynamics** [2026]  
 Aldo S. Pasos-Trejo and Klara Bonneau and Andrea Guljas and Ana Molina-Taborda and Cecilia Clementi.  
 [Current Opinion in Structural Biology(2026)](https://doi.org/10.1016/j.sbi.2026.103438)  
@@ -377,7 +384,9 @@ Wang, L., Brasnett, C., Borges-Araújo, L. et al.
 
 
 
-
+* **Data generation for machine-learned force fields** [2026]  
+Saffron Luxford, Connor Williamson, Shayantan Chaudhuri, Alex M. Ganose, Valerio Giuffrida, Julie Greensmith, Katherine Inzani.  
+[Digital Discovery(2026)](https://doi.org/10.1039/d6dd00059b)  
 
 * **Scaling a Universal Graph Neural Network Force Field to Billions of Atoms on Desk-Side GPUs** [2026]  
 Jaehyung Lee, Kamal Choudhary.  
@@ -1127,7 +1136,9 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
-
+* **OMNI-P3x universal neural network potential for large-scale computational photochemistry workflows** [2026]  
+Mikołaj Martyka, Joanna Jankowska, Pavlo O. Dral.  
+  [arXiv:2611.32133(2026)](https://doi.org/10.48550/arXiv.2611.32133) | [code](https://github.com/dralgroup/mlatom)  
 
 * **MACE4IRmol: An Uncertainty-Aware Foundation Model for Molecular Infrared Spectroscopy** [2026]  
 N. Bhatia, O. Krejčí, S. Botti, P. Rinke, and M. A. L. Marques.  
@@ -1515,14 +1526,4 @@ Zhenzhu Li, Aron Walsh.
 
 * **Accurate machine learning interatomic potentials for polyacene molecular crystals: application to single molecule host-guest systems** [2025]  
 Gurlek, B., Sharma, S., Lazzaroni, P. et al.  
-[npj Comput Mater 11, 318 (2025)](https://doi.org/10.1038/s41524-025-01825-w) | [Zenodo](https://doi.org/10.5281/zenodo.17100564)  
-
-* **Modeling Equilibrium Solid–Liquid Interfaces under Effective Constant Chemical Potential Using Machine Learning Interatomic Potentials** [2025]  
-Ademola Soyemi, Khagendra Baral, and Tibor Szilvási.  
-[J. Phys. Chem. A (2025)](https://doi.org/10.1021/acs.jpca.5c06453) | [code](https://zenodo.org/records/17088343)  
-
-* **A foundation model for atomistic materials chemistry** [2025]  
-Batatia, Ilyes, Philipp Benner, Yuan Chiang, Alin M. Elena, Dávid P. Kovács, Janosh Riebesell, Xavier R. Advincula et al.  
-[J. Chem. Phys. 163, 184110 (2025)](https://doi.org/10.1063/5.0297006) | [code](http://github.com/acesuit/mace-mp)  
-
-* **Peering inside the black box by learning the relevance of many
+[npj Comput Mater 11, 31

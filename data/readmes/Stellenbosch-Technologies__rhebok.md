@@ -37,7 +37,8 @@ has a local web dashboard for searching, exploring and configuring everything.
 Nothing leaves your machine unless you set it up to: embeddings run locally
 and there is no telemetry. rhebok itself goes online only to check daily for a
 newer release, to download its vector-search extension the first time it
-builds an index, to fetch the OCR model the first time it reads a scanned PDF,
+builds an index, to fetch the OCR model from ModelScope the first time it reads
+a scanned PDF (oar-ocr only; Apple Vision on macOS downloads nothing),
 and to fetch pages you add with `rhebok add <url>`. If you turn them on, it
 also sends text to an embedding endpoint you choose and backs up to your own
 S3 bucket or Google Drive.

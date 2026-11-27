@@ -2,57 +2,26 @@
 
 **English** · [简体中文](readme-i18n/README.zh-CN.md) · [日本語](readme-i18n/README.ja-JP.md) · [Français](readme-i18n/README.fr-FR.md) · [Deutsch](readme-i18n/README.de-DE.md) · [Русский](readme-i18n/README.ru-RU.md)
 
-## 📥 Download
-
-**[Download here](https://github.com/RoversX/ThinkTerm/releases)** - Get the latest release
-
-🍺 **Homebrew** (macOS): 
-```
-brew install --cask roversx/tap/thinkterm
-```
+📥 **[Download here](https://github.com/RoversX/ThinkTerm/releases)**
 
 🌐 **Website**: [closex.org/thinkterm](https://closex.org/thinkterm/)
 
 📚 **Documentation**: [docs.closex.org/thinkterm](https://docs.closex.org/thinkterm/)
 
-⭐ Consider starring [ThinkTerm](https://github.com/RoversX/ThinkTerm)!
-
 **Your machines fuse into one.**
 
-ThinkTerm is an open-source **terminal with a built-in multiplexer, written in Rust**, built on [WezTerm](https://github.com/wezterm/wezterm). Its mux server runs your shells, tools, and coding agents; desktop, TUI, and browser clients connect to those sessions. Bring local and remote work into one workspace, and return to it from another device.
+A superfast terminal multiplexer built on top of WezTerm.
 
-**Platforms:** macOS · Linux · Windows · Web · TUI — iOS and Android in development.
+**Platforms:** macOS · Linux · Windows · Web · TUI · iOS · Android
+
+![Lazygit in a ThinkTerm workspace with agent status in the right sidebar](assets/screenshots/lazygit.png)
+
+<details>
+<summary>Watch the demo</summary>
 
 https://github.com/user-attachments/assets/7317e369-db86-463f-9379-a8a2ed4b602b
 
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <img src="assets/screenshots/workspace.jpeg" alt="Split terminals, source preview, and project file tree" width="100%">
-      <br><strong>Project workspace</strong>
-    </td>
-    <td width="50%" align="center">
-      <img src="assets/screenshots/agents.jpeg" alt="Agent status beside a remote terminal and workspace sidebar" width="100%">
-      <br><strong>Agents across machines</strong>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <img src="assets/screenshots/overview.jpeg" alt="Live terminal previews grouped by Space" width="100%">
-      <br><strong>Session overview</strong>
-    </td>
-    <td width="50%" align="center">
-      <img src="assets/screenshots/spaces.jpeg" alt="Space selector alongside project Threads" width="100%">
-      <br><strong>Spaces</strong>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <img src="assets/screenshots/mobile.jpeg" alt="ThinkTerm on iOS / iPadOS, built with Swift, and on Android, built with Kotlin" width="100%">
-      <br><strong>iOS, iPadOS and Android</strong>
-    </td>
-  </tr>
-</table>
+</details>
 
 ## Performance
 
@@ -102,6 +71,20 @@ On Linux, compared with kitty on Ubuntu 20.04 (i9-12900K), at 180×50 with `TERM
 | Images | **663.3** | 196.3 | 3.4× |
 
 </details>
+
+ThinkTerm 0.6.0 and Ghostty 1.4.0 ran on the same machine under Ubuntu 26.04. The table shows terminal input parsing throughput in MB/s.
+
+| Workload | ThinkTerm 0.6.0 | Ghostty 1.4.0 | Ratio |
+| --- | ---: | ---: | ---: |
+| Only ASCII chars | 352.7 | 148.1 | 2.38× |
+| Unicode chars | 202.5 | 96.6 | 2.10× |
+| CSI codes with few chars | 61.1 | 58.6 | 1.04× |
+| Long escape codes | 416.6 | 56.1 | 7.43× |
+| Images | 299.1 | 53.2 | 5.62× |
+
+| ThinkTerm 0.6.0 | Ghostty 1.4.0 |
+| :---: | :---: |
+| ![ThinkTerm benchmark results](assets/screenshots/ubuntu-thinkterm-0.6.0.png) | ![Ghostty benchmark results](assets/screenshots/ubuntu-ghostty-1.4.0.png) |
 
 Progress across versions on the same Mac. Ratio compares 0.4.3 with the early build.
 
@@ -182,6 +165,29 @@ Session persistence depends on the mux server and its host remaining available; 
 
 Local and remote workspaces share the sidebar. Thread status helps distinguish running work, work needing attention, completed work, and idle sessions. The overview displays live terminal previews grouped by Space, so you can find a session without opening every tab.
 
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/screenshots/workspace.jpeg" alt="Split terminals, source preview, and project file tree" width="100%">
+      <br><strong>Project workspace</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/screenshots/agents.jpeg" alt="Agent status beside a remote terminal and workspace sidebar" width="100%">
+      <br><strong>Agents across machines</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/screenshots/overview.jpeg" alt="Live terminal previews grouped by Space" width="100%">
+      <br><strong>Session overview</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/screenshots/spaces.jpeg" alt="Space selector alongside project Threads" width="100%">
+      <br><strong>Spaces</strong>
+    </td>
+  </tr>
+</table>
+
 ## Built for daily terminal work
 
 - **Rust, performance, and memory efficiency.** ThinkTerm is built for demanding terminal workflows. Terminal throughput, rendering efficiency, and memory use are ongoing optimization priorities, with the goal of keeping many sessions and agents responsive as they work in parallel.
@@ -204,7 +210,7 @@ The CLI also exposes panes to automation: `thinkterm cli send-text` sends input,
 | **Desktop** | Native application for macOS, Linux, and Windows. |
 | **TUI** | Workspace navigation and terminal control inside an existing terminal, through `thinkterm tui`. |
 | **Browser** | A client served by your own mux server; requires WebGPU and a secure browser context. Browser access must be enabled explicitly. |
-| **iOS and Android** | Native clients in development, with a shared Rust core, GPU rendering, and SSH transport. Mobile release readiness and device coverage are still being established. |
+| **iOS and Android** | Native clients with a shared Rust core, GPU rendering, and SSH transport. |
 
 The clients connect to server-held sessions; their interfaces and feature coverage differ.
 
@@ -223,13 +229,21 @@ Enable a listener in **Settings → Web**, then create an access token for the b
 
 See [Browser access](docs/thinkterm/web-access.md) for listener setup, tokens, SSH forwarding, and certificate handling.
 
-### Mobile development
+### Mobile apps
 
-The [iOS](ios) and [Android](android) apps use native interfaces and the shared [mobile core](thinkterm-mobile). They connect over SSH to sessions on another machine. They are under active development and are not presented here as released mobile products.
+The [iOS](ios) and [Android](android) apps use native interfaces and the shared [mobile core](thinkterm-mobile). They connect over SSH to sessions on another machine.
+
+![ThinkTerm on iOS, iPadOS and Android](assets/screenshots/mobile.jpeg)
 
 Android updates: [F-Droid repository](https://github.com/RoversX/fdroid/tree/dist).
 
 ## Getting started
+
+On macOS, install ThinkTerm with Homebrew:
+
+```sh
+brew install --cask roversx/tap/thinkterm
+```
 
 For a desktop build on macOS or Linux, install Rust and your platform's build tools, then:
 

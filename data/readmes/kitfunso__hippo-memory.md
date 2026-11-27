@@ -15,7 +15,8 @@ Inspired by the human hippocampus, hippo saves what you teach one coding agent i
 </p>
 
 ```
-Works with:    Claude Code, Codex, Cursor, Pi, OpenClaw, OpenCode, any MCP client
+Works with:    Claude Code, Codex, Cursor, Pi, OpenClaw, OpenCode, Junie, Antigravity, Grok Build,
+               Muse Code, any MCP client
 Imports from:  ChatGPT, Claude (CLAUDE.md), Cursor (.cursorrules), Slack, markdown
 Storage:       SQLite with markdown mirrors you can read and commit
 Dependencies:  Zero runtime deps. Node.js 22.16+. Embeddings: `hippo init` installs the local Transformers.js embedder (`@huggingface/transformers@4.3.2`, about 480 MB) into a global npm install, and `--no-embeddings` skips it. An API embedder (OpenAI/Voyage/Cohere) is opt-in.
@@ -167,6 +168,11 @@ You, your team and your platform lead read the same store.
 | OpenCode | plugin |
 | Gemini CLI | extension: `gemini extensions install https://github.com/kitfunso/hippo-memory` |
 | Kiro | power: import `https://github.com/kitfunso/hippo-memory/tree/master/extensions/kiro-power` |
+| Junie | the hippo MCP server in `~/.junie/mcp/mcp.json`, written by `hippo init` |
+| Antigravity | the hippo MCP server in `~/.gemini/config/mcp_config.json`, written by `hippo init` |
+| Grok Build | the hippo MCP server in `$GROK_HOME/config.toml` (else `~/.grok/config.toml`), written by `hippo init` |
+| Muse Code | the hippo MCP server in `~/.config/muse/settings.json`, written by `hippo init` |
+| Grok Bot, Muse app | a key and an HTTPS tunnel: [integrations/grok-bot-and-muse.md](integrations/grok-bot-and-muse.md) |
 | Any MCP client | `hippo mcp`, 13 tools |
 
 `hippo dashboard` opens a local page with each project's memory health.
@@ -403,6 +409,7 @@ Run `hippo init` inside one project. This is everything it writes, in the projec
 - **OpenCode,** when the project has `.opencode/` or `opencode.json`: a plugin at `~/.config/opencode/plugins/hippo.ts`.
 - **Codex,** when the project has `AGENTS.md` or `.codex` and Codex is installed (`$CODEX_HOME`, else `~/.codex`, exists): 2 hook entries in Codex's `hooks.json`, one on UserPromptSubmit that sends your pinned memories plus up to 5 that match the prompt with every prompt and one on SessionStart after a compaction. **Codex runs them only after you trust them once in `/hooks`.** Init also prints `hippo hook install codex`, the opt-in that wraps the Codex launcher to capture sessions; `hippo hook uninstall codex` removes hippo's hooks and the wrapper.
 - **GitHub Copilot,** when the Copilot CLI is installed, whatever the project holds. Init takes `$COPILOT_HOME` (else `~/.copilot`) holding more than a `hooks` folder as the sign. It writes the same files as `hippo hook install copilot`: hippo's `hooks/hippo.json`, a `hippo` server in `mcp-config.json` and a block in `copilot-instructions.md`. When VS Code has a User folder, it also adds the server to that folder's `mcp.json` and writes `prompts/hippo.instructions.md`. With VS Code alone, run `hippo setup`. [integrations/copilot.md](integrations/copilot.md) lists each file and how to remove them.
+- **Junie, Antigravity, Grok Build and Muse Code,** when the host's folder exists on the machine, whatever the project holds: `~/.junie`, `~/.gemini/antigravity` or `~/.gemini/antigravity-cli`, `$GROK_HOME` (else `~/.grok`), or `$XDG_CONFIG_HOME/muse` (else `~/.config/muse`). Each gets a `hippo` MCP server in its own config file: `~/.junie/mcp/mcp.json`, `~/.gemini/config/mcp_config.json`, `$GROK_HOME/config.toml` (else `~/.grok/config.toml`) and `$XDG_CONFIG_HOME/muse/settings.json` (else `~/.config/muse/settings.json`). `hippo hook install <name>` writes the same entry for one host (`junie`, `antigravity`, `grok-build` or `muse-code`), and `hippo hook uninstall <name>` removes it. `hippo init --no-hooks` and `HIPPO_SKIP_AUTO_INTEGRATIONS=1` leave them out.
 - **A daily run at 6:15am,** one per machine: a crontab line on Linux and macOS, a scheduled task named `hippo-daily-runner` on Windows. It runs `hippo learn --git --days 1` and then `hippo sleep` in every project listed in `~/.hippo/workspaces.json`, and init adds this project to that list.
 - **The local embedder,** when hippo is a global npm install and no embedder is installed yet: `@huggingface/transformers@4.3.2` in the same global folder, about 480 MB. It goes in before anything else, can take a few minutes, and runs with `--ignore-scripts`, so no install script in that package tree runs. Its model (`Xenova/all-MiniLM-L6-v2`, 87 MB) downloads from Hugging Face the first time hippo embeds. Under npx, pnpm, yarn, bun or as a project dependency, init prints the command for that setup instead. `npm uninstall -g hippo-memory` leaves the embedder in place; `npm uninstall -g @huggingface/transformers` removes it.
 - **Agent memories.** On every run, the notes your coding agents keep about this project go into its store, and the ones about you go into the global store. [Agent memories](#agent-memories) lists what is read.
@@ -509,7 +516,7 @@ Backfill an existing channel: `SLACK_BOT_TOKEN=xoxb-... hippo slack backfill --c
 
 Multi-workspace deployments populate `slack_workspaces (team_id, tenant_id)` to route events per tenant; single-workspace falls back to `HIPPO_TENANT`.
 
-GitHub webhooks land the same way at `POST /v1/connectors/github/events`. Backfill a repository's issues and comments with `hippo github backfill --repo <owner/name>`. Every memory carries `kind`, `scope`, `owner` and `artifact_ref`, and one API call deletes a memory. For GitHub Enterprise Server, set `GITHUB_ENTERPRISE_URL=https://<host>`, using the host name the server is configured with. Backfill then calls `https://<host>/api/v3`, and refs, `repo:` tags, scopes and cursors carry the host, as in `github://<host>/<owner/name>/issue/<n>`; github.com refs do not change. GHES webhooks keep working unchanged while `GITHUB_ENTERPRISE_URL` is unset. Once you set it, new rows carry the host in their scope and `repo:` tag, and older rows keep the bare form. If the store took GHES webhooks before you set it and never took github.com ones, also set `GITHUB_ENTERPRISE_BARE_REFS_HOST` to the same host, so a deletion archives the older copy and a backfill skips items those webhooks stored; without it hippo never treats a row with no host as a GHES row. `hippo github dlq replay` checks the server the payload names for every row, whatever its bucket. Grant member keys the host form too, query both scopes, and set the variable before you replay any `host_mismatch` row. Once the variable is set, every github.com delivery parks as `host_mismatch`, so a store that takes both github.com and GHES hooks must keep the variable unset or split to two servers.
+GitHub webhooks land the same way at `POST /v1/connectors/github/events`. Backfill a repository's issues and comments with `hippo github backfill --repo <owner/name>`. Every memory carries `kind`, `scope`, `owner` and `artifact_ref`, and one API call deletes a memory. For GitHub Enterprise Server, set `GITHUB_ENTERPRISE_URL=https://<host>`, using the host name the server is configured with. Backfill then calls `https://<host>/api/v3`, and refs, `repo:` tags, scopes and cursors carry the host, as in `github://<host>/<owner/name>/issue/<n>`; github.com refs do not change. GHES webhooks keep working unchanged while `GITHUB_ENTERPRISE_URL` is unset. Once you set it, new rows carry the host in their scope and `repo:` tag, and older rows keep the bare form. If the store took GHES webhooks before you set it and never took github.com ones, also set `GITHUB_ENTERPRISE_BARE_REFS_HOST` to the same host, so a deletion archives the older copy and a backfill skips items those webhooks stored; without it hippo never treats a row with no host as a GHES row. `hippo github dlq replay` checks the server the payload names for every row, whatever its bucket. It also routes each row again from its installation and repository, as the webhook does; a row that matches no tenant stays parked as `unroutable` on an install with route rows, unless `GITHUB_ALLOW_UNKNOWN_INSTALLATION_FALLBACK` is set. Grant member keys the host form too, query both scopes, and set the variable before you replay any `host_mismatch` row. Once the variable is set, every github.com delivery parks as `host_mismatch`, so a store that takes both github.com and GHES hooks must keep the variable unset or split to two servers.
 
 A GitHub issue, comment or pull request is held for admin review (`hippo quarantine`) when its `author_association` is not OWNER, MEMBER or COLLABORATOR. GitHub's docs say "By default, your organization membership visibility is set to private.", and such a teammate can read as CONTRIBUTOR or NONE. Make the membership public ([GitHub's steps](https://docs.github.com/en/account-and-profile/how-tos/organization-membership/publicizing-or-hiding-organization-membership)), or list the teammate's numeric GitHub user id: `GITHUB_TRUSTED_USER_IDS=1234567,7654321`. Get an id with `gh api users/<login> --jq .id`. A bot such as Dependabot or your own CI app also reads as NONE, so its items are held too; list its id the same way (`gh api 'users/dependabot[bot]' --jq .id`). A login is refused, because GitHub lets anyone claim a login its owner gives up; an entry that is not a number stops `hippo serve` from starting. Set the list on the server, in the shell that runs `hippo github backfill`, and in the shell that runs `hippo github dlq replay`. Each reads its own environment, and a replay uses the list as it is when you replay. A listed id skips only this rule; a flagged instruction is still held. The list applies only to items from the configured server, github.com, or the `GITHUB_ENTERPRISE_URL` host once it is set, so a GHES item with the variable unset is still held. Changing the list does not release items already held: approve them with `hippo quarantine approve <id>`.
 
@@ -1053,22 +1060,3 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo watch -- <command> [args...]` | Run command with no shell, auto-learn from failures |
 | `hippo learn --git` | Scan recent git commits for lessons |
 | `hippo learn --git --days <n>` | Scan N days back (default: 7) |
-| `hippo learn --git --repos <paths>` | Scan multiple repos (comma-separated) |
-| `hippo daily-runner` | Sweep registered workspaces and run daily learn+sleep |
-| `hippo conflicts` | List detected open memory conflicts |
-| `hippo conflicts --json` | Output conflicts as JSON |
-| `hippo resolve <id>` | Show both conflicting memories for comparison |
-| `hippo resolve <id> --keep <mem_id>` | Resolve: keep winner, weaken loser |
-| `hippo resolve <id> --keep <mem_id> --forget` | Resolve: keep winner, delete loser |
-| `hippo promote <id>` | Copy a local memory to the global store (in a shared store nothing is copied: the store already serves it; with `hippo serve` running on a shared folder, a row with no project, the CLI's own rows included, reads as not found: set `HIPPO_API_KEY` to a host admin key or stop the server) |
-| `hippo share <id>` | Share with attribution + transfer scoring |
-| `hippo share <id> --force` | Share even if transfer score is low |
-| `hippo share --auto` | Auto-share all high-scoring memories |
-| `hippo share --auto --dry-run` | Preview what would be shared |
-| `hippo peers` | List projects contributing to global store |
-| `hippo sync` | Pull global memories into local project |
-| `hippo invalidate "<pattern>"` | Actively weaken memories matching an old pattern |
-| `hippo invalidate "<pattern>" --reason "<why>"` | Include what replaced it |
-| `hippo decide "<decision>"` | Record architectural decision |
-| `hippo decide "<decision>" --context "<why>"` | Include reasoning |
-| `hippo decide "<decision>" --supersedes <id>` | Supersede a previous deci

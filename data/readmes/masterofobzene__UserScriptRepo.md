@@ -144,11 +144,10 @@ above if you see prices in other currency.
 
 -----------
 
-[DeepSeek QoL](https://github.com/masterofobzene/UserScriptRepo/raw/refs/heads/main/SFW/DeepSeek_qol.user.js) Merged the DeepSeek scripts into one. Also added new features. 
+[DeepSeek QoL](https://github.com/masterofobzene/UserScriptRepo/raw/refs/heads/main/SFW/DeepSeek_qol.user.js) Merged the DeepSeek scripts into one. Also added new features. We could start calling it "deadseek" since it is now limiting in harsh ways the users.
 
 
-<img width="600" alt="FMTN55C10y" src="https://github.com/user-attachments/assets/b5b1f24c-d2bd-41a3-832c-3e3c6f331de4" />
-
+<img width="400" alt="deadseek" src="https://github.com/user-attachments/assets/408ec568-bf21-4475-96ac-540a8fd29556" />
 
 
 
@@ -166,6 +165,17 @@ above if you see prices in other currency.
 
 [DESCRIPTION](https://github.com/masterofobzene/UserScriptRepo/blob/main/INFOS/grok_qol.md)
 
+
+-----------
+
+
+[Qwen QoL](https://github.com/masterofobzene/UserScriptRepo/raw/refs/heads/main/SFW/Qwen_qol.user.js) Almost the same than deepseek QoL above. Fixes manual selection inside code blocks. What it cannot fix, is Qwen being actually more stupid than Deepseek.
+
+<img width="400" alt="A0X3rRY6ph" src="https://github.com/user-attachments/assets/cb39e9be-7ba0-499e-9951-b595dd2aa928" />
+
+
+
+[DESCRIPTION](https://github.com/masterofobzene/UserScriptRepo/blob/main/INFOS/Qwen_qol.md)
 <br>
 <br>
 <br>

@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.12`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.13`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,26 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.12 and earlier)</summary>
+<summary>Recent release notes (v11.25.13 and earlier)</summary>
+
+## What's New in v11.25.13
+
+**Recall now stops when the caller does.** A cancelled query, text search or
+hybrid request returns immediately after the store lookup instead of computing
+per-result evidence, writing activity and logging a stream of
+`context canceled` warnings for a response nobody will receive. A vector scan
+cut short by cancellation or a read error is now an error rather than a partial
+ranking presented as complete.
+
+**Quotes-only and whitespace-only text searches no longer fail recall.** A
+query with no searchable term now produces no text matches, so hybrid recall
+can still rank its vector leaf instead of failing the whole request with an
+FTS5 syntax error.
+
+The release also clears current Go and Rust advisories and refreshes the pinned
+Go dependencies and GitHub Actions. No consensus state-machine change,
+app-version change or chain reset. App-v29 remains active and app30 remains
+explicit. Container: `ghcr.io/l33tdawg/sage:11.25.13`. SDK 11.25.13.
 
 ## What's New in v11.25.12
 
@@ -1056,8 +1075,4 @@ Container: `ghcr.io/l33tdawg/sage:11.20.1`. SDK 11.20.1.
 
 ## What's New in v11.20.0
 
-**An agent's working state can now be stored encrypted on the node.** Two new surfaces are reachable only from inside the app-v23 pipeline agent boundary, and both refuse to run without the Synaptic Ledger vault: `PUT`/`GET /v1/private-media/{uuid}` stores immutable JPEG originals with ciphertext-only rows, per-caller actor isolation, quota enforcement and a startup disk-floor probe, and `PUT`/`GET /v1/workflows[/{uuid}]` gives an agent an encrypted, actor-bound journal for long-running work with compare-and-swap revisions, strict argument bounds and an opt-out conversation guard. Neither surface can be reached for another agent's rows, and neither writes a plaintext copy to the database or its WAL.
-
-**You can now prove whether message storage is encrypted.** `GET /v1/messages/storage` reports the honest storage posture of this node, and `POST /v1/messages` accepts a strict signed `require_encrypted_storage` boolean: an agent that must not be stored in the clear now gets a `503` instead of a silent downgrade, and a malformed or unsigned value is rejected rather than ignored. The authenticated request-body limit became route-aware for exactly one route: a canonical-UUID private-media `PUT` gets one extra MiB, everything else keeps the 1 MiB ceiling.
-
-**Local durability is no longer taken on faith.** SQLite opens with `synchronous=FULL` in both DSN and `PRAGMA` form and the node verifies `journal_mode` and `synchronous` at boot, refusing to serve when the durability posture is not provable. Vault publication is atomic 
+**An agent's working state can now be stored encrypted on the node.** Two new surfaces are reachable only from inside the app-v23 pipeline agent boundary, and both refuse to run without the Synaptic Ledger vault: `PUT`/`GET /v1/private-media/{uuid}` stores immutable JPEG originals with ciphertext-only rows, per-caller actor isolation, quota enforcement and a startup disk-floor probe, and `PUT`/`GET /v1/workflows[/{uuid}]` gives an agent an encrypted, actor-bound journal for long-running work with compare-and-swap revisions, strict argument bounds and an o

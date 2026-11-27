@@ -1,5 +1,5 @@
 # Ennyn
-<img src=".claude-plugin/icon.svg" align="right" width="128" alt="">
+<img src="plugin/.claude-plugin/icon.svg" align="right" width="128" alt="">
 
 **English** · [Türkçe](README.tr.md)
 
@@ -9,7 +9,9 @@ Ennyn is a Claude Code plugin and Node CLI. It gives the agent a working routine
 
 [Install](#install-claude-code) · [Try it without installing](#try-it-without-installing)
 
-![Output of ennyn rework, ennyn doctor, and ennyn core on the Ennyn repository](docs/assets/terminal.png)
+![Output of ennyn init-scan, ennyn core and ennyn convergence on a made-up sample project](docs/assets/demo.svg)
+
+A made-up shop project, before and after one cycle: `ennyn init-scan` reads the repository before `/ennyn:init` asks anything, `ennyn core` picks the next task from the work graph, and `ennyn convergence` counts what the cycle's checks and reviews found. This is what the CLI prints, not a recording of a Claude session.
 
 > Early days (0.1.x). Ennyn is built with Claude Code using its own cycle; its work graph, findings and metrics are in `.ennyn/`; the handoff notes between cycles are working notes and stay outside the repository. The config format may still change before 1.0.
 
@@ -30,9 +32,18 @@ In a project where an agent writes the code, these problems show up over time:
 - Each cycle closes with five metrics: bugs review found, regressions introduced by fixes, old bugs in code from before Ennyn, bugs a gate caught, and bugs that got past the commit and turned up later. It also measures whether the instruction text loaded in every session grew.
 - Tasks live in a work graph, a JSON file. Ennyn picks four per cycle and always keeps a slot for the oldest high-value task.
 
-Ennyn has no runtime dependencies and no install scripts. It makes network requests in only two cases. When a commit adds packages to a lock file, the commit hook looks them up on the npm registry (turn that off with `security.deps.online: false`). The `ennyn deps` command queries the OSV vulnerability database when you run it. More in [SECURITY.md](SECURITY.md).
+Ennyn has no runtime dependencies and no install scripts, and installing the plugin downloads nothing. It goes on the network only in these cases:
 
-The reasoning behind Ennyn's design is in [docs/evidence.md](docs/evidence.md).
+- When a commit adds packages to a lock file, the commit hook looks each new one up on the npm registry (`registry.npmjs.org`, `api.npmjs.org`). Turn that off with `security.deps.online: false`.
+- `ennyn deps` sends the name and version of each package from the public registry to the OSV vulnerability database (`api.osv.dev`), when you run it and at the end of each cycle. Turn that off with `security.deps.advisories: ""`.
+- `ennyn push-check` runs `git fetch` on your branch's remote, and at the end of a cycle the agent pushes there. It asks you first unless you set `push.mode` to `after-closing`.
+- `ennyn clone-setup`, given a GitHub login, reads that account's public SSH signing keys from `api.github.com`, with no token.
+- During `/ennyn:init`, the agent lists your open GitHub issues with `gh`, if the repository has a GitHub remote and `gh` is set up.
+- In a partial clone, git itself fetches the objects it is missing from your remote, as it would for any git command.
+
+Besides git, Node and a few system tools (`ps`, `sysctl`, `taskkill`, for its own processes and the free memory), Ennyn runs only what you name: the test commands in your config, the command you give `ennyn mutate`, and `impact.referenceCommand`. Outside your repository it writes to the plugin's own data folder (the version each session runs), to the session's environment file (two `ENNYN_` variables), to `~/.ennyn-lock` when you use `ennyn lock`, and to temporary folders. In the repository it keeps its state in `.git/ennyn`. The commit hook is installed only when you ask for it, and `/ennyn:init` adds ask rules and the settings for running without bypass mode to `.claude/settings.json` only on your yes. Details in [SECURITY.md](SECURITY.md#what-ennyn-runs-on-a-machine).
+
+The reasoning behind Ennyn's design is in [docs/evidence.md](docs/evidence.md). Whether it works so far, including what has not improved, is in [Does it work yet?](docs/evidence.md#does-it-work-yet).
 
 ## Try it without installing
 
@@ -52,7 +63,7 @@ claude plugin marketplace add boranb/ennyn
 claude plugin install ennyn@ennyn
 ```
 
-Then run `/ennyn:init` in your project. It scans the repository, asks a few questions, and sets up `.ennyn/`. In your other projects, the plugin's hooks do nothing except note the plugin's version in the plugin's own folder.
+Then run `/ennyn:init` in your project. It scans the repository, asks a few questions, and sets up `.ennyn/`. In your other projects, the plugin's hooks do nothing except note the plugin's version in the plugin's own folder and name it to the session.
 
 Install Ennyn only from `github.com/boranb/ennyn`, with the commands above or from a clone. The real thing has no binaries, no runtime dependencies and no install scripts. A copy that ships an executable, or asks you to run a setup program, is not Ennyn.
 
@@ -78,7 +89,7 @@ claude plugin marketplace remove ennyn
 
 Uninstalling the plugin also deletes its data folder, where the hook looks up the plugin's version. A hook left behind in some project then lets every commit through with a note; `uninstall-hook` from a clone still removes it. `--keep-data` keeps that folder, and with it a hook that points at a version Claude Code deletes after 14 days, after which every commit is refused, so remove the hooks first.
 
-The cycle skill in `skills/cycle/` follows the [Agent Skills](https://agentskills.io) format, but it calls the CLI through `${CLAUDE_PLUGIN_ROOT}`, which only Claude Code sets. To use it with another agent, set `CLAUDE_PLUGIN_ROOT` to the path of an Ennyn clone. The CLI needs Node 22 or later and git 2.34 or later, and has no dependencies. From the Ennyn clone, `node scripts/ennyn.mjs --help` lists its commands. Elsewhere in this README, `ennyn` is short for that script, run from your project.
+The cycle skill in `plugin/skills/cycle/` follows the [Agent Skills](https://agentskills.io) format, but it calls the CLI through `${CLAUDE_PLUGIN_ROOT}`, which only Claude Code sets. To use it with another agent, set `CLAUDE_PLUGIN_ROOT` to the `plugin` folder of an Ennyn clone. The CLI needs Node 22 or later and git 2.34 or later, and has no dependencies. From the Ennyn clone, `node scripts/ennyn.mjs --help` lists its commands. Elsewhere in this README, `ennyn` is short for that script, run from your project.
 
 Ennyn runs on Linux and macOS, and on Windows through WSL, where the whole test suite last passed on 2026-11-09, at commit `c5d7b70` (Ubuntu 22.04, git 2.34.1). On macOS 27.2 (Node 22.23.4, git 2.56.0) the whole suite last passed on 2026-11-22, at `v0.1.1`, and on Linux the same day in containers at the floor (Node 22.0.0, git 2.34.1) and on Node 24.22.1 (git 2.39.5). On native Windows (Git for Windows 2.47.1, Git Bash, PowerShell 7) the push hook, the commit-msg hook, the gate-loosening check and the plugin's version record were last measured on 2026-11-05, at commit `41cfa37`, and hold, as [SECURITY.md](SECURITY.md) says; the test suite does not pass there, the compaction hook was only tried on a test project, and the other hooks were not measured.
 
@@ -97,7 +108,7 @@ The steps of a cycle, and the settings that apply to them:
 | Before writing | The impact table. Each of the five questions is answered by a command where possible (git grep, git log, or the tests), and a row no command can answer says so. If the change adds a heuristic, the agent first writes examples the heuristic should accept and reject, plus a failing test. A task picked for its value also answers a smallest-change row first: which line of the task asks for each new piece, and what the repository, the platform, git or an installed dependency already does for it. Input checks, data-loss handling, security and accessibility are never cut. | `ennyn impact` |
 | Mutation testing | The agent picks a few mutants (small, deliberate bugs) for the changed lines, and the project's fast tests run once per mutant. A surviving mutant, one the tests miss, needs a new test or a written reason. Files are restored afterward, even if the run is interrupted. If someone edits a file while a mutant is in it, Ennyn leaves that file as it is and stops the run. | `ennyn mutate` |
 | Heavy jobs | A whole test suite, a mutation run or a platform image waits its turn in one queue on your machine, shared by every session and project, and runs under a time limit. Its turn starts only when the machine has room: enough free memory and disk, and a load the CPUs can carry; until then it keeps its place, says what is short, and after its time limit starts anyway. A run that hangs is stopped along with everything it started, and a run that died gives the queue back. | `ennyn lock` |
-| Review | Two rounds; a third only with a failing test or a measurement. Every finding quotes the code, names its source (new code, an earlier fix, or older code), and says how it was checked. | `agents/`, `skills/cycle/finding-schema.md` |
+| Review | Two rounds; a third only with a failing test or a measurement. Every finding quotes the code, names its source (new code, an earlier fix, or older code), and says how it was checked. | `plugin/agents/`, `plugin/skills/cycle/finding-schema.md` |
 | Commit | A commit-msg hook checks every commit. It blocks patterns you've banned (`review.forbidden`) and secrets in known token formats, and warns when code changes but the docs tied to it don't (`review.cochange`). | `ennyn commit-check`, `ennyn install-hook` |
 | Pushes | A hook refuses a `git push` in a command Claude Code's ask rule can't read for certain, and tells the agent how to write it. This catches habit, not a determined program. | Claude Code hook |
 | Gate timing | How long the commit checks take and how often they fail, recorded on your machine. | `ennyn gate-record`, `ennyn gate-stats` |

@@ -12,7 +12,7 @@ IM.codes connects AI agents not only to coding sessions, but also to the compute
 
 Alongside machine control, IM.codes gives coding agents one shared memory layer and one managed MCP tool surface across providers. It turns completed work into reusable context across [Claude Code](https://github.com/anthropics/claude-code), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli), GitHub Copilot, Cursor, OpenCode, [OpenClaw](https://openclaw.com), [Qwen](https://github.com/QwenLM/qwen-agent), and more. Terminal access, file and Git views, localhost preview, notifications, multi-agent workflows, OpenSpec Auto Deliver, Auto supervision, and cross-provider Team audit keep both human and agent work visible and connected.
 
-> **Disclaimer:** This is an actively developed personal open-source project. There are no warranties, no SLA, and no guarantees of stability, security, or backward compatibility. Use at your own risk.
+> **Disclaimer:** This is an actively developed personal source-available project. There are no warranties, no SLA, and no guarantees of stability, security, or backward compatibility. Use at your own risk.
 
 ## Controlled Nodes: AI Remote Desktop
 
@@ -303,7 +303,8 @@ The daemon runs on your dev machine and manages process-backed agent sessions th
 ## Install
 
 ```bash
-npm install -g imcodes
+curl -fsSL https://im.codes/install.sh | bash
+# fallback: npm install -g imcodes
 ```
 
 ## Quick Start
@@ -355,7 +356,7 @@ Notes:
 Deploy server + daemon on a single machine. Requires Docker and a domain with DNS pointing to the server.
 
 ```bash
-npm install -g imcodes
+curl -fsSL https://im.codes/install.sh | bash   # fallback: npm install -g imcodes
 mkdir imcodes && cd imcodes
 imcodes setup --domain imc.example.com
 ```
@@ -365,7 +366,7 @@ This generates all config, starts PostgreSQL + server + Caddy with automatic HTT
 To connect additional machines:
 
 ```bash
-npm install -g imcodes
+curl -fsSL https://im.codes/install.sh | bash   # fallback: npm install -g imcodes
 imcodes bind https://imc.example.com/bind/<api-key>
 ```
 
@@ -389,8 +390,9 @@ Windows is natively supported via [ConPTY](https://devblogs.microsoft.com/comman
 
 ### Install & Bind (Windows)
 
-```cmd
-npm install -g imcodes
+```powershell
+irm https://im.codes/install.ps1 | iex
+# fallback: npm install -g imcodes
 imcodes bind https://app.im.codes/bind/<api-key>
 ```
 
@@ -435,7 +437,7 @@ Check the daemon watchdog log for errors:
 ## Requirements
 
 - macOS or Linux (tested on both)
-- **Windows (experimental)**: Native support via ConPTY (built-in on Windows 10+). Just `npm install -g imcodes` — no extra software needed. WSL also works.
+- **Windows (experimental)**: Native support via ConPTY (built-in on Windows 10+). Just `irm https://im.codes/install.ps1 | iex` (fallback: `npm install -g imcodes`) — no extra software needed. WSL also works.
 - Node.js >= 22
 - Terminal multiplexer: [tmux](https://github.com/tmux/tmux) (Linux/macOS). Windows uses ConPTY (auto-detected, built-in).
 - At least one AI coding agent: [Claude Code](https://github.com/anthropics/claude-code) (CLI or SDK), [Codex](https://github.com/openai/codex) (CLI or SDK), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenClaw](https://openclaw.com), or [Qwen](https://github.com/QwenLM/qwen-agent)
@@ -446,10 +448,15 @@ This is a personal project. I haven't written any code myself — it was built a
 
 ## Disclaimer
 
-IM.codes is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI, Google, Alibaba, OpenClaw, or any other company whose products are mentioned. All product names, trademarks, and registered trademarks are the property of their respective owners.
+IM.codes is an independent source-available project and is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI, Google, Alibaba, OpenClaw, or any other company whose products are mentioned. All product names, trademarks, and registered trademarks are the property of their respective owners.
 
 ## License
 
-[MIT](LICENSE)
+[Business Source License 1.1 (BSL 1.1)](LICENSE) — [Commercial Licensing Guide](COMMERCIAL-LICENSE.md) | [Third-Party Notices](THIRD_PARTY_NOTICES.md)
+
+- **Non-Production & Personal Production Use:** Non-production use (evaluation, testing, development), copying, modification, and compliant redistribution preserving notices and trademark terms are free for any organization size under standard BSL 1.1. Personal production use by natural persons for personal development, learning, research, or personal self-hosting on personal devices/servers (not centrally deployed or shared across an organization, and excluding third-party hosting/SaaS/white-label commercial services) is permanently free regardless of employer size.
+- **Small-Team Internal Production Use:** Covered free under the Additional Use Grant only when **both** active users/seats **<= 5** **and** total organization headcount **<= 50**, aggregated across the legal entity, all affiliates, and all deployed instances.
+- **Outside the Additional Use Grant (Commercial License):** Prior to the Change Date, production use above either threshold (e.g. `6/50` or `5/51` across entity/affiliates/instances), or production use for hosted/managed/multi-tenant SaaS or commercial white-label services/resale (even by a single person), is excluded from the Additional Use Grant and requires a commercial license via `support@im.codes`.
+- **Change Date:** Converts to [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 4 years after each version's public release (`2030-11-26` for this release).
 
 © 2026 [IM.codes](https://im.codes)

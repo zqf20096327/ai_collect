@@ -87,7 +87,6 @@ pnpm dev
 | 目录           | 内容                                               |
 | -------------- | -------------------------------------------------- |
 | `apps/web`     | React 界面                                         |
-| `apps/admin`   | 站点管理界面                                       |
 | `apps/api`     | FastAPI、任务与权限规则、Alembic 迁移              |
 | `packages`     | 类型化 API 客户端、组件和设计 tokens               |
 | `integrations` | ComfyUI、官方、RunningHub 工作机和外部客户端 Skill |

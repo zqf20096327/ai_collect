@@ -619,7 +619,7 @@ Tools:
 |------------------------------|--------------------------------------------------------|:------------------:|
 | `active_queries`             | Active queries                                         |         ✅         |
 | `alerts`                     | List of alerts                                         |         ✅         |
-| `documentation`              | Search documentation resources                         |         ✅         |
+| `documentation`              | Search VictoriaMetrics documentation                   |         ✅         |
 | `downsampling_filters_debug` | Downsampling filters debugger                          |         ❌         |
 | `explain_query`              | Explain Query                                          |         ✅         |
 | `export`                     | Export time series                                     |         ❌         |
@@ -831,6 +831,19 @@ This is the main source of resource usage. To reduce it, add `documentation` to 
 ### How to use one MCP server instance for several VictoriaMetrics instances?
 
 You can use `MCP_PASSTHROUGH_HEADERS` parameter in the MCP Server together with [Header-based routing in vmauth](https://docs.victoriametrics.com/victoriametrics/vmauth/#routing-by-header) to route MCP calls between instances based on HTTP header values from your MCP client config.  
+
+### How to connect to a cluster behind a proxy that sets the tenant from a JWT?
+
+Proxies such as [vmgateway](https://docs.victoriametrics.com/victoriametrics/vmgateway/) with `-enable.auth` or [vmauth JWT token auth proxy](https://docs.victoriametrics.com/victoriametrics/vmauth/#jwt-token-auth-proxy) take the tenant from the token and add the `/select/<tenant>/prometheus` prefix themselves, so they expect requests in the single-node format.
+Set `VM_INSTANCE_TYPE` to `single` and pass the JWT in `VM_INSTANCE_BEARER_TOKEN`:
+
+```bash
+export VM_INSTANCE_TYPE="single"
+export VM_INSTANCE_ENTRYPOINT="http://<vmgateway>:8431"  # or the vmauth URL including the path prefix routed to vmselect, e.g. https://<vmauth>/select
+export VM_INSTANCE_BEARER_TOKEN="<JWT>"
+```
+
+The tenant is taken from the token, so the `tenant` tool argument and the `tenants` tool are not available.
 
 ## Roadmap
 

@@ -2,13 +2,13 @@
 
 **Small models do the work. Frontier models direct it.**
 
-hstack is a collection of agent skills for **Claude Code** that turns the model you're running (the frontier) into a senior engineer and a smaller, cheaper model into the engineer who does the work.
+hstack is a collection of agent skills for **Claude Code**, **Muse Code**, **Codex** and **Hermes Agent** that turns the model you're running (the frontier) into a senior engineer and a smaller, cheaper model into the engineer who does the work.
 
 The worker explores the codebase, plans, writes the tests and the code, and reports. The frontier writes a short brief, approves the plan, reviews the result, and sends at most a few lines of correction. It never writes the code itself.
 
 > **Measured:** on a production-grade waitlist backend, Claude Opus 5.5 directing a Claude Haiku 5.5 worker cost **53% less** than Opus alone, with the same hidden-test results (20/20) and Opus writing **90% fewer** output tokens. [Details](benchmarks/02-waitlist-backend/results.md).
 
-> Status: early. hstack runs **inside Claude Code**, using its sub-agents. Other agents come later.
+> Status: early. hstack runs **inside Claude Code** (its sub-agents), **inside Muse Code** (its `muse.workflow` agents), **inside Codex** (its custom agents) and **inside Hermes Agent** (separate `hermes chat` worker processes). Others come later.
 
 ---
 
@@ -25,7 +25,7 @@ Frontier tokens cost far more than small-model tokens, and the expensive part of
 
 <sub>Source: [`docs/hstack-flow.excalidraw`](docs/hstack-flow.excalidraw), editable at excalidraw.com.</sub>
 
-1. **`/hstack-activate`:** the session's model becomes the frontier and asks which smaller model should do the work. It keeps asking until you name a valid one; loose names like "haiku 5.5" are fine. If you're already on the smallest model, it stays off.
+1. **`/hstack`:** the session's model becomes the frontier and asks which smaller model should do the work. It keeps asking until you name a valid one; loose names like "haiku 5.5" are fine. If you're already on the smallest model, it stays off.
 2. **Brief:** the frontier writes about 15 lines: why, acceptance criteria, constraints, the risks it will review, and the done commands.
 3. **Plan:** an `hstack-worker` sub-agent on the worker model explores and returns a short plan. The frontier replies `APPROVE` or `REVISE` in a few lines.
 4. **Build:** the same worker keeps its context. It writes tests first, implements, runs the checks until they pass, and returns a compact done report.
@@ -45,11 +45,15 @@ Frontier tokens cost far more than small-model tokens, and the expensive part of
 
 | | Type | Role |
 |---|---|---|
-| [`hstack-activate`](skills/hstack-activate/SKILL.md) | skill, `/hstack-activate` | Turns hstack on and keeps asking for a valid, smaller worker model |
-| [`hstack`](skills/hstack/SKILL.md) | skill (frontier) | Senior-engineer loop: size gate, brief, plan review, build review, one correction round, token discipline |
+| [`hstack`](skills/hstack/SKILL.md) | skill, `/hstack` (frontier) | Turns hstack on (asks for a valid, smaller worker model), then runs the senior-engineer loop: size gate, brief, plan review, build review, one correction round, token discipline |
 | [`hstack-swarm`](skills/hstack-swarm/SKILL.md) | skill, `/hstack-swarm` | Parallel workers on independent parts, then an independent reviewer |
-| [`hstack-practice`](skills/hstack-practice/SKILL.md) | skill (worker) | Engineering habits small models lack: exact specs, state tables, tests first, real-environment facts, security, honest reports |
+| [`hstack-ui`](skills/hstack-ui/SKILL.md) | skill, `/hstack-ui` | UI work from real references: a design system first, then pages built only from it, reviewed by screenshot |
+| [`hstack-motion`](skills/hstack-motion/SKILL.md) | skill, `/hstack-motion` | Motion-graphics videos from a prompt or a codebase: storyboard first, scenes built in Remotion from a starter kit, voice and sound timed to words, reviewed as stills |
+| [`hstack-update`](skills/hstack-update/SKILL.md) | skill, `/hstack-update` | Updates hstack to the latest skills and sub-agents in every harness it is installed in, and lists the skill versions that changed |
+| [`hstack-research`](skills/hstack-research/SKILL.md) | skill, `/hstack-research` | Market and technical research: workers read the web and write sourced notes, the frontier writes one report with a recommendation |
+| [`hstack` guides](skills/hstack/ROUTES.md) | worker guides | How the worker thinks, read one at a time from a routing table: understand, explore, plan, sources, focus, verify, escalate, plus practice, debug and refactor |
 | [`hstack-worker`](agents/hstack-worker.md) | sub-agent | Plans, then builds and reports, in two phases |
+| [`hstack-researcher`](agents/hstack-researcher.md) | sub-agent | Answers one research question from the web, with sourced notes |
 | [`hstack-reviewer`](agents/hstack-reviewer.md) | sub-agent | Tries to break the work and reports defects without fixing them |
 
 ## Install
@@ -58,26 +62,31 @@ Frontier tokens cost far more than small-model tokens, and the expensive part of
 curl -fsSL https://hstack.shellhaki.dev/install | sh
 ```
 
-The installer downloads the `hstack` CLI and sets everything up:
-- it links the skills into `~/.claude/skills` and the sub-agents into `~/.claude/agents`
-- it saves a default worker model, which `/hstack-activate` suggests, in `~/.config/hstack/config.json`
+The installer downloads the `hstack` CLI and sets everything up for the harness you pick:
+- **Claude Code:** it links the skills into `~/.claude/skills` and the sub-agents into `~/.claude/agents`
+- **Muse Code:** it links the skills into `~/.agents/skills`, which Muse reads
+- **Codex:** it links the skills into `~/.agents/skills`, which Codex reads, and writes the sub-agents as TOML files into `~/.codex/agents` (or `$CODEX_HOME/agents`)
+- **Hermes Agent:** it links the skills into `$HERMES_HOME/skills` (default `~/.hermes/skills`; set `HERMES_HOME` or use `hermes -p <profile>` to target a profile). The worker is a separate `hermes chat` process, so there are no sub-agent files to write
+- nothing else: you choose the worker model inside a session, with `/hstack`
 
 Other ways to install:
 - **From source:** `go install github.com/shellhaki/hstack/cmd/hstack@latest && hstack`
-- **From a clone:** `./install.sh`
+- **From a clone:** `./install.sh` (Claude Code), `HSTACK_AGENT=muse ./install.sh` (Muse Code), `HSTACK_AGENT=codex ./install.sh` (Codex; the skills only, then run `hstack install --agent codex` for the sub-agents) or `HSTACK_AGENT=hermes ./install.sh` (Hermes Agent)
 
 | Command | What it does |
 |---|---|
-| `hstack` | Interactive setup (same as `hstack init`) |
-| `hstack init --worker haiku --yes` | Non-interactive setup |
-| `hstack models` | The Claude models used to validate workers, most to least capable |
+| `hstack` | Install for Claude Code (same as `hstack install`) |
+| `hstack install --agent muse` | Install for Muse Code |
+| `hstack install --agent codex` | Install for Codex |
+| `hstack install --agent hermes` | Install for Hermes Agent |
+| `hstack models [--agent claude\|muse\|codex\|hermes] [--frontier <id>] [--json]` | The models used to validate workers, most to least capable, read live from the harness's local catalog when it has one |
 | `hstack status` | Show your saved setup |
 | `hstack uninstall` | Remove the links, and optionally `~/.config/hstack` |
 
 ## Use
 
-1. Start Claude Code on your frontier model, e.g. `claude --model opus`.
-2. Run **`/hstack-activate`** and name the worker, e.g. `haiku`.
+1. Start your harness on its frontier model: `claude --model opus`, `muse --model muse-wonder-1.0`, or Hermes Agent on your frontier model.
+2. Run **`/hstack`** and name the worker: e.g. `haiku` in Claude Code, `ember` or `spark-1.3` in Muse Code, `luna` in Codex, `spark-1.2` in Hermes Agent.
 3. Give it a real task:
 
    > Build the waitlist API from SPEC.md, with tests.
@@ -88,7 +97,7 @@ Small tasks are done directly, without delegation, because delegating them costs
 
 ## Models
 
-[`models/claude.json`](models/claude.json) lists the Claude models from most to least capable. `/hstack-activate` uses it to accept only workers smaller than the session's model:
+[`models/claude.json`](models/claude.json), [`models/muse.json`](models/muse.json), [`models/codex.json`](models/codex.json) and [`models/hermes.json`](models/hermes.json) list each harness's models from most to least capable. `/hstack` uses them to accept only workers smaller than the session's model. Hermes's live list is read dynamically from every provider in `$HERMES_HOME/provider_models_cache.json`; inside Hermes always run `hstack models --agent hermes`, since its model ids overlap other harnesses.
 
 | Model | Alias |
 |---|---|

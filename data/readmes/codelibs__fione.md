@@ -1,15 +1,23 @@
 # Fione
 
-Fione is an open-source AutoML server: upload a CSV in the browser, get a trained model, make
-predictions and serve the model as a prediction API. It runs with one `docker compose up`.
+Fione is an open-source AutoML server that makes predictions your AI can use. Train a model from a
+CSV, then use its predictions from AI tools such as Claude or Codex over MCP, from your own
+service through the REST API or Fione Serving, or in the browser. It runs on your own server with
+one `docker compose up`, and no machine-learning expertise is needed.
+
+Documentation: [fione.codelibs.org](https://fione.codelibs.org/) (English) and
+[fione.codelibs.org/ja/](https://fione.codelibs.org/ja/) (Japanese).
 
 ## Features
 
+- **Use it from AI tools**: with an API token, MCP clients such as Claude Code, Claude Desktop
+  or Codex can create a project, upload a CSV, train, wait for the job, read the leaderboard and
+  predict on your Fione server. They bring their own language model: Fione needs none for
+  this. See [MCP](docs/mcp.md) and the [guide](https://fione.codelibs.org/guide/mcp.html).
 - **EasyML wizard** for people new to machine learning: upload → data analysis (the column to
   predict, the input columns, the prediction type, the maximum run time) → run → prediction
-  summary with a 1–5 star rating, a plain-language explanation of the score and a comment from
-  the Assistant → predictions as a CSV; the result page also shows the reasons for the first
-  rows.
+  summary with a 1–5 star rating and a plain-language explanation of the score →
+  predictions as a CSV; the result page also shows the reasons for the first rows.
 - **AutoML screens** for experts (the detailed view): column statistics and charts,
   correlations, leak warnings, every training setting, the job list, leaderboards, variable
   importance, score history, CV metrics, model export and import.
@@ -52,22 +60,26 @@ A script or your own Jupyter can drive Fione with `fione-sdk` (`sdk/`, `pip inst
 datasets, data profiles, AutoML training, leaderboards, predictions and Python modules, as
 pandas frames, with an API token. See [sdk/README.md](sdk/README.md).
 
-## The assistant
+## MCP and the assistant
 
-The assistant answers questions about a project's datasets and models and suggests a training run
-that a person confirms; it only reads. It needs a language model: the Ollama app on
-your Mac by default (`gemma4:12b-mlx`), an Ollama in Compose (profile `ollama`) on Linux, or
-Claude through the Anthropic API (`FIONE_LLM_PROVIDER=claude` and an API key). A server outside
-this machine needs an administrator's one-time consent. The same read-only tools are available
-to MCP clients such as Claude Code, off by default, and a second switch lets them also create
-projects, upload datasets, queue training, prediction and module jobs, follow them and predict
-rows. See [The assistant](docs/assistant.md).
+MCP clients such as Claude Code or Codex use Fione at `/mcp` with an API token: they read your
+projects, create projects, upload datasets, queue training, prediction and module jobs, follow
+them and predict rows. MCP is on by default; an administrator switches it, or the tools that
+change things, off on the System page. See [MCP](docs/mcp.md).
+
+The assistant is an optional chat in the browser, off by default: it answers questions about a
+project's datasets and models, comments on pages, and suggests a training run that a person
+confirms; it only reads. It needs a language model (`FIONE_LLM_PROVIDER`): the Ollama app on your
+Mac (`gemma4:12b-mlx`), an Ollama in Compose (profile `ollama`) on Linux, or Claude through the
+Anthropic API (`claude` and an API key). A server outside this machine needs an administrator's
+one-time consent. See [The assistant](docs/assistant.md).
 
 ## Documentation
 
 - [Quick start](docs/quickstart.md)
-- [The assistant](docs/assistant.md): the language
-  model, what is sent, proposals, MCP
+- [MCP](docs/mcp.md): using Fione from AI tools, the tools that start jobs
+- [The assistant](docs/assistant.md): the optional chat, its language model, what is sent,
+  proposals
 - [Configuration](docs/configuration.md): every setting, reverse proxy, backups of the secret key
 - [Fione Serving](docs/serving.md): running a model as a prediction API
 - [Known limitations](docs/known-limitations.md)
@@ -75,7 +87,8 @@ rows. See [The assistant](docs/assistant.md).
 ## Status
 
 This release covers the core: data, analysis, AutoML, models and their explanations,
-predictions, serving, jobs, users and sharing, a Python SDK, and an LLM assistant with an optional MCP server.
+predictions, serving, jobs, users and sharing, a Python SDK, an MCP server and an optional LLM
+assistant.
 **Planned, not in this release**: ONNX export. No images are published yet;
 you build them from the repository (a version tag publishes the `fione` and `fione-serving`
 images).
@@ -96,6 +109,15 @@ scripts/docker-smoke.sh                   # build and check the Docker stack
 ```
 
 The end-to-end tests need Chromium for Playwright once: `uv run playwright install chromium`.
+
+## Help and support
+
+- Questions: the [Fione forum](https://discuss.codelibs.org/c/fioneen/) (Japanese:
+  [discuss.codelibs.org/c/fioneja](https://discuss.codelibs.org/c/fioneja/)).
+- Bugs and suggestions: [GitHub issues](https://github.com/codelibs/fione/issues). Pull requests
+  are welcome.
+- Commercial services for Fione are offered by CodeLibs, Inc., the developer of Fione: see
+  [codelibs.co](https://codelibs.co/product/fione.html).
 
 ## Licence
 

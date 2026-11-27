@@ -469,7 +469,7 @@ No Termux install. No proot. No ttyd. No remote bridge. No cloud runner.
 | **Voice input** | Speak your commands or AI prompts. With a Groq key, Groq Whisper handles transcription; without one, Shelly falls back to Android's on-device speech recognizer (keyless, API 31+; force it in Settings → Voice Input to keep audio off the network). VoiceChain then routes the text through the same input router the keyboard uses. |
 | **Realtime voice (Gemini Live)** | An opt-in full-duplex voice mode — talk and get spoken replies back with server-side interruption handling, instead of the turn-based record → transcribe → send loop. Separate toggle from ordinary voice input (Settings → Realtime Voice, off by default); note that unlike text, audio through the Gemini Live API is billed per-token even on a free-tier key. |
 | **A2A server (Agent2Agent)** | An opt-in local HTTP server (Settings → A2A Server, off by default) exposing a standard [A2A protocol](https://a2a-protocol.org/) Agent Card and a `list_agents` skill, so another A2A-aware agent/tool on your network can see what Shelly has registered. Read-only today; no exec or write skills are exposed. |
-| **MCP server** | An opt-in local [Model Context Protocol](https://modelcontextprotocol.io/) server (Settings → MCP Server, off by default, bearer-token authenticated). Read-only tools — `device_status`, `list_agents`, `list_repos`, `git_status`, `read_agent_audit`, `read_article_history`, `list_drafts`, `read_draft`, plus `read_terminal_output`, `read_logs` and `get_settings` behind their own switches — let any MCP client look into what's running on the phone. Typed operations `run_agent` / `get_run_result` (Settings → Agents → "MCP: Allow typed operations (run agents)") start registered agents under Shelly's consent rules. `run_command` and `write_file` stay disabled unless you turn on "MCP: Allow exec/write", and even then every call waits for an approval tap on the phone, unless you arm one of the two owner-only approval switches in Settings (see [External agents over MCP](#external-agents-over-mcp)). It speaks both the older spec revisions (session handshake) and the stateless 2026-07-28 revision. Details: [External agents over MCP](#external-agents-over-mcp). |
+| **MCP server** | An opt-in local [Model Context Protocol](https://modelcontextprotocol.io/) server (Settings → MCP Server, off by default, bearer-token authenticated). Read-only tools — `device_status`, `list_agents`, `list_repos`, `git_status`, `read_agent_audit`, `read_article_history`, `list_drafts`, `read_draft`, `read_chat_requests`, plus `read_terminal_output`, `read_logs` and `get_settings` behind their own switches — let any MCP client look into what's running on the phone. Typed operations `run_agent` / `get_run_result` / `put_stream_feed` (Settings → Agents → "MCP: Allow typed operations (run agents)") start registered agents under Shelly's consent rules. `run_command` and `write_file` stay disabled unless you turn on "MCP: Allow exec/write", and even then every call waits for an approval tap on the phone, unless you arm one of the two owner-only approval switches in Settings (see [External agents over MCP](#external-agents-over-mcp)). It speaks both the older spec revisions (session handshake) and the stateless 2026-07-28 revision. Details: [External agents over MCP](#external-agents-over-mcp). |
 | **Agent safety rules (beta, off by default)** | POLICY-001: tell Shelly rules in plain language ("always ask before anything involving money", "X posts stop at a draft") — echoed back and stored only after you confirm, listable and revocable the same way. Runs not started by you (schedule, widget, notification, boot) are limited to read / draft / notify, and after repeated clean approvals of one action class Shelly can offer to stop asking for it (never for payments, posting, network sends or high-risk commands). Off by default (Settings → Agent Safety Rules (beta)). |
 | **Persistent run notification** | A scheduled or manually-triggered agent now posts a sticky "▶ running" notification for the duration of its run, not just a result notification afterward, so an in-progress run is visible from the notification shade instead of only showing up once it finishes. |
 
@@ -510,10 +510,10 @@ Shelly is a local-first execution and consent layer on the phone. Any MCP client
 
 | Group | Tools | Switch |
 |---|---|---|
-| Read-only | `device_status`, `list_agents`, `list_repos`, `git_status`, `read_agent_audit`, `read_article_history`, `list_drafts`, `read_draft` | none beyond the server itself |
+| Read-only | `device_status`, `list_agents`, `list_repos`, `git_status`, `read_agent_audit`, `read_article_history`, `list_drafts`, `read_draft`, `read_chat_requests` | none beyond the server itself |
 | Read-only | `read_terminal_output` | "MCP: Allow reading terminal output" |
 | Read-only | `read_logs`, `get_settings` (secrets withheld) | "MCP: Allow diagnostics (logs, settings)" |
-| Typed operations | `run_agent`, `get_run_result` | "MCP: Allow typed operations (run agents)" |
+| Typed operations | `run_agent`, `get_run_result`, `put_stream_feed` | "MCP: Allow typed operations (run agents)" |
 | Raw | `run_command`, `write_file` | "MCP: Allow exec/write (dangerous)" |
 
 `run_agent` starts one run of a registered agent and returns a run handle at once; `get_run_result` polls for its state and output. The raw tools are different in kind: every `run_command` / `write_file` call needs an approval tap on the phone, and they can never be pre-approved by rule (always-allow). The one exception is the two owner-armed switches described below.
@@ -535,6 +535,8 @@ Contract and limits: [docs/mcp-agent-action-consent.md](docs/mcp-agent-action-co
 
 Still refused or still asked under both switches: anything the safety gate denies (CRITICAL commands, changes to agent definitions or the policy file, your own deny / draft-only rules); commands that read secrets or point at Shelly's own settings or keys; agents created or changed over MCP; agents that read web pages, URLs, notifications, the screen or DMs (prompt-injection); approvals inside unattended runs (notification-triggered, scheduled, and similar) — those are never auto-approved; `shelly agent add` requests; ClosePaw, DM and browser actions; and stale requests. STOP-ALL turns both switches OFF, and releasing STOP-ALL does not re-arm them — re-arming is a Settings action. Regenerating the MCP token also turns them off. Ingress taint is unchanged on the native path: the same gate code decides, and MCP-origin restrictions downstream still apply. Raw tools never get always-allow rules.
 
+**Stream feed (`put_stream_feed`, not yet verified on device).** A typed operation that hands the launcher app an opaque "stream feed" (v1): the MCP client sends the feed document with its SHA-256 and byte count, and Shelly stores it for the launcher only (app-private storage outside `$HOME`; it is never fed to an agent, prompt, log or chat). The limit is 48 KiB; an oversize or malformed feed is refused, never truncated, and the last good feed is kept. Because the content comes from outside (mail, social posts), it is always treated as untrusted: **Skip all approvals does not cover it.** Unattended updates work only through a per-client always-allow rule for this one operation, created by tapping **Always allow** on its first approval dialog (and revocable in **MCP: always allowed**).
+
 **Ingress taint.** Runs that arrive over MCP are marked as external-origin. A marked run is restricted: its writes, declared actions and external sends are refused unless a matching rule carries the authorization, and a marked run never receives unattended blanket approval. **STOP-ALL overrides every preapproval mechanism** — rules, the ClosePaw switch and draft preapproval below.
 
 **Availability.** When the MCP server is on, it starts automatically after a reboot; the app does not need to be opened first.
@@ -547,6 +549,18 @@ Still refused or still asked under both switches: anything the safety gate denie
 **Draft preapproval.** For draft-only destinations (note, Substack), the owner can arm preapproval per destination by typing the instruction in Shelly's AI pane — for example "save drafts to note and Substack without approval". Queued drafts for an armed destination are then saved without a tap, with per-destination checks and a daily cap (default 5). "stop saving drafts without approval" or the Settings toggle turns it off.
 
 **Connectivity guardian.** An opt-in Settings automation (**Wi-Fi-linked autopilot**, off by default) helps keep this integration reachable. When Wi-Fi connects, it turns wireless debugging on and connects Tailscale if needed and preapproved; about 45 seconds after Wi-Fi disconnects, it turns wireless debugging off while Tailscale stays connected, so the MCP server stays reachable over mobile data. It needs a one-time `WRITE_SECURE_SETTINGS` grant.
+
+### Launcher ingress
+
+*Not yet verified on device.* An optional way for one launcher app you installed to send typed instructions to Shelly and read the stream feed above.
+
+- **Provider.** Shelly exports a ContentProvider with the authority `<applicationId>.ingress` and two methods, `submit_instruction` and `get_stream_feed`. It requires no Android permission; Shelly identifies the caller itself.
+- **Caller check.** The caller is taken from the Binder UID and must be exactly one package whose name and signing-certificate SHA-256 pin(s) match what you entered in Settings → **Launcher ingress**. Nothing ships by default: until you register a launcher, every call is refused.
+- **Submissions are recorded, not run.** An accepted instruction is stored as a submission record (accepted, or pending approval under the usual approval rules). In this phase Shelly does not forward or execute it.
+- **Optional exemption.** "Count launcher text as written by me" (off by default) lets plain instruction text typed in the launcher count as your own input, so an always-allow rule can pass it without a tap. It is bound to the current pin set (changing the package or any pin turns it off), applies only to plain instruction text, and only at a human typing rate; extra fields or fast bursts stay untrusted and need approval.
+- **`hayato://chat/<slug>` links** (only for slugs in a table you enter on the device) are just queued for your agent to read through the read-only `read_chat_requests` tool. Shelly never executes, approves or opens anything because of one.
+
+How to turn it off: [docs/revoke-access.md](docs/revoke-access.md).
 
 ### Agent roles
 
@@ -652,22 +666,4 @@ Full verification log with dates, devices, and evidence for every area: **[docs/
 | Run without approval — per agent, OFF / standard / all | ✅ "all" ran a parallel Codex / Claude Code task in `~/demo` on device (2026-11-02) |
 | MONITOR pane (LIVE) and home-screen widget | ✅ pane verified on device with a 3-branch parallel run (2026-10-31); widget verified on device showing the role roster on standby and REC while running |
 | Attended runs with Shelly closed or the phone folded — the run keeps going, run-without-approval answers keep working | ✅ verified on device (Galaxy Z Fold6, N=1, builds 2815 / 2818): a 6-step review-loop run finished while Shelly was in the background, MONITOR showed `DONE 6/6` |
-| STOP-ALL stops runs already in progress (not only future alarms); RESUME restores | ✅ verified on device (Galaxy Z Fold6, N=1, build 2818): a running Codex step ended within 10 seconds |
-| Approve by typing — OK / NO (or `ok <hash>` when two are waiting) in the agent's chat or MONITOR; an attended CLI step waits up to 10 minutes | ✅ approving from the notification is verified on device |
-| Antigravity `agy-install` / `agy` | ✅ `agy --version` verified on device |
-| Sample agents added by older versions are turned off once on update | 🟡 new in this build; tested off device, not yet verified on device |
-| `claude-install`, and Claude Code / Antigravity updates from the Builds screen | 🟡 new in this build; checks run against the real vendor files on a PC, not yet verified on device |
-| Codex remote control host — `shelly codex pair` runs the official `codex remote-control --no-daemon` so the ChatGPT app's Codex can drive this device (ChatGPT sign-in required) | 🟡 Experimental — pairing, command execution and reconnecting after an in-app update with Keep ChatGPT connected verified on device |
-| MiniCPM5-2B local model | 🟡 experimental, evaluated and not adopted: on the Fold6 it scored 83% vs Qwen3.5-2B's 100% on routing and 50% vs 88% on native tool calls |
-| ChatGPT → phone-app task — Codex runs `shelly closepaw --wait "<goal>"` → owner approves on the phone → the ClosePaw Shelly build works on a background virtual display → the result returns to ChatGPT | ✅ verified on device (Galaxy Z Fold6, N=1) — e.g. saving a Spotify playlist, saving places to a Google Maps list; long multi-step goals are still unreliable |
-| Optional tool packs — `shelly install <pack>` / `--list` / `uninstall`, sha256 pinned per build, atomic install, not-found hint | ✅ download → extract → run verified on device for `dev-tools` (2026-08-29, Galaxy Z Fold6, N=1); the APK still bundles every pack tool, so the APK is not smaller yet |
-| `shelly device` — battery / info / clipboard / notify / toast / vibrate / tts / share from the shell (built-in Termux:API subset, rate limited, clipboard read gated for agents) | ✅ verified on device (Galaxy Z Fold6, N=1, 2026-11-03): battery, info, notify (post / replace / remove) and clipboard get with Shelly on screen |
-| Distribution | 🟡 GitHub Releases only (`android-latest`); no Play Store / F-Droid listing yet |
-
----
-
-## Coming Soon
-
-These are on the short-term roadmap, not in the current build:
-
-- **Play Store / F-Droid distribution** — the APK is published via GitHub Releases only; store submission f
+| STOP-ALL stops runs already in progress (n

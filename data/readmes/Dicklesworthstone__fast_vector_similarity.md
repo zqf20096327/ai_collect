@@ -12,7 +12,7 @@ The library implements a range of classical and modern similarity measures, incl
 
 1. **Spearman's Rank-Order Correlation (`spearman_rho`)**
 2. **Kendall's Tau Rank Correlation (`kendall_tau`)** (optimized for faster computation with large datasets)
-3. **Approximate Distance Correlation (`approximate_distance_correlation`)** (vectorized for speed and accuracy)
+3. **Approximate Distance Correlation (`approximate_distance_correlation`)** (linear working storage)
 4. **Jensen-Shannon Dependency Measure (`jensen_shannon_dependency_measure`)** (revised for improved utility in dependency measurement)
 5. **Hoeffding's D Measure (`hoeffding_d`)**
 6. **Normalized Mutual Information (`normalized_mutual_information`)** (newly introduced for analyzing variable dependence)
@@ -20,6 +20,12 @@ The library implements a range of classical and modern similarity measures, incl
 ### Bootstrapping Technique
 
 The library includes robust bootstrapping functionality to estimate the distribution of similarity measures. Bootstrapping offers improved confidence in the results by randomly resampling the dataset multiple times.
+
+For each measure, the summary removes `floor(B / 4)` scores from each tail, where
+`B` is the number of bootstrap replicates. It reports the mean and population
+standard deviation of the remaining scores. Both tails lose the same number of
+scores, including when `B` is not divisible by four; with two or three replicates,
+all scores are retained.
 
 ### Performance Optimizations
 
@@ -226,6 +232,61 @@ The core functions can be used directly within Rust projects. For example, use `
 
 Install the Python package and use the exposed functions to compute vector similarity or perform bootstrapped analysis, as demonstrated in the example above.
 
+### Non-finite and undefined values
+
+Input vectors must have equal lengths; the Rust APIs assert this precondition, and
+the Python wrappers raise `ValueError` when it is violated. The Rust scalar
+similarity functions return
+`f64::NAN` if either vector is empty or contains `NaN`, positive infinity, or negative
+infinity. They do not discard, replace, or rank non-finite observations. Validation
+covers the complete vectors before distance-correlation subsampling or bootstrapping.
+
+The Rust JSON statistics functions represent undefined scores as `null`, while
+preserving the requested measure names and metadata. For bootstrap results, an
+invalid source vector or any undefined replicate makes both the corresponding
+average and `stdev_<measure>` value `null`; undefined replicates are not silently
+removed or trimmed away. Empty inputs, zero-sized bootstrap samples, and fewer than
+two bootstrap replicates also produce `null` summaries.
+
+Finite inputs can still yield an undefined statistic. Spearman's rho and Kendall's
+tau-b are undefined when either vector is constant or there are fewer than two
+observations. Hoeffding's D requires at least five observations, including within
+each bootstrap sample. NMI is undefined when both vectors are constant because
+their total marginal entropy is zero. These results are `NaN` directly and `null`
+through the JSON APIs, including bootstrapping. Sampling with replacement can create a
+constant replicate even from nonconstant source vectors.
+
+The Python wrappers accept JSON arrays of finite numbers. They raise `ValueError`
+for malformed JSON (including `NaN`, `Infinity`, and out-of-range numeric literals),
+missing or non-array vectors, `null` or nonnumeric vector elements, unequal lengths,
+and non-positive or invalid bootstrap counts/sizes. Undefined results from valid
+finite inputs are returned as JSON `null`, which `json.loads` converts to `None`.
+
+### Finite scales and array layouts
+
+NMI and the Jensen-Shannon dependency measure use the same equal-width binning
+rule. Constant vectors occupy one bin; nonconstant vectors are normalized by
+their actual range. This preserves tiny and subnormal differences and handles
+opposite-sign finite extremes without adding a fixed epsilon to the range.
+
+Distance correlation normalizes each sampled vector independently before computing
+pairwise distances. Translation and scaling preserve the statistic, while bounded
+coordinates keep the distance variances stable across tiny and huge overall scales.
+A first pass computes row means; a second pass recomputes centered distances and
+accumulates covariance and variance with compensated sums. This preserves the
+biased centered-distance estimate using two linear row-mean arrays, including the
+centered diagonal contributions. The existing convention of zero distance
+correlation for a constant sample is preserved.
+
+All Rust entry points taking `Array1<f64>` support reversed and strided owned
+arrays. Computation follows logical element order, preserving observation pairs
+and ignoring unused backing-storage elements. Contiguous data is borrowed when a
+rank function needs a slice; other layouts are copied in logical order.
+
+JSON float parsing uses Serde's `float_roundtrip` mode so serialized `f64` values
+retain their distinctions, including adjacent representable values. This matters
+for both rank ties and finite-range normalization at the Python boundary.
+
 ---
 
 ## Detailed Overview of Similarity Measures
@@ -238,6 +299,10 @@ Spearman’s Rank-Order Correlation is a non-parametric measure of the strength 
 - First, both input vectors are converted into ranks, where the lowest value is assigned rank 1, the second-lowest rank 2, and so on. If ties are present, the average rank for the tied values is computed.
 - Once the ranks are assigned, the measure reduces to computing the Pearson correlation on these ranks. However, the key difference lies in its robustness to non-linearity.
   
+The implementation computes Pearson correlation of the average ranks, so tied
+observations receive the correct normalization. It does not use the squared-rank-
+difference shortcut, which assumes there are no ties.
+
 **Optimizations in Our Implementation**:
 - **Parallel Sorting**: The library uses parallel sorting with the `rayon` crate to assign ranks, ensuring that this operation scales efficiently even for large datasets.
 - **Efficient Rank Calculation**: The average rank computation in the presence of ties is optimized with a direct look-up mechanism, minimizing redundant operations when processing multiple tied values in sequence.
@@ -248,38 +313,38 @@ Spearman’s Rank-Order Correlation is a non-parametric measure of the strength 
 
 ### 2. **Kendall's Tau Rank Correlation (`kendall_tau`)**
 
-Kendall’s Tau is a rank-based measure that evaluates the strength of ordinal association between two variables by comparing the relative ordering of data points. It is interpreted as the probability that the association between two variables is concordant versus discordant.
+Kendall’s Tau is a rank-based measure that evaluates the strength of ordinal association between two variables by comparing the relative ordering of data points. Positive scores favor concordant pairs, while negative scores favor discordant pairs.
 
 **How It Works**:
 - Kendall’s Tau compares all possible pairs of observations. For each pair, if the ranks of both variables agree (i.e., are concordant), the count of concordant pairs is increased. If the ranks disagree (i.e., are discordant), the discordant count is incremented.
-- The final measure is computed based on the difference between the number of concordant and discordant pairs, normalized by the total number of pairs.
+- The implementation returns **tau-b**, normalizing the difference between concordant and discordant pairs with corrections for ties in either coordinate. Pairs tied in both coordinates are excluded from the concordant and discordant counts.
 
 **Optimizations in Our Implementation**:
-- **Inversion Counting Using Merge Sort**: One of the key computational bottlenecks in Kendall’s Tau is counting the number of discordant pairs. Our implementation uses an optimized merge sort algorithm to efficiently count inversions (discordant pairs), reducing the time complexity from O(n^2) to O(n log n).
+- **Inversion Counting Using Merge Sort**: The implementation sorts observation pairs by both coordinates, then counts strict inversions in the second coordinate. This excludes ties in the first coordinate from discordant pairs and runs in O(n log n) time with O(n) storage. Pair counts use wide integers before floating-point normalization.
 - **Parallel Sorting**: The `rayon` crate is used to parallelize the sorting process, allowing the calculation to scale effectively on multi-core systems.
 
 **Why It Stands Out**:
 - **Tie Handling**: Kendall’s Tau inherently handles ties (when two elements have the same rank), making it more robust for datasets with tied values compared to other rank-based measures.
-- **Probability Interpretation**: Unlike Spearman’s rho, Kendall’s Tau is directly interpretable as a probability, which can provide more intuitive insights in ordinal datasets.
+- **Pairwise Interpretation**: Tau-b summarizes concordant versus discordant ordering, with normalization that accounts for ties in each variable.
 - **Fast with Inversion Counting**: Our use of merge sort for counting inversions dramatically improves the performance, making it feasible for large datasets where traditional implementations would be too slow.
 
 ### 3. **Approximate Distance Correlation (`approximate_distance_correlation`)**
 
-Distance Correlation is a powerful measure that can detect both linear and non-linear dependencies between two variables. The fundamental property of distance correlation is that it is zero if and only if the variables are independent, which is not guaranteed by traditional correlation measures like Pearson’s or Spearman’s.
+Distance correlation measures both linear and non-linear dependence. This function
+computes the biased sample estimator on up to 1,000 paired observations. Larger
+inputs use a random subset, so their estimates can vary between calls.
 
 **How It Works**:
-- First, a pairwise distance matrix is computed for both vectors. This matrix contains the absolute differences between all pairs of points in the vector.
-- The matrices are "double-centered" to adjust for row and column means, making them comparable.
-- The distance covariance is calculated as the sum of the element-wise product of the centered distance matrices. The distance correlation is then derived by normalizing the covariance by the distance variances of each vector.
+
+- A first pass over observation pairs computes the row means of the two absolute-distance matrices.
+- A second pass recomputes each centered distance and accumulates covariance and both variances. Off-diagonal pairs contribute twice, and centered diagonal entries contribute once.
+- Normalizing these moments gives the same biased centered-distance statistic as the full matrix formulation, up to floating-point rounding.
 
 **Optimizations in Our Implementation**:
-- **Vectorized Distance Matrix Computation**: The distance matrix computation is fully vectorized using `ndarray`, enabling efficient large-scale matrix operations.
-- **Parallel Processing**: The double-centering and distance covariance steps are performed in parallel using `rayon`, which allows the computation to scale efficiently with the size of the dataset.
-- **Subset Sampling for Approximation**: Instead of computing the full distance correlation, we introduce a subset sampling technique that computes the distance correlation on a random subset of the data. This dramatically reduces computational overhead without significantly affecting the accuracy of the result.
 
-**Why It Stands Out**:
-- **Detects Non-Linear Dependencies**: Distance correlation is one of the few measures that is sensitive to both linear and non-linear relationships, making it highly versatile.
-- **Independence Guarantee**: Its ability to be zero only when the variables are independent gives it a clear edge over other correlation measures in certain scenarios.
+- **Linear Working Storage**: The calculation keeps two row-mean arrays and a few scalar accumulators. At 1,000 sampled observations, those arrays use 16,000 bytes, compared with 16,000,000 bytes for two dense distance matrices; sampled input buffers are additional. This reduces memory use when many bootstrap replicates run concurrently.
+- **Compensated Moment Sums**: Covariance and both variances use compensated accumulation, limiting rounding loss in signed cross-products.
+- **Bounded Sampling**: The function samples at most 1,000 paired observations without replacement. Complete-input validation remains in place before sampling. With `n` input observations and `m = min(n, 1000)` sampled observations, time is O(n + m²) and auxiliary storage is O(m).
 
 ### 4. **Jensen-Shannon Dependency Measure (`jensen_shannon_dependency_measure`)**
 
@@ -310,7 +375,7 @@ Hoeffding’s D is a powerful non-parametric measure that detects complex and po
 
 **Optimizations in Our Implementation**:
 - **Parallel Computation of Ranks**: Like Spearman’s rho, Hoeffding’s D involves computing ranks, and this is optimized using parallel sorting algorithms.
-- **Efficient Counting Mechanism**: We optimize the inner loop that computes concordant and discordant pairs by vectorizing the comparison operations. This avoids nested loops and significantly reduces computational complexity.
+- **Joint Ranks in O(n log n) Time**: A Fenwick tree counts observations with smaller ranks in both coordinates. Equal ranks in the first coordinate are processed as one group before the tree is updated, preserving the half-weight contributions from ties in one coordinate and quarter-weight contributions from ties in both. The complete calculation uses O(n) storage and retains the same tie-adjusted statistic without scanning every pair of observations.
 
 **Why It Stands Out**:
 - **Non-Parametric and General**: Hoeffding’s D can detect relationships where other correlation measures fail, especially when the relationship between variables is neither linear nor monotonic.

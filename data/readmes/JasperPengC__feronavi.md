@@ -15,6 +15,7 @@
   <p>
     <a href="https://feronavi.com/zh/">官网</a> ·
     <a href="https://feronavi.com/zh/docs/overview/">使用文档</a> ·
+    <a href="CHANGELOG.md">变更日志</a> ·
     <strong><a href="#get-started">开始部署</a></strong> ·
     <a href="#overview">产品亮点</a> ·
     <a href="#collaboration">多人协作</a> ·
@@ -114,8 +115,9 @@ OpenAPI 描述覆盖 RAG 公共 API。检索与引用遵循当前身份、令牌
 
 | 工作环节 | 平台能力 |
 | --- | --- |
-| **收集与拆解** | 想法、需求、任务、缺陷、子任务，保留讨论与附件 |
+| **收集与拆解** | 产品归属、需求正文版本与变更影响；任务/子任务拆分，保留讨论与附件 |
 | **计划与推进** | 里程碑、迭代、版本；看板、表格、日历与时间线 |
+| **测试与交付** | 用例版本、测试计划、失败转缺陷与复测；PR/CI/构建证据、发布门禁与反馈 |
 | **沉淀与交接** | 多人文档编辑、断网恢复、目录、版本历史、权限与回滚 |
 | **规则与协作** | 自定义工作流、审批、自动化、SLA 与站内通知 |
 | **洞察与统筹** | 个人工作台、燃尽图、累积流、项目集与审计记录 |
@@ -151,11 +153,13 @@ OpenAPI 描述覆盖 RAG 公共 API。检索与引用遵循当前身份、令牌
 
 ## 开始使用
 
+本版安装目标为 **0.3.0**，Docker 命令固定安装该版本。使用前请确认[版本发布页](https://github.com/JasperPengC/feronavi/releases/tag/v0.3.0)已提供正式镜像、源码包及配套 MCP 桥接包。
+
 准备好 Docker Compose，下载编排文件即可启动一个新实例，无需安装 Node.js 或编译源码：
 
 ```bash
 mkdir feronavi && cd feronavi
-curl -fL https://raw.githubusercontent.com/JasperPengC/feronavi/v0.2.1/compose.yaml -o compose.yaml
+curl -fL https://raw.githubusercontent.com/JasperPengC/feronavi/v0.3.0/compose.yaml -o compose.yaml
 
 # 首次安装：生成本地数据库密码
 (umask 077; test -e .env || echo "DB_PASSWORD=$(openssl rand -hex 24)" > .env)
@@ -167,17 +171,17 @@ docker compose ps
 
 启动后打开 [http://127.0.0.1:3000/setup](http://127.0.0.1:3000/setup)，按向导创建组织和管理员。
 
-默认拉取应用 `ghcr.io/feronavi/feronavi-app:0.2.1` 与数据库 `ghcr.io/feronavi/feronavi-db:16-0.2.0`。本版预构建镜像支持并验证了 **Linux x86-64（amd64）**；其他架构尚未完成验收。
+上述命令拉取应用 `ghcr.io/feronavi/feronavi-app:0.3.0` 与数据库 `ghcr.io/feronavi/feronavi-db:16-0.2.0`，配套 MCP 桥接包为 `feronavi-mcp@0.1.1`。预构建镜像已验证 **Linux x86-64（amd64）**；其他架构尚未完成验收。0.3.0 升级、备份及回退见[升级说明](UPGRADING.md)，执行前请先确认目标产物已经正式发布。
 
 给团队开放访问前，请按[生产部署指南](https://feronavi.com/zh/docs/deployment/)配置 HTTPS 反向代理；升级已有实例前，请按[备份与升级指南](https://feronavi.com/zh/docs/operations/)备份数据库和数据卷，并核对数据库镜像的迁移要求。远程服务器的首次访问和启动排查见[快速开始](https://feronavi.com/zh/docs/quick-start/)。
 
 <details>
 <summary>从源码构建</summary>
 
-需要修改源码时，可单独克隆本版并构建：
+需要体验或修改当前源码时，可单独克隆主分支并构建：
 
 ```bash
-git clone --branch v0.2.1 --depth 1 https://github.com/JasperPengC/feronavi.git feronavi-source
+git clone --branch main --depth 1 https://github.com/JasperPengC/feronavi.git feronavi-source
 cd feronavi-source
 (umask 077; test -e .env || echo "DB_PASSWORD=$(openssl rand -hex 24)" > .env)
 docker compose -f compose.yaml -f compose.source.yaml up -d --build --wait

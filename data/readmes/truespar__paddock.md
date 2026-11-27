@@ -31,7 +31,7 @@ and the Studio in one window and our Metal backend running the models. It lives 
 
 ## macOS support (pre-release)
 
-macOS support is available in [v0.1.21](https://github.com/truespar/paddock/releases/tag/v0.1.21)
+macOS support is available in [v0.1.22](https://github.com/truespar/paddock/releases/tag/v0.1.22)
 for Apple Silicon running **macOS 26 or later**. The native app is pre-release;
 expect visual glitches and incomplete features. The native Swift app is under
 active development and is not yet feature-complete.
@@ -118,6 +118,10 @@ Every model below runs on the engine today. Sizes are the checkpoint's own, and
 - **Ripple 65B Preview** (Ricursive) - 65B dense, for agentic coding, with its
   own draft model for faster replies; text only. About 65 GB with the draft
   model, on a DGX Spark or a 96 GB RTX PRO Blackwell card; not yet on the B200
+- **Inkling 2 Mini** (Thinking Machines) - 26.4B with 5.4B active, for agents,
+  tools and coding; reads pictures and screenshots, lets you pick how long it
+  thinks, and drafts with its own draft model. On RTX 50-series and RTX PRO
+  Blackwell cards and the DGX Spark; not yet on the B200
 
 **Images**
 

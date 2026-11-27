@@ -1,53 +1,39 @@
 # Ice Lab
 
-[![typescript sdk](https://github.com/icelab-research/icelab/actions/workflows/publish-ts-sdk.yml/badge.svg)](https://github.com/icelab-research/icelab/actions/workflows/publish-ts-sdk.yml)
+[![Ice Lab](docs/logos/ice-lab-banner.png)](https://icelab.sh)
 
-Ice Lab builds models and tools for media applications. This repository holds
-the SDKs, documentation and example apps for two of its products:
+Ice Lab makes your videos searchable through one API. This repository holds
+the SDKs, documentation and example apps for the Ice Lab API:
 
 - [Ice Lab API](https://icelab.sh/products/api): models and infrastructure for
   media ingest, processing, generation, captions and search.
-- [RaidZero](https://icelab.sh/products/raidzero): observability for media
-  applications.
 
 [Explore our work](https://icelab.sh/products) · [Meet Ice Lab](https://icelab.sh/company) · [Contact](mailto:contact@icelab.sh)
 
 ## Contents
 
 - [Installable SDKs](#installable-sdks)
-- [Observability](#observability)
 - [Example apps](#example-apps)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 
 ## Installable SDKs
 
-Use the package for the language you are building in. Most examples only call
-external APIs after you copy the example `.env.example` to `.env` and set
-`RAIDZERO_API_KEY`. Package names follow the current manifests; if a package is
-not published yet, use the linked folder as a local path dependency or build
-artifact.
+Use the Ice Lab SDK for your language to ingest media and search it. Follow
+its installation guide for the current package name and setup. For examples,
+copy `.env.example` to `.env` and configure the API key as documented there.
 
-| language                | package                                        | how to use it                                                                                                  |
-| ----------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| TypeScript / JavaScript | [`@raidzero/media`](ts/sdk)                    | `pnpm add @raidzero/media@0.2.1` or `npm install @raidzero/media@0.2.1`                                        |
-| Python                  | [`raidzero-media`](python)                     | `pip install raidzero-media==0.2.1`                                                                             |
-| Go                      | [`github.com/icelab-research/icelab/go`](go) | `go get github.com/icelab-research/icelab/go@v0.2.1`                                                         |
-| Rust                    | [`raidzero_media`](rust)                       | `cargo add raidzero_media@0.2.1`                                                                               |
-| Java                    | [`java/`](java)                                | `icu.raidzero:raidzero-media-java:0.2.1`                                                                        |
-| Kotlin                  | [`kotlin/`](kotlin)                            | `icu.raidzero:raidzero-media-kotlin:0.2.1`                                                                      |
-| Elixir                  | [`elixir/raidzero`](elixir/raidzero)           | add `{:raidzero, "~> 0.2.1"}` to `deps`                                                                        |
+| language | SDK | installation |
+| --- | --- | --- |
+| TypeScript / JavaScript | [Ice Lab TypeScript SDK](ts/sdk) | [Installation guide](ts/sdk/README.md) |
+| Python | [Ice Lab Python SDK](python) | [Installation guide](python/README.md) |
+| Go | [Ice Lab Go SDK](go) | [Installation guide](go/README.md) |
+| Rust | [Ice Lab Rust SDK](rust) | [Installation guide](rust/README.md) |
+| Java | [Ice Lab Java SDK](java) | [Installation guide](java/README.md) |
+| Kotlin | [Ice Lab Kotlin SDK](kotlin) | [Installation guide](kotlin/README.md) |
+| Elixir | [Ice Lab Elixir SDK](elixir/icelab) | [Installation guide](elixir/icelab/README.md) |
 
 The [C++ helper](cpp) is source-only.
-
-## Observability
-
-Every SDK supports prefixes, monitor CRUD, paginated monitor events, and an
-`alert` helper that cleans up its temporary monitor when stopped. See the
-[monitor lifecycle and failure contract](docs/sdks/observability.mdx).
-
-Go services can also export process CPU capacity to SigNoz with
-[`go-signoz`](go-signoz). Its README includes the metric and alert setup.
 
 ## Example apps
 
@@ -59,8 +45,8 @@ Start with the full examples index in [`apps/EXAMPLES.md`](apps/EXAMPLES.md).
 | Python                  | [`apps/cohere`](apps/cohere)                                   | sync and async SDK CLI usage                                 |
 | Go                      | [`apps/livecart`](apps/livecart)                               | ingest, poll, search, asset listing, and soft delete         |
 | C++                     | [`apps/chips`](apps/chips)                                     | example: calling the API from C++ with CPR and nlohmann/json |
-| Java                    | [`apps/raidzero/java-example`](apps/raidzero/java-example)     | Spring Boot REST proxy using the Java SDK                    |
-| Kotlin                  | [`apps/raidzero/kotlin-example`](apps/raidzero/kotlin-example) | Ktor REST proxy using the Kotlin SDK                         |
+| Java                    | [Ice Lab Java example](apps/icelab/java-example)     | Spring Boot REST proxy using the Java SDK                    |
+| Kotlin                  | [Ice Lab Kotlin example](apps/icelab/kotlin-example) | Ktor REST proxy using the Kotlin SDK                         |
 | Elixir                  | [`apps/resto_booking_app`](apps/resto_booking_app)             | Phoenix restaurant booking app for The Seasons               |
 | Elixir                  | [`apps/ellie_ai`](apps/ellie_ai)                               | voice AI that answers the booking line for that app          |
 | Rust                    | [`rust`](rust)                                                 | SDK source package; no standalone app example yet            |

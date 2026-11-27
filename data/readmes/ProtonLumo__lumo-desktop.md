@@ -31,7 +31,7 @@ computer and your tools, with your approval:
 |---|---|
 | macOS | Universal (Apple silicon and Intel) `.dmg` |
 | Windows | `.msi` and `-setup.exe` installer |
-| Linux | `.deb` and `.rpm`, for Ubuntu 24.04+ and Fedora 40+ |
+| Linux | `.deb` and `.rpm`, for Ubuntu 22.04+ and Fedora 40+ |
 
 ## Architecture
 
@@ -114,7 +114,7 @@ named `{connector_id}__{tool_name}`.
 | `luminance` | Luminance Public API v2, called directly (Luminance has no MCP server) |
 | `mcp-{id}` | Any MCP server. The catalog in `webview/shared/connector-catalog.ts` pre-configures many remote servers; some are experimental and hidden behind a feature flag |
 | `mcp-zendesk` | Community [`@fruggr/zendesk-mcp-server`](https://github.com/fruggr/zendesk-mcp-server) (stdio via `npx`; OAuth on first tool use) |
-| `mcp-figma` | [Figma desktop MCP](https://developers.figma.com/docs/figma-mcp-server/local-server-installation/) at `http://127.0.0.1:3845/mcp` (enable it in Figma desktop Dev Mode; remote OAuth is limited to [Figma's MCP catalog](https://www.figma.com/mcp-catalog/)) |
+| `mcp-figma` | [Figma desktop MCP](https://developers.figma.com/docs/figma-mcp-server/local-server-installation/) at `http://127.0.0.1:3845/mcp` (in a Figma desktop Design file, press Cmd+K / Ctrl+K and run "Enable desktop MCP server"; remote OAuth is limited to [Figma's MCP catalog](https://www.figma.com/mcp-catalog/)) |
 | `echo` | E2E fixture, registered only under `LUMO_E2E_TESTING` |
 
 Each tool also carries an approval policy (auto-approve, ask, or disable). An `ask` tool suspends execution,

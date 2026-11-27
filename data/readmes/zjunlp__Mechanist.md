@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/mechanist-logo.png" alt="Mechanist Logo" width="413" height="100">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/mechanist-logo-dark.svg">
+    <img src="docs/mechanist-logo.svg" alt="Mechanist" width="400">
+  </picture>
 </p>
 
 <p align="center">
@@ -25,6 +28,17 @@
     <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status: Active">
   </a>
 </p>
+
+---
+
+## ⭐ Key News
+
+**[2026-11] Mechanist-Light is out.** Today's base models can plan research on their own. Faced with a new question, they can also judge what to look up or try next. An overly complex system design may end up constraining what frontier models can do. Rather than prescribing a process, it is better to give them freedom and good resources. So [Mechanist-Light](https://github.com/zjunlp/Mechanist/tree/Mechanist-Light) does not preset a fixed experimental workflow. Instead, it gives frontier models resources beyond the edge of their own abilities: 32 mechanism research methods, notes from experienced researchers, literature search, and consultation with other AI models.
+
+We used Mechanist-Light in two studies:
+
+- **[Letting models audit models: from sycophancy to poisoning](http://mechanist.openkg.cn/#/research/weight-audit-poisoning)** Reading only an open-weight model's weights and activations, can Claude Opus 5.5 tell whether it has been poisoned? With Mechanist-Light, Claude got all 12 paired tests right, each pairing a safe model with a poisoned one.
+- **[What can changing a few weights change in a model?](http://mechanist.openkg.cn/#/research/weight-edit-creativity)** AI models often give the same answer over and over. To address this, AI researchers edited the weights of Llama-3.2-3B directly to see whether they could make it more creative. The best edit Mechanist-Light found passed every guardrail check and raised the creativity score by 10.1%. Opus 5.5 and GPT-6 Astra on their own raised it by 3.1% and 0.1%.
 
 ---
 
@@ -285,23 +299,23 @@ When it finishes, read these two files at the project root:
 
 <table>
   <tr>
-    <td align="center" width="140">
+    <td align="center" valign="top" width="140">
       <a href="https://github.com/mengrusun">
-        <img src="https://avatars.githubusercontent.com/mengrusun?v=4" width="80" style="border-radius:50%" alt="mengru wang"/>
+        <img src="https://avatars.githubusercontent.com/mengrusun?v=4" width="80" style="border-radius:50%" alt="Mengru Wang"/>
         <br />
-        <sub><b>mengru wang</b></sub>
+        <sub><b>Mengru Wang</b></sub>
       </a>
       <br />
       <sub>Organizer</sub>
     </td>
-    <td align="center" width="140">
+    <td align="center" valign="top" width="140">
       <a href="https://github.com/luguoxiguazhuang">
         <img src="https://avatars.githubusercontent.com/luguoxiguazhuang?v=4" width="80" style="border-radius:50%" alt="Zhenqian Xu"/>
         <br />
         <sub><b>Zhenqian Xu</b></sub>
       </a>
     </td>
-    <td align="center" width="140">
+    <td align="center" valign="top" width="140">
       <a href="https://github.com/WangHX2024">
         <img src="https://avatars.githubusercontent.com/WangHX2024?v=4" width="80" style="border-radius:50%" alt="Haoxiong Wang"/>
         <br />

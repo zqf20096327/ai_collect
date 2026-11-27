@@ -14,7 +14,7 @@
   <a href="https://github.com/roke22/pisha/stargazers"><img src="https://img.shields.io/github/stars/roke22/pisha?style=social" alt="GitHub stars"></a>
 </p>
 
-<p align="center"><a href="README-es.md">Leer en español</a> · <a href="https://pisha.dev/">Website</a> · <a href="https://pisha.dev/examples.html">Examples</a> · <a href="docs/reference.md">Reference</a> · <a href="https://github.com/roke22/pisha/discussions">Discussions</a> · v0.0.12</p>
+<p align="center"><a href="README-es.md">Leer en español</a> · <a href="https://pisha.dev/">Website</a> · <a href="https://pisha.dev/examples.html">Examples</a> · <a href="docs/reference.md">Reference</a> · <a href="https://github.com/roke22/pisha/discussions">Discussions</a> · v0.0.14</p>
 
 ---
 
@@ -159,6 +159,15 @@ pisha-server --domain pisha.example.com --acme-email you@example.com
 ```
 
 It gets and renews its HTTPS certificate by itself, and the dashboard is at `https://pisha.example.com`. (On Linux, ports 80 and 443 need privileges: run it with `sudo`, or use the Docker image with `-p 80:80 -p 443:443 -e PISHA_DOMAIN=pisha.example.com`.)
+
+**As a service on a Linux server,** let it set itself up:
+
+```bash
+npm install -g pisha-server
+sudo env "PATH=$PATH" pisha-server setup
+```
+
+It asks how people reach it (your domain, your reverse proxy, or only that machine), which user runs it (one of its own, `pisha`, by default) and where its data goes, brings along the data of a server you had started by hand, and installs a systemd service that starts with the machine. Run it again to change any of that; `pisha-server service status|restart|logs|remove` for the rest. Without `sudo`, it installs a service of your user instead (behind a proxy, or local).
 
 ## 2. Add your computers
 

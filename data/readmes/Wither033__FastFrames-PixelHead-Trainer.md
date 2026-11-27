@@ -11,7 +11,7 @@ Training code, model-adaptation notes, and single-GPU Colab L4/A100 notebooks fo
 
 Flow-matching DiTs carry `3072`–`6144` channels per token right before their final linear layer (`proj_out / linear`), then project down to a `16`–`128` channel latent and rely on a large 2D/3D VAE decoder (`242 MiB` to `4.85 GB`) to reconstruct pixels.
 
-Following the direct pixel readout formulation in [*FastFrames: Video Generation at Interactive Latency* (`arXiv:2611.23226`)](https://arxiv.org/abs/2611.23226) and single-step Replay Buffer distillation (`sorryhyun/anima-pixel-decoder`), this repository collects our clean-room MIT PyTorch library (`pixelhead_trainer`), ComfyUI `ModelPatcher` tap implementations for five backbones, and the Colab L4 (24 GB) training scripts used to train them:
+Building upon **[Seunghyun Ji (`sorryhyun`)](https://huggingface.co/sorryhyun)**'s pioneering pixel head architecture, ComfyUI tap-and-decode workflow, and single-step `ReplayBuffer` / wavelet distillation pipeline in **[`sorryhyun/anima_lora`](https://github.com/sorryhyun/anima_lora)**, **[`sorryhyun/anima_pixel_decoder`](https://huggingface.co/sorryhyun/anima-pixel-decoder)**, and **[`sorryhyun/ComfyUI-Anima-PixelDecoder`](https://github.com/sorryhyun/ComfyUI-Anima-PixelDecoder)** (`Copyright (c) 2026 Seunghyun Ji`, MIT License), together with the direct pixel readout formulation in [*FastFrames: Video Generation at Interactive Latency* (`arXiv:2611.23226`)](https://arxiv.org/abs/2611.23226), this repository adapts and extends direct pixel readout heads to five ComfyUI DiT backbones with single-GPU Colab L4/A100 training notebooks:
 
 - On 2D image models (`16×16` pixels/token), a `48.8–79.3 MiB` (BF16) head decodes `17.9×–86.4×` faster than the stock VAE (`37.51 ms` / `33.81 dB` / `LPIPS 0.0736` on **Qwen-Image 2.1 `v0.3` Wavelet**; `5.55–7.77 ms` on `v0.1` Fast; `59.55 ms` / `33.33 dB` on **Krea-2**), with optional single-pass `2x` (`1024 → 2048`) upscaling.
 - On high-compression 3D video models (`4 × 32×32` or `8 × 32×32` pixels/token), pure pixel-space `MSE` distillation is fast (`8.5×` on MiniMax-H3) but over-smooths fine natural textures unless paired with perceptual/frequency losses — documented in full in [docs/PLAYBOOK_ADAPTING_NEW_MODELS_EN.md](docs/PLAYBOOK_ADAPTING_NEW_MODELS_EN.md).
@@ -91,9 +91,9 @@ pip install -e .
 CUDA_VISIBLE_DEVICES="" python tests/test_all_heads_and_gates.py
 ```
 
-## 7. License & References
+## 7. Attribution, Credits & License
 
-- **Code License**: MIT License (clean-room PyTorch & ComfyUI implementation). Deployed checkpoints remain subject to the upstream base model's license terms where applicable.
-- **References**:
-  - Direct pixel readout, linear bridge, and gradient loss formulation: [*FastFrames: Video Generation at Interactive Latency*](https://arxiv.org/abs/2611.23226) (Gene Chou et al., Apple & Cornell, 2026).
-  - Single-step Teacher-Forced Replay Buffer training and ComfyUI wrapper hooks: [`sorryhyun/anima-pixel-decoder`](https://huggingface.co/sorryhyun/anima-pixel-decoder).
+
+- **Original Pixel Decoder & Training Pipeline Author**: **[Seunghyun Ji (`sorryhyun`)](https://huggingface.co/sorryhyun)** ([GitHub `@sorryhyun`](https://github.com/sorryhyun)) — author and publisher of **[`sorryhyun/anima_lora`](https://github.com/sorryhyun/anima_lora)** (`project/pixel_decoder`, `library/anima/pixel_head.py`, `scripts/pixel_head/`), **[`sorryhyun/anima_pixel_decoder`](https://huggingface.co/sorryhyun/anima-pixel-decoder)**, and **[`sorryhyun/ComfyUI-Anima-PixelDecoder`](https://github.com/sorryhyun/ComfyUI-Anima-PixelDecoder)**. Key architectural and training recipes adapted here — including the no-skip ConvNeXt + `2×` `PixelShuffle` `1x`/`2x` head layout, pre-linear `f_u + g·(f_c - f_u)` feature tap + latent patch embedding, single-step teacher-forced `ReplayBuffer` distillation against `VAE(x̂0)` across mixed Base/Turbo `σ` points, 4-channel RGBA readout, and 2D Haar wavelet `(LL, LH, HL, HH)` + detached-`LL` adversarial training — build directly upon `sorryhyun`'s work.
+- **Foundational Paper**: [*FastFrames: Video Generation at Interactive Latency* (`arXiv:2611.23226`)](https://arxiv.org/abs/2611.23226) (Gene Chou, Guandao Yang, Fujun Luan, Lars Mescheder, Wei Dong, Stephan R. Richter, Vladlen Koltun — Apple & Cornell, 2026).
+- **License**: Released under the [MIT License](LICENSE) (retaining `Copyright (c) 2026 Seunghyun Ji` and `Copyright (c) 2026 Wither033 / pocis`). Usage with Qwen-Image 2.1, Krea-2, or MiniMax-H3 models remains subject to each respective upstream base model's license terms.

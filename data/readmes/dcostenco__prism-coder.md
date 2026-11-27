@@ -516,7 +516,7 @@ importance thresholds remain separate, and HRR drift detection remains independe
   it again before the conversation is refused or sent to the cloud.
 - Everything local is free with no account and no cap on the local model size.
   A free Synalux account adds multi-turn `prism_infer` and 20 cloud answers a
-  day. Pro ($15/month) and Team ($20/seat/month) are Prism's own plans.
+  day. Pro and Team are Prism's own paid plans.
 - Optional You.com web search: set `YDC_API_KEY` to enable
   `youcom_web_search` (contributed by @mouse-value-add in #227).
 - Fixed: the 2b and 4b no longer answer Prism's own requests as a tool router.
@@ -1715,13 +1715,13 @@ on a cloud feature, and then only what that feature needs; see
 
 ### How it compares
 
-Prices from each vendor's pricing page, checked on 2026-09-26. Plans change
+Other vendors' prices were checked on 2026-09-26. Plans change
 often; follow the links for current terms. The table compares published plans
 only; it is not a claim that a product lacks an unlisted feature.
 
-| Product | What it is | Free | Individual | Team, per seat |
+| Product | What it is | Free | Individual | Team (per seat unless stated) |
 |---|---|---|---|---|
-| **Prism Coder** | Local memory and model routing (MCP), optional cloud | Everything local, no account | Pro $15/mo | $20, 2-seat minimum |
+| **Prism Coder** | Local memory and model routing (MCP), optional cloud | Everything local, no account | Pro $9.99/mo | $14.99/mo total for 2 seats |
 | [GitHub Copilot](https://docs.github.com/en/copilot/get-started/plans) | Coding assistant | Limited | Pro $10, Pro+ $39, Max $100 | Business $19, Enterprise $39 |
 | [Cursor](https://cursor.com/pricing) | AI code editor | Hobby, limited | Pro $20 | Teams $40 |
 | [Windsurf](https://devin.ai/blog/windsurf-pricing-plans) | AI code editor | Free plan | Pro $20, Max $200 | Teams $40 |
@@ -1740,18 +1740,20 @@ only; it is not a claim that a product lacks an unlisted feature.
 
 Everything that runs on your machine is free, with no account and no cap on the local model. A free Synalux account adds what needs Synalux; Pro and Team add cloud features and higher limits.
 
-| | **Free** (no account) | **Free account** | **Pro** $15/mo | **Team** $20/seat/mo |
+Prism prices are in USD.
+
+| | **Free** (no account) | **Free account** | **Pro** $9.99/mo | **Team** $14.99/mo total |
 |---|---|---|---|---|
 | Local models via Ollama (automatic `prism_infer` routing) | up to 27b | up to 27b | up to 27b | up to 27b |
 | Local memory, knowledge graph, dashboard, MCP tools | ✅ | ✅ | ✅ | ✅ |
 | Multi-turn `prism_infer`, with the on-device answer check | -- | 12 turns / 32k chars | 12 turns / 32k chars | 20 turns / 64k chars |
-| Cloud answers (Gemini 3.6 Flash; a free account's conversations: 3.5 Flash-Lite) | -- | 20/day | 1,000/month (500 in the trial; 200/day max) | 1,500/month per seat (200/day max) |
+| Cloud answers | -- | 20/day | 1,000/month (500 in the trial; 200/day max) | 1,500/month per seat (200/day max) |
 | Cloud confirmation of a local answer (on a pseudonymized copy) | -- | -- | ✅ | ✅ |
 | Grounding verifier (fact-check AI output; counts as a cloud answer) | -- | -- | ✅ | ✅ |
 | Cloud search | -- | -- | 1,000/month (150/day max) | 1,500/month per seat (150/day max) |
 | Memory sync (cloud) | -- | -- | ✅ | ✅ |
 | Full skill library, super-skills, agent routing, account and team skills | -- | -- | ✅ | ✅ |
-| Seats | 1 | 1 | 1 | 2 or more |
+| Seats included | 1 | 1 | 1 | 2 |
 
 Pro starts with a 14-day trial. No card is required to start; add payment
 details before the trial ends to continue, or the subscription cancels
@@ -1788,4 +1790,4 @@ scrape, and inference tools. Prism searches its accumulated project memory
 first. If no useful evidence exists, paid tiers run one bounded Synalux search
 (Firecrawl, Gemini 3.6 Google Search grounding, then legacy Brave fallback),
 resolve and preserve the source URLs, scrape the leading page, and ask a
-RAM-safe local Prism C
+RAM-safe local Prism Coder model to answer from that evidence. The p

@@ -37,17 +37,6 @@
 
 ---
 
-> [!NOTE]
-> ### Project Status — Where It Actually Stands
-> **Bounty Hunter — "Beast" — is a capable, actively-developed agent, built first for real, authorized bug-bounty programs.** It runs the full recon → exploit → verify → report loop end to end today; the same pipeline that proves a bug on a live program is also what makes it strong against training labs and CTF ranges — that's a side benefit of the design, not the primary target. An honest read of how it performs across the environments it's run against:
->
-> - **Real, authorized bug-bounty programs — the primary use case.** Runs the full loop against production surfaces: maps a whole program at once (subdomains, services on non-standard ports, framework/debug endpoints), surfaces the forgotten host or the unauthenticated service sitting one port over from a boring landing page, and drives each lead to a verified yes/no — not just recon. Learns *mid-hunt* from 15k+ **disclosed real-world HackerOne reports** to copy a proven methodology onto the target in front of it (see the HexBrain integration). Each distinct confirmed bug is recorded the moment it's proven, and a dismissed false positive can't silently reappear. Like any autonomous agent on complex production surfaces, **review every finding before you submit it** — that's calibration, not a limitation specific to real programs.
-> - **Training labs & intentionally-vulnerable ranges** (PortSwigger Web Security Academy, HackTheBox, local hardened labs) — the same engine solves these **autonomously, end to end** across a wide range of vulnerability classes: reflected / stored / DOM XSS (confirmed by firing a real `alert()` in a headless browser), SSRF, IDOR and broken access control, authentication/authorization bypass, SSTI, CORS, injection, and exposed-service / secret-leak classes. Useful for validating a new methodology before it's ever pointed at a live program, not a separate "easy mode."
->
-> What it reports is meant to be a *confirmed* bug, not a guess, on either kind of target: an XSS has to actually execute (or demonstrably render unsanitized in an executing sink) to be recorded, `verify_finding` runs class-specific live checks, and each finding is evidence-gated before it goes in the report. Use responsibly and strictly on authorized targets.
-
----
-
 ## What Is This?
 
 **Bounty Hunter** (nickname **"Beast"**) is an **autonomous AI agent for bug bounty and penetration testing**, built by **Project Hellhound**. Give it a target and a goal in plain English — it runs the recon, finds *and exploits* the vulnerability, and writes a submission-ready report, all behind a scope gate that can't be bypassed. Built for **bug-bounty hunters and pentesters** running against real programs; it also handles training labs and CTF environments.
@@ -131,10 +120,20 @@ flowchart TD
 Everything you need to install, configure AI backends, and run Bounty Hunter in one unified workflow. The steps below cover the quick path — for more detail on any one piece (model routing options, Burp, or Caido), see the [step-by-step setup guides](docs/README.md).
 
 ### 1. Requirements & Prerequisites
-- **Operating System**: Linux (Kali, Ubuntu, Debian, Arch, Parrot OS), macOS (Apple Silicon & Intel), or Windows (WSL2).
 - **Python**: Version 3.10 or higher (Python 3.12 / 3.13 recommended).
-- **Go**: Version 1.20+ (Required for ProjectDiscovery tools, Gowitness, and FFUF).
-- **Git & Curl**: Required for installation and updates.
+- **Go**: Version 1.20+ (required for the ProjectDiscovery tools, Gowitness, and FFUF).
+- **Git & Curl**: required for installation and updates.
+
+#### Platform support
+
+The Python agent, the chat/Brain GUI, and the Go-based recon tools are all cross-platform; the native installer (`install.sh`) is Debian/apt-based, and a few tools are Linux-only. Pick the row that matches you:
+
+| Platform | How to run | Notes |
+|---|---|---|
+| **Linux** (Kali, Ubuntu, Debian, Parrot, Arch) | `install.sh` (below) | First-class, fully tested. |
+| **Any OS via Docker** | [Option C](#option-c-docker-any-os) | The simplest cross-platform path — the full Linux toolchain in a container, open the UI in your browser. **Recommended for macOS/Windows.** |
+| **macOS** (Apple Silicon & Intel) | manual (`pip install -e .` + `go install` the tools, or Docker) | Core + most recon tools work via Homebrew/Go; a couple (e.g. `masscan`, `hydra`) are easier in Docker. |
+| **Windows** | **WSL2** (then follow the Linux steps) or Docker Desktop | Native Windows isn't supported; WSL2 gives a full Linux environment. |
 
 ### 2. Fast Deploy (One-Line Pipe or Git Clone)
 
@@ -161,6 +160,20 @@ The automated installer will:
 - Mount the headless browser & Playwright SPA engine with all system dependencies.
 - Verify and install the offensive toolchain (`gowitness`, `subfinder`, `httpx`, `dnsx`, `naabu`, `ffuf`, `alterx`, `tlsx`, `shuffledns`, `subzy`).
 - Create a global `beast` command symlink.
+
+#### Option C: Docker (any OS)
+
+The cross-platform path — runs the complete Linux toolchain in a container, so **macOS and Windows** users get the full engine without a native install. The UI opens in your own browser.
+
+```bash
+git clone https://github.com/projecthellhound/bounty-hunter.git
+cd bounty-hunter
+docker build -t beast .
+docker run --rm -it -p 8787:8787 -v beast-data:/root/.beast beast
+# then open http://localhost:8787
+```
+
+The `-v beast-data:/root/.beast` volume keeps your targets, chat sessions, findings and API keys across runs. Configure models/keys from the in-app **Settings**, or set them once with environment variables (`-e NVIDIA_API_KEY=…`). The container runs the browser UI (no native desktop window); everything else — recon, exploit, verify, report — works the same.
 
 ---
 

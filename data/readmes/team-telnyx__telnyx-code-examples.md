@@ -389,12 +389,13 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 </details>
 
 <details open>
-<summary><h2>Email</h2> <em>(3 examples)</em></summary>
+<summary><h2>Email</h2> <em>(4 examples)</em></summary>
 
 Send, track, and automate email workflows with the [Telnyx Email API](https://telnyx.com/products/email-api) - transactional messages, templates, tracking, and event-driven dashboards.
 
 | Example | Language | Description |
 |---------|----------|-------------|
+| [email-batch-send-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/email-batch-send-nodejs/README.md) | Node.js | Send up to 1,000 emails in a single API call and track delivery events in a real-time dashboard. |
 | [email-whatsapp-support-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/email-whatsapp-support-python/README.md) | Python | --- |
 | [provision-and-route-email-dedicated-ips](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/provision-and-route-email-dedicated-ips/README.md) | Python | Provision a dedicated sending IP, start its warm-up, create a default IP pool, route the IP through the pool, and verify delivery with a test email. |
 | [setup-email-api-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/setup-email-api-nodejs/README.md) | Node.js | Send a Telnyx Email API message from a local Node.js dashboard, enable per-send open and click tracking, and poll delivery and engagement events. |
@@ -471,5 +472,4 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [ai-voice-memo-to-email-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voice-memo-to-email-python/README.md) | Python | AI Voice Memo to Email - call a number, dictate a memo, AI cleans it up and sends it as a formatted email via Telnyx. |
 | [ai-voice-survey-sentiment-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voice-survey-sentiment-tracker-python/README.md) | Python | AI Voice Survey Sentiment Tracker - real-time CSAT scoring from voice tone and word choice. |
 | [ai-voicemail-transcription-forwarding-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voicemail-transcription-forwarding-python/README.md) | Python | AI Voicemail Transcription & Forwarding - voicemail to AI-summarized SMS/email with priority classification. |
-| [ai-voiceover-studio-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voiceover-studio-python/README.md) | Python | Upload a script, select voice/style/pacing, AI adds professional direction cues (pauses, emphasis, pacing), TTS renders the voice-over, stores output in Cloud Storage. Supports multiple takes and retakes. |
-| [auto-failover-voice-routing](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/auto-failover-voice-routing/README.md) | Typ
+| [ai-voiceover-studio-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voiceover-studio-python/README.md) | Python | Upload a script, select voice/style/pacing, AI adds professional direction cues (pauses, emphasis, pacing), T

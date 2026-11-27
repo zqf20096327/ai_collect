@@ -11,7 +11,7 @@
 
 <div align="center">
 
-<a href="https://oxylabs.io"><img src="https://img.shields.io/badge/🚀_Get_Started-FF6B35?style=for-the-badge" alt="Get started"></a>
+<a href="https://oxylabs.io/?utm_source=github&utm_medium=referral&utm_content=oxylabs-mcp&utm_campaign=banner&groupid=877"><img src="https://img.shields.io/badge/🚀_Get_Started-FF6B35?style=for-the-badge" alt="Get started"></a>
 <a href="https://developers.oxylabs.io"><img src="https://img.shields.io/badge/📚_Documentation-4A90E2?style=for-the-badge" alt="Documentation"></a>
 <a href="https://dashboard.oxylabs.io"><img src="https://img.shields.io/badge/📊_Dashboard-2EA44F?style=for-the-badge" alt="Dashboard"></a>
 <a href="https://discord.gg/Pds3gBmKMH"><img src="https://img.shields.io/badge/💬_Discord-5865F2?style=for-the-badge" alt="Discord"></a>
@@ -364,11 +364,11 @@ Established in 2015, Oxylabs is a market-leading web intelligence collection
 platform, driven by the highest business, ethics, and compliance standards,
 enabling companies worldwide to unlock data-driven insights.
 
-[![image](https://oxylabs.io/images/og-image.png)](https://oxylabs.io/)
+[![image](https://oxylabs.io/images/og-image.png)](https://oxylabs.io/?utm_source=github&utm_medium=referral&utm_content=oxylabs-mcp&utm_campaign=banner&groupid=877)
 
 <div align="center">
 <sub>
-  Made with ☕ by <a href="https://oxylabs.io">Oxylabs</a>.  Feel free to give us a ⭐ and a follow if our MCP saved you a weekend.
+  Made with ☕ by <a href="https://oxylabs.io/?utm_source=github&utm_medium=referral&utm_content=oxylabs-mcp&groupid=877">Oxylabs</a>.  Feel free to give us a ⭐ and a follow if our MCP saved you a weekend.
 </sub>
 </div>
 

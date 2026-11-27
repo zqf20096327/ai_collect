@@ -15,11 +15,14 @@ It runs on:
 
 - **your Claude subscription**, through the Claude Agent SDK
 - **any OpenRouter model**: Claude, GLM, GPT, Gemini, DeepSeek, Kimi, or OpenRouter's auto router
-- **local models through Ollama**: free, private and offline
+- **your own API keys**: OpenAI, Anthropic, Gemini, DeepSeek, Groq, Mistral, xAI, Together, Fireworks, or any OpenAI-compatible endpoint
+- **local models through Ollama or LM Studio**: free, private and offline
 
-With tools to read, edit and run code, plan and hand work to sub-agents, search the web through your own browser, use any MCP server, compare models side by side, and handle your email.
+With tabs to run several chats at once, and tools to read, edit and run code, plan and hand work to sub-agents, search the web and drive a real browser, use any MCP server (local or remote), compare models side by side, and handle your email. Undo a whole turn, see type errors as the model edits, talk to it from Telegram, Discord, Slack, WhatsApp or Matrix, schedule tasks, and use it from your browser, your editor or GitHub.
 
-<p align="center"><img src="assets/demo.gif" alt="nanocode finding and fixing a failing test" width="900"></p>
+<p align="center"><img src="assets/demo.gif" alt="nanocode plans a change in plan mode, builds it with a passing test, then /undo reverts every file of that turn" width="900"></p>
+
+<p align="center"><sub>A real session: <code>/plan</code> only reads and proposes, <code>/build</code> edits two files and runs the tests, <code>/undo</code> puts both back.</sub></p>
 
 > Inspired by [1rgs/nanocode](https://github.com/1rgs/nanocode), a minimal Claude Code alternative in ~250 lines. This project started from it and grew into a full agent.
 
@@ -95,12 +98,23 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | `/think [level]` | How hard the model thinks: `off`, `low`, `medium` (default) or `high`. Shown under the prompt after the model, like OpenCode (`· medium`); click it to change |
 | `/model [name]` | List models (with prices, or what's installed in Ollama), or switch. Tab completes |
 | `/theme` | Colors: `/theme opencode` (default) or `nanocode`, `/theme accent #ff79c6` for one color, `/theme reset` |
-| `/resume [n]` | Continue a saved chat. Every chat is saved per project |
+| `/delete [n\|2-5\|all]` | Delete this chat, some of `/resume`'s, or all of them (asks first) |
+| `/resume [n]` | Continue a saved chat. Every chat is saved per project, with every message, on any provider; it continues with whatever provider and model you use now |
 | `/recap` | What happened this session (files changed, commands run, cost) and what's next |
 | `/compact` | Summarize a long chat to free up context |
-| `/undo` | Revert the last file change |
+| `/undo`, `/redo` | Revert every file change of the last turn, or put it back. `/rollback` goes back further ([more](docs/snapshots.md)) |
+| `/plan`, `/build` | Plan mode (read-only, the model proposes a plan) or build mode. Shift+Tab switches ([more](docs/modes.md)) |
+| `/init` | Write or refresh `AGENTS.md`: how to build, test and work on this project |
+| `/search <words>` | Search all your past chats; `/fork` copies this chat into a new tab ([more](docs/chats.md)) |
+| `/export`, `/share` | Save this chat as Markdown or JSON, or share it as a secret GitHub gist |
+| `/stats` | Usage across your chats: models, tools, tokens, cost, by day |
+| `/permissions` | Rules like "allow `git status*`, ask for `git push*`" ([more](docs/permissions.md)) |
+| `/agents`, `/commands` | Your own agents (`@name task`) and slash commands, as Markdown files ([agents](docs/custom-agents.md), [commands](docs/custom-commands.md)) |
+| `/env` | Where commands run: here, in Docker, over SSH, or anywhere ([more](docs/environments.md)) |
+| `/cron` | Scheduled tasks: `/cron add every day at 8:00 \| summarize the open issues` ([more](docs/cron.md)) |
+| `/voice`, `/listen` | Replies read aloud, and speaking your message ([more](docs/voice.md)) |
 | `/learn` | Review this chat and save lessons and skills for next time |
-| `/memory`, `/skills` | Show what nanocode knows |
+| `/memory`, `/skills` | Show what nanocode knows. `/skills hub` and `/skills install` add community skills |
 | `/shells` | Background shells: list them, or `/shells stop <name>` |
 | `/auto` | Toggle auto-approve for edits and commands |
 | `/rea` | Reverse-engineering tools: status, `/rea on`, `/rea off` |
@@ -108,7 +122,9 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | `/compare <prompt>` | Send one prompt to several models and see the answers side by side. `/compare models a, b, c` picks them |
 | `/email [task]` | Summarize and triage your inbox, or do an email task (set up with `nanocode email`) |
 | `/terminal-setup` | Make Shift+Enter, Cmd+Backspace and Cmd+arrows work in your terminal |
+| `/copy` | Copy the last reply to the clipboard (`/copy code`: its last code block) |
 | `/cost`, `/config`, `/help` | Usage, settings, help |
+| `/tab` | Tabs: `/tab new [message]`, `/tab close`, `/tab <n>`, or `/tab` to list them |
 | `/c`, `/q` | New chat, quit |
 | `# note` | Save a note to project memory |
 | `@path` | Attach a file to your message. Or drag files onto the terminal: images become `[Image #1]` chips, like Claude Code; Ctrl+V pastes a screenshot |
@@ -128,8 +144,14 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | Shift+Enter, Alt+Enter, Ctrl+J | New line |
 | Ctrl+P | Command palette |
 | Ctrl+X then N / L / M / C / U / H / Q | New session / sessions / models / compact / undo / help / quit |
-| Esc Esc | Stop the reply (press twice) |
-| Ctrl+C | Stop the reply, clear the input, or quit |
+| Esc Esc | Stop the reply (press twice); Esc at a permission question denies it and stops |
+| Ctrl+C | Stop the reply, clear the input, or quit (press twice on an empty prompt) |
+| Enter while a reply runs | Queue the message: it's sent when the reply finishes (↑ edits it, Esc Esc puts it back) |
+| Ctrl+T (or Ctrl+X T) | New tab: another chat that runs alongside this one |
+| Alt+1…9, Ctrl+X ← →, Ctrl+PgUp / PgDn | Switch tab |
+| Ctrl+X W | Close tab (its chat stays saved for `/resume`) |
+| Ctrl+O | The full output of a recent tool call |
+| Ctrl+Home / Ctrl+End | Top / bottom of the chat |
 | Ctrl+U (Cmd+Backspace on macOS) | Delete everything before the cursor |
 | Ctrl+← →, Alt/Option+← → | Jump by word |
 | Home / End, Ctrl+A / Ctrl+E | Start / end of line |
@@ -138,6 +160,10 @@ The cost is OpenRouter's real price, or "free (local)" with Ollama. With your Cl
 | Tab | Complete |
 
 While you scroll through a long answer, your message stays pinned at the top; click it to jump back to it.
+
+**Tabs:** `ctrl+t` opens another chat in a new tab, like OpenCode's desktop app. Each tab has its own history, model and prompt draft, and keeps working while you're in another one. The tab bar at the top shows each tab's state: a spinner while it works, `△` when it needs your OK, `●` when it finished while you were elsewhere. A notification pops up in the top right corner when a tab in the background finishes or asks for permission; click it to go there ([more](docs/using.md#tabs)).
+
+<p align="center"><img src="assets/tabs.gif" alt="nanocode fixing failing tests in one tab while a second tab writes a README, with notifications when each finishes" width="800"></p>
 
 The terminal tab is named after the chat and shows `✻` while working, `△` when it needs your OK and `✓` when it finished while you were away; you also get a bell and a desktop notification then ([more](docs/using.md#tab-title-and-notifications)).
 
@@ -186,7 +212,29 @@ Connect any local MCP server and its tools become nanocode's tools, on every pro
 /mcp off github.delete_repo # switch one tool off (or a whole server: /mcp off github)
 ```
 
-Servers start with your first message. Small servers' tools are offered directly; servers with more than 20 tools are searched on demand, so the model's tool list stays short. Tools not marked read-only ask before running. `ctrl+p → MCP tools on/off` toggles tools from a list. Servers are stored under `"mcp_servers"` in the config (`command`, `args`, `env`); `${VAR}` in them is filled from your environment. Remote (HTTP) servers aren't supported yet.
+Servers start with your first message. Small servers' tools are offered directly; servers with more than 20 tools are searched on demand, so the model's tool list stays short. Tools not marked read-only ask before running. `ctrl+p → MCP tools on/off` toggles tools from a list. Servers are stored under `"mcp_servers"` in the config (`command`, `args`, `env`); `${VAR}` in them is filled from your environment.
+
+**Remote servers** work too: `/mcp add linear https://mcp.linear.app/mcp`. Servers that need a login open your browser (OAuth); `/mcp login <name>` signs in again ([more](docs/mcp.md)).
+
+## More
+
+Each of these has its own page in [docs/](docs/README.md):
+
+- **Undo a whole turn.** Every turn is a checkpoint (in a separate git repo, never your own `.git`): `/undo`, `/redo`, `/rollback`.
+- **Plan mode.** Shift+Tab: the model only reads and plans, and changes nothing until you switch back.
+- **Type errors as it edits.** After each edit, nanocode asks your language server (pyright, typescript-language-server, gopls, rust-analyzer, clangd) and shows the model what broke. Your formatter (ruff, black, prettier, gofmt, rustfmt) runs too, when the project uses one.
+- **Permission rules.** Allow, ask or deny per command or path pattern, for every tool.
+- **Your own agents, commands, hooks and plugins.** Markdown files for agents (`@reviewer check this`) and slash commands, shell hooks before and after tools, and Python plugins for anything else.
+- **Every chat, searchable.** `/search` across all projects, `/fork`, `/export`, `/share` (a secret gist), `/stats`, and the model can look up earlier chats itself.
+- **Commands anywhere.** `/env docker python:3.12` runs commands in a container; SSH and Apptainer work too, or any wrapper (Modal, Daytona).
+- **A real browser.** The model can open pages, click, type and take screenshots, through Chrome's DevTools protocol.
+- **In your browser, your editor, and GitHub.** `nanocode web` is a workspace in your browser (chats, search, memory, skills, tasks, checkpoints, stats, themes, the model picker and Plan/Build) that you can install as an app; `nanocode acp` plugs into Zed and other ACP editors; `nanocode github install` answers `/nanocode` comments on issues and pull requests.
+- **From your phone.** `nanocode gateway` lets you talk to it from Telegram, Discord, Slack, WhatsApp or Matrix, including voice messages.
+- **Scheduled tasks.** `/cron add every weekday at 9:00 | …` runs a prompt on its own and sends you the answer.
+- **Voice.** `/voice on` reads replies aloud; `/listen` turns your speech into the message.
+- **Skills hub and self-improvement.** Install community skills (`/skills hub`); with `"self_improve": true` it reviews long or bumpy turns and saves what it learned.
+- **Themes and keys.** Tokyo Night, Catppuccin, Gruvbox, Nord, Dracula and more (`/theme`); remap any key (`"keybinds"`); `ctrl+x e` writes the prompt in your editor.
+- **Training data.** `nanocode trajectories export` turns your chats into JSONL.
 
 ## Compare
 
@@ -307,7 +355,8 @@ When a task needs one you don't have, nanocode tells you what to install and car
 - **Permissions.** nanocode asks before every file edit or command, unless you choose "just do it" in setup, use `/auto`, or pass `--yes`.
 - **Destructive commands always ask,** even in auto mode: `rm -rf /`, `git push --force`, `git reset --hard`, `mkfs`, and similar. So does sending an email.
 - **Going online asks:** web searches and page reads, and MCP tools that aren't read-only.
-- **Undo.** `/undo` reverts file changes one at a time.
+- **Undo.** `/undo` reverts every file change of the last turn, `/redo` puts it back, `/rollback` goes back further.
+- **Your rules.** `/permissions` allows, asks or denies per command or path pattern; plan mode changes nothing at all.
 - **Private by default.** Chats and project memory stay out of git. Your API key is stored with user-only permissions.
 
 ## Development
@@ -321,8 +370,10 @@ python nanocode.py           # run from the repo without installing
 ## Files
 
 ```
-nanocode.py      the whole agent
-api/             the optional HTTP API (nanocode serve)
+nanocode.py      the core: the interface, the agent loop, tools, providers
+nanokit/         features, one module each (undo, LSP, agents, gateway, cron, voice, web app…)
+api/             the HTTP API (nanocode serve) the web app and gateway build on
+MANIFEST         the files the installer downloads
 install.sh       installer for macOS / Linux / WSL / Termux
 install.ps1      installer for Windows
 tests/           pytest suite (tools, providers, sessions, config, CLI)

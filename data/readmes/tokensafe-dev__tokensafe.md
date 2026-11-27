@@ -18,7 +18,7 @@
   <a href="https://www.npmjs.com/package/tokensafe"><img src="https://img.shields.io/npm/dw/tokensafe.svg?color=10B981&label=npm%20downloads&style=flat-square" alt="npm downloads"></a>
   <a href="https://pypi.org/project/tokensafe/"><img src="https://img.shields.io/pypi/v/tokensafe.svg?color=38BDF8&style=flat-square" alt="PyPI"></a>
   <a href="https://github.com/tokensafe-dev/tokensafe/stargazers"><img src="https://img.shields.io/github/stars/tokensafe-dev/tokensafe?style=flat-square&color=334155" alt="Stars"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-0F766E?style=flat-square" alt="License"></a>
+  <a href="https://github.com/tokensafe-dev/tokensafe/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-0F766E?style=flat-square" alt="License"></a>
   <a href="https://tokensafe.dev#pricing"><img src="https://img.shields.io/badge/Team_Trial-7_Days_Free-10B981?style=flat-square" alt="Trial"></a>
 </p>
 
@@ -204,9 +204,62 @@ Why TokenSafe agents ship working code on the first pass without burning quotas 
 
 Deeper mechanics (language matrix, AST syntax trees, cache tiers, governor) live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## What happens on the first prompt
+
+You install TokenSafe, open a project in your agent, and the first turn does the wiring:
+
+1. **Detect** the stack (React/Vue + Vite, FastAPI, Go/Gin|Chi, or nothing supported).
+2. **Activate** the adapters:
+   * frontend — `tokensafe dev` serves OUMV from an inline Vite config; **no file in the
+     repository changes**;
+   * FastAPI — a global `~/.tokensafe/pyhooks/sitecustomize.py` mounts `mount_tokensafe(app)`
+     when the server runs through `tokensafe run-backend uvicorn ...`;
+   * Go — one `AutoMount()` line between `tokensafe:oumv` markers, byte-exact backup in
+     `~/.tokensafe/inject/`, `go build` validated, `tokensafe inject --revert` restores it.
+3. **Brief the agent** — a short routing block (hook context and MCP `instructions`) says which
+   stack is worked through OUMV and which through the TokenSafe tools. Nothing is written into
+   the repository by the brief.
+
+```bash
+tokensafe inject --status     # what would be wired, and where
+tokensafe inject --dry-run    # same, but explicit
+tokensafe inject              # apply the safe parts (config + Python autoload + Go line)
+tokensafe inject --revert     # restore the Go entrypoint byte-for-byte
+tokensafe create shop --template react-fastapi   # greenfield with everything pre-wired
+tokensafe oumv doctor         # readiness: adapter installed? runtime live? blocking reasons
+```
+
+Full matrix and details: [docs/OUMV.md](docs/OUMV.md).
+
 ## Benchmarks
 
+### Measured agent matrix (Go, DeepSeek — 3 tasks × 5 runs × 3 arms)
+
+Real 12-assertion oracle re-run after every step; tokens and cost from the provider's `usage`
+payload. `baseline` = file/search/command tools, `tokensafe` = this product's MCP server
+(`scoped_search` → `smart_read_file` → `apply_edits` with inline `verify="auto"`), `oumv` = the
+OUMV protocol runtime. All three arms solve every session.
+
+| Arm | Solved | Mean steps | Mean input | Mean output | Cost/run |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| `baseline` | 15/15 | 4.5 | 19,538 | 1,599 | $0.0035 |
+| `tokensafe` | 15/15 | 4.7 | 17,616 | **750** | **$0.0025** |
+| `oumv` | 15/15 | 4.3 | **12,323** | 1,735 | $0.0032 |
+
+**vs baseline: −9.8% input tokens, −53.1% output tokens, −28.7% cost.** The output column is
+where the product's advantage is structural: `apply_edits` sends the hunk and its target
+snippet, so a one-line fix never resends the file — the other arms reread and rewrite whole
+files. Full method, per-task table, artifacts and limits (including the ±5% run-to-run noise at
+this sample size): [`OUMV_AGENT_MATRIX_V4.md`](https://github.com/tokensafe-dev/tokensafe-backend/blob/main/go/benchmark/OUMV_AGENT_MATRIX_V4.md)
+in the backend repo, generated from the run JSON by
+`go/benchmark/render_agent_matrix.py`.
+
 ### Agent Usability Benchmarks (AUB) — Full-Stack Agent Velocity
+
+> ⚠️ **Simulated, not measured.** These AER figures are computed from fixture traces in the
+> benchmark harnesses (the 12-assertion oracles are real; the agent turns/tokens are not).
+> A measured run is the next benchmark milestone — until it lands, treat this table as a
+> model, not as a product claim.
 
 Beyond file slicing, TokenSafe's agent-native ecosystem eliminates architectural friction, state pollution, and compiler loops for autonomous coding agents across frontend and backend:
 
@@ -438,7 +491,7 @@ All hook adapters fail open: an internal error never stalls your agent. Failures
 | `oumv_status` | Status, capabilities, and connection health of frontend/backend OUMV runtimes with hybrid fallback mode |
 | `oumv_observe` | Progressive runtime observation (L0 pulse, L1 surface, L2 detail) with out-of-the-box static AST fallback |
 | `oumv_understand` | Query runtime causality, state dependencies, and backend route mappings |
-| `oumv_mutate` | Controlled mutations with optimistic concurrency control (safe-by-default, requires workspace permissions) |
+| `oumv_mutate` | OCC-guarded source edits (mandatory `expectedVersion`, path jail, syntax pre-flight, backup) |
 | `oumv_verify` | Transactional verification and state invariant assertions |
 </details>
 
@@ -541,12 +594,13 @@ TokenSafe integrates with the [OUMV Protocol](https://github.com/tokensafe-dev/o
 - **Out-of-the-Box Stack Detection**: TokenSafe automatically detects your application stack (`package.json`, `go.mod`, `pyproject.toml`, Vite, Next.js, FastAPI, Gin) and configures agent tooling dynamically.
 - **Level 1 Static AST Fallback**: When live dev-servers are offline, `oumv_observe` and `oumv_understand` gracefully fall back to zero-config static AST component trees and route maps with evidence tracking.
 - **Consolidated Adapters**:
-  - **Frontend**: `@tokensafe-ui/oumv/react`, `@tokensafe-ui/oumv/vue`, and `@tokensafe-ui/vite` with secure `.tokensafe/runtime.json` session authentication.
+  - **Frontend**: `tokensafe-ui/react`, `tokensafe-ui/vue`, and the zero-footprint Vite bridge (`tokensafe-ui/vite`) with a session token stored in the per-workspace descriptor (`~/.tokensafe/runtimes/<hash>.json`, mode 0600).
   - **Backend**: Go (`gin`, `chi`, `stdhttp`) and Python (`fastapi`, `sqlalchemy`) in [`tokensafe-backend`](https://github.com/tokensafe-dev/tokensafe-backend).
-- **Safe-by-Default Mutations**: Mutation tools (`oumv_mutate`) require explicit permission in `.tokensafe/oumv.json` (`mutate: false` by default) and enforce optimistic concurrency control to prevent agent code drifts.
-- **Doctor & Integration CLI**: Run `tokensafe integrate` to scaffold project configs or `tokensafe oumv doctor` to verify dev-server connectivity and capabilities.
+- **Guarded Mutations, Enabled by Default**: `oumv_mutate` works out of the box and guards every write — mandatory OCC `expectedVersion`, workspace path jail, syntax pre-flight, backup of previous bytes. Opt out with `permissions.mutate: false` in `.tokensafe/oumv.json`.
+- **Automatic Wiring CLI**: `tokensafe inject` activates adapters with zero repository footprint (Vite wrapper, Python autoload, one marker-delimited Go line), `tokensafe inject --revert` restores it, and `tokensafe oumv doctor` reports readiness with blocking reasons.
+- **Greenfield Recipes**: `tokensafe create <name> --template react-fastapi|react-go|vue-gin|fastapi|gin` generates a normal project in your stack with OUMV already wired.
 
-More documentation: [docs/AGENT_SETUP.md](docs/AGENT_SETUP.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/API.md](docs/API.md) · [METRICS.md](METRICS.md) · [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md)
+More documentation: [docs/OUMV.md](docs/OUMV.md) · [docs/AGENT_SETUP.md](docs/AGENT_SETUP.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/API.md](docs/API.md) · [METRICS.md](METRICS.md)
 
 ## Development and License
 
@@ -560,5 +614,10 @@ tokensafe tests
 - Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Security policy and vulnerability reporting: [SECURITY.md](SECURITY.md)
 - Metrics and honesty contract: [METRICS.md](METRICS.md)
+- Trademark policy and certification mark rules: [TRADEMARK.md](TRADEMARK.md)
 
-MIT License. Commercial licenses are available for self-hosted B2B and enterprise VPC deployments. Questions: [corp@tokensafe.dev](mailto:corp@tokensafe.dev) · [tokensafe.dev](https://tokensafe.dev)
+Apache-2.0 for versions 4.7.0 and newer. Versions up to and including 4.6.4 were released under MIT and remain MIT forever — that grant cannot be withdrawn, and those tags stay forkable.
+
+Commercial licenses are available for self-hosted B2B and enterprise VPC deployments, support and indemnity. Questions: [corp@tokensafe.dev](mailto:corp@tokensafe.dev) · [tokensafe.dev](https://tokensafe.dev)
+
+"TokenSafe" and "OUMV Certified" are trademarks of Oleg Savelev. Apache-2.0 section 6 excludes trademark rights: the code is open, the names are not.

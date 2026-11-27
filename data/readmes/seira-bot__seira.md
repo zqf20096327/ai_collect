@@ -248,6 +248,21 @@ flowchart LR
 
 </details>
 
+## Benchmarks
+
+Seira runs your engines, so the model decides how fast an answer comes. These numbers show what Seira adds.
+Measured with Seira 0.1.194 on a VPS with 2 vCPU and Ubuntu 26.04, on 2026-11-26.
+
+| Measure | Result |
+|---|---|
+| Install with npm | 6 to 11 s, 55 MB download |
+| Start to ready | 2.9 s |
+| At idle | less than 400 MB of memory, 0.7% of one CPU core |
+| Time Seira adds to each chat turn | about 0.4 s |
+| HTTP API | 2,600 to 2,900 requests per second; p99 under 4 ms at 100 requests per second |
+
+[docs/benchmarks.md](docs/benchmarks.md) has the method, the raw data, the standard agent benchmarks, and the script to measure your own server.
+
 ## Privacy
 
 - Chats, files, and keys stay on your computer. A bot sends your message to the AI service that it uses.
@@ -288,6 +303,7 @@ The full documentation is at [docs.seira.bot](https://docs.seira.bot).
 | Routing with a decision model | [docs/decision-model.md](docs/decision-model.md) |
 | Feature switches | [docs/feature-flags.md](docs/feature-flags.md) |
 | Environment variables | [docs/environment-variables.md](docs/environment-variables.md) |
+| Benchmarks and how to measure your server | [docs/benchmarks.md](docs/benchmarks.md) |
 
 </details>
 

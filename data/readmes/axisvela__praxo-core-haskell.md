@@ -7,11 +7,12 @@ PRAXO-CORE is an embeddable, MIT-licensed AI agent framework. This package is it
 | Field | Value |
 | --- | --- |
 | Package | `praxo-core` |
-| Registry | [Hackage](https://hackage.haskell.org/package/praxo-core-0.8.0) |
-| Install | `cabal install praxo-core` |
+| Registry | [Hackage](https://hackage.haskell.org/package/praxo-core-0.9.0) |
+| Install | `cabal install --lib praxo-core-0.9.0` |
 | Source version | `0.9.0` |
-| Published version | `0.8.0` |
-| Source tag | `haskell/v0.9.0` |
+| Published version | `0.9.0` |
+| Publication status | published |
+| Canonical source tag | [`haskell/v0.9.0`](https://github.com/axisvela/praxo-core/tree/haskell/v0.9.0) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/haskell/ |
@@ -33,7 +34,7 @@ PRAXO-CORE is an embeddable, MIT-licensed AI agent framework. This package is it
 Install the published package:
 
 ```bash
-cabal install praxo-core
+cabal install --lib praxo-core-0.9.0
 ```
 
 ```haskell
@@ -87,15 +88,19 @@ Runnable examples live under [`language/haskell/examples`](language/haskell/exam
 
 ## Scenario Tutorials
 
-Scenario-oriented tutorials live under `language/haskell/Tutorial`.
+Scenario-oriented tutorials live under `language/haskell/Tutorial`. Planning context: [Tutorial Plan](https://axisvela.github.io/praxo-core/getting-started/tutorial-plan/), [100 candidate agent scenarios](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), and [Tutorial Catalog](https://axisvela.github.io/praxo-core/getting-started/tutorial-catalog/).
 
 | Path | What it shows |
 | --- | --- |
-| [Tutorial](language/haskell/Tutorial) | - [Rule DSL](rule-dsl/README.md): typed access-rule parsing, allow/deny conflict counterexample and a review-only revision; no policy publication. - [Literature Review (SC-01)](... |
-| [literature-review](language/haskell/Tutorial/literature-review) | A bounded first slice of [SC-01](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not autonomous scientific discovery. It searches a fixed synthetic pape... |
+| [Tutorial](language/haskell/Tutorial) | - [Rule DSL](https://github.com/axisvela/praxo-core/blob/main/language/haskell/Tutorial/rule-dsl/README.md): typed access-rule parsing, allow/deny conflict counterexample and a review-only revision; no policy publication. - [Literature Review (SC-01)](https://github.com/axisvela/praxo-core/blob/main/language/haskell/Tutorial/literature-review/README.md): source Haskell Core, fixed synthetic paper corpus and an explicitly unverified hypothesis draft; no live search or scientific-validity claim. |
+| [literature-review](language/haskell/Tutorial/literature-review) | A bounded first slice of [SC-01](https://axisvela.github.io/praxo-core/getting-started/agent-scenarios/), not autonomous scientific discovery. It searches a fixed synthetic paper corpus, cites the top result, and drafts an explicitly unverified hypothesis. This uses the source Haskell Core through `runghc`; no network, credentials or packages are required beyond GHC. |
 | [policy-simulation](language/haskell/Tutorial/policy-simulation) | A bounded first slice of OG-02, not a policy-prediction engine. It simulates a small fixed synthetic population and drafts a review-only sensitivity report using the source Hask... |
 | [rule-dsl](language/haskell/Tutorial/rule-dsl) | A bounded business-rule validation tutorial. It parses a small access-rule DSL into a typed Haskell structure, detects allow/deny conflicts and returns a counterexample. Core co... |
 | [test-generation](language/haskell/Tutorial/test-generation) | A bounded first slice of SE-04, not a test-execution or load-testing service. It generates three bounded tests for a fixed local fixture and records zero executions. No load tar... |
+
+## Reference Applications
+
+No accepted end-to-end reference application is recorded for this language yet. Candidate goals are tracked in the [Reference Application Portfolio](https://axisvela.github.io/praxo-core/project/roadmap/#reference-application-portfolio).
 
 ## Verify
 
@@ -135,7 +140,7 @@ This mirror contains the language source and the shared `spec/` vectors, so the 
 - Mirror repository: https://github.com/axisvela/praxo-core-haskell
 - Release index: https://axisvela.github.io/praxo-core/languages/registry-status/
 
-This repository is a discovery mirror of the canonical Haskell source. The monorepo remains the source of truth and the release workflow source.
+This repository is a discovery mirror of the canonical Haskell source. The monorepo remains the source of truth and the release workflow source. The mirror's `main` branch tracks current source, not a release snapshot. Source tags refer to the canonical monorepo and are not necessarily present in this mirror; syncing the branch does not publish mirror tags or registry packages.
 
 PRAXO-CORE is not a hosted model, workflow engine, identity provider, or safety controller. Do not infer exactly-once execution, complete sandbox isolation, production security certification, live-provider behavior, or physical safety from this package.
 

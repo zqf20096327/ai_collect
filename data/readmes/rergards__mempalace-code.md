@@ -1442,7 +1442,7 @@ the same way, and `version-check --status` says the value is unrecognized. Run `
 
 This is a code-first fork of the upstream `mempalace` project. The canonical upstream repository is [MemPalace/mempalace](https://github.com/MemPalace/mempalace); the older `milla-jovovich/mempalace` URL redirects there.
 
-Snapshot reviewed on 2026-11-23 UTC against upstream `develop` at commit `dfa318af2d41ad6c64fc3b08c28d16410c9b634b` (upstream release 3.12.0), using pinned upstream public sources. Nothing below is a performance, quality, or adoption comparison — no upstream build or benchmark was run.
+Snapshot reviewed on 2026-11-25 UTC against upstream `develop` at commit `7ea916dcf6c80490aeea8f4a732bb23344c10327` (upstream release 3.12.0), using pinned upstream public sources. Nothing below is a performance, quality, or adoption comparison — no upstream build or benchmark was run.
 
 | Area | Upstream, as advertised at that commit | This fork |
 |---|---|---|

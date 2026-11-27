@@ -99,6 +99,7 @@ While in the agent prompt (`User> `), use these commands at any time:
 | `/help` | Display interactive command cheatsheet and usage tips. |
 | `/new` | **Start a new conversation**: Clears chat history and resets context window without restarting the agent. |
 | `/compact` | **Compact conversation history**: Truncates verbose older tool outputs while keeping recent turns and strict tool IDs intact, reducing context bloat and speeding up serialization on slow CPUs. |
+| `/stats` | **View session statistics**: Inspect live session duration, user/assistant turns, API calls, tokens (input, output, cache), and per-tool usage. |
 | `/ctx [tokens]` | **View or set max output tokens**: Inspect current generation limit (default: 4k / 4,096 tokens) or set a new limit for model responses (e.g. `/ctx 65536`, `/ctx 64k`, `/ctx 128k`). |
 | `/auto` | **Enable Autonomous Mode**: Tools (`write_file`, `edit_file`, `run_shell`) execute without asking for permission. |
 | `/manual` | **Enable Manual Mode**: Requires explicit `[y/N]` user confirmation before modifying files or running shell commands. |
@@ -202,6 +203,15 @@ On vintage PowerPC processors (G3/G4/G5), pure-Perl JSON re-serialization of lar
 - **Manual Compaction**: Run `/compact` at the prompt anytime to immediately compress older tool results.
 - **Schema & ID Integrity**: Unlike naive truncation, the compaction algorithm strictly preserves `tool_use_id` / `tool_result` pairing required by Anthropic Claude and Gemini function calling schemas, preventing API errors caused by mismatched or orphan tool blocks.
 - **Configuration**: Fine-tune compaction via `CLAUDE_AUTO_COMPACT` (`1` or `0`), `CLAUDE_COMPACT_THRESHOLD_CHARS` (default: `100000`), and `CLAUDE_COMPACT_THRESHOLD_TURNS` (default: `10`).
+
+### Session Statistics & Token Metrics (`/stats`)
+
+Inspect live session health and token economics at any time during an interactive session by running `/stats`:
+- **Session Duration & Timestamp**: Track total active conversation lifetime and start time.
+- **Turn & Message Activity**: View user turns, assistant responses, total messages in history, and API call count.
+- **Multi-Provider Token Usage**: Monitor input, output, and total tokens across Anthropic, Gemini, and OpenAI, including cache read and write tokens when available.
+- **Tool Invocations Breakdown**: Live audit of total tool executions with an alphabetical per-tool breakdown and sub-agent invocation count.
+- **Compaction Savings**: Track cumulative compaction events and total bytes saved from context optimization.
 
 ---
 
@@ -405,7 +415,7 @@ perl scripts/check_minimum_version.pl --perl 5.008006 code-agent.pl build.pl scr
 prove -v t/*.t
 ```
 
-Test coverage includes 24 automated test suites:
+Test coverage includes 25 automated test suites:
 - `t/agents_context.t`: Global (~/.agents/AGENTS.md) and project-local instructions loading and deduplication.
 - `t/auto_manual_commands.t`: Unit tests for `/auto`, `/manual`, state accessors, and tool bypass logic.
 - `t/banner.t`: Unit tests for two-tone ANSI banner formatting, 80-column bounds, and `$NO_COLOR` graceful degradation.
@@ -426,6 +436,7 @@ Test coverage includes 24 automated test suites:
 - `t/retry.t`: Unit tests for automatic LLM API call retry logic (max 3 retries, 5s delay, transient HTTP/JSON/provider error recovery, and sub-agent resilience).
 - `t/select_model_interactive.t`: Terminal menu navigation, key reading, and scrolling tests.
 - `t/skills_context.t`: Global (`~/.agents/skills`) and project (`./.agents/skills`) skill frontmatter parsing, scope tagging (`[global]` / `[project]`), `dev`/`ino` deduplication, and lazy `<available_skills>` system prompt injection.
+- `t/stats_command.t`: Unit tests for session statistics, provider token extraction, formatting engine, `/stats` command, and `/new` reset.
 - `t/subagents.t`: Unit tests for sub-agent invocation (`plan`/`build`), turn countdown injection, loop limits, and ANSI tree formatting.
 - `t/thinking_visuals.t`: Extended reasoning / thinking progress visual timers.
 - `t/tool_call_visuals.t`: ANSI formatting and compact parameter summaries for tool calls.

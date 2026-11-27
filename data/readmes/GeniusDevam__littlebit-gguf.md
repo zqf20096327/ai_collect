@@ -1,6 +1,8 @@
 # littlebit-gguf
 
-Run **sub-1-bit LittleBit and LittleBit-2 language models in llama.cpp**, using the 1-bit `Q1_0` tensor type llama.cpp already ships instead of writing new kernels.
+Run and measure **sub-1-bit research models in llama.cpp**, using the 1-bit `Q1_0` tensor type llama.cpp already ships instead of writing new kernels. LittleBit and LittleBit-2 models work today. Support for NanoQuant models and mixture-of-experts models is the next revision.
+
+It is a tool for running published sub-1-bit checkpoints and for comparing them fairly with normal quantization. With today's methods, a sub-1-bit model is not the best use of a given file size: see [When is sub-1-bit worth it?](#when-is-sub-1-bit-worth-it).
 
 > **This is a research project.** It is independent and experimental, and it is not affiliated with or endorsed by Samsung or the llama.cpp project. Expect breaking changes and rough edges.
 
@@ -181,13 +183,48 @@ The 8B checkpoint with Q2_K embeddings and output is about 1250 MiB. A dense Qwe
 
 These runs are luben93's, not reproduced here, because this project has no GPU. Protocol: `llama-perplexity -c 2048 -b 2048 -ngl 99` on an RTX A1000 6 GB with llama.cpp `9183a55` plus luben93's patch, over all 145 windows of the WikiText-2 test split, scoring the second half of each window. The numbers are not comparable with the 12-window CPU tables above. Sources: [LittleBit](https://github.com/luben93/littlebit-llamacpp/blob/5ca825f6f71e5c690cd2dc4326ff615d73667cda/results/same-size/ppl-littlebit-8b-q2_k.wiki.txt) and [Qwen3-1.7B](https://github.com/luben93/littlebit-llamacpp/blob/5ca825f6f71e5c690cd2dc4326ff615d73667cda/results/same-size/ppl-qwen3-1.7b-Q4_K_M.wiki.txt) logs, and the speed table in [bench-cuda.tsv](https://github.com/luben93/littlebit-llamacpp/blob/5ca825f6f71e5c690cd2dc4326ff615d73667cda/results/same-size/bench-cuda.tsv). ScarionWorkspace measured the same ordering on a different GPU with all positions scored: 24.70 for a 1225 MiB LittleBit file against 16.90 for the 1223 MiB dense model, in [their baseline table](https://github.com/ScarionWorkspace/littlebit-gguf/blob/ef3ebbafc6386ea72d689311365ee87e29ad269a/results/baselines/TABLE.md). At this size this checkpoint does not beat the dense model.
 
+## Trained Qwen3-0.6B against same-size models
+
+This project trained Qwen3-0.6B itself with quantization-aware training and distillation from the original model: 99.2M tokens of WikiText-2 train (repeated four times) and one C4 train shard, on two Kaggle T4 GPUs, with the trainer on the [`train-r3` branch](https://github.com/GeniusDevam/littlebit-gguf/tree/e593d6553ef640d0a09ce85f49fc31d4f73286b6/train). The projections are 0.6792 bits per weight in `Q1_0` and the embeddings Q4_K, 131 MB in total. The checkpoint and the GGUF are in the [`littlebit-qwen3-0.6b-v1` release](https://github.com/GeniusDevam/littlebit-gguf/releases/tag/littlebit-qwen3-0.6b-v1) and on Hugging Face as [`DaddyDevam/littlebit-qwen3-0.6b`](https://huggingface.co/DaddyDevam/littlebit-qwen3-0.6b). It is a research model: read the results below before using it.
+
+It was compared on three texts with models of a similar or larger file size. Two texts are unlike its training data:
+
+- **WikiText-2:** the raw test split, with the rows joined without separators, 1,287,656 bytes (sha256 `bbf94c53a05abe9ee670d3b6343608095822c85e26de37c70b24fc571964574a`: the same hash as ScarionWorkspace's file, built the way luben93 describes). Close to the training data.
+- **Book:** *Barchester Towers* by Anthony Trollope, [Project Gutenberg 3409](https://www.gutenberg.org/ebooks/3409), the first 599,941 bytes after the header (sha256 begins `8f36592d4bb5e652`).
+- **Code:** Python 3.14 standard library files, 388,595 bytes (sha256 begins `1e3e6fcd3409eb96`).
+
+SmolLM2 splits text into different tokens, so the table compares bits per byte: `log2(perplexity) × tokens / bytes`. Lower is better. Perplexity follows in brackets; it is comparable between the Qwen3 rows only.
+
+| Model | File (bytes) | WikiText-2 | Book | Code |
+| --- | ---: | ---: | ---: | ---: |
+| LittleBit Qwen3-0.6B, this project | 131,172,416 | 1.168 (32.70) | 1.597 (94.26) | 1.399 (32.45) |
+| Qwen3-0.6B Q2_K with importance matrix | 296,238,016 | 1.185 (34.38) | 1.382 (51.15) | 0.773 (6.84) |
+| SmolLM2-135M Q6_K | 138,382,432 | 0.901 | 1.023 | 0.681 |
+| SmolLM2-135M Q8_0 | 144,810,592 | 0.899 | 1.021 | 0.679 |
+| Qwen3-0.6B Q8_0 (reference) | 639,446,784 | 0.966 (17.90) | 1.156 (26.85) | 0.531 (3.75) |
+
+The trained model beats Q2_K only on WikiText-2, the text closest to its training data, and loses clearly on the book and the code. SmolLM2-135M at a similar file size beats it on all three. Training on a narrow corpus made the model good at that kind of text and worse at the rest.
+
+Method: `llama-perplexity -c 2048 -b 2048 -ub 512 -ngl 0 -t 4` with this repo's CPU build at `f9f2ecd`, scoring the second half of every window. The importance matrix for Q2_K came from `llama-imatrix` with 200 windows of 512 tokens of C4 validation text. The dense Qwen3 files store the shared embedding once, as luben93's do. The Q8_0 and Q2_K scores on WikiText-2 match luben93's (17.90 and 34.37) on the same text.
+
+## When is sub-1-bit worth it?
+
+Not yet, as far as anyone has shown:
+
+- The Qwen3-8B checkpoint above loses to a dense Qwen3-1.7B of the same file size.
+- The Qwen3-0.6B model trained here loses to SmolLM2-135M of a similar size, and to Q2_K outside its training domain.
+- NanoQuant's own [Qwen3 chart](https://github.com/SamsungLabs/NanoQuant/blob/a9e0a43/media/qwen3_pareto.png) shows the same: at every file size, its 2-bit models have lower WikiText-2 perplexity than its 1-bit models, which beat its 0.55-bit models.
+
+So for a fixed file size, a smaller model at about 2 bits is the better choice today. This project stays useful for running and checking sub-1-bit research models, and for measuring new methods against normal quantization with the same tools.
+
 ## Related work
 
 - LittleBit: [arXiv:2506.13771](https://arxiv.org/abs/2506.13771). LittleBit-2: [arXiv:2603.00042](https://arxiv.org/abs/2603.00042).
 - Official training code: [SamsungLabs/LittleBit](https://github.com/SamsungLabs/LittleBit) (CC BY-NC 4.0). No code from it is used or redistributed here.
 - [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT), whose `Q1_0` type was added for PrismML's 1-bit Bonsai models.
 - Sister project: [littlebit.cpp](https://github.com/GeniusDevam/littlebit.cpp), dedicated CPU kernels for LittleBit layers.
-- [luben93/littlebit-llamacpp](https://github.com/luben93/littlebit-llamacpp) (MIT) is a parallel implementation of the same Q1_0 approach.
+- [luben93/littlebit-llamacpp](https://github.com/luben93/littlebit-llamacpp) (MIT) is a parallel implementation of the same Q1_0 approach. Its [`reference_ppl.py`](https://github.com/luben93/littlebit-llamacpp/blob/3754496/scripts/reference_ppl.py) computes perplexity from the checkpoint in PyTorch and shares no code with this project, which makes it a good independent check.
+- NanoQuant: [SamsungLabs/NanoQuant](https://github.com/SamsungLabs/NanoQuant) (Apache-2.0), sub-1-bit post-training quantization with the same layer form as one LittleBit path.
 
 ## License
 

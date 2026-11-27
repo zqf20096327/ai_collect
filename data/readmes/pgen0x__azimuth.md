@@ -7,7 +7,7 @@
 
 # Azimuth — Concentrated-Liquidity Pool Signal Daemon for AI Agents
 
-[![Version](https://img.shields.io/static/v1?label=version&message=2.26.0&color=informational)](CHANGELOG.md) <!-- x-release-please-version -->
+[![Version](https://img.shields.io/static/v1?label=version&message=2.28.0&color=informational)](CHANGELOG.md) <!-- x-release-please-version -->
 [![Go Version](https://img.shields.io/badge/go-1.22%2B-00ADD8?logo=go&logoColor=white)](go.mod)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-yellow)](#project-status)
@@ -575,6 +575,7 @@ installs the named units into `~/.config/systemd/user/` and enables them.
 | `azimuth-sol-net-research@.timer` | research | `dlmm_net_experiment.py dry-tick` per named instance | `~/.local/state/azimuth/optimization/<name>/` | off | copied by `--with-research`, enable `@<name>` by hand |
 | `azimuth-grad-paper` | research | `grad_paper.py`, long-running: graduation paper-trader polling public GeckoTerminal/Jupiter | paper trades in `memories/grad_paper/`; no wallet, no tx | off | `--with-paper` |
 | `azimuth-lp-paper` | research | `lp_majors_paper.py`, long-running: modelled two-sided DLMM positions in fixed majors/tokenized-stock pools from the public Meteora datapi, with bin liquidity from a keyless public RPC | hourly paper rows in `memories/lp_majors_paper/`; no wallet, no tx | off | `--with-lp-paper` |
+| `azimuth-risk-guard.timer` | safety | `dlmm_risk_guard.py` every 10 min: flow-adjusted wallet equity from `dlmm_nav.jsonl` against its high-water mark | `~/.local/state/azimuth/risk_{hwm,pause,status}.json` + `risk_guard.jsonl`; at a `RISK_MAX_DRAWDOWN` (default 0.30) drawdown, or 12h without an acceptable NAV row, the executor refuses new entries (exits keep running) until `--resume --note` | off | `--with-risk-guard` (run `--init-hwm current` first) |
 
 Only the rent timer sends transactions, so it has its own flag. `--with-ops`
 installs its files but does not enable it.
@@ -617,7 +618,7 @@ The alerts process reads these from its own environment, so set them with an
 `Environment=` line in a drop-in (`systemctl --user edit azimuth-alerts.service`).
 Without `-send-cmd` the messages only go to the unit's journal; to deliver them
 over Telegram, restate `ExecStart` in the same drop-in with
-`-send-cmd "%h/.local/bin/hermes send -t telegram"` (the unit header has the
+`-send-cmd "%h/.local/bin/hermes -p <profile> send -t telegram"` (the unit header has the
 exact lines). Alerts never trade or stop anything.
 
 ### Rent reclaim, markers, retention

@@ -38,7 +38,7 @@
 
 AI assistants write ratatui from memory. They reach for old APIs and wrong crate versions, then ship a UI that looks generated: neon defaults, decorative panels, keys that do nothing.
 
-**ratatui-skill** replaces that with a fixed process and a tested template. The assistant looks up what is current, writes a design brief before any code, builds from a working codebase, and proves the result before it says "done".
+**ratatui-skill** replaces that with a fixed process and a tested template. The assistant looks up what is current, writes a design brief before any code (new apps only), builds from a working codebase, and proves the result before it says "done".
 
 ## Quick start
 
@@ -76,7 +76,7 @@ Assistants that read `AGENTS.md` instead of loading skills can use the one at th
 <details open>
 <summary><b>Five steps, in order</b></summary>
 
-1. **Research.** Look up the newest stable version and minimum Rust version of every crate, read the release notes, confirm widget crates match the ratatui version, and compile anything uncertain.
+1. **Research.** Look up the newest stable version, minimum Rust version, and (when given a manifest) the version resolved by the project of every crate, read the release notes, confirm widget crates match the ratatui version, and compile anything uncertain.
 2. **Design brief.** Before any code: layout archetype, one accent color, density, keys, and what each empty or failed state shows, justified from the app's data.
 3. **Build** from a tested template with a strict split: state with no terminal types, rendering with no side effects, and one key table that drives input, footer hints and help.
 4. **Verify.** `cargo fmt --check`, clippy with warnings denied, tests, text dumps of the screen at several sizes, a run in a real pseudo-terminal, and a slop scan.
@@ -84,7 +84,7 @@ Assistants that read `AGENTS.md` instead of loading skills can use the one at th
 
 </details>
 
-<details>
+<details open>
 <summary><b>The rules it enforces</b></summary>
 
 - Everything visible works. No fake data, decorative panels or dead keys.
@@ -115,6 +115,9 @@ The default uses the 16 ANSI colors from your terminal palette. `NO_COLOR` rende
 
 ```text
 AGENTS.md                      the process in short form, for agents without skill support
+assets/                        banner, demo, faq and sponsor images
+docs/                          version-aware distribution proposal
+evals/                         10 evaluation tasks, harness, scoring rubric, results
 skills/ratatui/
   SKILL.md                     the process
   references/
@@ -122,7 +125,7 @@ skills/ratatui/
     ux-principles.md           layouts, keys, color, responsiveness
     slop-tells.md              what reads as generated, with before and after
   scripts/
-    crate-versions.sh          newest stable version and MSRV from the crates.io index
+    crate-versions.sh          newest stable version and MSRV via cargo info
     lint-slop.sh               mechanical slop scanner; exit status gates CI
     pty-smoke.py               run a TUI in a pseudo-terminal and check it behaves
   templates/dirview/           a complete ratatui 0.30 directory browser

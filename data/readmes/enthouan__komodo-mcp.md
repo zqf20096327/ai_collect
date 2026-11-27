@@ -11,6 +11,8 @@ The [operator walkthrough](docs/operator-quickstart.md) covers transport credent
 resource permissions, a three-tool diagnosis and recovery after a lost reply.
 The [self-hosted beta guide](docs/self-hosted-beta.md) covers a verified native
 archive and authenticated HTTP with a version-matched Compose checkout.
+Check the [stable support policy](docs/stable-support.md) for tested combinations
+and the [upgrade and rollback guide](docs/upgrade-v1.md) for existing installations.
 
 On Intel macOS, the benchmark compares the selected native komodo-mcp package
 with independent Rust and TypeScript reference servers. It covers synthetic

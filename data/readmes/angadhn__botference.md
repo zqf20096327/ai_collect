@@ -9,27 +9,168 @@
 > [!NOTE]
 > This README was AI-generated. I (Angadh) have skimmed and supervised its creation.
 
-Multi-LLM planning where you and the AIs collaborate in a **council** — a
-free-form group chat where the bots can also hand each other the floor and
-hash things out directly, with you steering. The result is an
-`implementation-plan.md` and `checkpoint.md` you can take into any workflow.
+Botference runs Claude and Codex side by side on your own computer. It uses
+the `claude` and `codex` command-line tools that you already have, so it runs
+on your existing subscriptions. One tool is enough to start.
 
-**The primary contribution of this repository is plan mode** — a multi-LLM
-planning session where Claude and Codex collaborate in real time. This is the
-part that works well and is ready for use.
+Botference started as a planning tool. It is now five products in one
+repository. Some of them share data: for example, Discuss saves its bot chats
+as council chats. You can use each product alone.
 
-> [!WARNING]
-> This is vibe-coded. Use at your own risk. Research-plan mode and build mode
-> are deeply experimental — under active development, will change without
-> notice, and not recommended for general use. If you are here to get things
-> done, use `botference plan` and take the resulting plan into your own
-> workflow.
+Botference is a personal project. One person builds it for their own work, and
+some parts assume that person's set-up. Each product below says how ready it
+is.
 
-**Ink TUI** — projects panel (left), full-width council panel (right), input
-field and status line at the bottom. This is the primary interface and
-default planner UI:
+## The five products
 
-![Ink UI — council panel with status line](docs/images/ink-ui.png)
+| Product | What it does | Start with | State |
+|---------|--------------|------------|-------|
+| [Council](#1-council-claude-and-codex-in-one-room) | You, Claude and Codex plan and argue in one chat | `./botference` | Planning is ready to use |
+| [Discuss](#2-discuss-comment-on-any-web-page-and-ask-the-bots) | Comment on any web page and ask the bots about it | `./botference discuss` | In daily use; changes often |
+| [Document review](#3-document-review-margin-comments-on-your-latex-or-markdown) | Margin comments on your LaTeX or Markdown, with bot replies | `botference review` | Works; needs pandoc |
+| [Blygger publishing](#4-blygger-publishing-read-follow-and-publish-blyg-posts) | Read, follow and publish posts on Blygger blogs | [docs/blygger.md](docs/blygger.md) | Experimental |
+| [Agent tools](#5-agent-tools-screenshots-and-long-running-services) | Screenshots and long-running services for coding agents | `botference see` | Small and simple |
+
+### 1. Council: Claude and Codex in one room
+
+The council is a chat in your terminal with three members: you, Claude and
+Codex. A bot can hand the floor to the other bot, so the two argue a point
+before they come back to you. A turn and token budget limits each exchange,
+and you can type to interrupt at any time.
+
+Ask for a plan, and the bots write `implementation-plan.md` and
+`checkpoint.md`. Ask for code, and the bots can start build agents and run the
+project's tests. The same council also runs as a web app in your browser
+(`botference plan --web`) and on your phone through a tunnel
+(`botference plan --share`).
+
+**Useful for:** people who use both Claude Code and Codex and want two models
+to check each other's plans and designs.
+
+**State:** the most mature product. Planning is ready to use. Builds from the
+council are newer. The `research-plan` mode and the `build` loop are
+experimental (see [Overview](#overview)).
+
+**Start:** `cd ink-ui && npm install` once, then `./botference`.
+
+![The council in the terminal: a projects panel on the left, and Claude and Codex discussing a question on the right](docs/images/ink-ui.png)
+
+### 2. Discuss: comment on any web page and ask the bots
+
+Discuss is a browser extension for Chrome or Brave, plus a small local server
+called the companion. Highlight a passage on any article and write a comment
+on it. Mention `@claude`, `@codex` or `@all`, and the bots answer in the same
+thread, in a drawer at the side of the page. A thread without a mention stays
+a private note.
+
+Discuss exports each page to one Obsidian note. It also has a library chat
+that asks about every page you annotated, and a question vault. The question
+vault (also called the memorizer) turns a passage into a quiz question and
+asks it back on a schedule. A reading room shows your pages and threads on a
+phone.
+
+**Useful for:** people who read a lot on the web, want to discuss what they
+read with an AI, and keep their notes in Obsidian.
+
+**State:** in daily use, and it changes often. The extension is not in a
+store: you load it once as an unpacked extension in developer mode. Without
+the `claude` or `codex` tool, highlights, comments and export still work. A
+permanent address for your phone needs your own domain on Cloudflare; the
+defaults name the owner's domain, so set `BOTFERENCE_PLUGIN_HOSTNAME`.
+
+**Start:** `./botference discuss`, then load `frontends/plugin/extension` at
+`chrome://extensions` (see [Discuss](#discuss-botference-discuss)).
+
+![An article in the browser with two highlighted passages, and the Discuss drawer open on the right with a comment thread](site/plugin-annotator.png)
+
+### 3. Document review: margin comments on your LaTeX or Markdown
+
+Run `botference review` in a document repository. It renders your LaTeX,
+Markdown or Jupyter Book as a web page with comments in the margin, like
+Google Docs. Tag a bot in a comment, and it answers in the thread or suggests
+a change. When you accept a change, Apply writes it to the source files and
+Commit commits it with git.
+
+Other people can review through git, or through a password-protected link
+(`botference review --share`).
+
+**Useful for:** people who write papers, theses or books in LaTeX or Markdown
+and want comments from people and bots on the same page.
+
+**State:** works, and needs pandoc. The review hub, which keeps several papers
+online at one address, needs your own domain on Cloudflare (see
+[Document Review](#document-review-paper-review)).
+
+**Start:** `botference review` in the folder of your document.
+
+### 4. Blygger publishing: read, follow and publish blyg posts
+
+[Blygger](https://blygger.org) is an open protocol for small blogs that quote
+each other by reference. A post on such a blog is a blyg post. Discuss
+recognises blyg posts, checks each highlight against the post's text, and
+exports quotes by reference.
+
+From a Discuss thread, one press publishes your words and the highlighted
+passage to your own site as a blyg post. A publish queue sends the posts one
+at a time. An agent can write a passage of your comment (`/tk`), and the
+passage stays in a box marked as an AI's text. The Hub (`/hub` on the
+companion) is a private feed of the blygs you follow. For drafts that you
+write in Obsidian, `botference fill-gap` gives a blog's own scripts the same
+agent passages. `botference hub-link pair` links a Hub hosted on your blog to
+the companion, so a reply you write there on your phone is filed, filled and
+published through your computer.
+
+One complete set-up built this way: you read the blygs you follow in a private
+Hub on your phone, select a passage, type or speak a reply, and your computer
+at home publishes it to your own static site as a response that quotes the
+exact passage. The same Hub can add to an earlier reply as a new version,
+start a post that answers nobody, and show clipped articles to read and reply
+to. [docs/blygger-setup.md](docs/blygger-setup.md) describes the parts, how a
+reply travels, what is in this repository and what is not, and what you need
+to copy it. For the Blygger hackathon entry, start with
+[HACKATHON.md](HACKATHON.md).
+
+**Useful for:** people who write a Blygger blog, or want to follow some.
+
+**State:** experimental. It was built during the Blygger hackathon, 20–27
+November 2026. Publishing runs your site's own commands, and the only example
+set-up is one Jekyll site. The [laws for publishing](docs/laws.md) are
+proposed, not adopted.
+
+**Start:** [docs/blygger.md](docs/blygger.md), or
+[botference.com/blygger.html](https://botference.com/blygger.html).
+
+### 5. Agent tools: screenshots and long-running services
+
+`botference see` opens a page or a local HTML file in headless Chrome. It
+writes one screenshot for a phone and one for a desktop, so that an agent can
+look at the page it built. `botference service` starts a server or a tunnel
+that keeps running after the agent's shell ends.
+
+**Useful for:** people who let coding agents build web pages, charts or
+servers.
+
+**State:** small commands with few parts. `see` needs Chrome installed.
+
+**Start:** `botference see <url>` (see [Agent Eyes](#agent-eyes-botference-see)
+and [Long-Running Services](#long-running-services)).
+
+### Parts built for one set-up
+
+Some parts assume the owner's own accounts and machines:
+
+- The council can read the mail of a Google account set up for the bots, and
+  review a Google Doc from its link. Both need a Google Cloud OAuth client
+  and a separate Google account (see
+  [docs/google-docs-review.md](docs/google-docs-review.md)).
+- Autostart for the companion (`--install-autostart`) and the review hub's
+  device approval work on macOS only.
+
+## The council's terminal UI
+
+The Ink TUI has a projects panel on the left, a full-width council panel on
+the right, and an input field and status line at the bottom. It is the
+council's main interface.
 
 The Projects panel lists `Inbox` plus every folder under `projects/`. The
 controller sends the recent resumable chats for **every** project — up to
@@ -57,7 +198,8 @@ turn, so you can `/resume <its-id>` to come back later. `/resume <id>` reaches
 any saved chat, including one filed under a different project; opening it
 makes that chat's project the active one.
 
-The Ink TUI is the only frontend. First use after clone: `cd ink-ui && npm
+The Ink TUI is the council's terminal frontend (`botference plan --web` serves
+the same council in a browser). First use after clone: `cd ink-ui && npm
 install`. It supports app-level pane-clamped text selection, multiline input
 (Shift+Enter), streaming, and activity status. Use `--claude` to skip Codex
 and run a solo Claude session (no TUI, just the Claude CLI).
@@ -73,7 +215,7 @@ expand them in `botference/project.json`.
 
 ## Approach
 
-Botference is built around one metaphor: the **council** — an open room where
+The council is built around one metaphor — an open room where
 you and the AIs all talk, like a three-person group chat. You steer the
 conversation, ask questions, push back, and direct who speaks; the bots can
 also hand each other the floor and debate directly (budgeted, and you can
@@ -156,6 +298,8 @@ From a target project root:
 botference init                            # Create project-local botference/ state (and register it with Discuss)
 botference site                            # Just the Discuss half, for a repo already initialised
 botference fill-gap < request.json        # One agent passage for a gap in your own draft (JSON in, JSON out; for a blog's scripts)
+botference hub-link pair --hub https://blog.example.com   # Let your hosted Hub send replies to this computer (also: rotate, off, status)
+botference clippings check                 # Check the clippings your Hub may show as a Reading list (also: list)
 botference profile                         # Profiles: whose Claude/Codex accounts and history the bots use
 botference profile add ada                 # A new profile with its own logins and history; signs it in
 botference profile use ada                 # Switch the whole machine (restarts Discuss + council)
@@ -1494,6 +1638,40 @@ make it authoritative, run `codex login --with-api-key` yourself. (There
 is a config key that forces it, and it silently deletes your
 `~/.codex/auth.json` when it switches — botference never sends it.)
 
+## The botference blyg (botference.com/blyg/)
+
+The project's release notes are a blyg: a blog that follows the
+[Blygger](https://blygger.org) protocol, version 0.4. Other blygs can quote
+and answer each post by reference. Each post is a Markdown file in
+`blyg/posts/`. The script `scripts/blyg.mjs` turns the posts into the static
+files under `site/blyg/`: the manifest `blyg.json`, the archive index
+`items/index.json`, one item document per post in `items/`, the RSS feed
+`feed.xml`, and an HTML page per post at `t/<id>/`. The generated files are
+committed, because GitHub Pages serves `site/` as it is.
+
+To add a post:
+
+1. `node scripts/blyg.mjs new <slug>` writes `blyg/posts/<date>-<slug>.md`
+   with a new id and a `v1:` line holding the time now. Never change the id.
+2. Write the text under the front matter. The first line, a `# ` heading, is
+   the post's title. Use ordinary Markdown links; write full `https://`
+   addresses. The generator refuses Blygger's `[[…]]` quote and link grammar.
+3. `node scripts/blyg.mjs build`, then
+   `BLYG_CHECKER=<blygger-spec>/conformance/schemas/lib node scripts/blyg.mjs check`
+   to run the Blygger conformance checker.
+4. Run `node --test tests/blyg.test.mjs`, commit the post and `site/blyg/`,
+   and push to `main`.
+
+To change a published post, edit its text and run
+`node scripts/blyg.mjs version <file> "what changed"`. This adds the next
+version line, with the time and the note. The build refuses a text change
+without a new version line, and it refuses any change to a version line that
+is already published. The note must describe the change; it must not quote
+the old text, because older versions are not kept online.
+
+The generator does not do withdrawal, pins, quotes of other blygs, or
+Webmention. A published post cannot be removed.
+
 ## Usage ping
 
 Discuss sends one anonymous event a day so I can tell whether anyone is
@@ -1689,184 +1867,4 @@ generated images, and inline document figures, agents must follow
 
 Botference also enforces this after each agent turn. If Claude or Codex changes
 or generates a rendered artifact and the turn does not include a matching render
-check, Botference adds a system-level **Visual verification gate** warning and
-marks the artifact as **User-review needed**. For `.tex` edits, the generated
-PDF is the rendered artifact: a compile step alone is not enough; the PDF must
-also be inspected with `view_pdf_page`, a screenshot, or an equivalent visual
-check.
-
-Verification actions are marked in the tool stack as `[verify]` and rendered
-with a distinct bright accent in the Ink UI, so visual checks are easier to
-spot while a turn is running or after it completes.
-
-Botference includes a deterministic HTML visual gate:
-
-```bash
-python3 "$BOTFERENCE_HOME/tools/cli.py" visual_check_html '{"html_file":"botference/projects/spaceshipengineering/index.html"}'
-```
-
-The tool renders the page at desktop, tablet, and mobile widths, saves
-screenshots plus `report.json` under `$BOTFERENCE_WORK_DIR/visual-checks/`,
-and reports layout failures such as horizontal overflow, clipped text,
-overlapping visible text, console errors, and page errors. It is intentionally
-usable from plan and research-plan mode through Bash, so agents can inspect
-their own generated HTML without another model turn.
-
-Install the browser dependency once when you want automatic visual checks:
-
-```bash
-python3 -m pip install playwright
-python3 -m playwright install chromium
-```
-
-If Playwright is unavailable, agents must report **User-review needed** and
-tell you which artifact to reload.
-
-For a fresh clone, install Ink's Node dependencies once before using the
-default planner UI:
-
-```bash
-cd ink-ui && npm install
-```
-
-> **API keys:** If your terminal already has Claude Code and Codex configured
-> via subscription accounts (e.g. Claude Max, OpenAI Plus), Botference works
-> out of the box with no extra setup. In build mode, subscription users run
-> through the MCP fallback path (`fallback_agent_mcp.py` → `claude -p`).
->
-> If you provide an API key, build mode uses the direct agent runner
-> (`botference_agent.py`) instead, which owns the tool-calling loop and
-> gives finer control over retries, context tracking, and token accounting.
-> Copy the example env file and add your keys:
-> ```bash
-> cp .env.example .env
-> # Then edit .env with your ANTHROPIC_API_KEY and/or OPENAI_API_KEY
-> ```
-> Botference will auto-load keys from `.env` when they are not already in
-> your environment. Do **not** commit `.env` to version control.
->
-> > Warning
-> > If `OPENAI_API_KEY` is present in `.env` or your shell environment,
-> > Botference will prefer API-key auth for Codex and re-run `codex login
-> > --with-api-key` on startup. That overrides a subscription/device login for
-> > the local Codex CLI. If you want Codex to use your subscription login
-> > instead, remove `OPENAI_API_KEY` before launching Botference.
-
-## Using the Chat
-
-### Messaging
-
-Type freely to send a message. By default your first message goes to both
-models; after that, messages are sticky to whoever you last addressed.
-
-| Input | Effect |
-|-------|--------|
-| `@all <msg>` | Send to both Claude and Codex |
-| `@claude <msg>` | Send to Claude only |
-| `@codex <msg>` | Send to Codex only |
-| `<msg>` | Auto-routed (first message → @all, then sticky to last target) |
-
-Messages in the council panel are labelled by speaker:
-
-- **Claude** — Claude's responses
-- **Codex** — Codex's responses
-- **You** — your messages
-- **System** — the framework talking to you, not an LLM. Covers:
-  - Session lifecycle (starting, relaying, or tearing down a model)
-  - Mode changes (draft started, draft complete)
-  - Errors and warnings
-  - Command feedback (lead set, usage info)
-  - Deterministic file-write feedback (`implementation-plan.md`, reviewer comments, `checkpoint.md`)
-
-Tool activity in the council is shown as a short folded summary under the
-model response rather than a raw command/output transcript. Deliberate code
-excerpts still render as code blocks.
-
-### Free-form planning
-
-The council behaves like a real group chat: you send a message, the addressed
-model(s) reply, and a bot's reply can hand the floor to the other bot, who
-replies immediately, recursively, until someone hands the floor back to you.
-Every bot-to-bot thread is seeded by one of your messages — the bots never
-start talking while the room is idle — but within a thread they exchange as
-many turns as the budget allows without any prompting from you.
-
-Mechanics:
-
-- Every bot reply ends with a small JSON footer (stripped from the display)
-  declaring `status` (`continuing` / `converged` / `blocked`), `next`
-  (`@claude` / `@codex` / `@user`), and a one-line summary. `next: "@codex"`
-  gives Codex the floor; `next: "@user"` — or no footer and no mention —
-  returns it to you. A prose `@mention` of the other bot works as a fallback
-  if a model forgets the footer.
-- **Budgets, not hard stops.** A bot-to-bot thread gets 6 bot turns and ~8K
-  output tokens; each turn prompt shows the countdown so the models pace
-  themselves. On exhaustion the controller grants one automatic extension
-  (+3 turns / +4K tokens), then forces the floor back to you with the last
-  footer summary. The thread pauses rather than dies — reply (even just
-  "continue") and they pick up with a fresh budget.
-- **You always preempt.** Typing while Claude is speaking steers its current
-  turn in place (see [Steering](#steering--typing-while-the-bots-work));
-  anything else you type pauses the thread at the next turn boundary and
-  the floor is yours.
-- **Conciseness is enforced by measurement.** If a bot's turn exceeds ~400
-  output tokens, its next prompt carries a cap nudge.
-- **Writer consensus sets the lead.** The footer has an optional
-  `writer: "@claude"|"@codex"` field. When both bots vote for the same
-  writer, the lead is set automatically (a manual `/lead` always wins).
-
-Turn-based behavior is the degenerate case of free-form: a reply with no
-handoff (no footer, no mention) simply returns the floor to you.
-
-### Pairing builds
-
-Run the council inside a code repo and ask for something to be built, in your
-own words. There is no command: the bots work out from what you say that it
-is a build, spec it between them, and ask you first if the brief is too thin.
-When they start, one says so in a line and marks its footer
-`"build": "building"`. From that turn the thread is a build thread and the
-caps above are lifted for it:
-
-- **No turn or token cap.** The thread ends when a bot's footer says
-  `converged` with `"build": "done"`, when a bot says `blocked`, when you type
-  anything, or after 8 hours (`BOTFERENCE_BUILD_HOURS`, or `"build_hours"` in
-  `botference/project.json`). A thread whose footers never carry `build`
-  keeps the 6 plus 3 caps.
-- **Done means done.** `done` is accepted only when the last build agent in
-  the thread reported success and the project's test command passed. Name it
-  as `"test"` in `botference/project.json` (for example
-  `"test": "pytest tests/ && (cd ink-ui && npm test)"`); it runs from the
-  project root with a 20-minute limit, and the tail of a failing run is shown
-  in the room and given to the bots, who keep going.
-- **Roles by strength.** A summon brief may start with a kind tag:
-  `summon: [ui] …` runs Claude Code on Opus 5.5 (anything a person sees),
-  `summon: [logic] …` runs Codex on the room's Codex model (behaviour:
-  controller code, adapters, parsing, protocols, shell). No tag keeps the
-  summoner's own builder. Change either under `builder.tasks.ui` /
-  `builder.tasks.logic` in `context-budgets.json`.
-- **Review in both directions.** The bot that summoned a builder never judges
-  its report: the floor goes to the other bot, which reads `git diff`, runs
-  the tests and reports in at most ten lines, then summons a fix or marks the
-  task done. Independent pieces are summoned together — one `summon:` line
-  each — and run as several agents at once, six at a time; after the reports
-  a bot may summon again (a fix, the next stage) without asking.
-- **Tests stay proportionate.** The room and every builder carry one rule:
-  a test only for a stated contract or something just seen failing, one test
-  per behaviour, no snapshot tests, and a reason for more than three.
-- **Long threads stay fresh.** Each bot is relayed (fresh session,
-  structured handoff) after ten of its own turns or when its context passes
-  60 percent; the room does not stop for it.
-- The footer's `"build"` field (`specifying`, `building`, `reviewing`,
-  `done`) is shown in the room at each change of stage.
-
-The thread never commits or pushes unless you asked. A thread is not saved
-mid-run: if botference restarts, the chat comes back as an ordinary chat with
-the whole build on the record, and a reply such as "carry on" lets the bots
-pick it up.
-
-### Commands
-
-| Command | What it does |
-|---------|-------------|
-| `/lead @claude\|@codex` | Manually set which model writes the plan. You can also use `/lead auto` to let the bots' writer consensus decide. |
-| `/draft [rounds]` | Update the project-local `implementation-plan.md` via the lead model, with optional AI review rounds. Defaults to `2`; `/draft 0` writes the plan with no AI review, `/draft 1` does one review/revise cycle, and so on. Review rounds run in the council like free-form turns: the reviewer's footer can end rounds early (`converged` — sign-off, no revision needed) or pause the draft and hand the floor to you (`blocked`), and typing mid-draft pauses at the next round boundary. Reviewer comments are saved beside the plan in the Botference state director
+check, Botference 

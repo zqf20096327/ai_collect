@@ -2,6 +2,8 @@
 
 # the veil
 
+__Agent Harness boiler plate__
+
 **An AI coding team that remembers your project.**
 
 the Veil (nl-veil) is an open-source desktop app for building software with AI. Give it a task,
@@ -1443,4 +1445,4 @@ The same binary covers very different jobs — the **mode emerges from your word
   until the deliverable actually passes. `veil cast "Build a URL shortener with a REST API and tests" --follow`
 - **Research & brief.** In `--style discourse` the minds research the live web, form and argue
   their own views, and co-write a briefing. `veil cast "Brief me on fusion power in 2026" --style discourse`
-- **Operate a live device.** Point the Veil at a device that drops telemetry on a file bus and 
+- **Operate a live device.** Point the Veil at a device that dr

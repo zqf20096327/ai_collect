@@ -5,7 +5,7 @@
 </p>
 
 <!-- AUTO-GENERATED:TITLE:START -->
-<h1 align="center">王二讲Agent：AI Agent 面试题 302 道（Agent八股+视频讲解）</h1>
+<h1 align="center">王二讲Agent：AI Agent 面试题 307 道（Agent八股+视频讲解）</h1>
 <!-- AUTO-GENERATED:TITLE:END -->
 
 <p align="center">
@@ -53,11 +53,11 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 <!-- AUTO-GENERATED:STATS:START -->
 | 分类 | 题数 | 图文详解 | 视频讲解 |
 | --- | ---: | ---: | ---: |
-| 01 热点解读 | 25 | 25 | 23 |
+| 01 热点解读 | 30 | 30 | 28 |
 | 02 Agent 基础 | 38 | 38 | 38 |
 | 03 上下文与记忆 | 12 | 12 | 12 |
 | 04 LLM 基础与 API | 16 | 16 | 14 |
-| 05 模型训练与微调 | 32 | 2 | 2 |
+| 05 模型训练与微调 | 32 | 3 | 3 |
 | 06 Claude Code与Codex | 17 | 6 | 6 |
 | 07 DeepSeek专题 | 5 | 5 | 5 |
 | 08 Prompt 工程 | 16 | 2 | 2 |
@@ -66,7 +66,7 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 | 11 RAG知识库 | 43 | 2 | 1 |
 | 12 LangChain 与 Spring AI | 21 | 0 | 0 |
 | 13 Agent 产品演进 | 9 | 1 | 1 |
-| **合计** | **302** | **113** | **108** |
+| **合计** | **307** | **119** | **114** |
 <!-- AUTO-GENERATED:STATS:END -->
 
 难度分三级：🟢 基础、🟡 进阶、🔴 深入。推荐到 [javabetter.cn/ai/video](https://javabetter.cn/ai/video/) 在线阅读，有侧边栏目录、站内搜索和内嵌视频，体验比直接看 Markdown 好。想在手机上收藏，可以用同步更新的[飞书知识库](https://my.feishu.cn/wiki/AcJywdpZ9ioWSOkNTnVcuQ7enMb)。
@@ -77,19 +77,24 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 
 <!-- AUTO-GENERATED:CATALOG:START -->
 <details>
-<summary><b>01 热点解读</b>（25 题，图文详解 25 篇）</summary>
+<summary><b>01 热点解读</b>（30 题，图文详解 30 篇）</summary>
 
-- HOT-025\. [Qwen4-Max 正式发布，有哪些新能力？](./video/qwen4-max.md) · [抖音](https://www.douyin.com/video/7709015715747056930)
-- HOT-024\. [DSH Go 如何在手机上运行 DeepSeek Harness？](./video/dsh-go.md) · [抖音](https://www.douyin.com/video/7707955151327317290)
-- HOT-023\. [Claude Fable 5.2 和 Mythos 5.2 发布，有哪些新能力？](./video/claude-fable-5-2.md) · [抖音](https://www.douyin.com/video/7706555517623176463)
-- HOT-022\. [DeepSeek Harness 有哪些值得用的插件？](./video/deepseek-harness-four-plugins.md) · [抖音](https://www.douyin.com/video/7706142531712470313)
-- HOT-021\. [混元 Hy4 正式版结合 WorkBuddy 有哪些能力？](./video/hunyuan-hy4.md) · [抖音](https://www.douyin.com/video/7704303050290171179)
-- HOT-020\. [美团 LongCat-2.5 正式版发布，有哪些新能力？](https://javabetter.cn/ai/video/longcat-2-5.html) · [抖音](https://www.douyin.com/video/7703895292533329206)
-- HOT-019\. [DeepSeek Super-agent 是什么？](https://javabetter.cn/ai/video/what-is-super-agent.html) · [抖音](https://www.douyin.com/video/7703197849411996970)
-- HOT-018\. [Xiaomi-OCR-0 开源：本地 OCR 怎么用？](https://javabetter.cn/ai/video/xiaomi-ocr-0.html) · [抖音](https://www.douyin.com/video/7702772455210896674)
-- HOT-017\. [GPT-6.1 Terra 发布，Codex 藏了哪三个大招？](https://javabetter.cn/ai/video/gpt-6-1-terra.html) · [抖音](https://www.douyin.com/video/7701366090923904282)
-- HOT-015\. [Kimi K3.1 Pro 正式发布，国产模型的审美新巅峰。](https://javabetter.cn/ai/video/kimi-k3-1-pro.html) · [抖音](https://www.douyin.com/video/7700177876540230975)
-- HOT-014\. [太惊艳了吧？Kimi K3.1 真要来了？](https://javabetter.cn/ai/video/kimi-k3-1-preview.html) · [抖音](https://www.douyin.com/video/7699856703231151410)
+- HOT-030\. [GLM-5.4 的视觉能力在 ZCode 里怎么用？](./video/glm-5-4.md) · [抖音](https://www.douyin.com/video/7711348161897336073)
+- HOT-029\. [Gemini 4 Neon 如何用动画讲清楚黎曼猜想？](./video/gemini-4-neon-riemann-hypothesis.md) · [抖音](https://www.douyin.com/video/7710966151303466274)
+- HOT-028\. [Claude 如何参与黎曼猜想的形式化证明？](./video/claude-riemann-hypothesis.md) · [抖音](https://www.douyin.com/video/7710553065287421234)
+- HOT-027\. [Gemini 4 Neon 如何用 Orchestrator 调度模型？](./video/gemini-4-neon.md) · [抖音](https://www.douyin.com/video/7709852766541204776) · [B站](https://www.bilibili.com/video/BV1MEyLzHEkv/)
+- HOT-026\. [GPT-6.2 Astra 和 Sol 有哪些变化？](./video/gpt-6-2-astra.md) · [抖音](https://www.douyin.com/video/7709474439645121842) · [B站](https://www.bilibili.com/video/BV13AyazqEpc/)
+- HOT-025\. [Qwen4-Max 正式发布，有哪些新能力？](./video/qwen4-max.md) · [抖音](https://www.douyin.com/video/7709015715747056930) · [B站](https://www.bilibili.com/video/BV1hbyWz2Ehv/)
+- HOT-024\. [DSH Go 如何在手机上运行 DeepSeek Harness？](./video/dsh-go.md) · [抖音](https://www.douyin.com/video/7707955151327317290) · [B站](https://www.bilibili.com/video/BV1bmsS6DETT/)
+- HOT-023\. [Claude Fable 5.2 和 Mythos 5.2 发布，有哪些新能力？](./video/claude-fable-5-2.md) · [抖音](https://www.douyin.com/video/7706555517623176463) · [B站](https://www.bilibili.com/video/BV19TsG6pERy/)
+- HOT-022\. [DeepSeek Harness 有哪些值得用的插件？](./video/deepseek-harness-four-plugins.md) · [抖音](https://www.douyin.com/video/7706142531712470313) · [B站](https://www.bilibili.com/video/BV1zuWv64E4E/)
+- HOT-021\. [混元 Hy4 正式版结合 WorkBuddy 有哪些能力？](./video/hunyuan-hy4.md) · [抖音](https://www.douyin.com/video/7704303050290171179) · [B站](https://www.bilibili.com/video/BV1Xb4v6WEaE/)
+- HOT-020\. [美团 LongCat-2.5 正式版发布，有哪些新能力？](https://javabetter.cn/ai/video/longcat-2-5.html) · [抖音](https://www.douyin.com/video/7703895292533329206) · [B站](https://www.bilibili.com/video/BV1oA4i6cEPa/)
+- HOT-019\. [DeepSeek Super-agent 是什么？](https://javabetter.cn/ai/video/what-is-super-agent.html) · [抖音](https://www.douyin.com/video/7703197849411996970) · [B站](https://www.bilibili.com/video/BV1eT4i6tESD/)
+- HOT-018\. [Xiaomi-OCR-0 开源：本地 OCR 怎么用？](https://javabetter.cn/ai/video/xiaomi-ocr-0.html) · [抖音](https://www.douyin.com/video/7702772455210896674) · [B站](https://www.bilibili.com/video/BV1Cm4v63EfR/)
+- HOT-017\. [GPT-6.1 Terra 发布，Codex 藏了哪三个大招？](https://javabetter.cn/ai/video/gpt-6-1-terra.html) · [抖音](https://www.douyin.com/video/7701366090923904282) · [B站](https://www.bilibili.com/video/BV1Zc4P6GEQ1/)
+- HOT-015\. [Kimi K3.1 Pro 正式发布，国产模型的审美新巅峰。](https://javabetter.cn/ai/video/kimi-k3-1-pro.html) · [抖音](https://www.douyin.com/video/7700177876540230975) · [B站](https://www.bilibili.com/video/BV1eaxk6rEPU/)
+- HOT-014\. [太惊艳了吧？Kimi K3.1 真要来了？](https://javabetter.cn/ai/video/kimi-k3-1-preview.html) · [抖音](https://www.douyin.com/video/7699856703231151410) · [B站](https://www.bilibili.com/video/BV1Qqxk6MEjM/)
 - HOT-013\. [真正的 OpenAI！DeepSeek 开源内部推理框架 DeepInfer](https://javabetter.cn/ai/video/deepseek-open-source-deepinfer.html) · [抖音](https://www.douyin.com/video/7699074728060816667) · [B站](https://www.bilibili.com/video/BV1qsxk6jECM/)
 - HOT-012\. [DeepSeek-V4.1-Flash-1017 真来了，这次是真滴强。](https://javabetter.cn/ai/video/deepseek-v4-1-flash-1017.html) · [抖音](https://www.douyin.com/video/7697933506416037146) · [B站](https://www.bilibili.com/video/BV1jtsf6xEmR/)
 - HOT-011\. [REA 保姆级教程：DeepSeek Harness 实操](https://javabetter.cn/ai/video/rea-deepseek-harness-tutorial.html) · [抖音](https://www.douyin.com/video/7696102369058196736) · [B站](https://www.bilibili.com/video/BV1F5xK6EEMz/)
@@ -110,9 +115,9 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 <details>
 <summary><b>02 Agent 基础</b>（38 题，图文详解 38 篇）</summary>
 
-- 🟡 38\. [Computer Use 是什么？说说它的原理](https://javabetter.cn/ai/video/what-is-computer-use.html) · [抖音](https://www.douyin.com/video/7700961195594976575)
-- 37\. [说说 Browser Use 的原理](https://javabetter.cn/ai/video/what-is-browser-use.html) · [抖音](https://www.douyin.com/video/7700568507443842367)
-- 🟢 36\. [Agent 的 Todo List 有什么用？](https://javabetter.cn/ai/video/agent-todo-list.html) · [抖音](https://www.douyin.com/video/7699452593226960137)
+- 🟡 38\. [Computer Use 是什么？说说它的原理](https://javabetter.cn/ai/video/what-is-computer-use.html) · [抖音](https://www.douyin.com/video/7700961195594976575) · [B站](https://www.bilibili.com/video/BV1124A6QEpn/)
+- 37\. [说说 Browser Use 的原理](https://javabetter.cn/ai/video/what-is-browser-use.html) · [抖音](https://www.douyin.com/video/7700568507443842367) · [B站](https://www.bilibili.com/video/BV1ek4F6ZEiP/)
+- 🟢 36\. [Agent 的 Todo List 有什么用？](https://javabetter.cn/ai/video/agent-todo-list.html) · [抖音](https://www.douyin.com/video/7699452593226960137) · [B站](https://www.bilibili.com/video/BV1Yexk6gE5d/)
 - 🔴 35\. [多个 Agent 同时改一个文件怎么办？](https://javabetter.cn/ai/video/multi-agent-file-conflict.html) · [抖音](https://www.douyin.com/video/7698743831088467241) · [B站](https://www.bilibili.com/video/BV1zHxk6EEVC/)
 - 🟢 34\. [Tool 的设计原则是什么？](https://javabetter.cn/ai/video/tool-design-principles.html) · [抖音](https://www.douyin.com/video/7698329222099520768) · [B站](https://www.bilibili.com/video/BV15hsf6WEkA/)
 - 🟢 33\. [用户需求模糊时 Agent 怎么澄清？](https://javabetter.cn/ai/video/agent-requirement-clarification.html) · [抖音](https://www.douyin.com/video/7696859780668755234) · [B站](https://www.bilibili.com/video/BV11cx76dERX/)
@@ -154,9 +159,9 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 <details>
 <summary><b>03 上下文与记忆</b>（12 题，图文详解 12 篇）</summary>
 
-- 50\. [说说 DeepSeek Harness 的上下文压缩原理](https://javabetter.cn/ai/video/agent-memory-compaction-methods.html) · [抖音](https://www.douyin.com/video/7702426892510448931)
-- 🔴 49\. [上下文压缩会不会和 KV Cache 冲突？](https://javabetter.cn/ai/video/context-compaction-vs-kv-cache.html) · [抖音](https://www.douyin.com/video/7702055929176526090)
-- 🟡 48\. [为什么不能在系统提示词里放时间戳？](https://javabetter.cn/ai/video/why-not-timestamp-in-system-prompt.html) · [抖音](https://www.douyin.com/video/7701937297377332480)
+- 50\. [说说 DeepSeek Harness 的上下文压缩原理](https://javabetter.cn/ai/video/agent-memory-compaction-methods.html) · [抖音](https://www.douyin.com/video/7702426892510448931) · [B站](https://www.bilibili.com/video/BV1fo4v6NESb/)
+- 🔴 49\. [上下文压缩会不会和 KV Cache 冲突？](https://javabetter.cn/ai/video/context-compaction-vs-kv-cache.html) · [抖音](https://www.douyin.com/video/7702055929176526090) · [B站](https://www.bilibili.com/video/BV1cR4A67Eak/)
+- 🟡 48\. [为什么不能在系统提示词里放时间戳？](https://javabetter.cn/ai/video/why-not-timestamp-in-system-prompt.html) · [抖音](https://www.douyin.com/video/7701937297377332480) · [B站](https://www.bilibili.com/video/BV1iP4P6gERz/)
 - 47\. [Agent 的长期记忆怎么实现？](https://javabetter.cn/ai/video/agent-long-term-memory.html) · [抖音](https://www.douyin.com/video/7667739270735514930) · [B站](https://www.bilibili.com/video/BV1yR3k6REFM/)
 - 46\. [为什么聊着聊着 Agent 就变笨了？](https://javabetter.cn/ai/video/why-agent-gets-dumber.html) · [抖音](https://www.douyin.com/video/7666746723645148442) · [B站](https://www.bilibili.com/video/BV1TH3j6pEno/)
 - 45\. [Agent 的短期记忆怎么实现？](https://javabetter.cn/ai/video/agent-short-term-memory.html) · [抖音](https://www.douyin.com/video/7663725283039563044) · [B站](https://www.bilibili.com/video/BV1fGKA6pEcv/)
@@ -172,13 +177,13 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 <details>
 <summary><b>04 LLM 基础与 API</b>（16 题，图文详解 16 篇）</summary>
 
-- 170\. [OpenAI 和 Anthropic 协议有什么区别？](./video/openai-vs-anthropic-protocol.md) · [抖音](https://www.douyin.com/video/7707510476745231626)
-- 168\. [什么是 CoT（思维链）？](./video/what-is-cot.md) · [抖音](https://www.douyin.com/video/7707112014115540233)
-- 166\. [DeepSeek API 中的Temperature、Top-P 有什么用？](./video/deepseek-temperature-top-p.md) · [抖音](https://www.douyin.com/video/7705758773213744393)
-- 🟡 163\. [分词器是什么？](./video/what-is-tokenizer.md) · [抖音](https://www.douyin.com/video/7705453048864328975)
-- 🟡 161\. [DeepSeek 是怎么撑起 1M 上下文的？](./video/how-deepseek-supports-1m-context.md) · [抖音](https://www.douyin.com/video/7705036086988393738)
-- 🟢 160\. [讲讲 Transformer 的基本架构？Encoder 和 Decoder 分别干什么？](./video/what-is-transformer.md) · [抖音](https://www.douyin.com/video/7704649100112710912)
-- 🟢 159\. [什么是大语言模型？和传统 NLP 模型有什么区别？](https://javabetter.cn/ai/video/what-is-llm.html) · [抖音](https://www.douyin.com/video/7703584792914267419)
+- 170\. [OpenAI 和 Anthropic 协议有什么区别？](./video/openai-vs-anthropic-protocol.md) · [抖音](https://www.douyin.com/video/7707510476745231626) · [B站](https://www.bilibili.com/video/BV1ypsg6eE4v/)
+- 168\. [什么是 CoT（思维链）？](./video/what-is-cot.md) · [抖音](https://www.douyin.com/video/7707112014115540233) · [B站](https://www.bilibili.com/video/BV1BisH6sEDR/)
+- 166\. [DeepSeek API 中的Temperature、Top-P 有什么用？](./video/deepseek-temperature-top-p.md) · [抖音](https://www.douyin.com/video/7705758773213744393) · [B站](https://www.bilibili.com/video/BV1hAWR6AE7L/)
+- 🟡 163\. [分词器是什么？](./video/what-is-tokenizer.md) · [抖音](https://www.douyin.com/video/7705453048864328975) · [B站](https://www.bilibili.com/video/BV1ZVW26pEqK/)
+- 🟡 161\. [DeepSeek 是怎么撑起 1M 上下文的？](./video/how-deepseek-supports-1m-context.md) · [抖音](https://www.douyin.com/video/7705036086988393738) · [B站](https://www.bilibili.com/video/BV1sqWg6wEJd/)
+- 🟢 160\. [讲讲 Transformer 的基本架构？Encoder 和 Decoder 分别干什么？](./video/what-is-transformer.md) · [抖音](https://www.douyin.com/video/7704649100112710912) · [B站](https://www.bilibili.com/video/BV1H9Wt6VEz5/)
+- 🟢 159\. [什么是大语言模型？和传统 NLP 模型有什么区别？](https://javabetter.cn/ai/video/what-is-llm.html) · [抖音](https://www.douyin.com/video/7703584792914267419) · [B站](https://www.bilibili.com/video/BV19M4i6oEzn/)
 - 155\. [DeepSeek 的 Prompt Caching 为什么能全自动生效，Claude 为什么要手动加 cache_control？](https://javabetter.cn/ai/video/what-is-prompt-caching.html) · [抖音](https://www.douyin.com/video/7683417600369397033) · [B站](https://www.bilibili.com/video/BV1dYeE6wEAE/)
 - 154\. [Prefix Caching（前缀缓存）是什么？和 KV Cache 是什么关系？](https://javabetter.cn/ai/video/what-is-prefix-caching.html) · [抖音](https://www.douyin.com/video/7683112468356386063) · [B站](https://www.bilibili.com/video/BV1PmY66uEpN/)
 - 153\. [KV Cache 是什么？为什么只缓存 K 和 V，不缓存 Q？](https://javabetter.cn/ai/video/what-is-kv-cache.html) · [抖音](https://www.douyin.com/video/7682646844794539298) · [B站](https://www.bilibili.com/video/BV1nJYY65E6y/)
@@ -192,11 +197,11 @@ AI 正在成为我们生活中不可或缺的一部分，那为了让全天下�
 </details>
 
 <details>
-<summary><b>05 模型训练与微调</b>（32 题，图文详解 2 篇）</summary>
+<summary><b>05 模型训练与微调</b>（32 题，图文详解 3 篇）</summary>
 
+- 🟡 319\. [大模型是怎么训练出来的？预训练→SFT→RLHF 三阶段讲一下？](./video/how-llm-is-trained.md) · [抖音](https://www.douyin.com/video/7710191572628852002) · [B站](https://www.bilibili.com/video/BV1AaySz6E3H/)
 - 🟢 337\. [什么是模型蒸馏（Knowledge Distillation）？它和模型量化有什么区别？](https://javabetter.cn/ai/video/what-is-model-distillation.html) · [抖音](https://www.douyin.com/video/7697583864511761698) · [B站](https://www.bilibili.com/video/BV1bdxj6FEe8/)
 - 🟢 318\. [大模型预训练完了，为什么还要做强化学习？](https://javabetter.cn/ai/video/what-is-reinforcement-learning.html) · [抖音](https://www.douyin.com/video/7686739151072365839) · [B站](https://www.bilibili.com/video/BV1A8aZ6DERC/)
-- 🟡 319\. 大模型是怎么训练出来的？预训练→SFT→RLHF 三阶段讲一下？
 - 🟡 320\. 大模型微调有哪些方案？LoRA 的原理是什么？
 - 🔴 321\. SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO 什么关系？
 - 🔴 322\. DPO 和 PPO 的区别是什么？

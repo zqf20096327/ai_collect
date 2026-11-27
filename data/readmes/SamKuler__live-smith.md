@@ -4,8 +4,8 @@
 
 Live Smith is an AI assistant inside Ableton Live. Start from a track, Clip or
 device, ask for a change, and follow its plan and results in the conversation.
-Conversations, saved MIDI, audio results and device snapshots stay together in
-Sessions.
+Conversations, saved MIDI, scores, audio results, device snapshots and interactive tools
+stay together in Sessions.
 
 [Download](https://github.com/SamKuler/live-smith/releases/latest) · [Get started](#getting-started) · [User guide](docs/USER_GUIDE.md) · [Model connections](docs/MODEL_PROVIDERS.md)
 
@@ -18,10 +18,19 @@ Sessions.
   settings, and ask questions about the current musical context.
 - **Create and reshape MIDI.** Write parts, transform existing notes, arrange
   Clips, and organize tracks and Scenes.
+- **Build reusable MIDI tools.** Ask the model for a generator or transformer
+  with its own controls. Run it locally, refine a preview and save the MIDI you
+  want to keep.
+- **Write and edit notation.** Open the independent score editor, create or import
+  MIDI and MusicXML, write staff notation or guitar TAB with graphical input and
+  categorized symbols, and edit a shared project tempo and meter map. Create named part
+  layouts and set their margins, staff size and page breaks. Export the full MIDI
+  performance or save the full score or a part layout as MusicXML, PDF or SVG, or ask the model to create and revise saved score versions.
 - **Explore device settings.** Capture parameter snapshots, compare variations,
   apply a saved version, and restore the previous values after listening.
 - **Keep useful versions.** Save MIDI and audio results as artifacts, compare
   MIDI revisions, export files, or use a saved version as the source for more work.
+  Keep exact MIDI, score, audio and tool versions in Material Library for other Sessions.
 - **Generate and process audio.** Connect optional music, sound-effect and stem
   separation services, then preview and import their saved results.
 - **Extend your workflow.** Add musical instructions through Skills, connect
@@ -54,6 +63,9 @@ Once a Profile is saved, switch models from the composer. Live Smith supports
 English and 简体中文. Open it in a **Live dialog**, your **System browser**, or a
 **Separate window (macOS)**. On macOS 14 or later, the separate window lets you
 drag saved MIDI and audio from chat into Live.
+Interactive MIDI tools let you adjust parameters, preview generated notes, and
+save MIDI for reuse. Import or drag saved MIDI into Live to hear it through the
+target track’s instruments and effects.
 
 The [user guide](docs/USER_GUIDE.md) covers the interface, saved work, attachments,
 tools and day-to-day workflows.
@@ -113,6 +125,9 @@ for previews, scope boundaries and recovery.
   remain outside the current action set.
 - MIDI export contains the saved MIDI data. Instruments, effects and rendered
   sound are separate from the exported file.
+- Interactive MIDI tools work with saved notes and beat timing. Live-clock
+  realtime MIDI is outside this workflow. Tool windows use the system browser
+  when a separate native window is unavailable, including on Windows.
 - Device snapshots cover SDK-exposed parameter values. Automation, sample files
   and private plug-in preset state remain separate from these snapshots.
 - Attachment support and audio analysis depend on the chosen model and connection.
@@ -124,9 +139,10 @@ See the [user guide](docs/USER_GUIDE.md) and
 
 ## Privacy
 
-Profiles, connections, Sessions, attachments, Skills and Plugin data are stored
-locally. With persistent storage, SQLite holds Session history and media
-references, and a private media directory holds the original files. Model
+Profiles, connections, Sessions, attachments, Skills, Plugin data and Material
+Library favorites are stored locally. With persistent storage, SQLite holds
+Session history and media references, and a private media directory holds the
+original files. Interactive tool code runs locally after authoring. Model
 requests send your prompt, relevant Live context, saved creative brief,
 selected Skill guidance and supported attachment content to the provider you
 choose. Requested audio listening can also send an Arrangement render or a saved

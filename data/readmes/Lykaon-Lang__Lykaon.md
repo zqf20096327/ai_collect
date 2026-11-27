@@ -60,7 +60,7 @@ Say it.
 ```
 
 **[Try it in your browser — no install](https://lykaon-lang.github.io/Lykaon/)**
-(WAsm playground, v0.1 preview).
+(WAsm playground).
 
 ## Why Lykaon
 
@@ -76,7 +76,7 @@ Say it.
 
 ## Quick start (Windows)
 
-1. Download `Lykaon-v0.1.0-windows-x64.zip` from
+1. Download `Lykaon-v0.2.0-windows-x64.zip` from
    [Releases](https://github.com/Lykaon-Lang/Lykaon/releases/latest).
 2. Unzip it anywhere.
 3. Double-click `install.bat`. It copies the tools to
@@ -150,30 +150,46 @@ separately so it stays TLS-free.
 - [Syntax tour](docs/syntax.md)
 - [CLI reference](docs/cli.md)
 - [Standard library](docs/standard-library.md)
+- [File extensions](docs/extensions.md)
 
-## What works today
+## What Lykaon can do
 
-- M1–M4 are complete: the language core, data and ownership, the native
-  compiler, servers, concurrency, files, formats and networking.
-- M5 is in progress: data tables, SVG charts, classical ML models,
-  SQLite/PostgreSQL, encryption, memory/time limits, native permission
-  sandbox, `lykaon lsp`, `lykaon doc`, `lykaon profile`, `lykaon outline`,
-  `lykaon check --json`, `lykaon test --json`, `lykaon docs --compact`,
-  `lykaon explain`, `lykaon run --trace-json`, `lykaon migrate`.
+- **Language core**: sentences, blocks, `Changeable`/`Constant`/`Set`, `Say`,
+  `Ask`, `If`/`Otherwise`, `Repeat`, `For each`, functions, records, enums,
+  lists, maps, modules, tests and the ownership/borrow checker.
+- **Native compiler**: Cranelift-based builds, optimizer, runtime library and
+  standalone executables.
+- **Servers and concurrency**: tasks, channels, timers, `Serve`, files,
+  JSON/TOML, logging and networking.
+- **Data tables**: `Load`, `Say rows/columns`, statistics, grouping,
+  `For each row`, `Save as CSV`.
+- **Charts**: `Plot` as dots/bars/line, SVG and deterministic PNG.
+- **Models**: `Predict`, accuracy/error/importance, `Save model`,
+  `Load model`, vectors.
+- **Databases**: SQLite and PostgreSQL (MD5 auth), Add/Remove/Set/Load,
+  transactions and `lykaon migrate`.
+- **Security and limits**: encryption, memory/time limits and the native
+  permission sandbox.
+- **Tooling**: `lykaon lsp`, `lykaon doc`, `lykaon profile`, `lykaon outline`,
+  JSON output modes and the 600-second fuzz harness.
 
 ## Status and limits
 
-Lykaon v0.1 is a **command-line / console** language for **Windows x64 and
-Linux x64**. There is no GUI in v0.1; the release contains the CLI
-interpreter, the CLI compiler, the runtime library and licenses.
+Lykaon is a **command-line / console** language for **Windows x64 and
+Linux x64**. The current release is CLI-only; a GUI arrives in a later release.
+The zip contains the CLI interpreter, the CLI compiler, the runtime library and
+licenses.
 
 - **Performance** is not yet a focus; correctness and byte-exact
   interpreter/native output come first.
-- **macOS** is not a target in v0.1.
-- **WebAssembly** output and the WASI sandbox are not finished yet.
-- **Tooling** `lykaon debug`/DAP and `lykaon test coverage` are not finished.
-- The full M5 plan and remaining items are tracked in the development
-  repository; this public repo is the released CLI snapshot.
+- **macOS** is not a target.
+- **WebAssembly**: the browser playground runs the interpreter compiled to
+  wasm32; native Lykaon-to-wasm output and the WASI sandbox are deferred.
+- **PostgreSQL**: MD5 auth and Add/Remove/Set/Load/transactions are verified
+  against a real server; SCRAM-SHA-256 is not implemented yet.
+- **Sandbox**: `lykaon run safely` and `--isolate` enforce files/hosts/env/
+  processes/limits; Windows AppContainer and wasm32-wasi are deferred.
+- **Tooling**: `lykaon debug`/DAP and `lykaon test coverage` are not finished.
 
 Lykaon is **source-available, not open source**: free for personal use and for
 organizations under USD 1,000,000 annual revenue. See

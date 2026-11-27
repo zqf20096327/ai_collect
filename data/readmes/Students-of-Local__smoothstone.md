@@ -149,6 +149,8 @@ stone status
 
 stone finds OpenSCAD through `STONE_OPENSCAD`, then `openscad` on your PATH, then `vendor/openscad/AppRun`.
 
+`stone export` turns a built part into an editable STEP and a [SolidCraft](https://github.com/tangency-labs/solidcraft) design for CAD. SolidCraft is optional; stone finds its CLI through `STONE_SOLIDCRAFT`, then `solidcraft-cli` on your PATH.
+
 ## Use it with your agent
 
 The skill is the `skill` folder. Link it where your agent looks for skills:

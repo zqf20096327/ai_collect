@@ -37,6 +37,8 @@
 
 从 [Releases](https://github.com/xdtbp/DaFeiYu/releases) 下载最新 APK 安装即可，支持 Android 8.0 及以上。
 
+应用界面跑在系统 WebView 里，脚本已按 Chrome 49 语法编译并补齐内置 API，因此 **Android 8（出厂 WebView 58）起可以正常使用**。需要说明的是：WebView 低于 84（2017-2020 年间的出厂版本）时，`flex gap` 不被支持，部分元素间距会消失，排版不如新版整齐——建议在应用商店把「Android System WebView」更新到最新。
+
 首次启动会展示权限用途说明与免责声明，同意后进入引导页，可完成权限申请、登录或配置 API Key、导入历史。
 
 ## 使用

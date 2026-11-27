@@ -11,8 +11,8 @@
 <h1 align="center">Fleetify</h1>
 
 <p align="center">
-  <b>A command center for AI agents.</b><br>
-  Run Claude Code, Codex, OpenCode and more side by side, from one desktop app.
+  <b>Every model. Every agent. One chat.</b><br>
+  A desktop command center that runs Claude Code, Codex, OpenCode and more from one chat.
 </p>
 
 <p align="center">
@@ -43,10 +43,11 @@
 
 ## What Fleetify does
 
-Running several coding agents means juggling terminals, branches and dashboards. Fleetify puts them in one window: start sessions with CLI agents or API models, follow them all from the Fleet hub, and keep parallel work apart with git worktrees.
+Running several coding agents means juggling terminals, branches and dashboards, and routing work between them yourself. Fleetify hands that job to one chat: tell Fleet what you need, and it picks the right session or starts a new one, briefs it, runs several in parallel and brings the results back to the same chat. Every session stays a normal session you can open, the Fleet hub shows each one's status and spend, and you can give a session its own git worktree to keep parallel work apart.
 
 | Feature | What it does |
 |---|---|
+| **Fleet chat** | One chat that runs every session: hand out work or `@mention` a session, start sessions from a sentence, fan a goal out in parallel, and get the results back. |
 | **Fleet hub** | Every session's status and spend, total tokens, recent activity, and a one-click *Stop all*. |
 | [**Agents and models**](docs/AGENTS.md) | Claude Code, Codex, OpenCode and other CLI agents, plus OpenAI, Anthropic, Gemini and Ollama models. |
 | **Git worktrees** | Give a session its own worktree and branch, and open pull requests from the app. |

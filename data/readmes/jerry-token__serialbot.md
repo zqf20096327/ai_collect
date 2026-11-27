@@ -56,7 +56,7 @@ You stay in charge. Every change to a port needs your approval, and every line t
 - 🌈 Text or HEX with millisecond timestamps, **ANSI colors** (Zephyr, ESP-IDF and other colored logs), and encodings such as UTF-8, GBK, GB18030, Big5 and Shift_JIS.
 - ✂️ Auto frame split by gap; **Δt** shows the time since the line before, so in HEX view you see the gaps between frames.
 - 🔎 `Ctrl/Cmd+F` search, "only matching lines" filter, and **keyword highlight** (`ERROR`, `WARN`, … in ⚙️).
-- 📈 **Plot**: numbers in received lines (`temp=23.6 hum=41`, or `1.2, 3.4, 5.6`) become live curves, each on its own scale.
+- 📈 **Plot**: numbers in received lines (`temp=23.6 hum=41`, or `1.2, 3.4, 5.6`) become live curves, each on its own scale. VOFA+ FireWater lines and JustFloat binary frames work too.
 - 🖥️ **Terminal mode (TTY)**: a full terminal emulator on any session (cursor, colors, `top`, `vi`); keys go straight to the device, so you can log in to a Linux board's shell.
 - 🔢 Line numbers (**#**) and ★ **bookmarks**: mark the lines that matter and jump back to them.
 - ⏸️ Pause, and smooth scrolling through tens of thousands of lines.
@@ -65,7 +65,7 @@ You stay in charge. Every change to a port needs your approval, and every line t
 **Send**
 - ✍️ Multi-line text or HEX with a choice of line ending. `Enter` sends, `Shift+Enter` adds a line, `↑` recalls history. Data goes out as raw bytes, exactly as typed: only the line ending you pick is added.
 - 🧮 Checksums appended to HEX data: CRC-8, CRC-16 (Modbus, CCITT), CRC-32, XOR, SUM8, LRC.
-- ⏲️ Timed send, 📋 saved command lists (click to send, or run a group in order; ⧉ opens them in their own window with its own target port), and 📄 file send in chunks.
+- ⏲️ Timed send, 📋 saved command lists (click to send, or run a group in order; ⧉ opens them in their own window with its own target port), and 📄 file send: in chunks, or with XMODEM (128 / 1K) and YMODEM to an MCU bootloader (`/send-file --ymodem fw.bin` in the terminal, `serialbot-cli send <port> --file fw.bin --protocol ymodem`).
 
 **AI agents, under your control**
 - 🤖 A built-in MCP server lets Claude Code, Claude Desktop and other agents list and open ports, send data, wait for replies and drive DTR / RTS, on the same sessions you see in the window.
@@ -147,7 +147,7 @@ Get the file for your system from [Releases](https://github.com/jerry-token/seri
 ## 🚀 Quick start
 
 1. 🔌 Plug in a USB-serial adapter, pick the port at the top and set the baud rate. Data bits, parity, stop bits and flow control are under `8N1 ▾`. Then press **Open**.
-2. 📥 The receive view shows timestamps by default. The chips at the top right switch Δt, HEX view, sent data, auto-scroll and pause. 🔍 searches; ⚙️ sets the encoding, frame gap, ANSI colors and highlighted keywords.
+2. 📥 The receive view shows timestamps by default. The chips at the top right switch Δt, HEX view, sent data, auto-scroll and pause. **Copy for AI** copies the newest 200 lines shown (or the search results) with times and a question, ready to paste into any AI chat. 🔍 searches; ⚙️ sets the encoding, frame gap, ANSI colors and highlighted keywords.
 3. 📤 Type a command in the box at the bottom and press `Enter`. Tick HEX to send bytes such as `01 03 00 00`.
 4. 🎛️ To reset a board, use **DTR / RTS** in the status bar, or **⏱** for a timed sequence.
 
@@ -165,7 +165,9 @@ Get the file for your system from [Releases](https://github.com/jerry-token/seri
 3. Ask Claude Code: *"List the serial ports, open the ESP32 one and send `version`."* 🎉
 4. ✅ SerialBot asks before the agent opens the port or sends anything. Pick **Allow for this session** to stop being asked for that port, or untick "Ask before AI agents send data or change a port" on the AI page.
 
-**Claude Desktop** (and other clients that only start stdio servers): copy the second snippet on the AI page into `claude_desktop_config.json`. It runs `serialbot mcp`, a small bridge to the running app, so SerialBot must be open with the MCP server on:
+**Claude Desktop, Cursor, VS Code, Codex, Gemini CLI, opencode**: on the AI page, press the client's button under *Add SerialBot to* and restart the client. Only the `serialbot` entry is written; the rest of the file is kept and the old file is backed up. If the file cannot be changed (VS Code allows comments in it), the page shows the entry to paste. From a terminal: `serialbot-cli mcp install cursor` (or `claude-desktop`, `vscode`, `codex`, `gemini`, `opencode`).
+
+By hand, for Claude Desktop (and other clients that only start stdio servers): copy the second snippet on the AI page into `claude_desktop_config.json`. It runs `serialbot mcp`, a small bridge to the running app, so SerialBot must be open with the MCP server on:
 
 ```json
 { "mcpServers": { "serialbot": { "command": "/Applications/SerialBot.app/Contents/MacOS/serialbot", "args": ["mcp"] } } }
@@ -212,7 +214,7 @@ serialbot-cli mcp serve                               # MCP server without the a
 ```
 
 - **`open`** replaces minicom/picocom: the same `Ctrl+A` letters (`X` quit, `L` log, `S` send a file, `1`/`2` DTR/RTS …), an input box with history and Ctrl+R, `/` commands with Tab completion, raw mode for shells and vim, and reconnecting when the device comes back. Piped, it turns into a plain pipe.
-- **`tui`** shows up to four sessions side by side or stacked (`Ctrl+A |`, `Ctrl+A -`, `Ctrl+A ←/→`, mouse), with a session list and scrollback. `Ctrl+A V` draws a waveform of the numbers in the data (`name=value`, number columns, or `--plot 'temp=([0-9.]+)'`), up to six curves told apart by color *and* point shape. `--mcp` adds the AI panel, where an agent's changes are allowed with `y`/`s` or refused with `n`. `/groups <file>` shows the app's exported command groups.
+- **`tui`** shows up to four sessions side by side or stacked (`Ctrl+A |`, `Ctrl+A -`, `Ctrl+A ←/→`, mouse), with a session list and scrollback. `Ctrl+A V` draws a waveform of the numbers in the data (`name=value`, number columns, `--plot 'temp=([0-9.]+)'`, or `--plot justfloat` for VOFA+ frames), up to six curves told apart by color *and* point shape. `--mcp` adds the AI panel, where an agent's changes are allowed with `y`/`s` or refused with `n`. `/groups <file>` shows the app's exported command groups.
 - **`mcp serve`** keeps its token in `cli.json` next to the app's settings; `mcp stdio` is the bridge for Claude Desktop, to `mcp serve` or, if it is not running, the app.
 - Exit codes for scripts: 0 ok, 1 timeout, 2 bad arguments, 3 port busy or missing, 4 device gone.
 - Messages follow the system language (English or Chinese). `serialbot-cli completions bash|zsh|fish|powershell` prints completions.

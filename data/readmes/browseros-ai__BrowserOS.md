@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-Claude Code, Codex and Cursor work in it <strong>signed in as you, in their own tabs, while you watch.</strong><br>Free, open source, and it runs on your machine.
+Put Claude Code, Codex, Cursor, and OpenCode to work on your real tasks. <strong>BrowserOS neo</strong> connects to the agents you already use, lets them use your logged-in sessions and helps you get things done!
 </p>
 
 <p align="center">
@@ -38,10 +38,9 @@ Claude Code, Codex and Cursor work in it <strong>signed in as you, in their own 
    brew install --cask browseros-neo
    ```
 
-2. **Import from Chrome.** One click brings your logins, bookmarks and extensions.
-3. **Connect your agent.** neo finds Claude Code, Codex, Cursor, VS Code and more on your machine. One click each.
-4. **Give it a task.** From your agent, not from the browser:
-
+2. (optional) **Import from Chrome.** One click brings your logins, bookmarks and extensions.
+3. **Automatically connects to your agents.** neo finds Claude Code, Codex, Cursor, VS Code and more on your machine and connects to them automatically.
+4. **Start getting things done!** Give a task to your agent and you just watch.
    > Book me the cheapest flight to London.
 
 
@@ -52,7 +51,7 @@ Claude Code, Codex and Cursor work in it <strong>signed in as you, in their own 
 - **You can watch.** Follow each step live, or replay any session later.
 - **Hand-off.** Stuck at a login? neo notifies you, you help, the agent carries on.
 - **Fewer tokens.** neo reads a page as short text, not as screenshots.
-- **Local.** Sessions, screenshots and history stay on your machine. [Privacy](https://docs.browseros.com/neo/privacy)
+- **Local.** Sessions, screenshots and history stay on your machine.
 
 <p align="center">
 <img src="docs/images/readme/how-it-works.png" width="830" alt="How BrowserOS neo works: it connects to your LLM apps, runs many agents side by side, keeps your data on your computer, and agents act in your signed-in session.">

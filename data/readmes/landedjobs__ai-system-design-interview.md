@@ -19,11 +19,20 @@
 
 </div>
 
+<!-- landed-for -->
+**For:** AI Engineer · ML Engineer · Applied Scientist · LLM Engineer · AI Platform and Infra Engineer · senior engineers moving into AI
+
 <!-- landed-apply-cta -->
 <table><tr><td>
 <b>⚡ <a href="https://app.landed.jobs/signup?from=github&amp;cta=github-guide-apply&amp;item=ai-system-design-interview&amp;utm_source=github&amp;utm_medium=referral&amp;utm_campaign=github-ai-system-design-interview&amp;utm_content=guide-apply">Auto-apply to AI engineer jobs that match you →</a></b><br>
 Upload your resume once. <a href="https://www.landed.jobs">landed</a> finds the roles that fit you and applies within hours of them going live, so you actually hear back.
 </td></tr></table>
+
+**Also in this family:** [AI engineer interview](https://github.com/landedjobs/awesome-ai-engineer-interview) · [AI agent interview questions](https://github.com/landedjobs/ai-agent-interview-questions) · [AI engineer resume examples](https://github.com/landedjobs/ai-engineer-resume-examples)
+
+**Hiring now:** [live AI Engineer roles](https://github.com/landedjobs/ai-engineer-jobs) · [live Machine Learning Engineer roles](https://github.com/landedjobs/machine-learning-engineer-jobs), refreshed every 2 days
+
+> ⭐ Star it to come back before your loop. 🍴 Fork it to keep your own notes on each design.
 
 
 ---
@@ -78,6 +87,8 @@ Use the same eight steps on every prompt. The full rubric, with what "strong" lo
 <a name="the-15-designs"></a>
 
 ## The 16 designs
+
+Practice on landed.jobs: [ML system design framework](https://www.landed.jobs/resources/courses/ml-system-design/msd-framework?utm_source=github&utm_medium=referral&utm_campaign=github-ai-system-design-interview&utm_content=practice) · [Design ChatGPT](https://www.landed.jobs/resources/system-design/design-chatgpt?utm_source=github&utm_medium=referral&utm_campaign=github-ai-system-design-interview&utm_content=practice) · [Rate limiter for an LLM API](https://www.landed.jobs/resources/questions/coding-and-system-design-implement-a-rate-limiter-for-an-llm-api-gateway?utm_source=github&utm_medium=referral&utm_campaign=github-ai-system-design-interview&utm_content=practice) · [60 more system designs](https://www.landed.jobs/resources/system-design?utm_source=github&utm_medium=referral&utm_campaign=github-ai-system-design-interview&utm_content=practice)
 
 Each file follows the same sections, so you can compare designs side by side. Difficulty is our judgment of how much depth a strong answer needs. "Companies that ask it" lists companies whose products center on that system; each link goes to that company's interview guide, and each design file lists more.
 

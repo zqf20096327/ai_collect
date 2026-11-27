@@ -378,6 +378,8 @@ languages and locale fixed (`turno browser show|set <id>`).
   it, and a Chrome that a killed run left open is closed on the next start.
 - **Fewer round trips.** `browser_batch` runs up to 20 actions in one call, and an action that
   fails says which element covers the target, or that it is hidden, disabled or gone.
+- **Smaller snapshots.** Page snapshots keep every element the agent acts on and drop the rest of
+  the markup: 40 to 70% fewer tokens, and a table of contents for a very long page, read by part.
 - **Sign-ins the agent never sees.** `turno browser vault add` keeps a username, a password and
   an optional TOTP secret per site in the OS secret store, and the `browser_login` tool fills
   them into that site's sign-in page; results are redacted and values are bound to the site.

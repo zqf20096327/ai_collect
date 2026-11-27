@@ -155,6 +155,10 @@ No, and this is deliberate too. From the start, a library was designed as an ind
 
 When a question does span several libraries, give it to the assistant on the home page: it can read every library on the shelf. Say “compare what libraries ‘A’ and ‘B’ have on …”, and it lists papers, searches the full texts and reads the originals in each; every source in its answer says which library it comes from, and a click opens that paper in that library. The libraries are read-only from there: it changes none of them.
 
+What you have kept is one click away too: the star at the top right of the home page lists the starred papers, figures, methods and introductions of every library together, each saying which library it is in. It is a list to look through and go from: a click opens that library at that item, and each library's own Favorites still shows only its own.
+
+Writing need not wait for a tidy library either: the pen beside the star lists every manuscript, and New manuscript starts one right away, with no library chosen. Have the assistant look things up as you write, then bind the manuscript to a library you already have (the manuscript, its conversations and the papers gathered go into it, and every paper of that library can be cited), or make a new library of what was gathered; an article that cites nothing can stay in no library.
+
 ### Will a large library burn tokens and give worse answers? How should I set up my libraries?
 
 What one question costs depends on the current list, not on the whole library, and it has a ceiling. When you ask the library, the scope is the papers shown in the list (as set by the view, tags, search and filters): the ones most relevant to the question are given as full records (title, abstract, notes), those that do not fit are given as titles only, and of the full texts only the few dozen pages most relevant to the question are sent. So the cost does not grow without limit as the library grows, though a long list does cost more than a short one. When the material is not enough, the assistant goes on to search the full texts and read pages itself.

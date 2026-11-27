@@ -382,6 +382,8 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [NANA7MI0/dsh-purge-go](https://github.com/NANA7MI0/dsh-purge-go) — Ports dsh-purge (community-maintained fork) to DSH-GO on mobile, keeping only prompt injection and engine patching; no weight changes, no network calls.
 - [sergey-akhalkov/dsh-setup](https://github.com/sergey-akhalkov/dsh-setup) — A portable DeepSeek Harness setup: sixteen plugins that make an agent work in small verified steps (second-model review, loop recovery, lazy MCP, local memory), plus a one-command installer.
 
+- [slz233/dsh-enhance-mode](https://github.com/slz233/dsh-enhance-mode) — A conversation-level "enhance mode": on top of the standard mode it only appends a paragraph you write to the end of the system prompt.
+
 
 ## Harnesses & Runtimes
 
@@ -546,5 +548,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [Tieboyh/dsh-session-search](https://github.com/Tieboyh/dsh-session-search) — Index-free cross-agent session search for DeepSeek Harness.
 - [21hbguo/dsh-thinking-counter](https://github.com/21hbguo/dsh-thinking-counter) — Thinking-phrase detection and statistics for DeepSeek Harness: full-session reasoning-phrase hit counts, grouping, and a "smartness" score.
 - [KYinCode/dsh-hot-installer](https://github.com/KYinCode/dsh-hot-installer) — Hot plugin manager for DeepSeek Harness (dsh): install once, restart once, then install/remove/upgrade plugins take effect instantly without further restarts.
-- [lzx-Bill/dsh-plugins](https://github.com/lzx-Bill/dsh-plugins) — Open-source community plugins for DeepSeek Harness, built with TypeScript and Cordis.
-- [openrect/dsh-community-installer](https://github.com/openrect/dsh-community-in
+- [lzx-Bill/dsh-plugins]

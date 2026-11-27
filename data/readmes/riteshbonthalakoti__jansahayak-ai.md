@@ -161,15 +161,6 @@ ngrok http 8000
 
 ---
 
-## 👥 Team
-
-| Name | Role |
-| :--- | :--- |
-| **Ritesh Bonthalakoti** | Lead Developer & AI Architect |
-| **Shreya Goyal** | UX Researcher & Domain Expert |
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

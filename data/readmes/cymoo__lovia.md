@@ -98,9 +98,11 @@ Open `http://127.0.0.1:8000` and add a model on first launch. New chats work in
 the directory you started from; `lovia web ~/code/app` picks another.
 
 - **It works in your folders.** It reads and edits files, runs commands, plans
-  with a todo list, searches the web, draws charts and tables, and hands
-  independent work to background subagents. A panel follows what runs in the
-  background, with each command's output.
+  with a todo list, searches the web (through a hosted search service —
+  Parallel by default, no key needed; Settings → Web search picks another or
+  turns it off), draws charts and tables, and hands independent work to
+  background subagents. A panel follows what runs in the
+  background: each command's output, each task's progress and report.
 - **Many projects at once.** The sidebar groups chats by workspace. Each chat
   has its own folder, model and permission mode, and the folder can be on an
   SSH host or in a container. Ask the assistant about your workspaces or an
@@ -114,7 +116,8 @@ the directory you started from; `lovia web ~/code/app` picks another.
   skills and `@` mentions a file.
 - **A complete chat.** Streaming, branching from any reply, steering a run
   while it works, attachments, scheduled runs, and long-term memory you can
-  edit. A run keeps going when you close the tab. Optional voice input turns
+  edit. A run keeps going when you close the tab; one stopped by a turn limit
+  or a model outage carries on, plan and all, with your next message. Optional voice input turns
   speech into text through a transcription service you choose.
 - **Settings without restarts.** Models, MCP servers, skills and the
   assistant's instructions live in Settings. Everything is kept in one home
@@ -191,8 +194,8 @@ serve(app)
 
 - **Concise.** An immutable `Agent`, a stateless `Runner`, `@tool`, and plugins
   as the one extension axis. Every piece fits one screen of mental model.
-- **Lightweight.** Three hard dependencies. MCP, the web app and search
-  backends are extras, imported only when used.
+- **Lightweight.** Three hard dependencies. MCP, the web app and PDF reading
+  are extras, imported only when used.
 - **Readable.** Model calls, tool execution, retries and persistence run in one
   explicit loop. When something surprises you, there is one chain to follow.
 - **Extensible, with restraint.** Extension points are dataclasses, Protocols
@@ -207,8 +210,8 @@ lovia needs Python 3.10 or newer.
 | --- | --- |
 | Core library | `pip install lovia` |
 | MCP | `pip install "lovia[mcp]"` |
-| Web app (includes MCP) | `pip install "lovia[web]"` |
-| DuckDuckGo search | `pip install "lovia[ddg]"` (Tavily needs no extra: set `TAVILY_API_KEY`) |
+| PDFs in `web_fetch` | `pip install "lovia[pdf]"` |
+| Web app (includes MCP and PDF) | `pip install "lovia[web]"` |
 | Runnable examples | `pip install "lovia[examples,web]"` |
 
 ## Status

@@ -16,7 +16,7 @@ Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [R
 - [ ] Clone [FaceRecognition-LivenessDetection-DotNet-MAUI](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-DotNet-MAUI)
 - [ ] Install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), then `dotnet workload install maui`
 - [ ] Place the native runtimes — [Get the runtimes](#get-the-runtimes)
-- [ ] `python run_android` (or `python run_ios` on macOS) with a **physical** phone connected
+- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone connected
 - [ ] The demo ships with license keys for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS)
 
 ## Introduction
@@ -113,8 +113,8 @@ git clone https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Do
 cd FaceRecognition-LivenessDetection-DotNet-MAUI
 dotnet workload install maui
 # place the AAR and the iOS frameworks — see above
-python run_android
-python run_ios          # macOS
+python run_android.py
+python run_ios.py          # macOS
 ```
 
 `global.json` keeps the build on .NET 8 when a newer SDK is the default. The run scripts are the same as:

@@ -27,12 +27,21 @@ Every lesson is a live simulation where a real algorithm runs in your browser. Y
 
 It's written so a five-year-old can follow the story, while the **"For grown-ups"** section of every lesson names the real algorithms and the maths.
 
-- **120 lessons**: a starting lesson plus **22 chapters**, in a syllabus order: from "what is machine learning?" up to language models, vision-language models, diffusion, video, the wider world of AI, data, forecasting, agents, AI ethics, ensembles, generative models, graphs, robotics, optimisation and probability.
+- **137 lessons**: a starting lesson plus **26 chapters**, in a syllabus order: from "what is machine learning?" up to language models, vision-language models, diffusion, video, the wider world of AI, data, forecasting, agents, AI ethics, ensembles, generative models, graphs, robotics, optimisation and probability, plus RAG, fine-tuning and MLOps chapters, a Live AI Lab of real on-device models and a Game Lab.
 - **Everything is interactive.** Drag, draw, drive, kick, break things.
 - **Every model is open.** A built-in **Model X-ray** shows which signals a trained model pays attention to, the rules it discovered, a decision map, and a what-if lab.
 - **Real learning, no fakes.** Q-learning, neuroevolution, backpropagation, k-means, PCA, DBSCAN, dropout, decision trees, ant colony optimisation, diffusion with guidance, optical flow, FFT pitch detection, CLIP and more all run live.
 - **Learning plans.** Guided paths ("First hour of ML", "How ChatGPT works", "Games that learn"...) with progress tracking, plus ready-to-teach classroom plans with warm-ups, discussion questions and exit tickets. See [plans.html](https://nuhmanpk.github.io/explore-machine-learning/plans.html).
 - **Nothing downloads by default.** Lessons that need a big pretrained model show a button that tells you the size first.
+
+## Levels and tracks
+
+- **Three levels.** Pick Beginner, Intermediate or Advanced from the top bar, the home page or inside any lesson. Beginner keeps the kid-friendly story; Intermediate adds the real terms and one formula; Advanced adds the full maths, things to know, a runnable Python snippet and links to the original papers. The text lives in `js/levels/<chapter-id>.js` and loads only on the pages that need it.
+- **Role tracks.** On the [plans page](https://nuhmanpk.github.io/explore-machine-learning/plans.html) there are tracks for school, exam and university students, developers, data analysts, product leaders, healthcare, creatives, career switchers and parents. Starting a track sets the right level for you.
+
+## Certificates
+
+Finish a chapter, a learning path or the whole course and you can make a **certificate** with your name. It is a link of the form `certificate.html#<name+section+date>.<checksum>`: anyone who opens it sees the certificate drawn from the link, and can copy it, share it, print it or download it as a picture. The name lives after the `#`, so it is never sent to a server. The checksum (SHA-256) catches edits, but with no server it cannot prove someone really finished, so it is a friendly certificate, not a qualification. `node tools/check-cert.js` tests it.
 
 ## How each lesson works
 
@@ -260,23 +269,68 @@ _Being sensible about chance: beliefs, averages and what happens next._
 - **21.3 [Averages Get Bell-Shaped](https://nuhmanpk.github.io/explore-machine-learning/demos/prob-clt.html)** — Average numbers from a lumpy, lopsided source and watch a smooth bell curve appear. Then build a confidence interval.
 - **21.4 [Next State Please](https://nuhmanpk.github.io/explore-machine-learning/demos/prob-markov.html)** — A weather walker only remembers today. Edit its chances, see where it settles, then write sentences with a tiny next-word chain.
 
-### Chapter 22 · [Game Lab](https://nuhmanpk.github.io/explore-machine-learning/topic.html?t=games)
+### Chapter 22 · [RAG & Retrieval](https://nuhmanpk.github.io/explore-machine-learning/topic.html?t=rag)
+
+_Give a language model an open book: look things up first, then answer._
+
+- **22.1 [Chop the Book](https://nuhmanpk.github.io/explore-machine-learning/demos/rag-chunk.html)** — Cut a long story into pieces. Too big and the answer gets buried; too small and it gets cut in half. Find the chunk size that answers the most questions.
+- **22.2 [Open-Book Robo](https://nuhmanpk.github.io/explore-machine-learning/demos/rag-ground.html)** — Ask Robo questions with the book closed, then open. Watch it stop making things up, and check every fact against the page it came from.
+- **22.3 [Second Opinion](https://nuhmanpk.github.io/explore-machine-learning/demos/rag-rerank.html)** — A fast searcher grabs twenty maybe-pages. A careful real AI judge reads each one with your question and re-sorts them. Does the right page jump to the top?
+
+### Chapter 23 · [Fine-tuning](https://nuhmanpk.github.io/explore-machine-learning/topic.html?t=tune)
+
+_Teach an already-trained model a new job with only a few examples._
+
+- **23.1 [New Tricks](https://nuhmanpk.github.io/explore-machine-learning/demos/tune-transfer.html)** — Robo already knows shapes. Now teach it a new job with only 10 examples. Compare starting fresh, keeping its old brain frozen, and gently fine-tuning everything.
+- **23.2 [Tiny Adapters](https://nuhmanpk.github.io/explore-machine-learning/demos/tune-lora.html)** — Instead of rewriting the whole brain, clip on a tiny adapter. Slide the size knob and see how few extra numbers it takes to learn a new trick.
+- **23.3 [Don't Forget!](https://nuhmanpk.github.io/explore-machine-learning/demos/tune-forget.html)** — Teach Robo a second job and watch it forget the first one. Then mix in a few old examples while it practises and see the memory stay.
+- **23.4 [Teacher and Student](https://nuhmanpk.github.io/explore-machine-learning/demos/tune-distill.html)** — A big, slow teacher brain shows a small, fast student not just the answers, but how sure it was. The student learns more than it could from the answers alone.
+
+### Chapter 24 · [MLOps: Models in the Real World](https://nuhmanpk.github.io/explore-machine-learning/topic.html?t=mlops)
+
+_Ship it, test it, watch it, fix it: models in the real world._
+
+- **24.1 [Shifting Sands](https://nuhmanpk.github.io/explore-machine-learning/demos/ops-drift.html)** — Robo's model watches a stream of new data. Make summer turn into winter and watch its accuracy sink. Can you spot the drift alarm and retrain in time?
+- **24.2 [Fair Race](https://nuhmanpk.github.io/explore-machine-learning/demos/ops-abtest.html)** — Two models race for real users. Who really wins? Stop too early and luck fools you. Learn how many users you need before you can trust the result.
+- **24.3 [Model Factory](https://nuhmanpk.github.io/explore-machine-learning/demos/ops-deploy.html)** — Run the factory: train, test, ship to a few users first, watch the dashboard, and hit rollback when a bad model slips through. How many days without an outage?
+- **24.4 [Shrink Ray](https://nuhmanpk.github.io/explore-machine-learning/demos/ops-quant.html)** — Squash a model's numbers from 32 bits down to 8, 4, even 2. It gets tiny and fast, but when does it stop being smart?
+
+### Chapter 25 · [Live AI Lab](https://nuhmanpk.github.io/explore-machine-learning/topic.html?t=live)
+
+_Real pretrained models (ONNX, via Transformers.js) running live on your device: camera, microphone and keyboard on._
+
+- **25.1 [Camera Scavenger Hunt](https://nuhmanpk.github.io/explore-machine-learning/demos/live-scavenger.html)** — The clock is ticking! Find a cup, a book, a chair... and show them to your camera. A real object detector spots them and scores you.
+- **25.2 [Depth Mirror](https://nuhmanpk.github.io/explore-machine-learning/demos/live-depth.html)** — One camera, no 3D glasses. A real model guesses how far away everything is and paints your room in near-and-far colours, live.
+- **25.3 [Talk to Text](https://nuhmanpk.github.io/explore-machine-learning/demos/live-whisper.html)** — Say a tongue twister out loud. Whisper, a real speech model, writes down what it heard. How close can you get?
+- **25.4 [Mood Racer](https://nuhmanpk.github.io/explore-machine-learning/demos/live-mood.html)** — Your words are the fuel. Type happy sentences and your car zooms; grumpy ones make it crawl. A real sentiment model judges every word as you type.
+- **25.5 [Ask My Notes](https://nuhmanpk.github.io/explore-machine-learning/demos/live-rag.html)** — Ask a question in your own words. A real embedding model turns words into number-maps and finds the notes that mean the same thing, even with different words. This is how chatbots look things up.
+- **25.6 [Sketch Charades](https://nuhmanpk.github.io/explore-machine-learning/demos/live-sketch.html)** — You get a secret word. Draw it before the timer runs out while CLIP, a real picture-and-words model, shouts its guesses live.
+
+### Chapter 26 · [Game Lab](https://nuhmanpk.github.io/explore-machine-learning/topic.html?t=games)
 
 _Games where the computer learns, gets better, and adapts when you make it harder._
 
-- **22.1 [Boat Crosses the River](https://nuhmanpk.github.io/explore-machine-learning/demos/game-boat.html)** — Little boats learn to fight the river current and reach the dock. Then make the current stronger, add logs or a whirlpool!
-- **22.2 [Basketball Shooter](https://nuhmanpk.github.io/explore-machine-learning/demos/game-hoops.html)** — Robo throws, misses, and adjusts its aim until it sinks every shot. Then add wind or move the hoop!
-- **22.3 [Sailboat Beats the Wind](https://nuhmanpk.github.io/explore-machine-learning/demos/game-sail.html)** — A sailboat can't sail straight into the wind. Watch it learn to zig-zag to the buoy, then shift the wind on it.
-- **22.4 [Goalie vs You](https://nuhmanpk.github.io/explore-machine-learning/demos/game-goalie.html)** — Take penalty kicks. The goalie learns your habits and starts saving them. Can you trick it?
-- **22.5 [Rocket Lander](https://nuhmanpk.github.io/explore-machine-learning/demos/game-rocket.html)** — Try landing a rocket gently. Then watch Robo learn it, even with wind, heavy gravity and a moving landing pad.
-- **22.6 [Creature Learns to Walk](https://nuhmanpk.github.io/explore-machine-learning/demos/game-walker.html)** — Wobbly creatures made of sticks and muscles learn to walk. Add hills, ice or a heavy backpack!
-- **22.7 [Dino Runner](https://nuhmanpk.github.io/explore-machine-learning/demos/game-dino.html)** — A herd of baby dinos learns when to jump and when to duck. Speed it up or turn the lights off!
-- **22.8 [Space Dodger](https://nuhmanpk.github.io/explore-machine-learning/demos/game-space.html)** — Little spaceships use radar to dodge asteroids and grab stars. Then start a meteor shower!
-- **22.9 [Robo Arm](https://nuhmanpk.github.io/explore-machine-learning/demos/game-arm.html)** — Robot arms with muscles learn to pick up a cube at A and drop it on a pad at B. Watch the muscles bulge, then make the cube heavy or the muscles tired!
-- **22.10 [Delivery Drone](https://nuhmanpk.github.io/explore-machine-learning/demos/game-drone.html)** — Like the drones that deliver medicine and parcels today. Little drones learn to hover, fly to a house and drop the package. Then add wind or a heavier box!
-- **22.11 [Ants Find the Best Path](https://nuhmanpk.github.io/explore-machine-learning/demos/game-ants.html)** — Hundreds of ants leave smelly trails and find the shortest way to food. Block their path and watch them find a new one.
-- **22.12 [Auto-Parking](https://nuhmanpk.github.io/explore-machine-learning/demos/game-parking.html)** — Little cars with distance sensors learn to steer into a bay and stop inside the lines. Then add parked neighbours, posts or a tight bay!
-- **22.13 [Lane Keeper](https://nuhmanpk.github.io/explore-machine-learning/demos/game-lane.html)** — Little cars learn to follow a winding road and stay in their lane. Then add hairpin bends, rain or cones in the road!
+- **26.1 [Boat Crosses the River](https://nuhmanpk.github.io/explore-machine-learning/demos/game-boat.html)** — Little boats learn to fight the river current and reach the dock. Then make the current stronger, add logs or a whirlpool!
+- **26.2 [Basketball Shooter](https://nuhmanpk.github.io/explore-machine-learning/demos/game-hoops.html)** — Robo throws, misses, and adjusts its aim until it sinks every shot. Then add wind or move the hoop!
+- **26.3 [Sailboat Beats the Wind](https://nuhmanpk.github.io/explore-machine-learning/demos/game-sail.html)** — A sailboat can't sail straight into the wind. Watch it learn to zig-zag to the buoy, then shift the wind on it.
+- **26.4 [Goalie vs You](https://nuhmanpk.github.io/explore-machine-learning/demos/game-goalie.html)** — Take penalty kicks. The goalie learns your habits and starts saving them. Can you trick it?
+- **26.5 [Rocket Lander](https://nuhmanpk.github.io/explore-machine-learning/demos/game-rocket.html)** — Try landing a rocket gently. Then watch Robo learn it, even with wind, heavy gravity and a moving landing pad.
+- **26.6 [Creature Learns to Walk](https://nuhmanpk.github.io/explore-machine-learning/demos/game-walker.html)** — Wobbly creatures made of sticks and muscles learn to walk. Add hills, ice or a heavy backpack!
+- **26.7 [Dino Runner](https://nuhmanpk.github.io/explore-machine-learning/demos/game-dino.html)** — A herd of baby dinos learns when to jump and when to duck. Speed it up or turn the lights off!
+- **26.8 [Space Dodger](https://nuhmanpk.github.io/explore-machine-learning/demos/game-space.html)** — Little spaceships use radar to dodge asteroids and grab stars. Then start a meteor shower!
+- **26.9 [Robo Arm](https://nuhmanpk.github.io/explore-machine-learning/demos/game-arm.html)** — Robot arms with muscles learn to pick up a cube at A and drop it on a pad at B. Watch the muscles bulge, then make the cube heavy or the muscles tired!
+- **26.10 [Delivery Drone](https://nuhmanpk.github.io/explore-machine-learning/demos/game-drone.html)** — Like the drones that deliver medicine and parcels today. Little drones learn to hover, fly to a house and drop the package. Then add wind or a heavier box!
+- **26.11 [Ants Find the Best Path](https://nuhmanpk.github.io/explore-machine-learning/demos/game-ants.html)** — Hundreds of ants leave smelly trails and find the shortest way to food. Block their path and watch them find a new one.
+- **26.12 [Auto-Parking](https://nuhmanpk.github.io/explore-machine-learning/demos/game-parking.html)** — Little cars with distance sensors learn to steer into a bay and stop inside the lines. Then add parked neighbours, posts or a tight bay!
+- **26.13 [Lane Keeper](https://nuhmanpk.github.io/explore-machine-learning/demos/game-lane.html)** — Little cars learn to follow a winding road and stay in their lane. Then add hairpin bends, rain or cones in the road!
+- **26.14 [Rock, Paper, Mind Reader](https://nuhmanpk.github.io/explore-machine-learning/demos/game-rps.html)** — Play rock, paper, scissors against Robo. It quietly learns your habits and starts winning. Can you be truly random and beat it?
+- **26.15 [Sumo Bots](https://nuhmanpk.github.io/explore-machine-learning/demos/game-sumo.html)** — Two little robots try to push each other out of the ring. They practise against each other over and over and invent tricks. Then wrestle one yourself!
+- **26.16 [Sheepdog Round-Up](https://nuhmanpk.github.io/explore-machine-learning/demos/game-herd.html)** — Sheep scatter when a dog gets close. Steer the dog yourself, then watch Robo dogs learn to gather the flock into the pen. Add wind or stubborn sheep!
+- **26.17 [Traffic Light Tamer](https://nuhmanpk.github.io/explore-machine-learning/demos/game-traffic.html)** — Cars pile up at a crossroads. Switch the lights yourself, then let Robo learn when to switch. Can it handle rush hour and an ambulance?
+- **26.18 [Paper Plane Designer](https://nuhmanpk.github.io/explore-machine-learning/demos/game-glider.html)** — Design a paper plane: wings, nose weight and throw angle. Then let a crowd of planes evolve, generation by generation, to fly the furthest.
+- **26.19 [Fish School vs Shark](https://nuhmanpk.github.io/explore-machine-learning/demos/game-fish.html)** — Little fish learn to eat plankton and dodge a hungry shark. Watch them start clueless and end up swimming in clever schools.
+- **26.20 [Hide and Seek](https://nuhmanpk.github.io/explore-machine-learning/demos/game-hide.html)** — Hide in the garden. The seeker remembers where you hid before and checks the likely spots first. Can you stay unpredictable?
+- **26.21 [Busy Bees](https://nuhmanpk.github.io/explore-machine-learning/demos/game-bees.html)** — Bees must choose which flowers to visit. Some are full of nectar, some are duds, and flowers change through the day. Watch the hive learn where to go.
 
 ## Run it locally
 
@@ -322,6 +376,13 @@ Most lessons train their own tiny models live in your browser, so nothing is dow
 | Word Chopper | GPT-2 tokenizer via Transformers.js |
 | Words ↔ Pictures | CLIP via Transformers.js (about 150 MB) |
 | Picture Talker | ViT-GPT2 captioning via Transformers.js (about 250 MB) |
+| Camera Scavenger Hunt | YOLOS-tiny object detection (about 26 MB) |
+| Depth Mirror | Depth Anything V2 small (about 27 MB on WebAssembly, 50 MB on WebGPU) |
+| Talk to Text | Whisper tiny.en speech recognition (about 70 MB) |
+| Mood Racer | DistilBERT SST-2 sentiment, 8-bit (about 68 MB) |
+| Ask My Notes | all-MiniLM-L6-v2 sentence embeddings (about 23 MB) |
+| Sketch Charades | CLIP ViT-B/32, shared cache with Words ↔ Pictures (about 154 MB) |
+| Second Opinion | MiniLM bi-encoder plus ms-marco MiniLM cross-encoder reranker (about 46 MB) |
 
 ## Project structure
 

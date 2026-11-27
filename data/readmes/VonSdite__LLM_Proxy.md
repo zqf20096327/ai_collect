@@ -22,7 +22,7 @@
 <a href="https://github.com/VonSdite/LLM_Proxy/network/members">
   <img alt="GitHub Forks" src="https://img.shields.io/github/forks/VonSdite/LLM_Proxy?style=flat-square&logo=github">
 </a>
-<img alt="Version" src="https://img.shields.io/badge/version-3.0.0-2f80ed?style=flat-square">
+<img alt="Version" src="https://img.shields.io/badge/version-3.0.5-2f80ed?style=flat-square">
 <img alt="Python 3.12+" src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white">
 <img alt="Vue 3" src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vuedotjs&logoColor=white">
 
@@ -43,7 +43,7 @@
 | **🔑 凭据池与 OAuth** | Auth Group 提供多 Key 调度、并发与请求配额、429 冷却；Codex OAuth 支持认证文件管理、账号切换与状态跟踪。 |
 | **🛡️ 访问控制与脱敏** | 提供下游 API Key、模型权限、Token 配额、并发与分钟/每日限制、IP 白名单，以及可选的请求级安全脱敏。 |
 | **📊 用量可观测** | 查看请求趋势、Token、缓存命中、上游成功率、首字延迟、TPS 与费用；趋势按日期范围提供 5 分钟、小时和天粒度切换，支持请求、映射、响应模型独立筛选，统计表格列宽自适应，以及 Excel 和数据迁移导出。 |
-| **🧩 扩展与 Agent 集成** | 通过 Hook 定制 Header、请求、响应和模型发现；使用页面注册表和受控 Python 动作扩展管理端；集中维护 Claude、Codex、opencode、DSH、Hermes 的本机或 SSH 配置。 |
+| **🧩 扩展与 Agent 集成** | 通过 Hook 定制 Header、请求、响应和模型发现；使用页面注册表和受控 Python 动作扩展管理端；集中维护 Claude、Codex、opencode、Hermes 的本机或 SSH 配置。 |
 
 Provider 编辑页还支持模型发现、可用性测试、首字延迟与 TPS 测量，配置可直接在管理后台维护。
 
@@ -54,7 +54,7 @@ Provider 编辑页还支持模型发现、可用性测试、首字延迟与 TPS 
 | [![Provider 管理](docs/images/providers.png)](docs/images/providers.png) | [![用户管理](docs/images/users.png)](docs/images/users.png) |
 | 上游协议、模型、认证池、Hook 与启停状态集中管理。 | 用户模型权限、IP 白名单与累计用量清晰可查。 |
 
-管理界面基于 Vue 3，支持深色与浅色主题。生产构建资源已包含在仓库中，运行服务无需安装 Node.js。
+管理界面基于 Vue 3，支持深色与浅色主题，需要支持原生 Import Map 的现代浏览器。生产构建资源已包含在仓库中，运行服务无需安装 Node.js。
 
 ## 🚀 快速开始
 
@@ -168,6 +168,8 @@ npm --prefix frontend run dev
 ```
 
 开发服务器位于 `http://127.0.0.1:5173`，API 默认代理到 `http://127.0.0.1:8080`。
+
+发布前执行 `npm --prefix frontend run build`，并提交完整构建产物。分块使用独立导入映射，单页修改通常只影响相关资源和清单；部署端通过 `git pull` 获取产物即可。详见 [前端开发指南](docs/frontend-development.md#5-构建与部署)。
 
 ## 🔐 安全提示
 

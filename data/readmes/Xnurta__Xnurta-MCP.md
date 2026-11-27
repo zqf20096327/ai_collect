@@ -2,7 +2,7 @@
 
 Bring Xnurta's advertising capabilities into your own AI agent (Claude, ChatGPT, and more) and make your data part of your workflow — query data, run analyses, and calculate true profitability in plain language, combining your own costs, margins, and goals. After authorization, there is no need to repeatedly sign in to the platform, export spreadsheets, or switch between systems.
 
-The current Xnurta MCP v1.4.0 supports data queries, AI managed-group management, SP/SB/SD campaign and ad group creation, portfolio creation, and live Amazon Sponsored Ads editing. You can create SP, SB, or SD campaigns with ad groups, advertised products, targeting, and placement settings, or add new ad groups to an existing campaign of any type, and create portfolios; update campaign budgets, status, and SP bidding strategies; change portfolio membership, portfolio budgets and flight dates, and ad group state; and manage keywords, targets, promoted products, and negative targeting. Using a separate campaign-delete operation is not supported; archiving a campaign through a status update is supported.
+The current Xnurta MCP v1.4.1 supports data queries, AI managed-group management, SP/SB/SD campaign and ad group creation, portfolio creation, and live Amazon Sponsored Ads editing. You can create SP, SB, or SD campaigns with ad groups, advertised products, targeting, and placement settings, or add new ad groups to an existing campaign of any type, and create portfolios; update campaign budgets, status, and SP bidding strategies; change portfolio membership, portfolio budgets and flight dates, and ad group state; and manage keywords, targets, promoted products, and negative targeting. Using a separate campaign-delete operation is not supported; archiving a campaign through a status update is supported.
 
 ---
 
@@ -77,6 +77,7 @@ Connecting the server is only step one. Complete all of the following:
 1. Add the MCP server (`https://mcp.xnurta.com/mcp`, Streamable HTTP). Check which authorization methods the client supports, explain when OAuth and MCP Token are appropriate, and ask the user to confirm before configuring it. If OAuth is selected, follow the MCP Authorization specification and validate discovery metadata, endpoints, and every required request field before sending any OAuth request; never omit or guess protocol parameters.
 2. Call `get_user_authorized_context` to verify. A list of authorized stores means success.
 3. Read `skills/manifest.json` and compare each installed Skill's local `metadata.version` in its `SKILL.md` frontmatter with the matching manifest version. If a local version is lower, list the outdated Skills and tell the user to update them. Do not report an update when versions match, the Skill is not installed, or its local version cannot be read.
+   When installing or updating a Skill, copy and verify the complete directory recursively, including nested resources. A matching SKILL.md version does not prove the installation is complete.
 4. Install the 8 required Skills: the 3 query Skills, `xnurta-create-ai-group`, `xnurta-edit-ai-group`, `xnurta-delete-ai-group`, `xnurta-edit-ads`, and `xnurta-create-campaign`. Install them directly without asking the user.
 5. Introduce the 6 optional Skills (weekly report, monthly report, structure analysis, product diagnosis, search-term diagnosis, and promotion reset), and install only those the user confirms.
 
@@ -119,8 +120,8 @@ MCP Tools determine *what data the AI can get*; Skills determine *how well the A
 | [xnurta-product-diagnosis](skills/xnurta-product-diagnosis/) | Product diagnosis: ASIN health tiering, variant comparison, keep/optimize/cut recommendations |
 | [xnurta-search-term-diagnosis](skills/xnurta-search-term-diagnosis/) | Search-term diagnosis: classify search terms and surface spend distribution, negative and harvest candidates, and fragmented exact keywords using store-specific thresholds |
 | [xnurta-asin-deep-dive](skills/xnurta-asin-deep-dive/) | ASIN deep dive: for one ASIN or parent ASIN, where the traffic comes from and how concentrated it is, how the advertising is built around it, which variant deserves the budget, stock risk, and what mechanism is driving ACOS - with every figure labelled by the evidence behind it |
-| [xnurta-category-scorecard](skills/xnurta-category-scorecard/) | Category scorecard: score every category against the market and similar brands, give a play per category, a peer-derived goal range, and a budget plan within the budget you confirm |
-| [xnurta-sqp-insight](skills/xnurta-sqp-insight/) | SQP insight: diagnose how much of the market you won and where orders leaked, separating a market-wide move from a store-specific one; plan mode turns one category into a growth or efficiency plan |
+| [xnurta-category-scorecard](skills/xnurta-category-scorecard/) | Performance and matched brand peer ranges for a specified category or confirmed ASIN set; MCP-only, read-only |
+| [xnurta-sqp-insight](skills/xnurta-sqp-insight/) | Targeted SQP and ABA diagnosis for selected terms or ASINs; MCP-only, read-only |
 | [xnurta-promo-prep](skills/xnurta-promo-prep/) | Promotion preparation: check readiness, size the plan to the event budget, and prepare role-matched managed-group schedules plus confirmed budget, bid, and placement changes |
 | [xnurta-promo-monitor](skills/xnurta-promo-monitor/) | Promotion monitoring: compare hourly delivery with the normal pace, identify budget, efficiency, and inventory risks, and propose small confirmed adjustments |
 | [xnurta-promo-reset](skills/xnurta-promo-reset/) | Promotion reset: recover human changes and pre-promotion values, then restore them all at once or stage the reset by post-promotion performance with preview and read-back |
@@ -173,7 +174,7 @@ Per-skill versions are in [skills/manifest.json](skills/manifest.json); version 
 1. Switch to the **Code** tab.
 2. Select **+ → Plugins → Add plugin** next to the prompt box to open the plugin browser.
 3. Under **Marketplaces**, add a repository and enter `Xnurta/Xnurta-MCP`.
-4. Find and install **Xnurta MCP**. The plugin installs the MCP server and all 14 Skills together.
+4. Find and install **Xnurta MCP**. The plugin installs the MCP server and all 21 Skills together.
 
 > Claude Code Desktop does not support the `/plugin` command. `/plugin` is for Claude Code CLI only; use the desktop plugin browser instead.
 
@@ -183,7 +184,7 @@ Per-skill versions are in [skills/manifest.json](skills/manifest.json); version 
 2. Select **Add → Add a marketplace** in the upper-right corner.
 3. Enter `Xnurta/Xnurta-MCP` and add the marketplace.
 4. In **Plugins**, find the marketplace you added and install **Xnurta MCP**.
-5. Start a new Codex task. The MCP server and all 14 Skills will be available in the new task.
+5. Start a new Codex task. The MCP server and all 21 Skills will be available in the new task.
 
 > ChatGPT Desktop Codex does not support `/plugin` or `/plugins`. `/plugins` is for Codex CLI only; use Plugins in the left sidebar of the desktop app.
 
@@ -207,7 +208,7 @@ codex
 
 In Codex CLI, enter `/plugins`, select **Xnurta MCP** from the `xnurta` marketplace, install it, and then start a new session.
 
-The plugin installs the MCP server and all 14 Skills together. The current Plugin configuration uses `XNURTA_TOKEN`. To use OAuth, follow the [OAuth setup](docs/installation.md#oauth) in the installation guide.
+The plugin installs the MCP server and all 21 Skills together. In Claude Code the plugin signs in with OAuth: the first time a tool is used, it opens the Xnurta sign-in page. In Codex the plugin reads the Token from `XNURTA_TOKEN`. To use an MCP Token in Claude Code, configure MCP manually as described in the [MCP Token setup](docs/installation.md#mcp-token).
 
 ### Generic MCP clients
 
@@ -231,6 +232,6 @@ This repository is also a cross-platform plugin distribution package for Claude 
 | [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) | Claude Code plugin descriptor |
 | [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) | Codex marketplace catalog |
 | [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json) | Codex plugin descriptor |
-| [`.mcp.json`](.mcp.json) | Claude Code MCP server configuration using `${XNURTA_TOKEN}` |
+| [`.mcp.json`](.mcp.json) | Claude Code MCP server configuration (OAuth sign-in) |
 | [`docs/installation.md`](docs/installation.md) | Detailed installation and troubleshooting guide |
 | [`skills/manifest.json`](skills/manifest.json) | Machine-readable Skills catalog |

@@ -214,3 +214,18 @@ $ uv run train_unitree_dog.py
     url       = {https://arxiv.org/abs/2004.00784},
 }
 ```
+
+```bibtex
+@article{tessler2024maskedmimic,
+    title   = {MaskedMimic: Unified Physics-Based Character Control Through Masked Motion Inpainting},
+    author  = {Chen Tessler and Yunrong Guo and Ofir Nabati and Gal Chechik and Xue Bin Peng},
+    journal = {ACM Transactions on Graphics (TOG)},
+    volume  = {43},
+    number  = {6},
+    year    = {2024},
+    eprint  = {2409.14393},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.GR},
+    url     = {https://arxiv.org/abs/2409.14393},
+}
+```

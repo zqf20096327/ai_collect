@@ -21,6 +21,8 @@ pf submit --repo org/model FOLDER  # package and submit a folder (--dry-run to p
 pf work                    # build torrents for queued model requests, streamed from Hugging Face
 pf restore PATH            # upload .torrent files to fix a listing whose magnet stalls
 pf index [--sync]          # the cached magnet index: what it holds, and mirror the newest build
+pf find-model FILE         # which listed models hold this file (sha256)
+pf dedupe                  # duplicate Hugging Face cache blobs (--apply to hardlink, default dry run)
 ```
 
 `pf work` builds torrents for queued model requests, streamed from Hugging Face into memory; no model bytes are saved to disk. Progress is saved in a private checkpoint (completed pieces plus the unfinished piece's SHA-256 state, or file boundaries when the native hasher is unavailable) and an interrupted run resumes it on the next run while the lease is still active; a new lease for the same model revision and files can also reuse it. Completed file checkpoints are retained when the native hasher is unavailable. A checkpoint that does not check out (corrupt, missing block hashes, a different job) is discarded automatically and the job rebuilds from scratch. Piece-boundary checkpoints are saved at most every few seconds. `pf work --clear-progress` discards the saved hashes (keeping the lease), and `--name` keeps concurrent workers' checkpoints apart.
@@ -29,7 +31,7 @@ Run `pf <command> --help` for every flag.
 
 ## When Pirate Face is down
 
-The site's magnet index lists every model's magnet as a weekly torrent, mirrored into `$PF_CACHE/index/shards/`. When Pirate Face cannot be reached, a listed model in that copy still downloads: checked against the Hugging Face fingerprint first, and when Hugging Face cannot answer, against the torrent's own piece hashes via the infohash the shard commits to. A model not listed, a torrent that carries only some files, an unreadable removals list, or a download with no fingerprint falls back to Hugging Face, with the reason printed.
+The site's magnet index lists every model's magnet as a weekly torrent, mirrored into `$PF_CACHE/index/shards/`. When Pirate Face cannot be reached, a listed model in that copy still downloads: checked against the Hugging Face fingerprint first, and when Hugging Face cannot answer, against the torrent's own piece hashes via the infohash the shard commits to.
 
 ```sh
 pf index          # the build this copy holds, how many models, whether the site has a newer one
@@ -68,3 +70,11 @@ uv run --group dev ruff check
 - Fix problems where they start rather than adding special cases around them.
 - If Pirate Face can't be reached, say so and carry on. Never crash, and never write outside the model folder.
 - Add your Pirate Face username to the PR so we can credit you.
+
+## Community Contributors
+
+<p align="center">
+  <a href="https://github.com/ZeroPointSynergy"><img src="https://github.com/ZeroPointSynergy.png" width="48" height="48" alt="ZeroPointSynergy"></a>
+  <a href="https://github.com/dmitryrn"><img src="https://github.com/dmitryrn.png" width="48" height="48" alt="dmitryrn"></a>
+  <a href="https://github.com/AndriiZvorygin"><img src="https://github.com/AndriiZvorygin.png" width="48" height="48" alt="AndriiZvorygin"></a>
+</p>

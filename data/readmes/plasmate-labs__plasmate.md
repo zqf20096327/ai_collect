@@ -217,10 +217,16 @@ cookie operations, and validation-only replay. Query `tools/list` instead of
 depending on a hard-coded count; the authoritative registration is
 [`src/mcp/server.rs`](./src/mcp/server.rs).
 
-**Tip:** use `selector="main"` (also `maincontent`/`maincontents` and the `main_content`/`main-content`/`main content` forms, plus the corresponding `primary` region aliases) to strip nav/footer, `selector="article"` (or `article_region`/`article-region`/`article region`) to isolate content, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
+**Tip:** use `selector="landmark"` to get a compact inventory of page regions before choosing a narrower selector. Use `selector="main"` (also `maincontent`/`maincontents` and the `main_content`/`main-content`/`main content` forms, plus the corresponding `primary` region aliases) to strip nav/footer, `selector="article"` (or `article_region`/`article-region`/`article region`) to isolate content, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
 to return only actionable elements. Use `selector="disabled"` or
 `selector="enabled"` to isolate controls by effective disabled state,
-including `aria-disabled` and semantic disabled hints. `selector="h1"`
+including `aria-disabled` and semantic disabled hints. Use `selector="h1"`
+through `selector="h6"` (or `heading1` through `heading6`) to isolate a
+heading level.
+Use `selector="current"` (or `current item`) to isolate elements with a
+meaningful `aria-current` value such as `page` or `step`.
+Use `selector="required"` or `selector="optional"` to isolate form controls
+by effective required state, including `aria-required="true"`.
 Use `selector="readonly"` (also `read-only`, `read_only`, `read only`, or
 `readonly controls` / `read-only-controls`) or `selector="locked"` (also
 `locked control`, `locked controls`, `locked_control`, and `locked-control`) to
@@ -228,8 +234,7 @@ match readonly controls; use
 `selector="editable"` (or `selector="writable"`, including their
 `controls`/hyphenated/underscore aliases) to isolate controls by their
 effective readonly state.
-through `selector="h6"`
-(or `heading1` through `heading6`) to isolate a heading level, or an action selector such as `selector="click"`
+or an action selector such as `selector="click"`
 (the equivalent `selector="action:click"` also works), `selector="type"`,
 `selector="clear"`, `selector="select"`, `selector="toggle"`,
 `selector="submit"`, or `selector="reset"` (equivalently
@@ -242,10 +247,15 @@ action menu before the LLM sees the content. The MCP tool-name aliases
 `action:type_text`/`action:type-text`, `action:clear_text`/`action:clear-text`,
 and `action:select_option`/`action:select-option` forms) are also accepted
 for typing, clearing, and selection targets.
-Use `selector="landmark"` (or `selector="landmarks"`) first when you need a
-compact inventory of the page's compiled regions before choosing a narrower
-region selector; the inventory keeps region metadata and removes their
-elements.
+Use `selector="landmark"` first when you need a compact inventory of the
+page's compiled regions before choosing a narrower region selector. The same
+inventory is available through `landmarks`, `all_regions`, `all-regions`,
+`all regions`, `landmark_inventory`, `landmark-inventory`, `landmark inventory`,
+`landmark_region_inventory`, `landmark-region-inventory`, and
+`landmark region inventory` (including plural forms and `role=` / `role:`
+prefixes). The inventory keeps region metadata and removes their elements,
+making it a low-token discovery step before requesting `main`, `nav`, or
+another narrower selector.
 Selector values may also be wrapped in matching single quotes, double quotes,
 or backticks (including `role=...`, `action:...`, and `#id` forms); surrounding
 whitespace is ignored.

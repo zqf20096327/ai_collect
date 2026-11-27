@@ -120,6 +120,7 @@ your workspaces, so `brok init` in the next project takes seconds.
 | `brok start` / `stop` / `restart` / `logs -f` | The background daemon (bus, live indexing, agent) |
 | `brok status` / `brok doctor` | What is indexed and running / health check with fixes |
 | `brok stats [--days N]` | Local metrics: search and answer latency, indexing, recent errors |
+| `brok storage [--json]` | Disk used per kind of data and partition, and what is left over (read only) |
 | `brok bug` | A bug report with diagnostics (secrets masked) and a prefilled issue |
 | `brok upgrade [--check]` | Upgrade brok and brok-agent to the latest release, with what changed |
 | `brok index [--rebuild]` | Re-index (incremental; the daemon does it automatically) |
@@ -147,9 +148,12 @@ your workspaces, so `brok init` in the next project takes seconds.
 | [Integrations](docs/integrations.md) | Coding agents (MCP + skills), LLMs, storage |
 | [Troubleshooting](docs/troubleshooting.md) | Doctor, logs, metrics, common problems and reporting bugs |
 | [Skills](docs/skills.md) | Built-in workflows, writing and sharing skills |
+| [Write your first shard](docs/shard-tutorial.md) | A complete shard, step by step |
 | [Shards](docs/shards.md) | Build event-driven integrations, `shard.json` reference |
+| [Shards in Python, TypeScript and Java](docs/shards-other-languages.md) | The protocol, working examples and packaging |
 | [Configuration](docs/configuration.md) | Every `brok.yml` key |
 | [Architecture](docs/architecture.md) | How indexing, search and the bus work |
+| [Developer experience roadmap](docs/dx/README.md) | The current priority: audit, journeys, specifications and diagrams |
 
 ## How it works
 

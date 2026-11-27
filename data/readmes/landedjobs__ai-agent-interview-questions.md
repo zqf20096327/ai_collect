@@ -19,11 +19,20 @@
 
 </div>
 
+<!-- landed-for -->
+**For:** AI Agent Engineer · Agentic AI Engineer · LLM Engineer · AI Engineer · Applied AI Engineer · Forward Deployed Engineer
+
 <!-- landed-apply-cta -->
 <table><tr><td>
 <b>⚡ <a href="https://app.landed.jobs/signup?from=github&amp;cta=github-guide-apply&amp;item=ai-agent-interview-questions&amp;utm_source=github&amp;utm_medium=referral&amp;utm_campaign=github-ai-agent-interview-questions&amp;utm_content=guide-apply">Auto-apply to AI agent engineer jobs that match you →</a></b><br>
 Upload your resume once. <a href="https://www.landed.jobs">landed</a> finds the roles that fit you and applies within hours of them going live, so you actually hear back.
 </td></tr></table>
+
+**Also in this family:** [AI engineer interview](https://github.com/landedjobs/awesome-ai-engineer-interview) · [AI system design interview](https://github.com/landedjobs/ai-system-design-interview) · [AI engineer portfolio projects](https://github.com/landedjobs/ai-engineer-portfolio-projects)
+
+**Hiring now:** [live AI Engineer roles](https://github.com/landedjobs/ai-engineer-jobs) · [live LLM Engineer roles](https://github.com/landedjobs/llm-engineer-jobs), refreshed every 2 days
+
+> ⭐ Star it to come back before your loop. 🍴 Fork it to tick off questions as you prepare.
 
 
 ---

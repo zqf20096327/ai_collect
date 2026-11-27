@@ -1,4 +1,10 @@
+<p align="center"><img src="assets/banner.svg" alt="gravion-hunter banner" width="100%"/></p>
+
 # gravion-hunter
+
+[![CI](https://github.com/gravion-ux/gravion-hunter/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/gravion-hunter/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+**Autonomous bug bounty agent framework — built for validity ratio, not volume.**
 
 **Autonomous bug bounty agent framework — built for validity ratio, not volume.**
 

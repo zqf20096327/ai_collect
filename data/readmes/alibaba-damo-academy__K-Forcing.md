@@ -7,13 +7,7 @@
   <a href="https://huggingface.co/zwave/K-Forcing"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Models-yellow" alt="HuggingFace"></a>
 </p>
 
-## TODO
-
-🟩 Arxiv paper release<br>
-🟩 Checkpoints release<br>
-⬜ Blog post<br>
-⬜ Training recipe<br>
-⬜ Future Direction
+This repository provides inference code and pretrained checkpoints for K-Forcing.
 
 ## Introduction
 

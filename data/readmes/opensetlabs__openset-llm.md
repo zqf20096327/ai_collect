@@ -13,7 +13,7 @@
 
 <p align="center">
   <img alt="Licence: MIT" src="https://img.shields.io/badge/licence-MIT-blue">
-  <img alt="Platform: Linux x86-64, AVX-512" src="https://img.shields.io/badge/platform-Linux%20x86--64%20%C2%B7%20AVX--512-lightgrey">
+  <img alt="Platform: Linux x86-64, AVX-512 or AVX2" src="https://img.shields.io/badge/platform-Linux%20x86--64%20%C2%B7%20AVX--512%20or%20AVX2-lightgrey">
   <img alt="API: OpenAI-compatible" src="https://img.shields.io/badge/API-OpenAI--compatible-brightgreen">
   <img alt="GPU: none" src="https://img.shields.io/badge/GPU-none-black">
   <img alt="RAM: 8 GB" src="https://img.shields.io/badge/RAM-8%20GB-black">
@@ -27,7 +27,7 @@
 git clone https://github.com/opensetlabs/openset-llm && cd openset-llm && ./start
 ```
 
-<p align="center"><sub>Linux (or WSL2), a CPU with AVX-512, 8 GB of RAM. The first run builds the engine and downloads the model (~7.3 GB), then opens a chat page. <a href="#quick-start">Details</a></sub></p>
+<p align="center"><sub>Linux (or WSL2), an x86-64 CPU with AVX-512 (fastest) or AVX2, 8 GB of RAM. The first run builds the engine and downloads the model (~7.3 GB), then opens a chat page. <a href="#quick-start">Details</a></sub></p>
 
 An LLM is not a sealed box. It is a stack of parts you can rewrite: matmul kernels, decoding, attention, caches. People
 already rewire single neurons to change what a model does; we rewired the machinery underneath to change where it runs.
@@ -54,16 +54,17 @@ The race above in full: [▶ 45 s video](demo/race.mp4).
 
 openset-llm is an inference engine for ordinary CPUs; more models and more hardware will follow. Today it runs
 Qwen3.8-27B, as PrismML's ternary [Bonsai-2-27B](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf)
-(5.95 GB), on x86 CPUs with AVX-512. It is a set of new kernels and runtime patches on PrismML's llama.cpp fork, and it
+(5.95 GB), on x86 CPUs: fastest with AVX-512, and on our 256-bit kernels where the CPU only has AVX2. It is a set of new kernels and runtime patches on PrismML's llama.cpp fork, and it
 serves an OpenAI-compatible API, so the clients and agents you already use work unchanged.
 Its sibling, [openset-tts](https://github.com/opensetlabs/openset-tts), does the same for speech: Qwen3-TTS faster than real time on the same kind of box.
 
 ## Quick start
 
 **To chat with it (no code).** You need a Linux PC, or Windows with WSL2, with 8 GB of RAM free for it (16 GB in the
-machine is comfortable; on Windows WSL2 must be given 8 GB, see [Run it locally](#run-it-locally)) and a processor with
-AVX-512: Intel Xeon Ice Lake or newer, or AMD Zen 4 or newer. Intel Core 12th gen and later do not have it and get a
-much slower fallback ([check yours](#which-cpus-get-the-fast-path)). It builds from source, so it needs git, cmake and
+machine is comfortable; on Windows WSL2 must be given 8 GB, see [Run it locally](#run-it-locally)) and an x86-64
+processor. The speeds on this page need AVX-512: Intel Xeon Ice Lake or newer, or AMD Zen 4 or newer. A CPU with AVX2
+but no AVX-512 (Intel Core 12th gen and newer, older Core, AMD Zen 1 to 3) runs on our 256-bit kernels
+([what was measured, and how to run it](#cpus-without-avx-512)). It builds from source, so it needs git, cmake and
 a C++ compiler; on Ubuntu or Debian: `sudo apt install -y build-essential cmake git`.
 
 ```sh
@@ -71,7 +72,7 @@ git clone https://github.com/opensetlabs/openset-llm && cd openset-llm
 ./start
 ```
 
-Want to check your CPU (AVX-512 fast path) and free RAM before downloading the ~7.3 GB model? Run:
+Want to check your CPU (which kernels it will get) and free RAM before downloading the ~7.3 GB model? Run:
 
 ```sh
 ./install.sh --check
@@ -219,7 +220,8 @@ tg128 box medians, Ice Lake: openset-llm 9.6–10.8, ik_llama `-rtr 1` 4.4–4.7
 ## Which CPUs get the fast path
 
 `./install.sh --check` prints the path your machine will get. The build picks it at compile time (default, `-march=native`)
-or at start-up (`--portable`, one binary for all x86-64). A CPU without the fast path still runs, on the fork's own kernel.
+or at start-up (`--portable`, one binary for all x86-64). A CPU without AVX-512 runs on the 256-bit kernels (AVX2, with
+AVX-VNNI where the CPU has it); one without AVX2 still runs, on the fork's own kernel.
 
 | CPU | ISA | Path | Status |
 |---|---|---|---|
@@ -228,10 +230,79 @@ or at start-up (`--portable`, one binary for all x86-64). A CPU without the fast
 | AMD EPYC Zen 5 (9005) | AVX-512 VNNI + VBMI | full | **measured** (EPYC 9275F, 8 vCPU / 16 GB, 3 boxes, one prompt, 2026-11-06): `./serve` 35–36 tok/s, 3.0× ik_llama `-rtr`, 4.1× PrismML; plain ~22 tok/s |
 | AMD Ryzen 7000 / 9000 | AVX-512 VNNI + VBMI | full | same cores as the EPYC rows |
 | Intel Xeon Cascade Lake / Cooper Lake | AVX-512 VNNI, no VBMI | partial | this build decodes at 0.67–0.82× the full path (measured on Ice Lake / Zen 4 boxes) |
-| Intel Skylake-SP / Skylake-X | AVX-512, no VNNI | fallback: fork's kernel | untested |
-| Intel Core 12th gen and newer, most laptops | AVX2 only | fallback: fork's kernel | this build decodes 4.8–5.7× slower than the full path (measured on Ice Lake boxes) |
+| Intel Skylake-SP / Skylake-X | AVX-512, no VNNI | 256-bit kernels | starts and gives the same replies (checked with the build for this class on an Ice Lake box); speed not measured on such a CPU |
+| Intel Core 12th gen and newer (Alder / Raptor / Meteor / Arrow Lake) | AVX2 + AVX-VNNI | 256-bit kernels, VNNI dot product | not measured on such a CPU; the kernels were checked bit-exact, and the engine gave the same reply, under an emulated Alder Lake |
+| Intel Core before 12th gen without AVX-512, AMD Zen 1 to 3 (Ryzen 1000–5000, EPYC 7001–7003) | AVX2 | 256-bit kernels | **measured on Ice Lake server VMs with AVX-512 disabled** ([table](#cpus-without-avx-512)): 6.1–7.7 tok/s plain decoding, 3.5× the fork's own kernel on the same box, 0.7× of the AVX-512 path |
 | ARM64 Linux (Graviton, Ampere, Raspberry Pi 5) | NEON | fallback: fork's kernel | builds; untested |
 | Apple Silicon | — | not supported by `install.sh`: use PrismML's Metal build | — |
+
+### CPUs without AVX-512
+
+A CPU with AVX2 but no AVX-512 gets 256-bit kernels for the ternary weights (AVX2, and AVX-VNNI where the CPU has
+it) instead of the fork's own kernel. `./install.sh` and `./install.sh --portable` pick them by themselves.
+
+**This release also fixes a start-up bug.** In 0.2.0 and earlier, a `--portable` build could not start on a CPU
+without AVX-512, and the Docker image and `--bin-url` binaries are made from that build. Found and checked under
+emulated Haswell and Alder Lake CPUs.
+
+Thank you to everyone who told us openset-llm was slow on laptops and desktops without AVX-512. This change is for you.
+
+**How to run it.** The commands are the quick start's; on a machine with AVX2 and no AVX-512 they do this:
+
+```sh
+./install.sh --check              # prints "Path: AVX2, no AVX-512: the 256-bit kernels ..."
+./install.sh                      # builds for this CPU, downloads and prepares the model
+./serve                           # plain decoding: the default without AVX-512
+./serve --spec                    # speculative decoding on, drafting 2 tokens ahead
+./bench/quick.sh --plain --spec   # measures ./serve, ./serve --no-spec and ./serve --spec on this machine
+```
+
+To see which kernels a machine will get before cloning anything:
+
+```sh
+f=$(grep -m1 '^flags' /proc/cpuinfo); case "$f" in *avx512vbmi*avx512_vnni*|*avx512_vnni*avx512vbmi*) echo "fast path";; *avx512_vnni*) echo "partial fast path (AVX-512 without VBMI)";; *avx2*) echo "256-bit kernels (AVX2)";; *) echo "generic fallback: slow";; esac
+```
+
+**Measured on Ice Lake server VMs with AVX-512 disabled (the binary holds no AVX-512 instruction).** The engine was
+built for a Haswell-class CPU and run on 4 cloud VMs with 8 vCPU / 8 GB, 3 rounds each, every engine in every
+round, same model file.
+
+| Same box, AVX2-only builds, `llama-bench`, 8 threads | plain decoding tok/s (128 tokens) | prompt reading tok/s (512 tokens) |
+|---|---|---|
+| **openset-llm, 256-bit kernels** | **6.1–7.7** | **14.5–17.8** |
+| openset-llm before this change (the fork's own kernel) | 1.7–1.9 | 2.1–2.7 |
+| ik_llama.cpp `-rtr` (`13cffc0`) | 3.9–5.0 | 14–21 |
+| PrismML llama.cpp (`prism-b12178`, 2026-11-24) | 2.4–3.0 | 3.9–5.1 |
+| for reference: openset-llm with AVX-512 on the same box | 8.0–9.7 | 37–49 |
+
+Medians per box, range over the boxes. Plain decoding is 3.5× the fork's own kernel, 1.5× ik_llama.cpp and
+2.2× PrismML's current fork on the same box, and 0.7× of our AVX-512 path; prompt reading is 6.7×
+the fork's own kernel, level with ik_llama.cpp (0.93×) and 0.38× of the AVX-512 path.
+
+`./serve` on this path decodes at 5.8–7.2 tok/s on the benchmark prompts (plain decoding: speculation is off by default
+without AVX-512), 3.5× the same requests on the fork's own kernel. `./serve --spec` turns speculation on and drafts 2
+tokens ahead there: 7.2–8.7 tok/s on the benchmark prompts, 1.27× plain decoding [1.01, 1.78]. On a broader set of 128
+prompts it is 1.11× overall: 1.19–1.43× on code, JSON, maths and tool calls, and 0.91–0.99× on prose, translation and
+summaries, which is why it is not the default.
+
+Replies: greedy replies equal the AVX-512 path's (plain decoding) on 18 of the 24 benchmark prompts at 128 tokens; the other 6
+part at a token where the model's two best candidates are within 0.04 nats of each other. The kernels themselves
+give bit-identical results on both paths; the rest of the engine runs at 256 bits there, and near-ties can fall
+the other way. WikiText-2 perplexity is 7.5689 on this path against 7.5702 on the AVX-512 path (each ± 0.21).
+Memory on 8 GB: at the default 4k context the server holds 5.9 GiB after a ~3k-token prompt with 1.5 GiB still available
+(the AVX-512 path with plain decoding: 6.2 and 1.2 GiB); with `--spec` 6.5 GiB and 0.9 GiB (the AVX-512 default: 7.2 and
+0.2 GiB); at `--ctx 8192` 6.1 GiB and 1.3 GiB after a ~7k-token prompt. One 8 GB box, one run each.
+
+Not measured: a CPU without AVX-512 (AMD Zen 1 to 3, Intel Core); laptop and desktop memory configurations; CPUs
+with performance and efficiency cores; the AVX-VNNI kernels at speed (the test VMs do not have AVX-VNNI, so an
+emulator ran them, for correctness). If you run it on such a machine, please post the block that
+`./bench/quick.sh --plain --spec` prints as a "Measurement on my machine" issue.
+
+**What is next**
+
+- We are making this path faster.
+- Measurements on real AVX2-only desktop and laptop chips come next, and we will publish the numbers here.
+- Phones are the next target we are working on.
 
 ## Memory budget (8 GB machine)
 
@@ -269,7 +340,8 @@ or at start-up (`--portable`, one binary for all x86-64). A CPU without the fast
 
 A patch set on PrismML's llama.cpp fork (pinned at `e3de715`), applied by `install.sh`:
 
-- **New AVX-512 kernels for the ternary weights**, for generating and for reading prompts.
+- **New kernels for the ternary weights**, for generating and for reading prompts: AVX-512, and 256-bit (AVX2 /
+  AVX-VNNI) for CPUs without it.
 - **Speculative decoding with the model's own multi-token-prediction head** (published by unsloth, grafted on at
   install): the engine drafts a few tokens ahead and the full model checks every one.
 - **A fused attention kernel** that keeps long contexts fast.
@@ -307,7 +379,8 @@ trained on the full-precision model improves this ternary build on any task.
 ## Several requests at once (`--multi`)
 
 `./serve --multi N` serves N requests together: every pass over the ~6 GB of weights produces one token for each of
-them. Speculation and agent-loop resume are off in this mode (speculation with it is untested); `--ctx` is per stream.
+them. Speculation is off in this mode; `--ctx` is per stream. A system prompt (and tool list) that the streams share is
+read once, kept on disk, and loaded by every stream that needs it.
 
 | 8 vCPU / 8 GB, Ice Lake Xeon (2026-11-11) | one stream (`--no-spec`) | `--multi 4`, four short prompts together |
 |---|---|---|
@@ -319,6 +392,16 @@ them. Speculation and agent-loop resume are off in this mode (speculation with i
 - With ~800-token prompts the total falls to 7–10 tok/s: a newcomer's prompt is read on its own, and the other streams
   pause for those batches (that keeps outputs identical).
 - 8 streams leave < 0.3 GB free on an 8 GB machine, so `serve` warns above 6.
+- **Agents that share a system prompt** (measured 2026-11-25 on 8 vCPU / 8 GB Ice Lake boxes; every agent sends a
+  1.5k–3.9k-token prompt whose ending changes each step, 1.2k–1.8k tokens of it a shared system prompt + tools): the
+  server reads 32 % (4 streams) or 46 % (2 streams) of the prompt tokens instead of all of them, and a step of all
+  agents takes 58–71 s instead of 157–177 s with 4 streams (2.5–2.8×), 85 s instead of 168–170 s with 2 (2.0×).
+  It costs no memory, and the replies are byte-identical to `--no-resume` and to each request alone (every request
+  compared). The gain is the shared part: a stream still reads everything after the system prompt again.
+- The single-stream server's exact resume point (one checkpoint per stream, ~150 MiB each) is off with `--multi`; it
+  can be tried with `./serve --multi N -- --ctx-checkpoints 1` (experimental; 4 streams with it leave < 0.1 GB free on 8 GB).
+- Speculation inside `--multi` is not offered: a first look with 2 streams on 8 GB ran at 0.4–0.7× the speed of
+  `--multi 2` without it, with replies that no longer matched the request alone; with 4 streams it ran out of memory.
 - One user wanting the fastest single reply: plain `./serve`. Several users, agents or best-of-N
   sampling: `--multi`.
 
@@ -327,7 +410,7 @@ them. Speculation and agent-loop resume are off in this mode (speculation with i
 **Which path will I get?** (Linux or WSL; no clone needed)
 
 ```sh
-f=$(grep -m1 '^flags' /proc/cpuinfo); case "$f" in *avx512vbmi*avx512_vnni*|*avx512_vnni*avx512vbmi*) echo "fast path";; *avx512_vnni*) echo "partial fast path (AVX-512 without VBMI)";; *avx2*) echo "fallback: AVX2, runs ~5x slower";; *) echo "generic fallback: slow";; esac
+f=$(grep -m1 '^flags' /proc/cpuinfo); case "$f" in *avx512vbmi*avx512_vnni*|*avx512_vnni*avx512vbmi*) echo "fast path";; *avx512_vnni*) echo "partial fast path (AVX-512 without VBMI)";; *avx2*) echo "256-bit kernels (AVX2)";; *) echo "generic fallback: slow";; esac
 ```
 
 Inside a clone, `./install.sh --check` says the same and checks your RAM.
@@ -361,9 +444,9 @@ memory=10GB
 ```
 
 Then, in the Ubuntu shell, run the Linux one-liner above. Clone into your Linux home (`~`), not `/mnt/c`: reading the
-model through `/mnt/c` is much slower. Most laptop CPUs (Intel 12th gen and newer) get the AVX2 fallback.
+model through `/mnt/c` is much slower. Most laptop CPUs (Intel 12th gen and newer) have no AVX-512 and get the 256-bit kernels.
 
-**Mac.** Our fast path is x86 AVX-512 only. On Apple Silicon, use PrismML's own build of their fork with Metal
+**Mac.** Our kernels are x86 only (AVX-512 and AVX2). On Apple Silicon, use PrismML's own build of their fork with Metal
 ([PrismML-Eng/llama.cpp](https://github.com/PrismML-Eng/llama.cpp)), which is much faster there than any CPU path.
 Intel Macs are not supported by `install.sh`.
 
@@ -376,7 +459,8 @@ curl http://127.0.0.1:8080/v1/chat/completions -H 'Content-Type: application/jso
 
 ## In the cloud
 
-- **Any Linux VM or container host** with 8 vCPU / 8 GB and AVX-512: the Linux recipe or the Docker image above.
+- **Any Linux VM or container host** with 8 vCPU / 8 GB: the Linux recipe or the Docker image above (AVX-512 for the
+  speeds on this page; AVX2-only hosts such as AMD Zen 2 / Zen 3 instances run on the 256-bit kernels).
 - **Prebuilt binaries:** `./install.sh --bin-url <tarball>` skips the build (tarballs come from `scripts/package.sh`).
   A tarball runs on the Linux distribution it was built on or a newer one, so build it on the oldest one you want to
   support; `install.sh` checks that it starts before it downloads the model.
@@ -384,7 +468,8 @@ curl http://127.0.0.1:8080/v1/chat/completions -H 'Content-Type: application/jso
 ## Limits
 
 - **Hardware:** the fast path needs x86 with AVX-512 VNNI + VBMI (table above). Measured on Intel Ice Lake, AMD Zen 4
-  and Zen 5. The 8 vCPU of our Ice Lake test boxes behave like 8 physical cores; a typical cloud 8 vCPU (AWS / GCP / Azure) is 4 cores, so
+  and Zen 5. The AVX2 path was measured on Ice Lake server VMs with AVX-512 disabled, and its AVX-VNNI variant was
+  checked under an emulator ([CPUs without AVX-512](#cpus-without-avx-512)). The 8 vCPU of our Ice Lake test boxes behave like 8 physical cores; a typical cloud 8 vCPU (AWS / GCP / Azure) is 4 cores, so
   expect lower absolute speed there.
 - **8 GB is the floor:** 4k context by default; above 4k on < 12 GB, `serve` uses plain decoding (above 8k with `--kv8`,
   12k with `--kv6`, 16k with `--kv5`). The compact caches are experimental and were measured on one CPU class.
@@ -394,7 +479,7 @@ curl http://127.0.0.1:8080/v1/chat/completions -H 'Content-Type: application/jso
   (summaries, rewrites, code edits) and less on short open questions; the numbers above are for the benchmark prompts.
 - **Resume keeps prompt states on disk.** To continue agent loops quickly, the server saves up to 8 prefix states
   (about 0.3 GB each, built from the start of your prompts) in `~/.openset-llm/state`. Delete that folder to clear
-  them, or run `./serve --no-resume`.
+  them, or run `./serve --no-resume`. `--multi` uses the same folder (its states are separate from single-stream ones).
 - **The model is PrismML's ternary Bonsai-2-27B**, with thinking off by default (`./serve --think`). The server
   repacks the weights every time it starts, before it accepts requests (20–45 s on the box we measured).
 

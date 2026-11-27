@@ -4,7 +4,7 @@
 
 [![LINUX DO](https://img.shields.io/badge/LINUX_DO-community-1a1a1a)](https://linux.do)
 
-为 **Codex**、**Claude Code** 和 **DeepSeek Harness** 的本地会话维护可选中文或英文的三段式标题：
+为 **Codex**、**Claude Code**、**DeepSeek Harness**、**Antigravity** 和开源 **Gemini CLI** 的本地会话维护可选中文或英文的三段式标题：
 
 ```text
 状态｜初始需求｜当前进展
@@ -16,17 +16,17 @@ Building | Session titles | Add bilingual support
 
 上图为 Codex CLI：每轮对话后，窗口标题和底部状态栏的会话标题随进展即时刷新。
 
-中间段保留用户最初要解决的问题；DeepSeek Harness 的中间段按整个会话做简短摘要，而不是只复述首条需求。状态和末段在阶段变化时更新，无须等整个回合结束。当前支持的自动状态为「聊天、摸底、方案、开发中、测试、修复、待确认、已完成、搁置」。用户手动修改哪一段，插件就保留并锁定哪一段，其余段继续自动更新；手动状态词可以不在自动状态列表中。标题只有这三段，工作树和无项目会话都不额外加前缀或目录名。无法可靠拆分或确认来源的名称会整体保留；Claude Code 桌面端在首个标题确认前自动起的名字不算人工改名，插件会继续沿用自己的标题。
+中间段保留用户最初要解决的问题；DeepSeek Harness、Antigravity 和 Gemini CLI 的中间段按整个会话做简短摘要，而不是只复述首条需求。状态和末段在阶段变化时更新，无须等整个回合结束。当前支持的自动状态为「聊天、摸底、方案、开发中、测试、修复、待确认、已完成、搁置」。用户手动修改哪一段，插件就保留并锁定哪一段，其余段继续自动更新；手动状态词可以不在自动状态列表中。标题只有这三段，工作树和无项目会话都不额外加前缀或目录名。无法可靠拆分或确认来源的名称会整体保留；Claude Code 桌面端在首个标题确认前自动起的名字不算人工改名，插件会继续沿用自己的标题。
 
 ## 直接交给 Agent 安装
 
-把下面这段话直接发给**有本机终端权限的 Codex 或 Claude Code Agent**。将“中文”改为“英文”即可选择英文；也可以将“两个客户端”改为“仅 Codex”或“仅 Claude Code”。Agent 会执行安装命令和检查步骤，你不需要自己打开终端。完整的中英文可复制版本见 [Agent 安装说明](AGENT_INSTALL.md)；DeepSeek Harness 使用其中的 DSH 指令，或把目标改成 `--dsh`。
+把下面这段话直接发给**有本机终端权限的 Codex 或 Claude Code Agent**。将“中文”改为“英文”即可选择英文；也可以将“两个客户端”改为“仅 Codex”或“仅 Claude Code”。Agent 会执行安装命令和检查步骤，你不需要自己打开终端。完整的中英文可复制版本见 [Agent 安装说明](AGENT_INSTALL.md)；DeepSeek Harness、Antigravity 与开源 Gemini CLI 可直接使用其中的对应指令。
 
 > 请从 https://github.com/panda-z519/agent-session-titles 安装本地会话标题插件，目标是两个客户端，标题使用中文。先检查本机 `codex`、`claude`、Node.js 20+ 和 Python 3.11+。执行 `npx --yes github:panda-z519/agent-session-titles --both --lang zh --migrate`，再核对安装结果和配置备份。`--migrate` 只用于备份并迁移旧版标题钩子，保留其他钩子。若缺少客户端或安装失败，说明具体原因，不声称成功。Codex 若要求信任新钩子，请让我在应用中检查并确认；完成后提醒我重启客户端并验证新本地会话。
 
 ## 自己运行命令安装
 
-需要 macOS 或 Linux、Node.js 20+、Python 3.11+，以及要使用的客户端命令 `codex`、`claude` 或 `dsh`。选择一条命令运行：
+需要 macOS 或 Linux、Node.js 20+（Codex 和 Claude Code 另需 Python 3.11+），以及要使用的客户端命令或应用（`codex`、`claude`、`dsh`、Antigravity 或 `gemini`）。选择一条命令运行：
 
 **自动安装本机已有的客户端**（两者都有就安装两端）：
 
@@ -114,6 +114,24 @@ Harness 后生效。桌面端的 `desktop` profile 由 Electron 独占，CLI 拒
 
 原理、边界和验证步骤见 [DSH 方案文档](docs/dsh-session-titles.md)。
 
+### Antigravity 与开源 Gemini CLI
+
+只需 Node.js 20+（零第三方依赖，不要求 Python）。可单独安装或同时安装：
+
+```bash
+# 安装 Antigravity 原生插件（覆盖桌面端 / IDE / agy CLI，别名 --agy）
+npx --yes github:panda-z519/agent-session-titles --antigravity --lang zh
+
+# 安装开源 Gemini CLI 扩展（别名 --gemini-cli）
+npx --yes github:panda-z519/agent-session-titles --gemini --lang zh
+```
+
+- **Antigravity**：复制到 `~/.gemini/config/plugins/antigravity-session-titles/`，由宿主自动发现并启用，**不修改** `~/.gemini/config/config.json`。通过常驻 `rules/AGENTS.md` 引导智能体调用 `scripts/set-title.mjs`（经官方 `ConversationService` 即时刷新侧边栏标题），`SessionStart` 钩子标记新会话以区分首轮自动起名与历史旧会话，`PreToolUse` 钩子仅对纯净的 `set-title.mjs` 自动放行免弹窗（对其他命令空输出透传宿主默认权限策略）。
+- **开源 Gemini CLI**：复制到 `~/.gemini/extensions/gemini-session-titles/`。通过 `gemini-extension.json` 注册零依赖本地 Stdio MCP 工具 `set_session_title`，即时向 `/dev/tty` 写入 OSC 0 刷新终端窗口标题，`AfterAgent` 兜底首轮纯聊天，`SessionEnd` 将最终三段标题原子写回会话记录的 `summary` 字段。若终端标题被 CLI 图标覆盖，请在 `~/.gemini/settings.json` 中把 `ui.dynamicWindowTitle` 设为 `false`。
+- **卸载**：分别使用 `--remove-antigravity`（`--remove-agy`）或 `--remove-gemini`（`--remove-gemini-cli`），保留已有会话标题与历史记录。
+
+实测证据、安全边界与验证清单见 [Antigravity 与 Gemini CLI 方案文档](docs/gemini-antigravity-session-titles.md)。
+
 ### 全局规则文件
 
 标题规则由插件钩子在每个会话中自动注入，**不需要**在全局 `AGENTS.md`（Codex）或 `CLAUDE.md`（Claude Code）里手写。安装器默认不修改这两个文件，只扫描其中疑似手写的会话标题规则，并在输出里指出行号，提醒你核对，避免和插件规则重复或冲突。
@@ -135,8 +153,10 @@ npx --yes github:panda-z519/agent-session-titles --remove-rules
 | Codex | 注册并安装 `codex-session-titles` 插件；把 `~/.codex/session-titles/` 加入窄范围可写目录；更新前检查状态库结构并创建 SQLite 一致性备份。 |
 | Claude Code | 注册并安装 `claude-session-titles` 插件；在 `~/.claude/settings.json` 中加入 `Edit(~/.cc-session-titles/**)`；改动前备份已有设置。 |
 | DeepSeek Harness | 复制 `dsh-session-titles` 到 `~/.dsh/plugins/`；在目标 profile 的 `cordis.patch.yml` 用户层写入受管块，禁用内置标题 provider，并用相对路径加载插件；若已作为 bundle 安装则只写禁用行；修改前备份。想让插件出现在插件页时，可改用组合包方式（`dsh plugin … add link:…` + `dsh.profile.bundles`），此时需先删受管块。 |
+| Antigravity | 复制 `antigravity-session-titles` 到 `~/.gemini/config/plugins/`；在 `~/.gemini/antigravity-session-titles/config.json` 保存语言并渲染插件内 `rules/AGENTS.md`；**不修改** `~/.gemini/config/config.json`，仅只读扫描冲突规则。 |
+| Gemini CLI | 复制 `gemini-session-titles` 到 `~/.gemini/extensions/`；在 `~/.gemini/gemini-session-titles/config.json` 保存语言并渲染扩展内 `GEMINI.md`；仅只读检查 `~/.gemini/settings.json` 中的 `ui.dynamicWindowTitle` 与 `tools.enableHooks`。 |
 
-已安装旧版用户级 `session-title.sh` 的客户端需要明确传入 `--migrate`；安装器会备份后移除匹配的旧钩子注册，再安装插件。`CODEX_HOME`、`CLAUDE_CONFIG_DIR` 和 `DSH_HOME` 分别支持自定义配置目录。
+已安装旧版用户级 `session-title.sh` 的客户端需要明确传入 `--migrate`；安装器会备份后移除匹配的旧钩子注册，再安装插件。`CODEX_HOME`、`CLAUDE_CONFIG_DIR`、`DSH_HOME`、`GEMINI_CONFIG_DIR` 和 `GEMINI_CLI_HOME` 分别支持自定义配置目录。
 
 ## 验证标题
 
@@ -145,6 +165,8 @@ npx --yes github:panda-z519/agent-session-titles --remove-rules
 3. Codex 在标题文件写入后的工具事件尽早同步，即使 Codex 此时还没给会话起名；若 Codex 首轮结束后自动生成的名字覆盖了插件标题，下一次发消息时会恢复一次。`Stop` 和下一次发消息仍负责补偿。可检查 `~/.codex/session-titles/<会话ID>.state.json` 的 `phase`、`last_result` 和分段锁定信息。Codex CLI 使用后台守护进程（app-server daemon）时，插件经它的控制套接字调用 `thread/name/set`，已打开的 CLI 窗口会立即刷新状态栏标题；守护进程不可用（例如 `--no-daemon`）时退回直接写 SQLite，此时已打开的窗口要到重新打开或 `/rename` 后才显示新标题。侧边栏即时刷新仍取决于桌面端。
 4. Claude Code 首条提示词通过官方 `sessionTitle` 钩子输出形成初始标题。**桌面端**在 Agent 写入标题文件后由 `PostToolUse` 钩子调用桌面端改名工具**立即**生效；**命令行**没有该工具，后续进展在下一次提交消息时应用（`PostToolUse` 钩子会报一条不影响流程的错误）。可检查 `~/.cc-session-titles/<会话ID>.txt`。[Claude 钩子说明](https://code.claude.com/docs/en/hooks)
 5. DeepSeek Harness 重启后新建本地会话，侧边栏应出现三段式标题；Agent 进入下一阶段时标题应即时更新。可检查会话日志中的 `session/title` 事件，`source.provider` 应为 `agent-session-titles`。手动改名后，下一次消息应保留手改段并恢复其余段；把标题改成自由格式后应整体保留，改回三段式后恢复更新。若按组合包方式安装，重启后 **插件 → 已安装插件** 里应出现「会话标题」卡片，行内开关、配置（`language`、`maxTitleBytes`）和卸载都在该页面完成。
+6. Antigravity 安装后无需重启，直接新开本地会话即可生效，并在 Customizations 页面可见 `antigravity-session-titles`。提出具体需求后，Agent 调用 `set-title.mjs` 经官方 `ConversationService` 刷新左侧会话栏标题；可检查 `~/.gemini/antigravity-session-titles/state/<会话ID>.json` 的段锁与保护状态。子代理会话会自动跳过。
+7. 开源 Gemini CLI 重启 `gemini` 后，新会话中 Agent 调用 `set_session_title` MCP 工具可即时刷新终端窗口标题；回合结束若未调用则自动写入三段式兜底；退出会话时会将最终标题写回会话记录的 `summary` 字段（供 `gemini --list-sessions` 与 `/resume` 展示）。
 
 历史会话在收到新消息后才重新纳入 Codex 标题管理。若钩子提示“来源未确认”，会保留已有名称。无项目会话使用需求摘要，不把当前目录冒充项目名。
 
@@ -158,6 +180,8 @@ npx --yes github:panda-z519/agent-session-titles --remove-rules
 codex plugin remove codex-session-titles@agent-session-titles
 claude plugin uninstall claude-session-titles@agent-session-titles
 npx --yes github:panda-z519/agent-session-titles --remove-dsh
+npx --yes github:panda-z519/agent-session-titles --remove-antigravity
+npx --yes github:panda-z519/agent-session-titles --remove-gemini
 ```
 
 只使用一端时运行该端的卸载命令。准备脚本添加的可写目录或 `Edit` 规则可从用户配置中单独移除；旧版独立钩子和备份不会被自动删除。`--remove-dsh` 会删除受管块和插件副本，保留已有会话标题事件；不要只关闭插件行，否则内置标题 provider 仍处于禁用状态。
@@ -171,6 +195,8 @@ npx --yes github:panda-z519/agent-session-titles --remove-dsh
 - DeepSeek Harness 的标题由宿主 `sessionTitle` 服务管理，服务只允许一个 provider；安装器会在用户 patch 层禁用内置 provider，如果另有第三方标题插件抢占，本插件会降级为不启用并记录警告。
 - DSH 默认标题上限为 80 字节，超长时先裁“当前进展”，再裁“会话摘要”；需要更长标题时同时调整 `session-title` 服务和插件配置。
 - DSH 桌面端的 `desktop` profile 由 Electron 独占，CLI 只有 `--dump-config` 被拒绝（`dsh plugin` 仍可转发 pnpm）；安装器只写用户 patch 层并跳过桌面端校验，重启应用后由宿主加载。想验证 desktop 的组合结果，可把 profile 复制到临时 `DSH_HOME` 下改名后 `--dump-config`。
+- Antigravity 的 `set-title.mjs` 在 `run_command` 中访问本机 `ConversationService`；若开启了禁止回环端口（`localhost`）的严格终端沙箱，需要放行本地回环访问或在沙箱外运行。
+- 开源 Gemini CLI 默认开启 `ui.dynamicWindowTitle: true`，会不断用状态图标覆盖终端窗口标题，建议在 `~/.gemini/settings.json` 中设为 `false`；会话记录的 `summary` 字段在会话退出（`SessionEnd`）时安全写回，避免运行中与 CLI 内存刷盘冲突。
 - 本仓库的生命周期钩子面向本地桌面端，不能作为带钩子的插件提交到 OpenAI 公共插件目录。[插件打包说明](https://developers.openai.com/plugins/build/plugins)
 
 ## 社区

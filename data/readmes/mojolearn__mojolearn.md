@@ -143,20 +143,40 @@ mojolearn doctor
 
 reports what the installed wheel supports on this machine.
 
-Verification combines inference and classical training in one routine scope.
-Neural training is a separate opt-in:
+Verification has two profiles, classic (classical training and inference,
+saved-model inference) and neural (neural training, backward and optimizer
+checks), and `--all` runs both:
 
 ```sh
-python -m mojolearn verify                    # every applicable routine lane, base fixture
-python -m mojolearn verify --quick            # representative routine checks
-python -m mojolearn verify --all              # entire routine scope, all nine fixtures
-python -m mojolearn verify --neural-training  # neural training/backward/optimizer checks
+python -m mojolearn verify             # classic lanes on the base fixture
+python -m mojolearn verify --quick     # one representative classic lane per family
+python -m mojolearn verify --classic   # every classic lane, all nine fixtures
+python -m mojolearn verify --neural    # every neural training lane, all nine fixtures
+python -m mojolearn verify --all       # both profiles in one run and one report
 ```
 
-Routine checks include bundled reference hashes, saved-model inference, and,
-on a GPU installation, direct GPU/CPU inference comparisons. Neural training
-is excluded from default, quick and all; combine `--neural-training --all`
-to exercise its complete fixture set. Reports name excluded and missing checks.
+Classic checks include bundled reference hashes, saved-model inference, and,
+on a GPU installation, direct GPU/CPU inference comparisons. Reports name the
+selected profile and every lane it leaves out. `--all` also runs the
+single-device commands, each with its own verdict: captured-program training
+and partitioned execution on one device, captured graphs, generation, loaded
+language models, one composed-model recipe and one saved program checked with
+`verify-model`. Everything `verify` runs uses one GPU.
+
+The run ends with a short sample of lanes where the CPU and the GPU took
+different paths (kernel launches and copies on one side, host thread splits on
+the other) to the same bits. `python -m mojolearn verify --show-paths [LANE]`
+shows what each side did for every lane, or one lane in full, from the saved
+record, running nothing. `python -m mojolearn verify --tamper-test` moves one
+input by one ULP and shows that verify catches it.
+
+Your own composed model: `verify --recipe r.json` fits it from scratch on the
+CPU and the GPU and compares the results the recipe selects (fitted
+parameters, `digest_`, predictions, score); `--against other.record.json`
+compares with a record from another machine. A saved program carries its
+report (`Program.save` writes `<file>.verify.json`), and
+`python -m mojolearn verify-model <file>` checks each output against it on
+another device.
 
 The advanced `--cross-check quick|default|all` option runs only direct GPU/CPU
 comparisons. Its `default` scope retains the 24-lane diagnostic sample;
@@ -206,11 +226,13 @@ The base install does not require NumPy. See [verification support](docs/VERIFY.
 ```sh
 python -m mojolearn verify          # inference and classical training, base fixture
 python -m mojolearn verify --quick  # representative checks from the same scope
-python -m mojolearn verify --all    # the same scope on all nine fixtures
+python -m mojolearn verify --all    # every lane on all nine fixtures, plus the single-device commands
 ```
 
 `--all` also includes applicable gradient, batch-size, ragged-batch and
-sampler/replay checks. `--quick` keeps its smaller scope.
+sampler/replay checks, and the single-device commands (programs, graphs,
+generation, loaded models, a composed recipe, a saved program).
+`--quick` keeps its smaller scope.
 
 Each part reports its comparison with the recorded references; missing
 references read OWED and inapplicable properties are named explicitly.

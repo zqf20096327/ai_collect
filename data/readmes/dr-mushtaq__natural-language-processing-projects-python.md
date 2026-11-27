@@ -432,6 +432,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Mastering LLM Techniques: Text Data Processing](https://developer.nvidia.com/blog/mastering-llm-techniques-data-preprocessing/)** - FREE
 - **[Mastering LLM Techniques: Evaluation](https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/)** - FREE
 - **[Easy-Vibe AI Coding Guide from Scratch](https://datawhalechina.github.io/easy-vibe/en/stage-1/learning-map/)** - FREE
+- **[🌟Fine-Tune Your Own LLM: LoRA, QLoRA & PEFT](https://www.coursera.org/learn/fine-tune-your-own-llm-lora-qlora--peft?irclickid=RwdUCuXvfxyZRr-U1sVnd0wOUkrU5L3-GQ0gUM0&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=3401872&utm_content=b2c&utm_campaignid=thecleverprogrammer&utm_term=14726_CR_1164545_) - FREE
 
 #### Tutorial and  Videos
 - **[Natural Language Processing (NLP) with PyTorch](https://www.dataquest.io/blog/natural-language-processing-nlp-with-pytorch/)** - FREE
@@ -520,5 +521,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |**🌐1-BERT (Encoder-only models)**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |✅[1-How to build your own LLM from scratch-Diagram](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/Understanding%20Large%20Language%20Model/How%20to%20build%20your%20own%20LLM%20from%20scratc.md)| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**✅-Queries, Keys, and Values**|[1](https://youtu.be/GubJ71dCQBk?si=EC6zvQ_qaClQFGvm) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**✅-Transformer Architecture**|[1](https://youtu.be/DYo3Y_93KnI?si=EA1-9fbKYWZFMQy2)[-2](https://drive.google.com/file/d/1HSGA0gxwR7buvcWTnoPZo2k1DWQHr0AN/view?usp=sharing) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
-|**✅-How Attention Mechanism Works in Transformer Architecture**| [**1**](https://youtu.be/KMHkbXzHn7s?si=3LXRNm9AilOwDlnA)[-2](https://drive.goog
+ |**✅-Transformer Architecture**|[1](https://youtu.be/DYo3Y_93KnI?si=EA1-9fbKYWZFMQy2)[-2](https://drive.google.com/file/d/1HSGA0gxwR7buvcWTnoPZo2k1DWQHr0AN/view?usp=sharing) |[![Colab icon](https

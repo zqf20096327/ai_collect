@@ -96,7 +96,7 @@ The transport flags are mutually exclusive.
 
 ### Quick start
 
-Run these commands from the workspace root. The `dashboard` feature automatically resolves and builds the pinned querymt-desktop UI; this source build requires Node.js and npm.
+Run these commands from the workspace root. The `dashboard` feature embeds QueryMT Desktop web, the wasm build of `crates/querymt-gpui`, and serves it over same-origin ACP. The first build compiles it for `wasm32-unknown-unknown` (a few minutes; the target is listed in `rust-toolchain.toml`) into `target/querymt-gpui-web`. Later builds reuse it and rebuild only when the app or the crates it uses change. `wasm-opt` (binaryen) shrinks the wasm when it is on `PATH`.
 
 ```bash
 # ACP stdio mode
@@ -106,10 +106,12 @@ cargo run --example qmtcode -- --acp
 cargo run --example qmtcode --features dashboard -- --dashboard
 
 # Dashboard mode on a custom address
-cargo run --example qmtcode --features dashboard -- --dashboard=0.0.0.0:8080
+cargo run --example qmtcode --features dashboard -- --dashboard=127.0.0.1:31337
 ```
 
-For advanced use, `QMT_UI_DIST` can select a prebuilt local directory/archive, while a plain `QMT_UI_REVISION` selects a Git SHA, tag, or ref to build instead of the pinned revision.
+The assets are embedded gzipped (about 7 MiB) and served with `ETag` revalidation, so the dashboard also loads reasonably over the LAN (`--dashboard=0.0.0.0:<port>`; there is no access control yet, so only do this on a trusted network).
+
+`QMT_UI_DIST` names a prebuilt UI directory to embed instead (for example the output of `crates/querymt-gpui/web/build.sh --release`). For backend work, the `dashboard-server` feature builds the same server code with a placeholder page and no wasm build; `cargo t-agent` and `cargo cl-agent` use it.
 
 By default it reads config from `examples/confs/coder_agent.toml`.
 You can also pass your own config path before the mode flag.
@@ -121,6 +123,30 @@ macOS Silicon users who download the `qmtcode` release binary need to clear the 
 ```bash
 xattr -dr com.apple.quarantine qmtcode
 ```
+
+## QueryMT Desktop
+
+`crates/querymt-gpui` is QueryMT Desktop, a native (macOS, Windows, Linux) and web client for
+QueryMT agents built with GPUI. It connects to `qmtcode` over ACP, locally or over WebSocket.
+
+```bash
+nix develop -c cargo run -p querymt-gpui
+```
+
+Every release ships it as `QueryMT-Desktop-<version>-<platform>` installers and a
+`querymt-desktop-web-<version>.tar.gz` web build. Each installer bundles the `qmtcode` built by the
+same release, so the app works without a separate qmtcode install (a bare `qmtcode` command runs the
+bundled copy first, then `PATH`):
+
+| Platform | Installed as | Bundled qmtcode |
+|---|---|---|
+| macOS | `QueryMT Desktop.app` (`mt.query.desktop`) | `Contents/MacOS/qmtcode` |
+| Windows | `%LOCALAPPDATA%\Programs\QueryMT Desktop` | `qmtcode.exe` next to the app |
+| Linux | deb `querymt-desktop`, or the AppImage | `usr/lib/querymt-gpui/qmtcode` |
+
+Earlier GPUI test builds: the deb and the Windows installer replace them, and on macOS the old
+`QueryMT.app` is deleted by hand. App settings carry over. See
+[its README](crates/querymt-gpui/README.md).
 
 ## Release channels
 

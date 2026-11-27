@@ -9,7 +9,7 @@
   <a href="https://github.com/scccc6ut/npface/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/scccc6ut/npface/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://www.npmjs.com/package/npface"><img alt="npm" src="https://img.shields.io/npm/v/npface?label=npface" /></a>
   <a href="https://www.npmjs.com/package/npface-react"><img alt="npm" src="https://img.shields.io/npm/v/npface-react?label=npface-react" /></a>
-  <img alt="gzip" src="https://img.shields.io/badge/core-~9%20KB%20gzip-c7f636" />
+  <img alt="gzip" src="https://img.shields.io/badge/core-~14%20KB%20gzip-c7f636" />
   <img alt="deps" src="https://img.shields.io/badge/dependencies-0-0f1d3a" />
   <a href="./LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue" /></a>
 </p>
@@ -35,7 +35,8 @@ face.set('thinking'); // → idle → thinking → search-docs → search-web �
 ```
 
 - **13 states**: `sleep · wake · idle · blink · happy · proud (complete) · thinking · search-docs · search-web · working · waiting · error (dizzy) · sad (tired)` — plus aliases (`searching`, `rag`, `browsing`, `tired` …; `searchDocs` / `search_docs` are normalised too), unknown names fall back to `idle`, and you can register your own.
-- **Zero dependencies**, framework-agnostic core (plain SVG/DOM, built-in springs & easing, one shared `requestAnimationFrame` loop). **~9 KB gzip.**
+- **7 face shapes**: the npcrew `square` (default) plus `shield`, `ghost`, `cat`, `circle` (with a little moon), `drop` and `crown`. Every expression works in every shape, `setShape()` morphs between them, and you can register your own from SVG path data.
+- **Zero dependencies**, framework-agnostic core (plain SVG/DOM, built-in springs & easing, one shared `requestAnimationFrame` loop). **~14 KB gzip.**
 - **React bindings** (`npface-react`): `<Npface state="working" />`. Vue can follow.
 - **Alive by default**: breathing, random glances, auto-blink, per-state rhythm; optional **eyes-follow-pointer**.
 - **Considerate**: pauses off-screen (IntersectionObserver), honours `prefers-reduced-motion` (static poses + minimal transitions), `role="img"` + `aria-label`.
@@ -104,35 +105,38 @@ export function Employee({ status }: { status: string }) {
 
 `target` is an element or CSS selector; the `<svg>` is appended to it.
 
-| option              | type                             | default       | description                                                                                               |
-| ------------------- | -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
-| `state` / `emotion` | `string`                         | `'idle'`      | initial state (aliases ok, unknown → `idle`)                                                              |
-| `size`              | `number \| string`               | `48`          | px or CSS length (`'100%'`, `'3rem'`)                                                                     |
-| `colors`            | `{ body, visor, eye, rim, zzz }` | brand palette | any subset; `rim` is an optional helmet outline                                                           |
-| `theme`             | `'light' \| 'dark' \| 'auto'`    | `'auto'`      | picks the default palette (`auto` = `prefers-color-scheme`)                                               |
-| `follow` / `gaze`   | `boolean`                        | `false`       | eyes (and a bit of head) follow the pointer                                                               |
-| `reducedMotion`     | `boolean \| 'auto'`              | `'auto'`      | `auto` honours `prefers-reduced-motion`: no breathing / blink / gaze, quick critically-damped transitions |
-| `pauseOffscreen`    | `boolean`                        | `true`        | stop animating while out of view                                                                          |
-| `label`             | `string`                         | state name    | `aria-label`                                                                                              |
-| `states`            | `Record<string, StateDef>`       | —             | extra / overriding states for this instance                                                               |
-| `className`         | `string`                         | —             | extra classes on the `<svg>`                                                                              |
-| `onChange`          | `(state, prev) => void`          | —             | after every state change                                                                                  |
+| option              | type                             | default       | description                                                                                                                                         |
+| ------------------- | -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `state` / `emotion` | `string`                         | `'idle'`      | initial state (aliases ok, unknown → `idle`)                                                                                                        |
+| `size`              | `number \| string`               | `48`          | px or CSS length (`'100%'`, `'3rem'`)                                                                                                               |
+| `shape`             | `string \| ShapeDef`             | `'square'`    | face shape: `square` · `shield` · `ghost` · `cat` · `circle` · `drop` · `crown`, a registered name or a `ShapeDef` (aliases ok, unknown → `square`) |
+| `colors`            | `{ body, visor, eye, rim, zzz }` | brand palette | any subset; `rim` is an optional helmet outline                                                                                                     |
+| `theme`             | `'light' \| 'dark' \| 'auto'`    | `'auto'`      | picks the default palette (`auto` = `prefers-color-scheme`)                                                                                         |
+| `follow` / `gaze`   | `boolean`                        | `false`       | eyes (and a bit of head) follow the pointer                                                                                                         |
+| `reducedMotion`     | `boolean \| 'auto'`              | `'auto'`      | `auto` honours `prefers-reduced-motion`: no breathing / blink / gaze, quick critically-damped transitions                                           |
+| `pauseOffscreen`    | `boolean`                        | `true`        | stop animating while out of view                                                                                                                    |
+| `label`             | `string`                         | state name    | `aria-label`                                                                                                                                        |
+| `states`            | `Record<string, StateDef>`       | —             | extra / overriding states for this instance                                                                                                         |
+| `className`         | `string`                         | —             | extra classes on the `<svg>`                                                                                                                        |
+| `onChange`          | `(state, prev) => void`          | —             | after every state change                                                                                                                            |
 
 #### Instance
 
-| member                                                           | description                                                      |
-| ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `el`                                                             | the `<svg>` (`class="npface"`, `data-state="…"`)                 |
-| `state`                                                          | current state name                                               |
-| `set(name, { immediate? })`                                      | switch state; `immediate` snaps                                  |
-| `pulse(name, ms?)`                                               | play once then return (default duration per state, else 1500 ms) |
-| `blink()`                                                        | blink now                                                        |
-| `follow(on)`                                                     | pointer gaze on/off                                              |
-| `look(x, y)` / `look(null)`                                      | fixed gaze direction                                             |
-| `setColors(partial)` · `setSize()` · `setTheme()` · `setLabel()` | runtime tweaks                                                   |
-| `destroy()`                                                      | stop & remove                                                    |
+| member                                                           | description                                                         |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `el`                                                             | the `<svg>` (`class="npface"`, `data-state="…"`)                    |
+| `state`                                                          | current state name                                                  |
+| `set(name, { immediate? })`                                      | switch state; `immediate` snaps                                     |
+| `setShape(shape, { immediate? })`                                | change the face shape (morphs; `immediate` or reduced motion snaps) |
+| `shape`                                                          | current face-shape name (`'custom'` for an inline `ShapeDef`)       |
+| `pulse(name, ms?)`                                               | play once then return (default duration per state, else 1500 ms)    |
+| `blink()`                                                        | blink now                                                           |
+| `follow(on)`                                                     | pointer gaze on/off                                                 |
+| `look(x, y)` / `look(null)`                                      | fixed gaze direction                                                |
+| `setColors(partial)` · `setSize()` · `setTheme()` · `setLabel()` | runtime tweaks                                                      |
+| `destroy()`                                                      | stop & remove                                                       |
 
-Also exported: `STATES`, `STATE_NAMES`, `ALIASES`, `registerState(name, def)`, `resolveStateName()`, `BASE_EYE`, `BASE_HEAD`, `SPRINGS`, `PALETTE`, `LIGHT_COLORS`, `DARK_COLORS`, and the geometry helpers (`HELMET_PATH`, `eyePath`, …) for static rendering.
+Also exported: `STATES`, `STATE_NAMES`, `ALIASES`, `registerState(name, def)`, `resolveStateName()`, `SHAPES`, `SHAPE_NAMES`, `registerShape(name, def)`, `resolveShape()`, `BASE_EYE`, `BASE_HEAD`, `SPRINGS`, `PALETTE`, `LIGHT_COLORS`, `DARK_COLORS`, and the geometry helpers (`HELMET_PATH`, `eyePath`, …) for static rendering.
 
 ### States
 
@@ -153,6 +157,48 @@ Also exported: `STATES`, `STATE_NAMES`, `ALIASES`, `registerState(name, def)`, `
 | `wake`        | <img src="./assets/states/wake.svg" width="72"/>        | coming online                                     | eyes pop open, stretch, then auto → `idle`                                                         |
 
 The previews above are animated SVGs recorded from the engine itself (`pnpm assets`); see everything move in the [live demo](https://scccc6ut.github.io/npface/).
+
+### Face shapes
+
+<p>
+  <img src="./assets/shapes.svg" alt="square, shield, ghost, cat, circle, drop, crown" width="640" />
+  <img src="./assets/morph.svg" alt="npface morphing through its face shapes" width="112" />
+</p>
+
+The npcrew rounded square is the default, and six character shapes ship with the library. Every expression works in every shape: the visor, eye placement and size, head pivot and the "z z z" anchor are tuned per shape. Switching morphs the helmet smoothly, with a quick spring and a little squash-and-stretch; under reduced motion it snaps.
+
+| shape    | look                           | feel (suggestion)                          | aliases                           |
+| -------- | ------------------------------ | ------------------------------------------ | --------------------------------- |
+| `square` | rounded square (default)       | the npcrew helmet                          | `default`, `helmet`, `方形`       |
+| `shield` | heater shield with a soft peak | guardian: security & compliance            | `badge`, `盾牌`, `盾形`           |
+| `ghost`  | round top, scalloped hem       | playful: creative & content                | `boo`, `幽灵`                     |
+| `cat`    | rounded ears, full cheeks      | approachable: community & customer care    | `kitty`, `neko`, `猫咪`, `猫`     |
+| `circle` | round face with a little moon  | friendly: companions & assistants          | `round`, `planet`, `圆形`, `星球` |
+| `drop`   | water drop                     | calm: data & operations                    | `water`, `droplet`, `水滴`        |
+| `crown`  | three-pointed crown            | premium: VIP concierge, sales & leadership | `king`, `royal`, `皇冠`, `王冠`   |
+
+```ts
+const face = createNpface(el, { shape: 'cat', state: 'idle' });
+face.setShape('crown'); // morphs
+face.setShape('shield', { immediate: true }); // snaps
+```
+
+```tsx
+<Npface shape={employee.role === 'security' ? 'shield' : 'square'} state={status} />
+```
+
+**Your own shape**: draw it in any vector tool inside a 100×100 box and paste the path data as `outline` (rounded-polygon vertices `[x, y, cornerRadius]` or an ellipse `{ cx, cy, rx, ry }` work too). Add the visor slot. Eye positions and size, the pivot and the zzz anchor are derived unless you set them (`eyes`, `eyeScale`, `pivot`, `zzz`); `dots` adds detached circles such as the circle's moon.
+
+```ts
+import { registerShape } from 'npface';
+
+registerShape('blob', {
+  outline: 'M50 6C80 6 94 30 94 55S76 94 50 94 6 80 6 55 20 6 50 6Z',
+  visor: { x: 14, y: 40, w: 72, h: 24 },
+});
+createNpface(el, { shape: 'blob' });
+// or inline, without registering: createNpface(el, { shape: { outline: '…', visor: {…} } })
+```
 
 ### Customise
 
@@ -247,7 +293,8 @@ face.set('thinking'); // → idle → thinking → search-docs → search-web �
 ```
 
 - **13 个状态**：`sleep · wake · idle · blink · happy · proud(complete) · thinking · search-docs(文档检索) · search-web(联网检索) · working · waiting · error(晕) · sad(tired)`，支持别名（`searching`、`rag`、`browsing`、`tired` …，`searchDocs` / `search_docs` 也会被归一化），未知状态自动回落 `idle`，也可以注册自定义状态。
-- **零依赖**、框架无关的核心（直接操作 SVG/DOM，内置弹簧与缓动，全页面共用一个 `requestAnimationFrame` 循环），**gzip 约 9 KB**。
+- **7 种脸型**：npcrew 的 `square` 方形（默认），以及 `shield` 盾牌、`ghost` 幽灵、`cat` 猫咪、`circle` 圆形（带小卫星）、`drop` 水滴、`crown` 皇冠。所有表情在每种脸型上都能用，`setShape()` 平滑变形，也可以用 SVG 路径注册自定义脸型。
+- **零依赖**、框架无关的核心（直接操作 SVG/DOM，内置弹簧与缓动，全页面共用一个 `requestAnimationFrame` 循环），**gzip 约 14 KB**。
 - **React 封装**（`npface-react`）：`<Npface state="working" />`，Vue 可后续补充。
 - **默认就是活的**：呼吸、随机扫视、自动眨眼、每个状态自带节奏；可选**眼睛跟随鼠标**。
 - **体贴**：离屏自动暂停（IntersectionObserver），尊重 `prefers-reduced-motion`（只保留静态姿态与最小切换），`role="img"` + `aria-label`。
@@ -316,35 +363,38 @@ export function Employee({ status }: { status: string }) {
 
 `target` 是元素或 CSS 选择器，`<svg>` 会被追加进去。
 
-| 选项                | 类型                             | 默认     | 说明                                                                     |
-| ------------------- | -------------------------------- | -------- | ------------------------------------------------------------------------ |
-| `state` / `emotion` | `string`                         | `'idle'` | 初始状态（支持别名，未知 → `idle`）                                      |
-| `size`              | `number \| string`               | `48`     | 像素或 CSS 长度（`'100%'`、`'3rem'`）                                    |
-| `colors`            | `{ body, visor, eye, rim, zzz }` | 品牌配色 | 任意子集；`rim` 为可选的头盔描边                                         |
-| `theme`             | `'light' \| 'dark' \| 'auto'`    | `'auto'` | 选择默认配色（`auto` 跟随 `prefers-color-scheme`）                       |
-| `follow` / `gaze`   | `boolean`                        | `false`  | 眼睛（带一点头部）跟随鼠标                                               |
-| `reducedMotion`     | `boolean \| 'auto'`              | `'auto'` | `auto` 尊重 `prefers-reduced-motion`：无呼吸/眨眼/跟随，快速临界阻尼过渡 |
-| `pauseOffscreen`    | `boolean`                        | `true`   | 离屏时停止动画                                                           |
-| `label`             | `string`                         | 状态名   | `aria-label`                                                             |
-| `states`            | `Record<string, StateDef>`       | —        | 仅此实例生效的额外/覆盖状态                                              |
-| `className`         | `string`                         | —        | 加到 `<svg>` 上的类名                                                    |
-| `onChange`          | `(state, prev) => void`          | —        | 每次状态变化后回调                                                       |
+| 选项                | 类型                             | 默认       | 说明                                                                                                                              |
+| ------------------- | -------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `state` / `emotion` | `string`                         | `'idle'`   | 初始状态（支持别名，未知 → `idle`）                                                                                               |
+| `size`              | `number \| string`               | `48`       | 像素或 CSS 长度（`'100%'`、`'3rem'`）                                                                                             |
+| `shape`             | `string \| ShapeDef`             | `'square'` | 脸型：`square` · `shield` · `ghost` · `cat` · `circle` · `drop` · `crown`、已注册的名称或 `ShapeDef`（支持别名，未知 → `square`） |
+| `colors`            | `{ body, visor, eye, rim, zzz }` | 品牌配色   | 任意子集；`rim` 为可选的头盔描边                                                                                                  |
+| `theme`             | `'light' \| 'dark' \| 'auto'`    | `'auto'`   | 选择默认配色（`auto` 跟随 `prefers-color-scheme`）                                                                                |
+| `follow` / `gaze`   | `boolean`                        | `false`    | 眼睛（带一点头部）跟随鼠标                                                                                                        |
+| `reducedMotion`     | `boolean \| 'auto'`              | `'auto'`   | `auto` 尊重 `prefers-reduced-motion`：无呼吸/眨眼/跟随，快速临界阻尼过渡                                                          |
+| `pauseOffscreen`    | `boolean`                        | `true`     | 离屏时停止动画                                                                                                                    |
+| `label`             | `string`                         | 状态名     | `aria-label`                                                                                                                      |
+| `states`            | `Record<string, StateDef>`       | —          | 仅此实例生效的额外/覆盖状态                                                                                                       |
+| `className`         | `string`                         | —          | 加到 `<svg>` 上的类名                                                                                                             |
+| `onChange`          | `(state, prev) => void`          | —          | 每次状态变化后回调                                                                                                                |
 
 #### 实例方法
 
-| 成员                                                             | 说明                                             |
-| ---------------------------------------------------------------- | ------------------------------------------------ |
-| `el`                                                             | `<svg>`（`class="npface"`，`data-state="…"`）    |
-| `state`                                                          | 当前状态名                                       |
-| `set(name, { immediate? })`                                      | 切换状态；`immediate` 直接跳转                   |
-| `pulse(name, ms?)`                                               | 播一次再回落（时长默认取状态定义，否则 1500 ms） |
-| `blink()`                                                        | 立即眨眼                                         |
-| `follow(on)`                                                     | 开关鼠标跟随                                     |
-| `look(x, y)` / `look(null)`                                      | 固定视线方向                                     |
-| `setColors(partial)` · `setSize()` · `setTheme()` · `setLabel()` | 运行时调整                                       |
-| `destroy()`                                                      | 停止并移除                                       |
+| 成员                                                             | 说明                                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------------ |
+| `el`                                                             | `<svg>`（`class="npface"`，`data-state="…"`）          |
+| `state`                                                          | 当前状态名                                             |
+| `set(name, { immediate? })`                                      | 切换状态；`immediate` 直接跳转                         |
+| `setShape(shape, { immediate? })`                                | 切换脸型（平滑变形；`immediate` 或减少动效时直接切换） |
+| `shape`                                                          | 当前脸型名（内联 `ShapeDef` 时为 `'custom'`）          |
+| `pulse(name, ms?)`                                               | 播一次再回落（时长默认取状态定义，否则 1500 ms）       |
+| `blink()`                                                        | 立即眨眼                                               |
+| `follow(on)`                                                     | 开关鼠标跟随                                           |
+| `look(x, y)` / `look(null)`                                      | 固定视线方向                                           |
+| `setColors(partial)` · `setSize()` · `setTheme()` · `setLabel()` | 运行时调整                                             |
+| `destroy()`                                                      | 停止并移除                                             |
 
-同时导出：`STATES`、`STATE_NAMES`、`ALIASES`、`registerState(name, def)`、`resolveStateName()`、`BASE_EYE`、`BASE_HEAD`、`SPRINGS`、`PALETTE`、`LIGHT_COLORS`、`DARK_COLORS`，以及几何工具（`HELMET_PATH`、`eyePath` …）用于静态渲染。
+同时导出：`STATES`、`STATE_NAMES`、`ALIASES`、`registerState(name, def)`、`resolveStateName()`、`SHAPES`、`SHAPE_NAMES`、`registerShape(name, def)`、`resolveShape()`、`BASE_EYE`、`BASE_HEAD`、`SPRINGS`、`PALETTE`、`LIGHT_COLORS`、`DARK_COLORS`，以及几何工具（`HELMET_PATH`、`eyePath` …）用于静态渲染。
 
 ### 状态表
 
@@ -365,6 +415,48 @@ export function Employee({ status }: { status: string }) {
 | `wake`        | <img src="./assets/states/wake.svg" width="72"/>        | 上线                            | 睁眼、伸展，然后自动 → `idle`                                      |
 
 上表预览是用引擎本身录制的动态 SVG（`pnpm assets`）；完整效果见[在线演示](https://scccc6ut.github.io/npface/)。
+
+### 脸型
+
+<p>
+  <img src="./assets/shapes.svg" alt="方形、盾牌、幽灵、猫咪、圆形、水滴、皇冠" width="640" />
+  <img src="./assets/morph.svg" alt="npface 在各脸型之间变形" width="112" />
+</p>
+
+默认是 npcrew 的圆角方形头盔，另外内置六种角色脸型。所有表情在每种脸型上都能用：护目镜、眼睛位置与大小、头部转动支点、zzz 的位置都按脸型单独调过。切换时头盔会平滑变形（快速弹簧，带一点挤压拉伸）；开启减少动效时直接切换。
+
+| 脸型          | 造型             | 气质（建议）                     | 别名                              |
+| ------------- | ---------------- | -------------------------------- | --------------------------------- |
+| `square` 方形 | 圆角方形（默认） | npcrew 头盔                      | `default`、`helmet`、`方形`       |
+| `shield` 盾牌 | 带尖顶的盾牌     | 守护：安全、合规类员工           | `badge`、`盾牌`、`盾形`           |
+| `ghost` 幽灵  | 圆顶、波浪下摆   | 俏皮：创意、内容类员工           | `boo`、`幽灵`                     |
+| `cat` 猫咪    | 圆耳朵、饱满脸颊 | 亲切：社群运营、客服类员工       | `kitty`、`neko`、`猫咪`、`猫`     |
+| `circle` 圆形 | 圆脸带一颗小卫星 | 友好：陪伴、助理类员工           | `round`、`planet`、`圆形`、`星球` |
+| `drop` 水滴   | 水滴             | 清爽：数据、运营类员工           | `water`、`droplet`、`水滴`        |
+| `crown` 皇冠  | 三尖皇冠         | 尊贵：VIP 管家、销售、管理类员工 | `king`、`royal`、`皇冠`、`王冠`   |
+
+```ts
+const face = createNpface(el, { shape: 'cat', state: 'idle' });
+face.setShape('crown'); // 平滑变形
+face.setShape('shield', { immediate: true }); // 直接切换
+```
+
+```tsx
+<Npface shape={employee.role === 'security' ? 'shield' : 'square'} state={status} />
+```
+
+**自定义脸型**：在任意矢量工具里按 100×100 的画布画好轮廓，把路径数据粘贴到 `outline`（也可以用圆角多边形顶点 `[x, y, 圆角半径]` 或椭圆 `{ cx, cy, rx, ry }`），再给出护目镜槽。眼睛位置与大小、转动支点、zzz 位置会自动推算，也可以用 `eyes`、`eyeScale`、`pivot`、`zzz` 手动指定；`dots` 可以加上独立的小圆点（比如圆形脸型的小卫星）。
+
+```ts
+import { registerShape } from 'npface';
+
+registerShape('blob', {
+  outline: 'M50 6C80 6 94 30 94 55S76 94 50 94 6 80 6 55 20 6 50 6Z',
+  visor: { x: 14, y: 40, w: 72, h: 24 },
+});
+createNpface(el, { shape: 'blob' });
+// 也可以不注册、直接内联：createNpface(el, { shape: { outline: '…', visor: {…} } })
+```
 
 ### 自定义
 

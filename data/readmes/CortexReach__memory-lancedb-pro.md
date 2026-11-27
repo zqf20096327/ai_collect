@@ -1,4 +1,4 @@
-# 🚀 [Watch the Video Tutorial](https://www.bilibili.com/video/BV1iWwtztEQf/)
+# 🚀 [Watch the Video Tutorial](https://www.bilibili.com/video/BV1zUf2BGEgn/)
 
 <div align="center">
 

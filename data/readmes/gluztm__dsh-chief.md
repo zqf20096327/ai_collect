@@ -57,7 +57,7 @@ flowchart LR
 - **默认只读**：哪怕启用了参谋，新对话也只看不改，权限需要你自己手动调高（`L0`–`L3`）。
 - **记忆少占上下文**：只有放上「认知桌面」的资料（最多 `2,400 Tokens / 6 份`）每轮发给模型，其余平时放抽屉里按需翻出来。
 - **主页面 + 右侧栏双布局 + 协同系统 2.0**：对话顶部一键切进大屏 `参谋长` 页面（自动藏起下方重复主框）；顶栏左上角实时显示真实 GitHub Star 数，已装 `gh` CLI 时点一下面板内直连点星，未装时一键跳转仓库；协同页直连本机 `Codex` / `Claude Code` / `Gemini CLI`，带实时输出流、完工自动接力，以及严格的子代理/跨窗防自回旋投递校验。
-- **参谋专属取名（主对话 0 字节隔离）**：可在设置页为参谋长起专属名字（如「哈基米」「贾维斯」），自动附带密钥硬拦截且全局跨工程同步、绝不写入 `@lead` 主对话提示词；原内置私有脑已按「外挂记忆插件优先 + 参谋专脑接口」规划彻底剥离，避免锁定用户记忆数据格式。
+- **参谋专属取名与记忆工作台（主对话 0 字节隔离）**：支持全局自定义参谋长昵称，内置零配置 `MEMORY.md` 记事本 + 2D/3D 星图 + 艾宾浩斯遗忘曲线 + 5 维可锁定用户画像（`USER_PROFILE.md`）+ Embedding 语义重排，并开放接入 `mcp-http` / `chief-http` / 只读 Obsidian / `cordis-provider`；全部记忆与自定义 DIY 主题（本地提色 + 25MB 高清壁纸 + 参谋 AI DIY）严格对 `@lead` 保持 0 字节隔离。
 
 ---
 
@@ -249,6 +249,15 @@ flowchart LR
 </details>
 
 <details>
+<summary>v1.9.0 改了什么</summary>
+
+- **🧠 参谋专属「记忆工作台」与外部记忆桥接（对 `@lead` 严格 0 字节隔离）**：上线零配置 `MEMORY.md` 纯文本记事本、2D/3D 星云星图（少节点零重叠排斥 + 年轮回放）、艾宾浩斯活力巩固、5 维可锁定 `USER_PROFILE.md` 用户画像、提示词工坊、X-Ray 召回测试与可选 Embedding API 语义重排；开放支持 `mcp-http`、`chief-http`（含独立心境槽位）、只读 `markdown-vault` 与 `cordis-provider`，内置 KV Cache 静态前置、无信号门卫、3 次超时熔断与口语前缀自动剥离。
+- **🎨 第 6 套「自定义 DIY 主题工坊」& 默认「极简左侧边栏」工作台**：纯前端 4 色衍生深浅双模主题 + 图片 0 Token 提取 6 色卡 + 最高 25MB 高清壁纸（`IndexedDB` 持久化）+ **参谋长 AI DIY**；宽屏默认升级为左侧导航栏布局并精修 5+1 套皮肤的护眼浅色体系。
+- **🛡️ 开箱「安全拦截预设包 v2」与真机实测 21 项清零**：新装默认开启涉密文件防泄露与高危操作防误删；扩容认知桌面、打通梦境漫游跨作用域路由与品牌彩蛋；发版前在隔离沙盒三波真机实测并修清 21 项问题（含全屏切换修复、`swe-2` 原生控制标签净化、关键词防劫持、托管红色急停及流光画布键盘无障碍）。
+
+</details>
+
+<details>
 <summary>v1.8.0 改了什么</summary>
 
 - **内置 5 套高定主题系统与全插件视觉重构**：默认启用「**晨雾琉璃**」，随时在顶栏调色盘或设置页一键秒切「**温润纸感 / 静谧森系 / 星夜幻想 / 原生简约**」（全部双模适配深/浅色宿主）；洗去工控红绿黄粗框与多余 Emoji，并将思考深度控件升级为随主题同步变形的柔雾轨道弧、书签刻度、苔绿步进条与星轨器。
@@ -336,14 +345,14 @@ flowchart LR
 在已装好 [dshmarket](https://github.com/dsh-market/dsh-market) 的 DSH 里直接搜 **`dsh-chief`** 或 **`DSH 参谋长`** 就能点安装，也可以用命令行（网页版把 `desktop` 换成 `web`）：
 
 ```bash
-# 方式 1：通过 npm 安装最新版（v1.7.1）
+# 方式 1：通过 npm 安装最新版（v1.9.0）
 dsh plugin --profile desktop add dsh-chief
 
 # 方式 2：从 GitHub 仓库直接安装（与 main 最新代码同步）
 dsh plugin --profile desktop add github:gluztm/dsh-chief
 
-# 方式 3：安装 GitHub Release 预构建包（v1.7.1）
-dsh plugin --profile desktop add https://github.com/gluztm/dsh-chief/releases/download/v1.7.1/dsh-chief-1.7.1.tgz
+# 方式 3：安装 GitHub Release 预构建包（v1.9.0）
+dsh plugin --profile desktop add https://github.com/gluztm/dsh-chief/releases/download/v1.9.0/dsh-chief-1.9.0.tgz
 ```
 
 装好后重启或刷新 DSH 客户端，点工作区右上角 **✦ `DSH 参谋长`** 图标打开面板。
@@ -357,21 +366,22 @@ dsh plugin --profile desktop add https://github.com/gluztm/dsh-chief/releases/do
 </details>
 
 <details>
-<summary>模块结构与数据流 (v1.8.0)</summary>
+<summary>模块结构与数据流 (v1.9.0)</summary>
 
-**一句话**：`45` 个后端模块加 `39` 个前端模块，本地数据全部留在 `~/.dsh/chief/`，未启用的普通会话零介入，已启用会话只有「认知桌面」会每轮注入主对话；参谋长自定义名称与 GitHub Star 状态严格对 `@lead` 主对话 0 字节隔离。
+**一句话**：`50` 个后端模块加 `45` 个前端模块，本地数据全部留在 `~/.dsh/chief/`，未启用的普通会话零介入，已启用会话只有「认知桌面」会每轮注入主对话；参谋长自定义名称、记忆工作台、自定义主题与 GitHub Star 状态严格对 `@lead` 主对话 0 字节隔离。
 
-`v1.8.0` 包含 **45 个后端模块（含 `pkg/safety/` 下 9 个独立安全内核模块与 `github-star.js`）+ 39 个前端模块**（含内置 5 套主题引擎 `styles/skins.js`，无环依赖、无 `export let` 可变导出），方便审查与长期维护。详情见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+`v1.9.0` 包含 **50 个后端模块（含 `pkg/safety/` 下 9 个独立安全内核模块、`external-memory*.js`、`guard-wall-presets.js`、`chief-theme-diy.js` 与 `github-star.js`）+ 45 个前端模块**（含 5+1 套双模主题与记忆星图模块，无环依赖、无 `export let` 可变导出），方便审查与长期维护。详情见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ```mermaid
 flowchart TB
-  subgraph UI["DSH 右侧栏 & 主页面 Tab (client.js <- 39 个前端模块 · 5 页签 + 5 套主题)"]
+  subgraph UI["DSH 右侧栏 & 主页面 Tab (client.js <- 45 个前端模块 · 6 页签 + 5+1 套主题)"]
     T1["参谋页 (问答框 · 自适应思考深度控件 · 可点击收起遮罩 · 战报导出)"]
     T2["任务页 (目标圆环 · 流程画布/流光节点合一 · 子代理发出/回归 · 交接部署)"]
     T3["协同页 (协同系统 2.0 · Codex/Claude/Gemini CLI · 实时输出流 · 链式转交 · 防自回旋路由)"]
-    T5["档案页 (2400T 认知桌面 · 三层档案抽屉 · 0 字节冷库)"]
-    T6["边界页 (自定义拦截规则 · 4 套模板包 · 柔和语义红线)"]
-    T7["顶栏 (真状态同步 GitHub Star · 快捷换肤调色盘 · 自定义参谋名称 · 设置 / zh / en)"]
+    T5["档案页 (认知桌面 · 三层档案抽屉 · 0 字节冷库)"]
+    T6["记忆页 (MEMORY.md · 2D/3D 星图 · 用户画像 · Embedding / MCP / 外部桥接)"]
+    T7["边界页 (自定义拦截规则 · 3 套开箱预设包 v2 · 柔和语义红线)"]
+    T8["顶栏 (GitHub Star · 6 套主题 + DIY 工坊 · 自定义参谋名称 · 左侧导航/顶部页签)"]
   end
 
   subgraph Core["本地后端存储与安全内核 (零外部依赖 · 45 个后端模块)"]

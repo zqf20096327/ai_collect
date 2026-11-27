@@ -9,7 +9,7 @@
 [![Pre-submit](https://github.com/cpuguy96/StepCOVNet/actions/workflows/pre-submit.yml/badge.svg)](https://github.com/cpuguy96/StepCOVNet/actions/workflows/pre-submit.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/f9f66f23071c45f194cd6b429f2bb508)](https://app.codacy.com/gh/cpuguy96/StepCOVNet/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9f66f23071c45f194cd6b429f2bb508)](https://app.codacy.com/gh/cpuguy96/StepCOVNet/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 </div>
@@ -55,12 +55,8 @@ allowing rhythm game enthusiasts to create charts for their favorite songs insta
 3. **Install dependencies**
    ```bash
    pip install .
-   # For GPU support
-   pip install .[gpu]
    # For development dependencies
    pip install .[dev]
-   # For development and GPU support
-   pip install .[gpu-dev]
    ```
 
 ## 🚀 Usage
@@ -76,8 +72,8 @@ Generate a StepMania chart (`.txt` format) from an audio file using pre-trained 
 python scripts/generate.py \
   --audio_path "path/to/song.mp3" \
   --song_title "My Song" \
-  --onset_model_path "models/onset.keras" \
-  --arrow_model_path "models/arrow.keras" \
+  --onset_model_path "models/onset.pt" \
+  --arrow_model_path "models/arrow.pt" \
   --output_file "output/chart.txt"
 ```
 
@@ -86,14 +82,14 @@ python scripts/generate.py \
 | `--audio_path`          | Path to the input audio file (`.mp3`, `.wav`, etc.)                                |
 | `--song_title`          | Title of the song                                                                  |
 | `--bpm`                 | Beats per minute (optional; estimated from audio when omitted)                     |
-| `--onset_model_path`    | Path to the onset detection model (`.keras`); optional—omit to download and cache  |
-| `--arrow_model_path`    | Path to the arrow prediction model (`.keras`); optional—omit to download and cache |
+| `--onset_model_path`    | Path to the onset detection model (`.pt`); optional—omit to download and cache     |
+| `--arrow_model_path`    | Path to the arrow prediction model (`.pt`); optional—omit to download and cache    |
 | `--output_file`         | Path where the generated chart text file will be saved                             |
 | `--use_post_processing` | Refine onset timings with peak-picking (recommended for cleaner charts)            |
 
 #### Generator UI
 
-A simple desktop UI is available to run the generator without the command line: select an input audio file, optionally choose onset and arrow models (`.keras`)—or leave those fields blank to have default models downloaded from Google Drive and cached—enter the song title and optionally BPM (leave BPM blank to detect it from the audio), pick an output path, and run. Launch it with:
+A simple desktop UI is available to run the generator without the command line: select an input audio file, optionally choose onset and arrow models (`.pt`)—or leave those fields blank to have default models downloaded from Google Drive and cached—enter the song title and optionally BPM (leave BPM blank to detect it from the audio), pick an output path, and run. Launch it with:
 
 ```bash
 python scripts/generate_ui.py
@@ -120,7 +116,7 @@ You can build a single executable (e.g. `generate_ui.exe` on Windows) so others 
    ```bash
    python scripts/build_generate_ui_binary.py
    ```
-3. The executable will be created under `dist/` (e.g. `dist/generate_ui.exe`). The bundle includes TensorFlow/Keras, so the file is large and startup may take a few seconds.
+3. The executable will be created under `dist/` (e.g. `dist/generate_ui.exe`). The bundle includes PyTorch, so the file is large and startup may take a few seconds.
 
 ### Training Models
 
@@ -139,7 +135,7 @@ preprocessed into nested `{bundle}/{song}/` directories with audio + `.chart.jso
 
 ```bash
 # From repository root (activate your project virtual environment first):
-pip install -e ".[dataset-prep]"
+pip install -e .
 python scripts/preprocess_dataset.py \
   --input-dir data/raw_data \
   --output-dir data/final_data \
@@ -240,8 +236,7 @@ stepcovnet/
 ├── configs/                # JSON experiment configs — see configs/README.md
 ├── docs/                   # Research notes + docs/agents/ layout
 ├── notebooks/
-├── pre_submit.py           # Local CI mirror (ruff, tests, notebooks)
-├── pre_submit.sh
+├── pre_submit.py           # Local CI mirror (ruff, pyright, tests, notebooks)
 ├── resources/              # Images, etc. (e.g. README header GIF)
 ├── scripts/                # CLI entry points (28 scripts)
 │   ├── generate.py / generate_ui.py
@@ -289,10 +284,10 @@ Please ensure your code passes existing tests and linting standards.
 Before opening a PR, run the same checks as CI from **repository root**:
 
 ```bash
-# Quick (ruff only, ~seconds):
+# Quick (ruff + pyright, ~seconds):
 python pre_submit.py --fast
 
-# Full CI mirror before push (~30+ min):
+# Full CI mirror before push (~2–4 min):
 python pre_submit.py --skip-install
 ```
 

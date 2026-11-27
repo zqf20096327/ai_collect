@@ -243,6 +243,21 @@ node scheduler/scheduler.mjs --memory-reflect
 配置里的 `preferences.like/dislike` 首次启动会写成置顶事实；固化时 confidence
 低于 0.75 的事实进 `profile.pending`，人工采纳后才进档案。
 
+**记忆星图（v1.17.0 / v1.18.0）**：面板里一张 canvas 3D 星图，把「大肥鱼自我 /
+性格 / 主人 / 事实 / 情节 / 叙事线 / 主题」摆成一个星系：亮度按衰减后的记忆强度、
+连线按标签/叙事引用/文本相似/事实证据生成。支持拖动旋转、滚轮缩放、点击星星
+看详情与「看原话」、含私人开关、星图/时间两种布局、全屏。星图只读，不下发
+evidence 原话；私人条目默认不出现。
+
+v1.18.0 起记忆会「用进废退」：每轮实际注入的情节记 `uses/last_used_at`，星图里
+越常被想起越亮；同一轮一起被想起的情节写成 `co_recall` 共现边（`memory/links.jsonl`），
+长期不用自然变暗。星图下方「最近想起」可回放最近几次回忆轨迹（`/memory/traces`，
+只含 id/时间/触发，不含正文）。
+
+v1.19.0 星图多了一颗「心情」星；点任意星再点「联想」，会沿连线列出「联想链」——
+从这条记忆出发 1–2 跳内最相关的节点，点一行就跳过去。思维链只读、确定性，
+只给摘要和路径（`/memory/think`），不碰原话，也还没接进提示词召回。
+
 **周反思（v1.14.3）**：最近 7 天的情节归纳成 1–2 条叙事线（`memory/arcs.json`），
 每轮以【最近这几周】注入；只引用已有情节，不产生新事实。默认 7 天一次、
 至少 5 条情节；引用私人日记的叙事线标 private，默认不注入。手动：
@@ -288,6 +303,10 @@ npm run memory:export -- --verify            # 克隆远端逐文件比对 sha25
 拉起的新会话按新设置走，当前会话不变。轮换细节见
 [docs/DUTY-ROTATE-VERIFY.md](docs/DUTY-ROTATE-VERIFY.md)。
 
+**回合收尾**：私信确认发出后按 `duty.earlyExit` 提前收轮（默认 8 秒宽限期），
+不再等模型把收尾长文生成完（真机上这段能烧十几分钟）。提前收轮会封存回复标记，
+防止 agent 追加发送；封存到期自动放行。上一轮还在跑时 tick 直接跳过、不排队。
+
 ```yaml
 # 插件配置（可选）：留空 = 跟随宿主默认模型
 duty:
@@ -329,6 +348,12 @@ llm-pi-ai:
 投递给会话的消息是「够格进会话日志」的 user 消息（id / role / source / content
 四件套，缺一宿主会写坏日志）；完成检测轮询 `agent.status`，但**回读私信才是
 标记已回复的真判据**。
+
+**双机切换（生产在笔记本，开发机只开发）**：开发机上用
+`pwsh -File scripts/dev-duty.ps1 -Status|-Off|-On [-Yes]` 管值班开关——
+它只改 desktop profile patch 的 `whaleEnabled` 和用户级 `DOUYIN_IM_ALLOW_SEND`。
+`-On` 不给 `-Yes` 只打印前置检查清单、不做修改；改完必须**完全退出**再打开
+DSH NEXT（关窗口不等于退出）。同一抖音账号**不能两台机器同时跑**。
 
 ### 暂不支持的
 
@@ -453,7 +478,39 @@ DSH。自检：
 ./scripts/selfcheck.sh          # Windows: .\scripts\selfcheck.ps1
 ```
 
-### 4.（可选）起 HTTP 服务
+### 4.（可选）从 Release 装打包版
+
+不想 clone 仓库时，用 GitHub Release 里的 npm tarball（`dsh-douyin-whale-<版本>.tgz`，
+由 `npm run release:pack` 打包并附上 `.sha256`）：
+
+```bash
+curl -LO https://github.com/jackey670/dsh-douyin-whale/releases/download/v1.16.1/dsh-douyin-whale-1.16.1.tgz
+curl -LO https://github.com/jackey670/dsh-douyin-whale/releases/download/v1.16.1/dsh-douyin-whale-1.16.1.tgz.sha256
+sha256sum -c dsh-douyin-whale-1.16.1.tgz.sha256      # Windows: certutil -hashfile <文件> SHA256
+
+dsh plugin --profile desktop add file:$PWD/dsh-douyin-whale-1.16.1.tgz
+```
+
+打包安装和 checkout 安装有三处不同，装之前先看清楚：
+
+- **dataDir 变成 `~/.dsh/douyin-whale`**（登录态/队列/日志/记忆都在这），不再是
+  仓库里的 `data/`。想固定位置就在插件配置里写 `dataDir`。
+- **包里不带 `.venv`**。先建一个自己的环境，再把 `pythonPath`（插件配置）或
+  `DOUYIN_PYTHON` 指过去：
+
+  ```bash
+  python3 -m venv ~/.dsh/douyin-whale/venv
+  ~/.dsh/douyin-whale/venv/bin/pip install -r <插件包目录>/python/requirements.txt
+  ```
+
+- **升级 = 下载新 tarball 再 `add` 一次**。`~/.dsh/douyin-whale` 不在包内，登录态、
+  队列和记忆都保留；确认没问题再删旧 tarball。
+
+dshmarket 也认公网 GitHub Release 资产，市场装的就是这同一份 tarball。
+
+升级、回滚和记忆恢复的完整步骤见 [docs/UPGRADE.md](docs/UPGRADE.md)。
+
+### 5.（可选）起 HTTP 服务
 
 ```bash
 ./scripts/run-http.sh           # Windows: .\scripts\run-http.ps1

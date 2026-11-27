@@ -1,20 +1,22 @@
-![Awesome RSI — A Research Map of Recursive Self-Improvement](assets/awesome-rsi-map.png)
+<p align="center">
+  <a href="https://github.com/lobehub/awesome-rsi"><img src="assets/awesome-rsi-map.png" width="836" alt="Awesome RSI — A Research Map of Recursive Self-Improvement"></a>
+</p>
 
-# Awesome RSI (Recursive Self-Improvement) [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+<h1 align="center">Awesome RSI (Recursive Self-Improvement)</h1>
+
+<p align="center">
+  <a href="https://awesome.re"><img src="https://awesome.re/badge.svg" alt="Awesome"></a>
+</p>
 
 Recursive Self-Improvement (RSI) refers to processes in which AI systems improve their own capabilities and can also improve the mechanisms that generate subsequent improvements.
 
-Recent progress in self-training, agent memory, harness optimization, embodied self-improvement, automated AI research, self-modifying coding agents, and evolutionary search has made RSI increasingly relevant as an empirical research direction rather than only a theoretical idea.
-
-Awesome RSI collects and organizes important work across these areas, including model-level self-improvement, context and memory evolution, harness and scaffold evolution, embodied and physical self-improvement, multi-agent systems, automated AI research, benchmarks, and safety.
-
-Not every work listed here demonstrates RSI in the strict sense. Some represent bounded self-improvement or enabling techniques that may contribute to more complete recursive systems.
-
-If you are new to the topic, start with Fundamentals & Getting Started. If you already know the basics, explore the sections most relevant to your interests.
-
-This is a community-maintained and evolving list. Contributions, missing papers, new benchmarks, frameworks, and suggestions for improving the taxonomy are very welcome.
-
-The taxonomy is organizational rather than mutually exclusive; many systems span multiple layers and mechanisms.
+<p align="center">
+  <a href="#fundamentals--getting-started">Start with three papers</a> ·
+  <a href="#self-modifying--self-evolving-systems">Explore self-improving systems</a> ·
+  <a href="#direct-rsi--self-improvement-evaluations">Browse RSI evaluations</a> ·
+  <a href="https://github.com/lobehub/awesome-rsi/issues/new?template=suggest-resource.yml">Suggest a paper</a> ·
+  <a href="https://github.com/lobehub/awesome-rsi/releases">Recent releases</a>
+</p>
 
 ## Contents
 
@@ -56,10 +58,12 @@ The taxonomy is organizational rather than mutually exclusive; many systems span
 - [Blog Posts & Discussions](#blog-posts--discussions)
 - [Talks & Videos](#talks--videos)
 - [Related Awesome Lists](#related-awesome-lists)
+- [Citation](#citation)
+- [Star History](#star-history)
 
 ## Scope & Terminology
 
-For this list, we use the following operational distinctions:
+The list also covers bounded forms of self-improvement and techniques that support them. A system can span several categories. We use the following distinctions:
 
 **Self-refinement** — improves the current output without a persistent change to the system.
 
@@ -75,6 +79,8 @@ For this list, we use the following operational distinctions:
 
 <!--lint enable no-emphasis-as-heading-->
 
+[Compare the evidence from six papers](docs/evidence-comparison.md) to see what carries across rounds and which baselines support each claim.
+
 Evidence should be distinguished at three levels:
 
 **Task gain** — The system produces better task outputs or scores, without necessarily demonstrating a persistent change to the system.
@@ -89,7 +95,15 @@ For each system, relevant cross-cutting dimensions include the update target, fe
 
 ## Fundamentals & Getting Started
 
-Foundational papers, formal treatments, and surveys that establish the vocabulary and core questions of RSI.
+Start with one survey and two systems that change in different ways.
+
+**1. What improves?** The survey [From Bounded Self-Refinement to Autonomous Research Loops](https://arxiv.org/pdf/2607.07663) gives two questions to carry into the other papers. What does the system change, and which steps still depend on a human?
+
+**2. What carries over to the next round?** In [STaR](https://arxiv.org/pdf/2203.14465), the model generates explanations and fine-tunes on those that yield a correct answer. Follow one question it initially gets wrong and watch how the supplied answer helps produce an explanation for the next training round.
+
+**3. How is a code change tested and reused?** The [Darwin Gödel Machine](https://arxiv.org/pdf/2505.22954) evaluates modified coding agents on benchmarks and keeps an archive of agents. Trace how an archived version can become the starting point for another edit.
+
+The papers below cover the foundations and surveys in more depth.
 
 - [A Survey of Self-Evolving Agents: On Path to Artificial Super Intelligence](https://arxiv.org/abs/2507.21046) - Surveys what, when, and how foundation-model agents can evolve across models, memory, tools, and architectures. (TMLR 2026)
 - [Generalized Agent Iteration: One Formal Framework for Iterative Policy Improvement and Recursive Self-Improvement](https://arxiv.org/abs/2609.13406) - Places iterative policy improvement and recursive self-improvement on one pair of axes, separating them by whether the improving mechanism is part of the agent and whether the evaluation standard is grounded outside it. (arXiv 2026)
@@ -116,7 +130,10 @@ Methods that improve model weights or training behavior through self-generated f
 
 - [DRACO: Fine-Grained Credit Assignment with Dynamic Rubrics for Long-Horizon Agent Training](https://arxiv.org/abs/2609.04094) - Trains long-horizon tool-using agents with reinforcement learning from rubric scores assigned by an LLM judge instead of ground-truth outcomes, redistributing each score over the steps behind every criterion, and shows that the policy model can act as its own judge and still reach verifier-trained performance. (arXiv 2026)
 - [EvoLM: Self-Evolving Language Models through Co-Evolved Discriminative Rubrics](https://arxiv.org/abs/2605.03871) - Alternately trains one model to generate discriminative rubrics and improve its policy from rubric-conditioned rewards without human annotations or external reward models. (arXiv 2026)
+- [FinEvo: Recursive Self-Improvement for Long-Horizon Financial Modeling](https://arxiv.org/abs/2611.28239) - Trains a model on financial workbook tasks it generates and refines using cell-level verification, with 20 example tasks released from a workflow whose full 110-task evaluation requires authorized data. (arXiv 2026)
+- [LoopRPT: Reinforcement Pre-Training for Looped Language Models](https://arxiv.org/abs/2603.19714) - Rewards intermediate reasoning steps for predicting the next token relative to a moving average of the model’s own weights, with trained checkpoints unavailable for independent evaluation. (NeurIPS 2026)
 - [RecurSE: Bounded Recursive Self-Evaluation for LLM Rubric Judges](https://arxiv.org/abs/2608.24231) - Trains LLM rubric judges via closed-loop self-evaluation with synchronized-policy checker rewards that use no external gold labels in the RL reward, while PAV early stopping monitors reward validity on a 100-example human-verified validation holdout. (arXiv 2026)
+- [Recursive Self-Editing: LLMs Program Their Own Weight Edits for Self-Improvement](https://arxiv.org/abs/2611.29513) - Lets each generation of a language model program a low-rank edit to its own weights and pass the accepted update to the next editor, with the five-generation result reported without verified public edit programs or successor checkpoints. (arXiv 2026)
 - [Survival is the Only Reward: Sustainable Self-Training Through Environment-Mediated Selection](https://arxiv.org/abs/2601.12310) - Iteratively fine-tunes a coding agent on its own container-cleanup trajectories selected by measured disk-space recovery, supplemented with external rehearsal data. (arXiv 2026)
 - [RLAIF vs. RLHF: Scaling Reinforcement Learning from Human Feedback with AI Feedback](https://arxiv.org/abs/2309.00267) - Studies reinforcement learning from AI-generated preferences as a scalable alternative to direct human feedback. (ICML 2024)
 - [Self-Play Fine-Tuning Converts Weak Language Models to Strong Language Models](https://arxiv.org/abs/2401.01335) - Iteratively improves one language model through self-play preference learning without additional human annotations. (ICML 2024)
@@ -124,6 +141,9 @@ Methods that improve model weights or training behavior through self-generated f
 
 ### Synthetic Data & Self-Distillation
 
+- [Beyond Self-Consistency: Recursive Self-Improvement at Test Time](https://arxiv.org/abs/2611.30965) - Distills successive unlabeled solution attempts into model weights so the updated model can refine later answers, with gains on five math benchmarks reported by the authors and training code still pending release. (arXiv 2026)
+- [Evolve to Learn: Gradient-aligned experience evolution for model self-improvement](https://arxiv.org/abs/2611.32390) - Uses gradient alignment to select generated experience for self-distillation, with the authors reporting stronger post-distillation results than selection by validation accuracy and code still pending release. (arXiv 2026)
+- [Recurrent Self-Improvement: Dynamic Cross-Loop On-Policy Distillation for Looped Language Models](https://arxiv.org/abs/2610.10623) - Distills the model’s final-loop predictions into an intermediate loop on student-generated rollouts, refreshing the teacher after each shared-weight update, with trained checkpoints pending release. (arXiv 2026)
 - [Recursive Synthesis for Long-Horizon Terminal Tasks](https://arxiv.org/abs/2608.05466) - Treats accepted tasks as seeds for the next round, generating increasingly difficult terminal tasks used for SFT and PPO as enabling work rather than strict RSI. (arXiv 2026)
 - [ReSAIL: Mitigating Collapse in Iterative Agent Self-Distillation](https://arxiv.org/abs/2609.39306) - Mitigates performance collapse in iterative agent self-distillation by learning selectively from deployment experience and preserving the student's ability to supervise the next cycle. (arXiv 2026)
 - [Beyond Human Data: Scaling Self-Training for Problem-Solving with Language Models](https://arxiv.org/abs/2312.06585) - Iteratively samples, filters, and retrains on model-generated solutions to scale self-training beyond human demonstrations. (TMLR 2024)
@@ -135,6 +155,7 @@ Methods that improve model weights or training behavior through self-generated f
 
 - [Learning to Self-Evolve](https://arxiv.org/abs/2603.18620) - Uses reinforcement learning to teach models how to edit their own contexts for stronger performance on future tasks. (arXiv 2026)
 - [MetaRSI / RSI2: A Meta-Recursive Self-Improving System for Recursive Self-Improving Systems Themselves](https://arxiv.org/abs/2609.06396) - Composes data, harness, and model improvement as scheduled operators whose order a two-axis optimizer sets, under a meta-level policy that revises the schedule itself across terms. (arXiv 2026)
+- [Search-RSI: Expanding Search Worlds Along Multimodal Agents' Capability Frontier](https://arxiv.org/abs/2611.27780) - Trains a multimodal search agent by expanding its tasks and retrievable evidence, with a reported 9B six-benchmark mean of 69.1 versus 65.9 with a frozen improver and no verified release of the round-specific indexes or trained weights. (arXiv 2026)
 - [SERPO: Self-Evolving Rubric Policy Optimization for Open-Ended Test-Time Reinforcement Learning](https://arxiv.org/abs/2607.26873) - Co-evolves response evidence, query-specific rubrics, and policy parameters in a closed test-time reinforcement-learning loop. (arXiv 2026)
 - [Teaching LLMs to Self-Evolve: Cultivating Core Meta-Skills with Reinforcement Learning](https://arxiv.org/abs/2607.21971) - Trains MetaEvolve's reflection and feedback-driven refinement skills before applying inference-time evolutionary search to open-ended optimization. (arXiv 2026)
 - [TEMPO: Scaling Test-time Training for Large Reasoning Models](https://arxiv.org/abs/2604.19295) - Interleaves model-parameter updates on unlabeled test questions with periodic critic recalibration on labeled data to sustain test-time improvement. (arXiv 2026)
@@ -169,6 +190,7 @@ Methods that improve prompts, memory, verification, tools, or agent policies aro
 
 - [Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models](https://arxiv.org/abs/2510.04618) - Evolves context as a structured playbook through generation, reflection, and curation while avoiding destructive context collapse. (ICLR 2026)
 - [AnchorGUI: Asymmetric Memory for Dual-Scale Learning in GUI Navigation](https://arxiv.org/abs/2609.15457) - Turns unexpected GUI outcomes into visual evidence for immediate correction and reusable strategies that help agents avoid repeating mistakes across attempts. (ECCV 2026)
+- [Discovering Effective Agent Memory Designs through Program Evolution](https://arxiv.org/abs/2611.17068) - Evolves executable agent memory programs from minimal seeds and tests whether their retrieval and evidence-composition routines transfer across memory systems. (arXiv 2026)
 - [EvolveR: Self-Evolving LLM Agents through an Experience-Driven Lifecycle](https://arxiv.org/abs/2510.16079) - Distills interaction trajectories into reusable strategic principles, retrieves them during future tasks, and reinforces the agent policy in a closed experience loop. (ICML 2026)
 - [From Procedural Skills to Strategy Genes: Towards Experience-Driven Test-Time Evolution](https://arxiv.org/abs/2604.15097) - Compares experience representations across 4,590 controlled trials and finds that compact, editable Genes provide stronger test-time control and carry accumulated failure history better than documentation-oriented Skill packages. (arXiv 2026)
 - [Learning to Continually Learn via Meta-learning Agentic Memory Designs](https://arxiv.org/abs/2602.07755) - Uses a meta-agent to discover executable memory schemas and retrieval and update mechanisms that continually improve from experience. (arXiv 2026)
@@ -186,19 +208,26 @@ Methods that improve prompts, memory, verification, tools, or agent policies aro
 - [AI4AI at Test-Time: Strong-to-Weak Capability Transfer via Harnesses](https://arxiv.org/abs/2608.12307) - Uses stronger builder models to iteratively construct inference-time harnesses that transfer capability to weaker target models without parameter updates. (arXiv 2026)
 - [AutoHarness: Improving LLM Agents by Automatically Synthesizing a Code Harness](https://arxiv.org/abs/2603.03329) - Synthesizes and iteratively refines executable harnesses from environment feedback, eliminating illegal actions across 145 TextArena games. (arXiv 2026)
 - [AutoRef: Harness Optimization for Agentic Multi-Reference Image Generation](https://arxiv.org/abs/2609.35530) - AutoRef iteratively optimizes the agent harness around frozen image generators for multi-reference generation tasks, including prompting, diverse drafting, failure diagnosis, revision, and selection. (arXiv 2026)
+- [Can Coding Agents Sustain Continual Evolution without Forgetting?](https://arxiv.org/abs/2611.03219) - Measures whether coding-agent harnesses retain source-task performance after further evolution on a different dataset and finds substantial forgetting in some task orders. (arXiv 2026)
 - [Continual Harness: Online Adaptation for Self-Improving Foundation Agents](https://arxiv.org/abs/2605.09998) - Refines prompts, sub-agents, skills, and memory online within a single continuous trajectory and extends the loop to model-weight co-learning. (arXiv 2026)
+- [Do LLM Agents Still Need to Be Told How to Self-Improve?](https://arxiv.org/abs/2611.23219) - Gives a frozen language model a budget to design practice games and revise the text used by its player, then tests whether the revisions transfer to unfamiliar games. (arXiv 2026)
 - [EvoHarness-RL: Learning Self-Evolving Runtime Harness for Long-Horizon LLM Agents](https://arxiv.org/abs/2608.05446) - Trains agents to construct and coordinate evolving Belief, Progress, and Experience state during long-horizon execution. (COLM 2026 LLA Workshop)
+- [Evolve Where It Matters: Coverage-Guided Self-Evolution of Agent Skills](https://arxiv.org/abs/2611.25429) - Revises skills using instruction-level coverage and tests the frozen revisions in three reruns of the same tasks, with no verified public release of the returned skills or per-task replay outcomes. (arXiv 2026)
+- [GUARD: Stabilizing Recursive Self-Improvement with Regret Guidance](https://arxiv.org/abs/2611.23476) - Uses execution feedback to select harness edits, with the authors reporting that 15 of 19 accepted updates beat the initial harness on their respective test groups and four tied, without a verified release of the per-update runs. (arXiv 2026)
 - [Harness-Zero: Harness Distillation via Agent-as-Harness](https://arxiv.org/abs/2609.24974) - Distills optimized harness behaviors into model weights through an agent-as-harness training loop, retaining harness-level gains at deployment without the harness at inference time. (arXiv 2026)
 - [HELIX: Model-Harness Co-evolution for Recursive Self-Improvement](https://arxiv.org/abs/2608.13951) - Couples harness evolution to model improvement in one loop, where a portfolio of evolved harnesses produces verified sibling trajectories that train the next model and expose far more complementary coverage than any single harness. (arXiv 2026)
+- [HookEvo: A Framework for Coordinated Plugin Evolution on Hook-Enabled Agent Runtimes](https://arxiv.org/abs/2611.27294) - Evolves executable plugins that share state across an agent’s runtime hooks and evaluates successive plugin combinations on tool-use tasks. (arXiv 2026)
 - [MemoHarness: Agent Harnesses That Learn from Experience](https://arxiv.org/abs/2607.14159) - Learns case-adaptive configurations across six harness control dimensions from execution diagnoses and a reusable experience bank. (arXiv 2026)
 - [MetaSkill-Evolve: Recursive Self-Improvement of LLM Agents via Two-Timescale Meta-Skill Evolution](https://arxiv.org/abs/2607.05297) - Evolves task skills in a fast loop and the meta-skills governing its Analyzer, Retriever, Allocator, Proposer, and Evolver in a slower recursive loop. (arXiv 2026)
 - [ModularRSI: Modular and Generalizable Recursive Harness Self-Improvement](https://arxiv.org/abs/2609.14857) - Splits the harness into five modules that evolve independently against 2,000 evolution tasks disjoint from the evaluation benchmarks, and contrasts same-task success and failure to localize which module is at fault. (arXiv 2026)
+- [OmniHarness-RSI: Modality-Aware Harness Evolution for Omnimodal Understanding](https://arxiv.org/abs/2611.32951) - Transfers a frozen audio-video question-answering harness evolved on WorldSense to Daily-Omni and OmniVideoBench, with the gains reported by the authors and no verified public release of the evolved harness. (arXiv 2026)
 - [PluginRSI: Recursive Improvement of Agent Harnesses with Reusable Plugins](https://arxiv.org/abs/2609.32423) - Represents an agent harness as atomized plugins, mutates single plugins independently on balanced minibatches into a persistent shared library, and recomposes workflows across iterations. (arXiv 2026)
 - [ReCreate: Reasoning and Creating Domain Agents Driven by Experience](https://arxiv.org/abs/2601.11100) - Uses an optimizer agent to inspect interaction experience and iteratively refine prompts, workflows, tools, and memory into reusable domain-level scaffolds. (ACL 2026)
 - [RRSI: Regularized Recursive Self-Improvement of Agent Harnesses](https://arxiv.org/abs/2609.24972) - Constrains the proposer with a temporally annealed edit budget and screens benchmark-specific proposals with a critic and pruner, so harness self-improvement keeps its out-of-distribution gains instead of memorizing the tasks it evolved on. (arXiv 2026)
 - [Self-Harness: Harnesses That Improve Themselves](https://arxiv.org/abs/2606.09498) - Iteratively identifies agent failure patterns, proposes model-specific harness modifications, and retains changes through regression-based validation. (arXiv 2026)
 - [SkillOpt: Executive Strategy for Self-Evolving Agent Skills](https://arxiv.org/abs/2605.23904) - Trains a single skill document as the external state of a frozen agent, with a separate optimizer model proposing bounded edits accepted only on strict held-out validation gains. (arXiv 2026)
 - [SoL-Pi: Recursively Scaling Auto-Research Loops for Efficient Agent Harness](https://arxiv.org/abs/2609.20519) - Scales harness self-improvement across many environments for rollouts and keeps the four mechanisms that survive selection, spanning action execution, context compaction, observation handling, and delegated reading, cutting recorded token traffic by 44.7-49.0% on EdgeBench. (arXiv 2026)
+- [Which Failure Does an Intervention Repair? When Agent Interventions Help, and Where Self-Evolving Skills Stall](https://arxiv.org/abs/2611.29290) - Tests how frozen skills learned from experience transfer across models and harnesses, using matched runs and failure labels to separate formatting errors from task failures. (arXiv 2026)
 
 ### Extensible Harness Substrates
 
@@ -296,6 +325,7 @@ Systems that automate parts of AI research and development, including experiment
 
 - [AutoResearch: Insight In, Hallucination Out](https://arxiv.org/abs/2608.17906) - Connects grounded idea generation with coordinated execution agents that implement, diagnose, and independently review experiments before accepting research conclusions. (arXiv 2026)
 - [Bilevel Autoresearch: Meta-Autoresearching Itself](https://arxiv.org/abs/2603.23420) - Uses an outer autoresearch loop to generate and inject new search mechanisms that improve how an inner autoresearch loop explores candidate solutions. (arXiv 2026)
+- [Demystifying the Autoresearch Harness: How Context and Skills Shape Self-Evolving Agents](https://arxiv.org/abs/2611.28244) - Combines summaries of past experiments with deletion of stale skills, reporting medals in 16 of 22 MLE-Bench Lite competitions under a 100-iteration budget without a verified public release of the scored submissions. (arXiv 2026)
 - [Frontis-MA1: Training an AI4AI Model towards Recursive Self-Improvement in Machine Learning Engineering](https://arxiv.org/abs/2607.28568) - Connects execution-grounded operator training with long-horizon evolution in the open OpenMLE stack, using machine-learning engineering as an AI4AI testbed for RSI. (arXiv 2026)
 - [FT-Dojo: Towards Autonomous LLM Fine-Tuning with Language Agents](https://arxiv.org/abs/2603.01712) - Turns data collection, training, evaluation, diagnosis, and strategy revision into an executable environment for autonomous fine-tuning agents. (arXiv 2026)
 - [LLMs Improving LLMs: Agentic Discovery for Test-Time Scaling](https://arxiv.org/abs/2605.08083) - Lets an LLM agent discover test-time scaling controllers for other LLMs inside a cheap execution-trace environment, with discovered strategies transferring across benchmarks and model scales. (arXiv 2026)
@@ -313,10 +343,12 @@ Systems that use interaction with physical or simulated environments to generate
 
 - [ASPIRE: Agentic /Skills Discovery for Robotics](https://arxiv.org/abs/2607.00272) - Diagnoses failures from robot execution traces, edits code-as-policy, and stores validated repairs in a skill library for persistent reuse across tasks and embodiments at NVIDIA GEAR. (arXiv 2026)
 - [ENPIRE: Agentic Robot Policy Self-Improvement in the Real World](https://arxiv.org/abs/2606.19980) - Uses a coding agent from NVIDIA GEAR, CMU, and UC Berkeley to run a real-robot autoresearch loop that resets, rolls out, verifies, edits policy, training-infrastructure, or algorithm code, and reruns, with scaling to robot fleets. (arXiv 2026)
+- [EvoTER: Evolving Embodied Agents via Tool-Use Experience and Reflection](https://arxiv.org/abs/2611.27797) - Revises a reusable robot skill library from tool-use trajectories and validates revisions on matched tasks, with a published insertion skill and sample observation available for inspection. (arXiv 2026)
 - [MineEvolve: Self-Evolution with Accumulated Knowledge for Long-Horizon Embodied Minecraft Agents](https://arxiv.org/abs/2603.13131) - Converts successful experience into reusable skills and failures into executable guardrails that continually guide an LLM planner without model-parameter updates. (arXiv 2026)
 - [RISE: Self-Improving Robot Policy with Compositional World Model](https://arxiv.org/abs/2602.11075) - Continuously generates imagined rollouts with a compositional world model, estimates their advantages, and updates the robot policy, with training code and pretrained dynamics models released. (RSS 2026)
 - [Self-Evolving Embodied Agents via Skill-Harness Evolution](https://arxiv.org/abs/2608.11350) - Keeps model weights frozen while the same model acts as planner and optimizer, using environment rollouts to continually evolve reusable skills and a context-code harness. (arXiv 2026)
 - [Self-Improving Vision-Language-Action Models with Data Generation via Residual RL](https://iclr.cc/virtual/2026/poster/10008318) - Uses residual reinforcement learning to target VLA failure regions and generate recovery trajectories that are distilled back into a generalist policy, forming a data-to-policy self-improvement flywheel. (ICLR 2026)
+- [Self-Upgrading Embodied Agents](https://arxiv.org/abs/2611.31117) - Reports that a 27B agent retained one edit to its own weights across later rounds in ALFWorld, with paired episode traces showing how its actions changed and no verified release of the edited weights. (arXiv 2026)
 - [VLM Can Be a Good Assistant: Enhancing Embodied Visual Tracking with Self-Improving Vision-Language Models](https://arxiv.org/abs/2505.20718) - Stores tracking-failure contexts, recovery actions, and reflection insights, then retrieves similar experiences to refine subsequent embodied tracking recovery attempts, but its linked code release is currently unavailable. (IROS 2025)
 
 ## Evolutionary & Open-Ended RSI
@@ -344,6 +376,7 @@ Safety, stability, goal preservation, corrigibility, and oversight mechanisms fo
 
 - [Agents Don't Just Agree, They Remember: Benchmarking Persistent Sycophancy in Self-Improving Personal Agents](https://arxiv.org/abs/2607.10526v5) - Uses paired chats to measure persistent sycophancy, finding that follow-up answers rely on the user's claim in 68.1% of cases when the agent saved it and 35.6% when it did not. (arXiv 2026)
 - [Evolutionary Safety of Recursive Self-Improving AI: Taxonomy, Risk Discovery, and Evaluation](https://arxiv.org/abs/2609.31186) - Frames safety under persistent and recursive self-improvement as a property that changes, accumulates, and propagates across evolution, characterizes recurring failure modes from intent drift to evaluator drift, and derives governance principles for modification, selection, authorization, provenance, and recovery. (arXiv 2026)
+- [How Feedback-Free Self-Evolution Reshapes Agent Skills: A Systematic Study](https://arxiv.org/abs/2611.25534) - Finds that repeated feedback-free rewrites erode expert-written skills, with lower SkillsBench pass rates for all six tested models after 30 rounds. (arXiv 2026)
 - [On The Statistical Limits of Self-Improving Agents](https://arxiv.org/abs/2510.04399) - Proves that distribution-free learnability survives self-modification exactly while the policy-reachable family stays capacity-bounded, and shows a validation-plus-capacity-cap guardrail preserves that boundary with standard VC guarantees. (TMLR 2026)
 - [SAHOO: Safeguarded Alignment for High-Order Optimization Objectives in Recursive Self-Improvement](https://arxiv.org/abs/2603.06333) - Monitors alignment drift during recursive self-improvement through goal-drift detection, constraint-preservation checks, and regression-risk analysis. (ICLR 2026 RSI Workshop)
 - [SEABench: Benchmarking Endogenous Misalignment In Self-Evolving Agents](https://arxiv.org/abs/2609.35596) - Uses paired evolving and non-evolving agents to attribute downstream safety failures to earlier self-updates, finding failures on 43.9% of discovered sequences where the unevolved baselines fail none. (arXiv 2026)
@@ -391,9 +424,14 @@ Benchmarks are separated into direct self-improvement evaluations, frontier-lab 
 
 ### Direct RSI & Self-Improvement Evaluations
 
+- [CoEvoBench: Can LLMs Drive Recursive Co-Evolution of Agentic Systems?](https://arxiv.org/abs/2611.27116) - Gives a research agent 24 hours to revise a target agent’s harness or train its model, then evaluates the selected model and harness together on held-out tasks. (arXiv 2026)
+- [Continual-ARC: Measuring Skill Acquisition over a Working Lifetime](https://arxiv.org/abs/2611.14505) - Separates retention of recurring ARC tasks from generalization to unseen tasks by evaluating learners after a task stream and comparing persistent state with a reset baseline. (arXiv 2026)
+- [Flex-RSI: Benchmarking Recursive Self-Improvement of Frontier Agents](https://arxiv.org/abs/2611.08946) - Evaluates whether an agent improves held-out task performance by revising its executor and its own improvement procedure across rounds. (arXiv 2026)
 - [LongWoF-Bench: Evaluating EvoMap Genes for Verifiable Long-Workflow Tasks](https://arxiv.org/abs/2608.23200) - Provides 778 machine-verifiable long-workflow tasks and shows that Genes consolidated from verifier-confirmed trajectories outperform Skill packages across seven models, linking the gains to verified experience provenance. (arXiv 2026)
 - [PostTrainBench: Can LLM Agents Automate LLM Post-Training?](https://arxiv.org/abs/2603.08640) - Gives autonomous agents one base model, one H100 GPU, and ten hours to research and execute the strongest post-training strategy they can find. (ICML 2026)
+- [RecurSciBench: Benchmarking Recursive Self-Improvement in Data-Driven Scientific Research](https://arxiv.org/abs/2611.32508) - Evaluates four scientific agents on independent tasks before evolution and again with their evolved state frozen, reporting gains and regressions across task types and scientific domains. (arXiv 2026)
 - [RSI-Bench](https://github.com/sunghunkwag/rsi-bench) - Provides an open-source six-axis framework for measuring self-modification depth, improvement trajectories, operator discovery, adaptation, safety, and goal generation. (community framework 2026)
+- [RSI-Env: An Open-Ended Environment for Recursive Self-Improvement of Agents](https://arxiv.org/abs/2611.01736) - Evaluates whether updated agents can continue improving their own harness and weights, reporting successive gains in one knowledge-directed run whose successor checkpoints and exact evaluation sample could not be verified publicly. (arXiv 2026)
 - [RSIBench-Data](https://arxiv.org/abs/2607.25886) - Isolates data-centric RSI by asking agents to iteratively improve training-data strategies against checkpoint feedback under a fixed post-training stack. (arXiv 2026)
 
 ### Frontier Lab Self-Improvement & AI R&D Evaluation Frameworks
@@ -405,6 +443,7 @@ Benchmarks are separated into direct self-improvement evaluations, frontier-lab 
 ### AI R&D Capability Proxies
 
 - [AutoLab: Can Frontier Models Solve Long-Horizon Auto Research and Engineering Tasks?](https://arxiv.org/abs/2606.05080) - Expert-curated benchmark of 36 realistic long-horizon, closed-loop optimization tasks for evaluating frontier agents on automated research and engineering. (arXiv 2026)
+- [From AutoResearch to Continual AutoResearch: Do Agents Learn Across Tasks?](https://arxiv.org/abs/2611.05108) - Compares five research agents with persistent or reset state across nine task families, finding that retained experience improves average search progress within the time budget while final-score gains vary by agent. (arXiv 2026)
 - [MLS-Bench: A Holistic and Rigorous Assessment of AI Systems on Building Better AI](https://arxiv.org/abs/2605.08678) - Benchmark of 140 tasks across 12 ML research domains measuring whether AI systems can invent generalizable and scalable ML methods. (arXiv 2026)
 - [SAEScientist-Bench: Can AI Agents Conduct Autonomous SAE Interpretability Research?](https://arxiv.org/abs/2609.09113) - Gives an agent a target concept and a Gemma Scope dictionary of over 131K features to probe contrastively, and measures how close the isolated feature comes to an expert reference across activation rank, concept selectivity, and causal steering. (arXiv 2026)
 - [SciΠvot: Benchmarking Principal-Investigator Judgment at Pivotal Moments of Scientific AutoResearch Agents](https://arxiv.org/abs/2610.21082) - Evaluates research judgment on 248 cases from 26 projects by asking models to choose between a research agent's original plan and a senior researcher's correction. (arXiv 2026)
@@ -506,3 +545,23 @@ Benchmarks are separated into direct self-improvement evaluations, frontier-lab 
 ## Contributing
 
 Contributions are welcome. Please read the [contribution guidelines](CONTRIBUTING.md) before submitting a pull request.
+
+## Citation
+
+```bibtex
+@misc{maxforai2026awesomersi,
+  author = {{MaxForAI}},
+  title  = {{Awesome RSI}: A curated research map of {Recursive Self-Improvement}},
+  year   = {2026},
+  url    = {https://github.com/lobehub/awesome-rsi}
+}
+```
+
+## Star History
+
+<a href="https://www.star-history.com/#lobehub/awesome-rsi&amp;Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lobehub%2Fawesome-rsi&amp;type=date&amp;theme=dark">
+    <img alt="GitHub stars over time for lobehub/awesome-rsi" src="https://api.star-history.com/svg?repos=lobehub%2Fawesome-rsi&amp;type=date">
+  </picture>
+</a>

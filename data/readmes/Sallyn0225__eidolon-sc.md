@@ -281,7 +281,7 @@ npm run build && BACKEND_URL=http://localhost:8000 npm run start   # 启动在 :
 eidolon-sc/
 ├── backend/          # Python 后端：FastAPI + Pipecat；对话引擎、通话、检索、记忆、同步与命令行（eidolon）
 │   ├── src/eidolon/
-│   ├── eval/         #   重排、判断模型和记忆的评测集（只含问题与标注，不含剧情原文）
+│   ├── eval/         #   召回、重排、判断模型和记忆的评测集（只含问题与标注，不含剧情原文）
 │   └── tests/
 ├── frontend/         # Next.js 前端：落地页、对话、通话层、设置、后台
 ├── characters/       # 角色配置、人设、资料、头像、读音表、世界设定
@@ -306,7 +306,7 @@ eidolon-sc/
 
 ## 🙏 致谢
 
-- [LAPLACE Eidolon](https://laplace.live/eidolon)：为虚拟主播明前奶绿打造的实时语音 AI 分身，本项目的架构参考（未复用其代码）
+- [LAPLACE Eidolon](https://github.com/laplace-live/eidolon)（[官网](https://laplace.live/eidolon)）：为虚拟主播明前奶绿打造的实时语音 AI 分身，本项目的架构参考（未复用其代码）
 - [LAPLACE Cycles](https://laplace.live/cycles)：周期页推算算法的参考，感谢它公开了做法（未复用其代码）
 - [SCTranslationData](https://github.com/ShinyGroup/SCTranslationData)：剧情文本与中文翻译
 - [ShinyColorsDB](https://github.com/ShinyColorsDB)：原文剧情的镜像与立绘素材

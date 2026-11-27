@@ -2,7 +2,7 @@
 
 **The MCP server for FL Studio (Fruity Loops): AI mixing, mix diagnosis, plugin control, piano roll and drum patterns, in plain language.**
 
-**Website:** [rosasynthesiz.com/products/fl-studio-mcp](https://rosasynthesiz.com/products/fl-studio-mcp): what it does, all 91 tools and setup.
+**Website:** [rosasynthesiz.com/products/fl-studio-mcp](https://rosasynthesiz.com/products/fl-studio-mcp): what it does, all 96 tools and setup.
 
 [![PyPI](https://img.shields.io/pypi/v/fl-studio-mcp)](https://pypi.org/project/fl-studio-mcp/)
 ![status](https://img.shields.io/badge/status-beta-yellow)
@@ -11,7 +11,7 @@
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue)
 ![FL Studio](https://img.shields.io/badge/FL%20Studio-2025%2B-orange)
 
-![Claude diagnosing and fixing a mix in FL Studio](docs/demo.gif)
+![Claude diagnosing and fixing a mix in FL Studio](https://raw.githubusercontent.com/rosasynthesiz/flstudio-mcp/main/docs/demo.gif)
 
 *Claude diagnosing and fixing a mix in FL Studio through natural language.*
 
@@ -19,7 +19,7 @@
 
 `flstudio-mcp` is a Model Context Protocol (MCP) server that connects FL Studio to AI assistants: Claude Code, Claude Desktop, Cursor, Codex, or any other MCP client. Ask for a mix diagnosis, a vocal chain, a chord progression in a particular scale, or a full arrangement, and the assistant carries it out inside your open FL Studio project through FL's scripting API and a set of calibrated, safety-checked tools.
 
-- **91 tools** for the mixer, plugins, piano roll, step sequencer, patterns, playlist, routing and transport
+- **96 tools** for the mixer, plugins, piano roll, step sequencer, patterns, playlist, routing and transport
 - **One-command setup on macOS**, with no MIDI configuration
 - **Every change can be undone**, and an undo never touches a different project
 - **Windows and macOS**, FL Studio 2025 and 2026
@@ -31,7 +31,7 @@ It is genre- and producer-agnostic: nothing about it assumes a particular style 
 **macOS** — one command, no MIDI setup:
 
 ```bash
-uvx --from git+https://github.com/rosasynthesiz/flstudio-mcp fl-studio-mcp setup
+uvx fl-studio-mcp setup
 ```
 
 It installs the FL controller script, then waits. Open FL Studio and load any
@@ -42,7 +42,7 @@ MIDI ports and FL links them by itself.
 Then add the server to your AI client:
 
 ```bash
-uvx --from git+https://github.com/rosasynthesiz/flstudio-mcp fl-studio-mcp connect
+uvx fl-studio-mcp connect
 ```
 
 **Windows** — two loopMIDI ports and one step in FL (details in [Setup](#setup)):
@@ -61,8 +61,9 @@ Then ask Claude in plain language:
 If something does not connect, run `fl-studio-mcp doctor`. It checks each
 stage and prints one status and the one next step.
 
-The PyPI package (`fl-studio-mcp` 1.0.0) is the older v1 and does not have
-these commands yet; use the commands above until 2.0.0 is released.
+`uvx` comes with [uv](https://docs.astral.sh/uv/). Without it: `pip install fl-studio-mcp`,
+then `fl-studio-mcp setup`. To run the newest code from GitHub instead of the
+release: `uvx --from git+https://github.com/rosasynthesiz/flstudio-mcp fl-studio-mcp setup`.
 
 ## Capabilities
 
@@ -96,7 +97,7 @@ these commands yet; use the commands above until 2.0.0 is released.
 - **Chords-to-MIDI** transcription of polyphonic audio (keys, piano, guitar) with Spotify's Basic Pitch, as notes for the piano roll or a `.mid` file.
 - **Drums to MIDI**: a drum loop or stem to kick, snare, clap, closed and open hi-hat, aligned to the beat, as a `.mid` or straight into the step sequencer of the channels you choose (one undo step).
 
-The server exposes 91 tools, plus 6 live resources (project, mixer, transport, channels, patterns, status) that Claude can read directly.
+The server exposes 96 tools, plus 6 live resources (project, mixer, transport, channels, patterns, status) that Claude can read directly.
 
 ## What sets it apart
 
@@ -128,7 +129,7 @@ These are properties of FL Studio's scripting API, stated plainly:
 
 1. **Run setup:**
    ```bash
-   uvx --from git+https://github.com/rosasynthesiz/flstudio-mcp fl-studio-mcp setup
+   uvx fl-studio-mcp setup
    ```
    It copies the controller script into FL Studio's user-data folder (a
    different existing copy is kept next to it as a `.bak-<date>` file), then
@@ -214,7 +215,7 @@ was made in. An entry from another project is refused, never applied.
 
 After updating, run `setup` again and restart FL Studio so the controller and
 the server are the same version (`doctor` reports a mismatch). See
-[bridge correctness regressions](docs/bridge-correctness-regressions.md) for
+[bridge correctness regressions](https://github.com/rosasynthesiz/flstudio-mcp/blob/main/docs/bridge-correctness-regressions.md) for
 numeric JSON compatibility, dry-run behavior, and localized parameter names.
 
 ## Install as a Claude plugin
@@ -232,7 +233,7 @@ Or in one line from your terminal:
 claude plugin install rosa-fl-studio --marketplace rosasynthesiz/flstudio-mcp
 ```
 
-The plugin lives in the `claude-plugin/` folder. It adds the `flstudio` MCP server with all 91 tools and a skill that teaches Claude how to use them.
+The plugin lives in the `claude-plugin/` folder. It adds the `flstudio` MCP server with all 96 tools and a skill that teaches Claude how to use them.
 
 - **What runs:** Claude Code starts `uv run` on `claude-plugin/server.py`, a bundled copy of this server, with the dependency versions pinned in `claude-plugin/uv.lock`. `uv` downloads those pinned packages from PyPI the first time it runs, as prebuilt wheels only.
 - **What it needs:** [uv](https://docs.astral.sh/uv/) installed, Python 3.11 or 3.12 already installed (the plugin does not download Python), and FL Studio 2025 or newer. Do the one-time setup described in [Setup](#setup) first (macOS: `fl-studio-mcp setup`; Windows: loopMIDI ports and the MIDI Settings step). Without it, `fl_ping` tells Claude which step is missing.
@@ -270,7 +271,7 @@ Plain-language prompts:
 
 ## Tools
 
-91 tools, grouped by area.
+96 tools, grouped by area.
 
 ### Transport
 
@@ -343,6 +344,7 @@ All plugin tools also reach channel-rack instruments: pass `slot=-1` and the cha
 - `fl_list_chains` — List the built-in processing-chain recipes (vocal, drum bus, bass, master).
 - `fl_list_installed_plugins` — List the plugins installed in FL Studio, de-duplicated and categorized.
 - `fl_setup_chain` — Plan a processing chain over a track's existing plugins.
+- `fl_plugin_preset` — Read a plugin's preset (info) or step to the next/previous one; navigation has no rollback.
 
 ### Routing
 
@@ -360,6 +362,8 @@ All plugin tools also reach channel-rack instruments: pass `slot=-1` and the cha
 - `fl_clear_mute_solo` — Unmute and unsolo every mixer track.
 - `fl_set_track_color` — Color mixer tracks by name, group, color name or hex.
 - `fl_set_channel_color` — Color channel-rack channels.
+- `fl_get_track_color` — Read a mixer track's color (int, hex and RGB).
+- `fl_get_channel_color` — Read a channel-rack channel's color (int, hex and RGB).
 
 ### Composition & arrangement
 
@@ -396,6 +400,11 @@ All plugin tools also reach channel-rack instruments: pass `slot=-1` and the cha
 - `fl_pattern_rename` — Rename a pattern; one undo step.
 - `fl_pattern_get_length` — Read a pattern's length in beats, bars and ticks.
 
+### Undo & introspection
+
+- `fl_undo` — One FL undo step; outside the rollback layer, with a warning about what it can and cannot undo.
+- `fl_api_probe` — List the names one FL scripting module exposes, optionally filtered; read-only.
+
 ### Debugging
 
 - `fl_screenshot` — Capture FL Studio's **window** (not the whole display) to a PNG so the assistant can see the plugin window, hint bar or focus; `whole_screen=true` and `region=[x, y, w, h]` are explicit opt-ins. macOS and Windows, never writes outside its own shots folder.
@@ -411,7 +420,7 @@ All plugin tools also reach channel-rack instruments: pass `slot=-1` and the cha
 
 A thin controller script runs inside FL Studio and returns only cheap, raw data; all judgement — diagnosis, calibration, planning — happens server-side. The two talk over MIDI SysEx, the only channel FL's script sandbox allows. The first MCP server to start owns the MIDI ports and shares them on a local socket, so several clients can use one FL Studio at once. Note authoring uses a generated pyscript bridge: the server re-triggers the armed `MCP_Apply` script with the platform run-last-script shortcut after a brief window focus. Every project-modifying tool routes through a snapshot → write → readback → rollback safety layer backed by a change log that is tied to the open project.
 
-Design notes and findings are in [`docs/`](docs/).
+Design notes and findings are in [`docs/`](https://github.com/rosasynthesiz/flstudio-mcp/tree/main/docs).
 
 ## FAQ
 
@@ -438,10 +447,10 @@ Yes. MIT licence, open source.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](https://github.com/rosasynthesiz/flstudio-mcp/blob/main/LICENSE).
 
 ## Status & contributing
 
-Beta. `main` is version 2 (in development); PyPI still carries 1.0.0 until 2.0.0 is released. Tested live on FL Studio 26.1 on macOS and Windows 11. Linux is untested; contributions are welcome. Issues and pull requests: [github.com/rosasynthesiz/flstudio-mcp](https://github.com/rosasynthesiz/flstudio-mcp).
+Beta. Version 2.0.0. Tested live on FL Studio 26.1 on macOS and Windows 11. Linux is untested; contributions are welcome. Issues and pull requests: [github.com/rosasynthesiz/flstudio-mcp](https://github.com/rosasynthesiz/flstudio-mcp).
 
 <!-- mcp-name: io.github.rosasynthesiz/flstudio-mcp -->

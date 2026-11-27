@@ -35,6 +35,15 @@
   <img src="site/landing/assets/screenshots/mac-hero.png" alt="Scarf on macOS — Dashboard" width="720">
 </p>
 
+<p align="center">
+  <a href="https://loomagent.co/?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=scarf">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/loom-banner-dark.png">
+      <img src="assets/loom-banner-light.png" width="720" alt="Don't want to set up your own agent? Try Loom: private AI agents that work for you on your own Mac. No servers, no SSH, no setup. Download for Mac, free to start.">
+    </picture>
+  </a>
+</p>
+
 ## Why Scarf
 
 Hermes is a terminal-and-messaging agent — powerful, but invisible. Scarf gives it a face:

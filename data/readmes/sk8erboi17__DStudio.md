@@ -289,6 +289,10 @@ open DStudio.app        # macOS
 # or: ./dstudio         # Linux / headless
 ```
 
+On macOS, `make` defaults to `all`, which builds `DStudio.app` and its bundled
+resources. `make app` explicitly selects the same app build. `make dstudio`
+builds only the launcher executable; it does not package the `.app` directory.
+
 `make windows` produces the portable Windows x64 folder; run `DStudio.exe`.
 
 ### First launch

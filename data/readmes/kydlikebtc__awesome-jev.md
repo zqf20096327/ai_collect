@@ -12,7 +12,7 @@
   <source media="(max-width: 767px) and (prefers-color-scheme: light)" srcset="docs/assets/readme-cover-en-light-mobile.svg">
   <source media="(max-width: 767px)" srcset="docs/assets/readme-cover-en-dark-mobile.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-cover-en-dark.svg">
-  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,343 products built on Jev by 1,170 makers, with 1,460 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
+  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,347 products built on Jev by 1,173 makers, with 1,465 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
 </picture>
 </a>
 
@@ -56,7 +56,7 @@
 
 No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is filed on Friday and opens the next Monday: [launch a product](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml), yours or one you found, such as those rising below.
 
-### ★ Rising: 2026-11-18 to 2026-11-25
+### ★ Rising: 2026-11-19 to 2026-11-26
 
 <table>
 <tr>
@@ -64,50 +64,50 @@ No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is
 <td>
 
 **[celesto](https://kydlikebtc.github.io/awesome-jev/products/celesto.html)** — Secure and persistent computer for AI agents -- build your own Grokbot, and Muse.<br>
-<sub>1,553 → 1,969 stars (+27%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=celesto&title=Launch%3A%20celesto)</sub>
+<sub>1,602 → 2,050 stars (+28%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=celesto&title=Launch%3A%20celesto)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+416</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+448</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/xerj.html"><img src="https://github.com/xerj-org.png?size=96" width="48" height="48" alt="XERJ"></a></td>
 <td>
 
 **[XERJ](https://kydlikebtc.github.io/awesome-jev/products/xerj.html)** — Local-first search engine and MCP server in one Rust binary. Its optional `rerank` stage asks Jev one `noul` per top hit (does `document` answer the query in the state?) and re-sorts by the probabilities. The authors report FiQA nDCG@10 rising from 0.24 to 0.36, about $0.64 for 648 searches. <sub>(written by a model)</sub><br>
-<sub>19,220 → 21,424 stars (+11%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=xerj&title=Launch%3A%20XERJ)</sub>
+<sub>19,256 → 21,564 stars (+12%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=xerj&title=Launch%3A%20XERJ)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+2,204</b><br><sub>stars</sub></td>
-</tr>
-<tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/onlyread.html"><img src="https://github.com/onlyreadai.png?size=96" width="48" height="48" alt="OnlyRead"></a></td>
-<td>
-
-**[OnlyRead](https://kydlikebtc.github.io/awesome-jev/products/onlyread.html)** — Chrome extension that keeps browser agents read-only on the sites you pick: rules, per-site decoders and a verdict cache settle most requests, and Jev answers a noul on the rest (does this request create, modify or delete stored data?); code allows, blocks or sends the middle band to a review model. <sub>(written by a model)</sub><br>
-<sub>99 → 109 stars (+10%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=onlyread&title=Launch%3A%20OnlyRead)</sub>
-
-</td>
-<td align="center" width="80"><b>★&nbsp;+10</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+2,308</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/rikkahub-sillytavern-android.html"><img src="https://github.com/MiaoWuNYA.png?size=96" width="48" height="48" alt="RikkaHub Plus · Lantern"></a></td>
 <td>
 
 **[RikkaHub Plus · Lantern](https://kydlikebtc.github.io/awesome-jev/products/rikkahub-sillytavern-android.html)** — Android chat client for SillyTavern-style character roleplay, a Kotlin fork of RikkaHub. Optional Jev decisioning asks a `noul` per stored memory (is it relevant to this conversation?) in place of embedding search, and gives the main model a `judge` tool for yes/no, choice and score questions. <sub>(written by a model)</sub><br>
-<sub>219 → 241 stars (+10%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=rikkahub-sillytavern-android&title=Launch%3A%20RikkaHub%20Plus%20%C2%B7%20Lantern)</sub>
+<sub>221 → 245 stars (+11%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=rikkahub-sillytavern-android&title=Launch%3A%20RikkaHub%20Plus%20%C2%B7%20Lantern)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+22</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+24</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/goutoujunshi-jev-chat.html"><img src="https://github.com/shengjidaguai-china.png?size=96" width="48" height="48" alt="狗头军师 Jev Chat"></a></td>
 <td>
 
 **[狗头军师 Jev Chat](https://kydlikebtc.github.io/awesome-jev/products/goutoujunshi-jev-chat.html)** — Chat-reply assistant (desktop overlay, Android floating assistant, iOS keyboard) built on Jev Android. From the visible chat or a screenshot it asks Jev the literal question, the other person's intent, a danger level, whether to reply now and the best action, then has Jev pick among drafted replies. <sub>(written by a model)</sub><br>
-<sub>651 → 698 stars (+7%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=goutoujunshi-jev-chat&title=Launch%3A%20%E7%8B%97%E5%A4%B4%E5%86%9B%E5%B8%88%20Jev%20Chat)</sub>
+<sub>664 → 702 stars (+6%) · 🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=goutoujunshi-jev-chat&title=Launch%3A%20%E7%8B%97%E5%A4%B4%E5%86%9B%E5%B8%88%20Jev%20Chat)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+47</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+38</b><br><sub>stars</sub></td>
+</tr>
+<tr>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/agent-desktop.html"><img src="https://github.com/vercel-labs.png?size=96" width="48" height="48" alt="agent-desktop"></a></td>
+<td>
+
+**[agent-desktop](https://kydlikebtc.github.io/awesome-jev/products/agent-desktop.html)** — Desktop automation that reads the system accessibility tree and decides which button, menu or field to act on next.<br>
+<sub>25,429 → 26,779 stars (+5%) · 👤 a person read the call site · can launch again from 2027-01-11</sub>
+
+</td>
+<td align="center" width="80"><b>★&nbsp;+1,350</b><br><sub>stars</sub></td>
 </tr>
 </table>
 
@@ -116,6 +116,16 @@ No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is
 ### New in the catalogue: 2026-W48
 
 <table>
+<tr>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/agentrun.html"><img src="https://github.com/parcha-ai.png?size=96" width="48" height="48" alt="AgentRun"></a></td>
+<td>
+
+**[AgentRun](https://kydlikebtc.github.io/awesome-jev/products/agentrun.html)** — Open-source platform that runs Claude Code, Codex, OpenCode or pi agents with learning, durable runs and a control plane; its typed workflows add Jev judge steps (choice, noul, score, box) whose answers and confidence decide whether a case goes on, back to an agent, or to review. <sub>(written by a model)</sub><br>
+<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=agentrun&title=Launch%3A%20AgentRun)</sub>
+
+</td>
+<td align="center" width="80"><b>11-26</b><br><sub>added</sub></td>
+</tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/android-jev.html"><img src="https://github.com/FZ2000.png?size=96" width="48" height="48" alt="android-jev"></a></td>
 <td>
@@ -156,19 +166,9 @@ No launch is on the board this week. A launch submitted by Thursday 23:59 UTC is
 </td>
 <td align="center" width="80"><b>11-25</b><br><sub>added</sub></td>
 </tr>
-<tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/btx-skill-jev-judge.html"><img src="https://github.com/bitranox.png?size=96" width="48" height="48" alt="btx-skill-jev-judge"></a></td>
-<td>
-
-**[btx-skill-jev-judge](https://kydlikebtc.github.io/awesome-jev/products/btx-skill-jev-judge.html)** — Claude Code plugin with one skill, jev-judge: when the same judgment repeats over many items, such as labelling 600 support tickets, Claude hands it to Jev through a tested command-line tool that asks each item a noul, choice or score instead of reading every item into its own context. <sub>(written by a model)</sub><br>
-<sub>🤖 a model read the call site, no person yet · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=btx-skill-jev-judge&title=Launch%3A%20btx-skill-jev-judge)</sub>
-
-</td>
-<td align="center" width="80"><b>11-25</b><br><sub>added</sub></td>
-</tr>
 </table>
 
-<sub>38 products entered the catalogue in 2026-W48 so far; the first 5 here, those whose call site a person read first, then a model, then by star band and title. An order, not a ranking, and each can launch. [All of them on the board](https://kydlikebtc.github.io/awesome-jev/launches.html).</sub>
+<sub>46 products entered the catalogue in 2026-W48 so far; the first 5 here, those whose call site a person read first, then a model, then by star band and title. An order, not a ranking, and each can launch. [All of them on the board](https://kydlikebtc.github.io/awesome-jev/launches.html).</sub>
 
 ### Latest results: 2026-W46
 
@@ -315,13 +315,13 @@ All 18 patterns have at least one catalogue entry. Coverage does not imply runti
 | :--- | :--- |
 | [Tool selection](#tool-selection) · **307** | [Intent routing](#intent-routing) · **70** |
 | [Context compaction](#context-compaction) · **62** | [Safety gating](#safety-gating) · **201** |
-| [Output validation](#output-validation) · **191** | [Retry control](#retry-control) · **10** |
+| [Output validation](#output-validation) · **195** | [Retry control](#retry-control) · **10** |
 | [Human escalation](#human-escalation) · **117** | [Model routing](#model-routing) · **110** |
-| [Speculative fan-out](#speculative-fan-out) · **55** | [Search & ranking](#search--ranking) · **109** |
-| [Structured extraction](#structured-extraction) · **41** | [Classification](#classification) · **247** |
+| [Speculative fan-out](#speculative-fan-out) · **58** | [Search & ranking](#search--ranking) · **109** |
+| [Structured extraction](#structured-extraction) · **41** | [Classification](#classification) · **252** |
 | [ML feature extraction](#ml-feature-extraction) · **10** | [Document triage](#document-triage) · **24** |
-| [Support triage](#support-triage) · **16** | [Content scoring](#content-scoring) · **218** |
-| [Recommendation](#recommendation) · **5** | [Overview](#overview) · **551** |
+| [Support triage](#support-triage) · **16** | [Content scoring](#content-scoring) · **221** |
+| [Recommendation](#recommendation) · **5** | [Overview](#overview) · **549** |
 
 ## Measured, not claimed
 
@@ -686,7 +686,7 @@ _Check a model's output against a rubric before it reaches a user._
 
 </details>
 
-**10 of 191** shown · [all 191 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
+**10 of 195** shown · [all 195 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -916,7 +916,7 @@ _Pack many questions — including speculative ones — into one request and let
 
 </details>
 
-**10 of 55** shown · [all 55 on one page →](docs/by-pattern/fan-out.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=fan-out&lang=en)
+**10 of 58** shown · [all 58 on one page →](docs/by-pattern/fan-out.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=fan-out&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1059,10 +1059,6 @@ _Put an item into a taxonomy, including deep hierarchies walked with probabiliti
   Reconstructs Markdown from plain text that lost its formatting, in two requests: one restitches hard-wrapped lines, one classifies every block.<br>
   <sub>`Official docs` · `Py`</sub>
 
-- **[TradingAgents](https://github.com/tauricresearch/tradingagents)**<br>
-  Multi-agent LLM trading framework. With a TypeSafe key set, its Sentiment Analyst screens each StockTwits or Reddit post with Jev: a noul on whether it is about the instrument, dropped below 0.3, and a choice of the author's stance, bullish, bearish or neutral, counted at confidence 0.5 or more. <sub>(written by a model)</sub><br>
-  <sub>`Project` · ★100k+ · tauricresearch · `Py` · `noul` · `choice` · [call site](https://github.com/tauricresearch/tradingagents/blob/HEAD/tradingagents/agents/post_screen.py), read by a model 2026-11-12</sub>
-
 - **[Inbox Zero: seven email decisions](https://github.com/elie222/inbox-zero)**<br>
   Seven distinct email decisions, each with its own separately chosen threshold, falling back to the normal LLM on any error.<br>
   <sub>`Project` · ★10k+ · `TS` · `choice` · `noul` · [call site](https://github.com/elie222/inbox-zero/blob/HEAD/apps/web/utils/decision-model/decision-model.ts), read by a model 2026-11-05</sub>
@@ -1081,9 +1077,13 @@ _Put an item into a taxonomy, including deep hierarchies walked with probabiliti
   Python framework that extracts structured data from documents with LLMs and decision models. Given a decision model such as Jev, it asks a yes/no question per paragraph to find each aspect's clauses and turns Boolean, label and rating concepts into noul, choice and score questions. <sub>(written by a model)</sub><br>
   <sub>`Project` · ★1k+ · shcherbak-ai · `Py` · `noul` · `choice` · `score` · [call site](https://github.com/shcherbak-ai/contextgem/blob/HEAD/contextgem/internal/base/decision_models.py), read by a model 2026-11-06</sub>
 
+- **[pg-jev](https://github.com/realZachi/pg-jev)**<br>
+  A real PostgreSQL extension exposing the primitives as SQL functions, so a semantic decision can appear in a WHERE clause over any row type.<br>
+  <sub>`Project` · ★1k+ · `Py` · `sh` · `choice` · `score` · `noul` · [call site](https://github.com/realZachi/pg-jev/blob/HEAD/sql/jev--0.2.0.sql), read 2026-09-22</sub>
+
 </details>
 
-**10 of 247** shown · [all 247 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
+**10 of 252** shown · [all 252 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1148,10 +1148,17 @@ All 10 shown · [on its own page](docs/by-pattern/feature-extraction.md) · [fil
 
 _Classify and route incoming documents, invoices and forms._
 
-- **[TradingAgents](https://github.com/tauricresearch/tradingagents)**<br>
-  Multi-agent LLM trading framework. With a TypeSafe key set, its Sentiment Analyst screens each StockTwits or Reddit post with Jev: a noul on whether it is about the instrument, dropped below 0.3, and a choice of the author's stance, bullish, bearish or neutral, counted at confidence 0.5 or more. <sub>(written by a model)</sub><br>
-  <sub>`Project` · ★100k+ · tauricresearch · `Py` · `noul` · `choice` · [call site](https://github.com/tauricresearch/tradingagents/blob/HEAD/tradingagents/agents/post_screen.py), read by a model 2026-11-12</sub>
-
 - **[docjev](https://github.com/jerryjliu/docjev)**<br>
   Classifies and splits PDF, DOCX and PPTX files: LiteParse extracts page text locally, then Jev picks a document's category with a choice over your rules, or for a packet answers per page a category choice and a noul on whether a new document starts there. Its report covers 40 real PDFs. <sub>(written by a model)</sub><br>
-  <sub>`Project` · ★100+ · jerry
+  <sub>`Project` · ★100+ · jerryjliu · `Py` · [call site](https://github.com/jerryjliu/docjev/blob/HEAD/src/jev_docs/engines/jev.py), read 2026-09-22</sub>
+
+- **[formanator](https://github.com/timrogers/formanator)**<br>
+  Submits Forma benefit claims from the command line or an MCP client. With --category-provider jev, Jev picks the benefit and category with a choice over the pairs Forma allows plus no_match, seeing only merchant and description; under 0.5 confidence or no match it falls back to the configured LLM. <sub>(written by a model)</sub><br>
+  <sub>`Plugin` · ★100+ · timrogers · `Rs` · [call site](https://github.com/timrogers/formanator/blob/HEAD/src/typesafe.rs), read 2026-09-22</sub>
+
+- **[Quicksilver](https://github.com/UditAkhourii/quicksilver)**<br>
+  Claude Code skill that hands relevance calls to Jev: one noul per file, log line or ticket ('which of these files handle auth?'), asked in parallel and sorted by probability, so Claude gets a shortlist with confidences instead of reading everything. <sub>(written by a model)</sub><br>
+  <sub>`Plugin` · ★100+ · uditakhourii · `JS` · `noul` · [call site](https://github.com/UditAkhourii/quicksilver/blob/HEAD/skills/quicksilver/scripts/qs.mjs), read by a model 2026-10-24</sub>
+
+<details>
+<summary>7

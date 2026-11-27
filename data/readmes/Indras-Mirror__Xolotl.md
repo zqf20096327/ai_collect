@@ -14,6 +14,10 @@
 
 One line each; the detail, numbers and credits are in [docs/xolotl/CHANGELOG.md](docs/xolotl/CHANGELOG.md).
 
+- **27 Nov** - [ERNIE-5.5-Flash](docs/ERNIE.md) preview, now served: OpenAI- and Anthropic-compatible server with tool calls and thinking on or off (`configs/xol-ernie.json`), ~14 tok/s decode and 115-120 tok/s prefill on one RTX 4090 with our [XQ file](https://huggingface.co/IndrasMirror/ERNIE-5.5-Flash-XQ-Uncensored) (99.9 GB). Speed work (DSpark, GPU prefill) is next.
+- **27 Nov** - Windows: the rest of #148 (POSIX shims for MSVC, positional reads in `ds4_moe`, the LFM3 speech helper, the GLM census), thanks mehzhure (#149-#154). [more](docs/xolotl/CHANGELOG.md#windows-the-rest-of-148-lands-27-nov)
+- **27 Nov** - Trellis-coded tensor types TQP5/6/7 in Xolotl's ggml (decode kernels, opt-in `XOLOTL_TQP_MMQ=1` prompt kernel). [more](docs/xolotl/CHANGELOG.md#trellis-coded-tensor-types-tqp567-27-nov)
+- **26 Nov** - [ERNIE-5.5-Flash](docs/ERNIE.md) preview: Baidu's 280B MoE on its own engine, `ernie_generate`, reading llama.cpp PR #31925 GGUFs (checked against the PR: KL 0.004).
 - **24 Nov** - Windows fixes for the V4.1 engine + picture reader (thanks kelheor, #144-#146) and a tool-call loop guard (from Delta / Project Maya). [more](docs/xolotl/CHANGELOG.md#windows-fixes-for-the-deepseek-v41-engine-and-its-picture-reader-a-tool-call-loop-guard-in-the-server-24-nov)
 - **24 Nov** - Inkling-2-Mini LoRA training behind the real 23K-token harness prompt, bit for bit with the engine: held-out loss -15.6 %, LiveCodeBench level. [more](docs/xolotl/CHANGELOG.md#inkling-2-mini-lora-training-behind-the-real-harness-prompt-prompt-carry-bit-for-bit-with-the-engine-24-nov)
 - **23 Nov** - [LoRA training](docs/LORA_TRAINING.md#inkling-2-mini-the-whole-model-on-one-4090) for the whole Inkling-2-Mini on one RTX 4090 (-16.7 % held-out loss in 100 steps), served with `--lora`. [more](docs/xolotl/CHANGELOG.md#lora-training-for-inkling-2-mini-the-whole-model-on-one-rtx-4090-and---lora-at-serve-time-23-nov)
@@ -157,6 +161,7 @@ pruning; the Qwen models get MTP speculative decoding. **[Read the full write-up
 | [LFM3-Omni engine](docs/LFM3.md)                   | pictures, audio, video and speech on a 2B model, park/unpark beside a big one     |
 | [Muse Glimmer engine](docs/GLIMMER.md)             | Meta's dense 30B at 512K on 24 GB, its channel / ATEM tool-call format, pictures  |
 | [Inkling-2-Mini engine](docs/INKLING.md)           | Thinking Machines' looped MoE: 512K on 24 GB, DSpark drafter, pictures, our quant |
+| [ERNIE-5.5-Flash engine (preview)](docs/ERNIE.md)  | Baidu's 280B latent MoE: our [XQ file on HF](https://huggingface.co/IndrasMirror/ERNIE-5.5-Flash-XQ-Uncensored), which GGUFs it reads, flags |
 | [Qwen3.8-27B dense howto](docs/dense/HOWTO.md)     | dense vs MoE paths, binaries, configs, MTP (by Mirko Perrone, also in Italian)    |
 | [Setting up with an agent](AGENTS.md)              | the build-and-serve steps for an AI agent (or a person) setting Xolotl up         |
 | [Qwen3.8 / upstream Strata](README.strata.md)      | the Strata engine this grew from                                                  |
@@ -169,7 +174,7 @@ pruning; the Qwen models get MTP speculative decoding. **[Read the full write-up
 
 Built on **[Strata](https://github.com/Niko1221/Strata)** by Niko1221 and [ggml / llama.cpp](https://github.com/ggml-org/llama.cpp),
 with the Qwen3.8-27B dense port by [perronemirko](https://github.com/perronemirko/Strata). Model weights by DeepSeek,
-Zhipu AI, Qwen, Liquid AI, Meta and Thinking Machines, with quants, fine-tunes and refusal edits by peasantsmith, ukisai,
+Zhipu AI, Baidu, Qwen, Liquid AI, Meta and Thinking Machines, with quants, fine-tunes and refusal edits by peasantsmith, ukisai,
 d0xin, gcsa-abliterix, nokeep and unsloth. Thanks to
 every contributor: NektoDron, Xiaomi2008, AlexeyMatskevich, paul123637-lab, kelheor, exye137, penink-WH, cpacsm75,
 jesdga95 (Basalt) and Ryan Flavell (PROMETHEVS). Who did what: **[CREDITS.md](CREDITS.md)**.

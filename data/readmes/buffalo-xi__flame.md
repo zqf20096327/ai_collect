@@ -226,6 +226,8 @@ hold both at once. See [`nexus/docs/design-highlights.md`](nexus/docs/design-hig
 - `nexus/docs/i18n-plan.md` — the layered bilingual plan, its costs and pitfalls ([中文](nexus/docs/i18n-plan.zh.md))
 - `nexus/docs/error-codes.md` — business error-code conventions (a prerequisite for a bilingual UI)
   ([中文](nexus/docs/error-codes.zh.md))
+- `nexus/docs/node-audit.md` — the per-node audit: which dimensions each node type is checked on, what a test or gate
+  already enforces, and what is still to audit ([中文](nexus/docs/node-audit.zh.md))
 - `browserd/README.md` — the standalone browser pool: how nexus reaches it, how to build and deploy it, and the three
   settings that must line up ([中文](browserd/README.zh.md))
 - `browserg/README.md` — the browser gateway: sticky routing, the per-tenant cap, and why it is not part of sandboxg

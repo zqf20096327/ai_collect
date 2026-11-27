@@ -195,7 +195,7 @@ The 0.4.0 candidate received automated tests and a targeted installed-app smoke 
 
 ## Branches
 
-As checked on 1 November 2026, `main` and [`feature/morrow-0.4.0-design`](https://github.com/RANJITHROSAN17/Wrytrove/tree/feature/morrow-0.4.0-design) contain the same 0.4.0 files; their merge histories differ. `main` is the default development branch. The feature branch may evolve independently; neither branch is a signed release.
+`main` is the default development branch. Work happens on short-lived branches and lands through pull requests; there are no long-lived side branches. Tagged previews are built from `main` by the Windows workflow.
 
 ## Contributing
 

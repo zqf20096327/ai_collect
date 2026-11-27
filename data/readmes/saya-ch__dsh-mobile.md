@@ -28,7 +28,7 @@
   <a href="#兼容性">兼容性</a> ·
   <a href="docs/README.md">文档</a> ·
   <a href="#贡献者">贡献者</a> ·
-  <a href="https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.0">更新记录</a> ·
+  <a href="https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.1">更新记录</a> ·
   <a href="README.en.md">English</a>
 </p>
 
@@ -36,19 +36,19 @@
 >
 > **使用 iPhone 或 iPad？** 可以用 Safari 访问，或[添加到主屏幕作为 Web App（PWA）使用](<#iphone-与-ipad主屏幕-web-apppwa>)，无需下载原生 iOS App。
 >
-> **当前正式版本：0.9.0**。macOS 支持补齐：cpolar 与 iroh 组件新增 macOS x64/arm64，Tailscale Funnel 也首次支持 macOS，同时插件包从 74.6 MB 瘦身到 9.2 MB。插件与 Android App 独立更新；Android App 0.8.3 为当前正式版。[插件更新与下载](https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.0) · [完整更新记录](CHANGELOG.md)。
+> **当前正式版本：0.9.1**。侧边栏现在跟随「移动端字号」设置（此前只影响输入框）。新增可选组件 **移动访问 skill**：向 agent 提供各通道的配置字段、状态位置、错误码含义与本机管理接口，配置和排障可在对话中完成，也可在组件列表中单独关闭（见[说明](#移动访问-skill)）。macOS 支持补齐：cpolar 与 iroh 组件新增 macOS x64/arm64，Tailscale Funnel 也首次支持 macOS，同时插件包从 74.6 MB 瘦身到 9.2 MB。插件与 Android App 独立更新；Android App 0.8.4 为当前正式版。[插件更新与下载](https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.1) · [完整更新记录](CHANGELOG.md)。
 >
 > **版本说明**：自插件 **0.6.2** 起，Android App 与插件改为独立发布（当时 App 仍为 0.6.1）；App 自 0.6.2 起使用独立编号，版本号无需一致；插件升级不代表 App 需要同步升级。App 图标可在设置中更换，不影响版本与配对。[兼容说明](#兼容性)。
 >
-> **国内 AtomGit 托管**：[saya-ch/dsh-mobile](https://atomgit.com/saya-ch/dsh-mobile)，由 GitHub 主仓自动同步。
+> **国内 AtomGit 托管**：[saya-ch/dsh-mobile](https://atomgit.com/saya-ch/dsh-mobile)。代码、标签与发布页（含 APK 等安装包）由 GitHub 主仓自动同步，下载入口见其 Releases。
 
 <p align="center">
-  <a href="https://github.com/saya-ch/dsh-mobile/releases/download/android-v0.8.3/dsh-mobile-android-v0.8.3.apk"><img src="https://raw.githubusercontent.com/saya-ch/dsh-mobile/main/assets/brand/app-icon-rounded.svg?v=ecdd13c4e227" alt="DSH Mobile 安卓应用图标" width="64" height="64"></a>
+  <a href="https://github.com/saya-ch/dsh-mobile/releases/download/android-v0.8.4/dsh-mobile-android-v0.8.4.apk"><img src="https://raw.githubusercontent.com/saya-ch/dsh-mobile/main/assets/brand/app-icon-rounded.svg?v=ecdd13c4e227" alt="DSH Mobile 安卓应用图标" width="64" height="64"></a>
   <br>
-  <b>Android App 0.8.3</b>
-  &nbsp;<a href="https://github.com/saya-ch/dsh-mobile/releases/download/android-v0.8.3/dsh-mobile-android-v0.8.3.apk">兼容版</a>
-  · <a href="https://github.com/saya-ch/dsh-mobile/releases/download/android-v0.8.3/dsh-mobile-android-v0.8.3-iroh.apk">64 位完整版</a>
-  · <a href="https://github.com/saya-ch/dsh-mobile/releases/tag/android-v0.8.3">版本说明</a>
+  <b>Android App 0.8.4</b>
+  &nbsp;<a href="https://github.com/saya-ch/dsh-mobile/releases/download/android-v0.8.4/dsh-mobile-android-v0.8.4.apk">兼容版</a>
+  · <a href="https://github.com/saya-ch/dsh-mobile/releases/download/android-v0.8.4/dsh-mobile-android-v0.8.4-iroh.apk">64 位完整版</a>
+  · <a href="https://github.com/saya-ch/dsh-mobile/releases/tag/android-v0.8.4">版本说明</a>
   <br>
   <b>Windows 客户端 0.1.2-alpha</b>
   &nbsp;<a href="https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64-setup.exe">下载安装包</a>
@@ -71,6 +71,7 @@ DSH Mobile 是一个 DeepSeek Harness 插件，让手机浏览器或 Android App
 - **多种远程通道**：Tailscale、cpolar、cloudflared 快速/命名隧道、自建 FRP、自有反向代理，以及无需域名和公网端口的实验性 iroh；Windows/Linux x64 还可由插件托管 Caddy HTTPS 与证书。
 - **配对与多设备**：扫码、链接或密钥配对一次；同一 Origin 下自动续期，地址、证书或监听变化后需按「更换网络」重新配对（局域网运行时）或下次开启生效；App 在一个列表中显示局域网和远程配对的电脑，定期检测可达状态，并支持切换、重新配对或删除本地记录。
 - **一键诊断与放行**：检查版本、网关、网卡、防火墙和远程通道，生成脱敏报告；被拦截的第三方插件连接按确切路径一键放行。
+- **移动访问 skill**：可选文档组件向 agent 提供六种远程通道与局域网各自的配置字段、状态位置、错误码含义和管理接口，使配置和排障可在对话中完成。[说明](#移动访问-skill)。
 - **iPhone / iPad 网页推送**：将页面添加到主屏幕后，在 DSH“通用设置”中主动开启；支持六类提醒和分类开关，页面关闭或锁屏后也可接收；默认文案不含会话正文，0.8.6 起受信 Host 插件通过 `mobilePush.notify` 投递的自定义文案由该插件提供。[使用条件与设置](docs/WEB_PUSH.md)。
 - **Android 任务通知**：在 App 内 DSH“通用设置”中开启任务完成与待输入提醒，使用独立的原生通知通道，锁屏文本脱敏。
 - **纵深安全**：局域网固定私有 CA，公开远程入口使用受信任 HTTPS；自签 FRP 入口由 0.4.6 App 固定远程 CA。凭据存 Keystore，设备令牌只发往精确 Origin，第三方 WS 默认拦截。
@@ -125,14 +126,14 @@ dsh plugin --profile web add dshmarket
 
 从上方链接下载正式 Android APK。随后按[连接教程](#连接教程)选择局域网或远程访问；手机不需要安装额外的隧道客户端。包括 iOS 在内的浏览器访问方式见下文。
 
-通过 npm 安装的插件会在桌面界面加载时检查新版本，有更新时在访问面板标题右侧显示“更新插件”，安装后需重启 DSH。App 下载入口展示最新版本；本地开发包不会被自动覆盖；Android App 0.7.4 不会主动检查或推送版本更新，0.7.5 起在设备列表设置中提供手动「检查更新」，只打开对应发布页，不自动下载或安装。
+通过 npm 安装的插件会在桌面界面加载时检查新版本，有更新时在访问面板标题右侧显示“更新插件”，安装后需重启 DSH。App 下载入口展示最新版本；本地开发包不会被自动覆盖；Android App 不会主动检查或推送版本更新，0.7.5 起在设备列表设置中提供手动「检查更新」，0.8.3 起下载与已安装变体匹配的安装包、校验后交给系统安装器（首次需允许「安装未知应用」），失败时可按原因重试或改用浏览器下载。
 
 ### iPhone 与 iPad：主屏幕 Web App（PWA）
 
 插件运行在**电脑**上，Safari 加载其移动界面，无需安装原生 iOS App。
 
 1. 按上文在电脑安装并启用插件，在**移动访问**中配置[连接通道](<#连接教程>)；长期主屏幕安装优先使用固定、受信任的 HTTPS 地址。
-2. 留在所选通道的面板：局域网用**复制配对链接**；远程用**生成远程配对二维码**，再**复制远程配对链接**。在 **Safari** 中打开所得浏览器链接并完成配对。须使用专用移动访问链接，而非电脑的普通 DSH 页面；Android 的 `dsh1.`／`dsh2.` 密钥不是浏览器配对码。
+2. 留在所选通道的面板：局域网用**复制配对链接**；远程用**生成配对二维码**（与局域网同名，按钮在远程面板内），再**复制远程配对链接**。在 **Safari** 中打开所得浏览器链接并完成配对。须使用专用移动访问链接，而非电脑的普通 DSH 页面；Android 的 `dsh1.`／`dsh2.` 密钥不是浏览器配对码。
 3. 在已配对页面打开 Safari 的**分享**菜单 → **添加到主屏幕**。如有以 Web App 打开的选项，请开启，再轻点**添加**。菜单布局随版本变化，参见 [Apple 的 iPhone 添加说明](<https://support.apple.com/guide/iphone/bookmark-a-website-iph42ab2f3a7/ios>)。
 4. 从新主屏幕图标启动，继续使用同一份 DSH 会话和工作区。若显示**配对码**表单，请按[新码恢复步骤](<docs/WEB_PUSH.md#主屏幕-app-显示配对表单时>)操作；Safari 首次使用的码只能消费一次。普通重新连接页使用已有配对，不必重新配对。排障时保留已有安装、配对和网站数据。
 
@@ -144,11 +145,11 @@ dsh plugin --profile web add dshmarket
 
 Windows 上也可以用 DSH Mobile：[Windows 客户端](apps/windows/README.md)是一个 WebView2 外壳，通过与 Android 相同的插件认证 HTTPS 页面连接电脑。
 
-**[下载安装包](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64-setup.exe)**（49.2 MB）· [SHA-256 校验文件](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64-setup.exe.sha256) · [所有版本](https://github.com/saya-ch/dsh-mobile/releases)
+**[下载安装包](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64-setup.exe)**（49.0 MB）· [SHA-256 校验文件](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64-setup.exe.sha256) · [所有版本](https://github.com/saya-ch/dsh-mobile/releases)
 
 双击运行，按向导选择安装位置（默认 `%LocalAppData%\Programs\DshMobile`，**不需要管理员权限**），完成后从开始菜单启动。卸载时默认保留 `data\`，已配对电脑和设置不会丢。不需要另外安装 .NET。仅支持 Windows 10 1809+ / Windows 11 的 x64 电脑。
 
-<sub>需要不写注册表、整个文件夹能拷走的场景，可以改用[便携 zip](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64.zip)（65.8 MB，[校验文件](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64.zip.sha256)）：解压到任意可写目录后运行 `DshMobile.Win.exe`。</sub>
+<sub>需要不写注册表、整个文件夹能拷走的场景，可以改用[便携 zip](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64.zip)（65.6 MB，[校验文件](https://github.com/saya-ch/dsh-mobile/releases/download/windows-v0.1.2-alpha/dsh-mobile-windows-v0.1.2-alpha-win-x64.zip.sha256)）：解压到任意可写目录后运行 `DshMobile.Win.exe`。</sub>
 
 > 该客户端仍是 **alpha 预览**（当前 `0.1.2-alpha`），以预发布形式单独发布，不随插件发布，也不在 npm 包里；插件与 Android App 才是稳定面。它尚未在真实 Windows 机器上完成验收，遇到问题属预期内，反馈时请附 `data\client.log`。
 
@@ -180,7 +181,7 @@ Windows 上也可以用 DSH Mobile：[Windows 客户端](apps/windows/README.md)
 <details>
 <summary>无界面主机、内网代理与额外来源网段</summary>
 
-无图形界面的 Linux 主机，或通过局域网 IP / 反向代理打开 DSH Web 时，左下角 **移动访问** 管理口同样可用。管理 API 仍要求 TCP 对端是本机回环（例如本机 `socat` / 反向代理连到 `127.0.0.1`），不会把插件自己暴露到公网；浏览器 Host 可以是 `localhost`、RFC1918 或 IPv4 链路本地地址，公网 IP 和任意域名仍会返回 403。反向代理必须只对可信的本机或内网请求开放，不能把 `/api/mobile-access` 管理路径公开转发到互联网。手机走的独立 HTTPS 入口（默认 3443）仍是移动端界面，不会变成桌面管理口。
+无图形界面的 Linux 主机，或通过局域网 IP / 反向代理打开 DSH Web 时，左下角 **移动访问** 管理口同样可用。管理 API 默认只接受 TCP 对端为本机回环（例如本机 `socat` / 反向代理连到 `127.0.0.1`），不会把插件自己暴露到公网；0.6.18 起可用 `adminAllowedCidrs` 额外放行指定的非回环直连对端，这类请求还须通过 DSH 当前的请求认证（[写法与限制](<docs/TRUSTED_NETWORKS.md#nas-的管理网页访问>)）。浏览器 Host 可以是 `localhost`、RFC1918 或 IPv4 链路本地地址，公网 IP 和任意域名仍会返回 403。反向代理必须只对可信的本机或内网请求开放，不能把 `/api/mobile-access` 管理路径公开转发到互联网。手机走的独立 HTTPS 入口（默认 3443）仍是移动端界面，不会变成桌面管理口。
 
 已有 WireGuard 等受控路由网络时，0.6.0 提供[额外可信网段](docs/TRUSTED_NETWORKS.md)。它只追加明确的来源 CIDR，不建立 VPN 或路由，也不自动改 Windows 防火墙。
 
@@ -303,6 +304,32 @@ Funnel 的运行组件把公开监听生命周期绑定到父进程和受限控�
   <img src="https://raw.githubusercontent.com/saya-ch/dsh-mobile/main/assets/screenshots/cyberpunk-monitor-1.png" width="22%" style="margin-left:8px" alt="/mobile 定制为赛博朋克监控面板">
 </p>
 
+## 移动访问 skill
+
+0.9.1 起插件包含一个可选文档组件 `dsh-mobile-skill`（组件名 **移动访问 skill**），向 agent 提供本插件的配置接口与排障知识。注册后 `dsh-mobile-access` skill 进入会话的 skill 目录，agent 可自行加载。
+
+**用途**：接手机需要选通道、准备账号或服务器、填参数、处理证书、开配对窗口，每一步失败时面板只给出错误码。skill 让这些步骤可以在对话里完成——agent 知道有哪些字段、值域是什么、状态写在哪里、错误码意味着什么，因此能代写配置、代为解释失败原因，并在配置完成后直接给出可扫描的配对材料，用户不必逐项对照文档手动填写。
+
+可完成的操作：
+
+- **配置并启用通道**：按用户条件（有无 Tailscale 账号、有无公网服务器、是否介意第三方中转）选定通道，经管理接口写入配置并启用，不需要用户逐字段填写。
+- **排查连不上**：读 `<state>` 下的日志与状态文件，把 `errorCode` 与诊断结果对应到具体成因，给出下一步动作，而不是只转述错误码。
+- **配对手机**：开启配对窗口并交付二维码与完整链接；窗口默认两分钟，因此会先确认手机在手再开启。
+- **撤销丢失的设备**：从设备库定位并撤销指定设备的授权，立即断开其在线连接。
+- **调整已有配置**：换网络、切换通道、修改端口或域名后重新写入并验证。
+- **放行被拦截的第三方 WebSocket 路径**：按诊断给出的精确路径写入放行列表。
+
+它提供的内容：
+
+- **配置字段与校验规则**：六种远程通道（Tailscale、cpolar、cloudflared、frp、origin、iroh）与局域网各自的配置项、类型、默认值、取值范围，以及每个错误码对应的成因和处理方式。
+- **状态位置**：`<state>` 下各文件保存什么，哪些是磁盘状态、哪些只存在于插件内存。配置保存在内存中，直接修改 `settings.json` 不会生效，需经管理接口写入。
+- **本机管理接口**：`/api/mobile-access/*` 的路由、请求体字段与返回结构。接口默认只接受回环来源，`adminAllowedCidrs` 可额外放行非回环直连对端；POST 需带与 `DSH_WEB_URL` 一致的 `Origin` 头。
+- **配对材料**：`pairing/open` 返回的二维码与链接、两分钟有效期，以及 `qrSvg` 与 `pairUrl` 的关系。
+
+凭据处理规则同样写在 skill 内：允许 agent 代为写入 Token 一类字段，但需在同一轮对话中说明用途，且不回显、不落盘、不跨轮沿用。管理接口默认仅本机回环可达。
+
+组件为纯文档：只向 skill 目录注册一条记录，不注册工具、不新增能力、不发起网络请求。界面定制不在此范围，仍由 `/mobile` 与扩展负责。在 DSH 插件详情的组件列表中有独立开关，关闭不影响移动访问；缺少 skill 服务的部署将其保持为未激活。
+
 ## 设备管理
 
 Android App 在“已配对设备”中统一显示电脑及其局域网／远程连接记录。两种方式的授权彼此独立，同一台电脑可能有两条记录。升级会迁移旧凭据，无需重新配对；重新验证变化的地址后，相同身份的记录会合并并保留名称。自签 FRP 使用独立 CA 指纹，可能另成一条记录。Token 和固定的 CA 由 Android Keystore 加密；配对二维码含短期配对信息，不含长期设备 Token 或 CA 私钥。
@@ -388,7 +415,7 @@ excludedClientModules:
 
 Android App 只是 Kotlin WebView 薄壳，不内置另一份网页；手机浏览器访问的是同一页面。开发者可在已认证移动地址后追加 `?frontend=stock` 诊断启动与布局行为；该入口跳过专用移动启动改写和模块选择，但仍可能加载客户端移动适配及已认证定制，并非不含插件的对照页。部分 API 操作可能被拒绝，不能代替正常移动入口。详见[皮肤与移动布局](docs/SKIN_COMPATIBILITY.md)。
 
-专用移动页面会在 DSH 的第一个启动脚本之前，同步加载经网关鉴权的同源 `/mobile-access/compat.js`，为缺少 `Iterator` / Iterator helpers、`Promise.withResolvers` 和 `AbortSignal.any` 的 WebView 提供随插件打包的兼容实现，并补回把自定义协议当作 opaque path 解析的 WebView 上丢失的 `dsh-resource:` authority，使文件预览能解析地址。兼容层按能力检测保留或修正原生实现，不依赖 CDN，也不会放宽 CSP；桌面页面与 `?frontend=stock` 页面不会加载这个网关脚本。Android App 还会在支持 document-start 注入的 WebView 中，为配对的精确 Origin 提前补齐 `Promise.withResolvers`。
+专用移动页面会在 DSH 的第一个启动脚本之前，同步加载经网关鉴权的同源兼容脚本（0.8.0 起按内容哈希引用 `/mobile-access/compat-<sha256>.js`，读取兼容包失败时才回退到 `/mobile-access/compat.js`），为缺少 `Iterator` / Iterator helpers、`Promise.withResolvers` 和 `AbortSignal.any` 的 WebView 提供随插件打包的兼容实现，并补回把自定义协议当作 opaque path 解析的 WebView 上丢失的 `dsh-resource:` authority，使文件预览能解析地址。兼容层按能力检测保留或修正原生实现，不依赖 CDN，也不会放宽 CSP；桌面页面与 `?frontend=stock` 页面不会加载这个网关脚本。Android App 还会在支持 document-start 注入的 WebView 中，为配对的精确 Origin 提前补齐 `Promise.withResolvers`。
 
 **旧内核限制**：API 兼容实现不能修复内核无法解析的 JavaScript 语法。DSH **0.2.1-rc.2** 的正式前端包含 class static blocks，Chromium **92** 无法解析；该语法从 Chrome 94 默认可用，但这不代表 94 已通过整个 DSH 的兼容验收。[V8 说明](https://v8.dev/blog/v8-release-94)。App 的“内核低于 100”提醒只是建议，点击继续不代表当前 DSH 可以运行。若系统 WebView 无法更新，可使用已确认正常的手机浏览器访问电脑端提供的移动地址，无需清除原有 App 配对。
 
@@ -478,6 +505,7 @@ macOS 上局域网、Tailscale Funnel、cpolar、cloudflared、自建 FRP、自�
 
 | DSH Mobile 插件 | 已验证的 DeepSeek Harness 版本与范围 |
 | --- | --- |
+| `0.9.1` | 侧边栏跟随移动端字号设置（此前只影响输入框）；新增可选组件「移动访问 skill」，向 agent 提供各通道的配置接口与排障知识；随插件提供的组件在插件列表显示可读名称。 |
 | `0.9.0` | macOS 补齐 cpolar、iroh 与 Tailscale Funnel（均为双架构）；Funnel 组件改为按平台安装，插件解包体积 74.6 MB → 9.2 MB；iroh 组件升级到 0.1.0-alpha.2。Android App 为 0.8.3 |
 | `0.8.16` | 宽屏下会话列恢复全宽，左右侧栏均可拖拽调宽，侧栏打开不再顿挫（#465）；opaque-path WebView 上文件预览恢复（#415）。Android App 为 0.8.3 |
 | `0.8.15` | 火狐 Android 端键盘遮挡输入框已修复（#457）；预览文件名支持复制路径 / 分享文件（#459）；DSH 0.2.3-alpha.2 兼容恢复（#462）。Android App 为 0.8.3 |
@@ -580,7 +608,7 @@ npm ci
 npm run verify
 ```
 
-文档快速检查使用 `npm run check:docs`。按改动选择的浏览器测试、隔离 DSH 打包验收、截图和正式发布流程见 [CONTRIBUTING.md](https://github.com/saya-ch/dsh-mobile/blob/main/CONTRIBUTING.md)；Android 构建见 [App 手册](apps/mobile/README.zh-CN.md#构建)。不要用真实用户配置或正式 App 数据替代测试资料。
+文档快速检查使用 `npm run check:docs`。按改动选择的浏览器测试、隔离 DSH 打包验收、截图和正式发布流程见 [CONTRIBUTING.md](https://github.com/saya-ch/dsh-mobile/blob/main/CONTRIBUTING.md)；合并权限、版本号、范围判定与三条发布轨道的决策归属见 [GOVERNANCE.md](https://github.com/saya-ch/dsh-mobile/blob/main/GOVERNANCE.md)；Android 构建见 [App 手册](apps/mobile/README.zh-CN.md#构建)。不要用真实用户配置或正式 App 数据替代测试资料。
 
 ## 赞助与支持
 
@@ -589,7 +617,9 @@ npm run verify
 - **定制开发与私有部署**：承接个人/团队私有化部署、AI Agent 工作流及多端集成定制，欢迎来信沟通。
 - **推荐模型 API**：需要稳定调用 DeepSeek 等大模型 API，可以通过 [硅基流动（注册送体验额度）](https://cloud.siliconflow.cn/i/qHBsrZ2i) 开通使用。
 
-[![Powered by DartNode](https://img.shields.io/badge/Powered%20by-DartNode-0ea5e9?style=flat-square)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
+[![Powered by DartNode](https://img.shields.io/badge/Powered%20by-DartNode-0ea5e9?style=flat-square)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source") [![Tencent EdgeOne](https://img.shields.io/badge/CDN%20%26%20Security-Tencent%20EdgeOne-0052D9?style=flat-square)](https://edgeone.ai/?from=github "Tencent EdgeOne - Free CDN & Security for Open Source")
+
+本项目 CDN 加速及安全防护由 [Tencent EdgeOne](https://edgeone.ai/?from=github) 赞助。
 <!-- Verified on DartNode: DNOS-8204844A -->
 
 Apache-2.0，详见 [LICENSE](LICENSE)。

@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v0.2.3-blue" alt="version">
+  <img src="https://img.shields.io/badge/version-v0.2.6-blue" alt="version">
   <img src="https://img.shields.io/badge/Python-3.10%2B-brightgreen" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </p>
@@ -249,7 +249,7 @@ python scripts/ci.py --list    # list checks
 
 `docs/unit-tests.md` is a generated readable test catalog; the source of truth is `tests/`.
 
-Unit tests (2727 cases):
+Unit tests (2835 cases):
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -t tests

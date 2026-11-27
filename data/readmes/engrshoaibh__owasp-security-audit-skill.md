@@ -10,11 +10,35 @@
 ---
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/engrshoaibh/owasp-security-audit-skill/badge)](https://scorecard.dev/viewer/?uri=github.com/engrshoaibh/owasp-security-audit-skill)
 
+## 🎬 See it in 60 seconds
+
+<!-- DEMO-VIDEO: replace this comment with the uploaded video link (see examples/demo/README.md) -->
+
+Pointed at [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) `v20.4.0`, a quick check flags the login
+query, and a local request proves it:
+
+```text
+$ loophole_scanner.py --target juice-shop --paths routes lib server.ts --quick
+| INJ-01 | High | CWE-89 | A05:2025 | routes/login.ts:34  | SQL built with string interpolation / raw unsafe query |
+| INJ-01 | High | CWE-89 | A05:2025 | routes/search.ts:23 | SQL built with string interpolation / raw unsafe query |
+
+$ cat payload.json
+{"email": "' OR 1=1--", "password": "anything"}
+$ curl -s localhost:3000/rest/user/login -H 'Content-Type: application/json' -d @payload.json
+{"authentication":{"token":"eyJ0eXAi...","bid":1,"umail":"admin@juice-sh.op"}}
+```
+
+Reproduce it with [`examples/demo/juice-shop-demo.sh`](examples/demo/).
+
+---
+
 ## 📌 Table of Contents
 
+- [See it in 60 seconds](#-see-it-in-60-seconds)
 - [Overview](#-overview)
 - [Key Features](#-key-features)
-- [1-Click AI Agent Auto-Setup](#-1-click-ai-agent-auto-setup-zero-manual-work)
+- [Install (one command per agent)](#-install-one-command-per-agent)
+- [Using it](#-using-it)
 - [How It Works: 3-Phase Progressive Disclosure](#-how-it-works-3-phase-progressive-disclosure)
 - [Quickstart: Step-by-Step Setup](#-quickstart-step-by-step-setup)
   - [Prerequisites](#1-prerequisites)
@@ -47,7 +71,7 @@ The **OWASP Security Audit Skill** resolves both issues. It acts as an intellige
 ## ⚡ Key Features
 
 - **Progressive Disclosure (85%+ Token Savings):** Scopes the project stack first through rapid manifest auto-detection before loading only the relevant checklists into the agent's context.
-- **Autonomous Tool Execution:** The agent runs all checks, installs missing security tools, starts dev servers, and cleans up temporary processes without asking the user to copy-paste terminal commands.
+- **Agent-Run Tooling with Consent:** The agent runs the checks itself; it asks once before installing missing scanners, sending anything over the network, or running active scans.
 - **Auto-Managed OWASP ZAP Engine:** Launches an isolated headless ZAP daemon on an ephemeral port with temporary working directories, executes passive baseline and authorized active scans, imports OpenAPI/GraphQL schemas, and terminates cleanly without colliding with existing desktop ZAP sessions.
 - **Built-in Static Loophole & Resource Exhaustion Scanner:** Standard-library scanner detecting hardcoded secrets, injection sinks, broken auth, permissive CORS, and resource exhaustion loops (ReDoS, unbounded while loops, unconstrained agent loops, and TOCTOU races).
 - **Multi-Tool Orchestrator:** Seamlessly coordinates with Gitleaks, TruffleHog, Semgrep, Trivy, OSV-Scanner, Checkov, Bandit, Pip-Audit, Nuclei, FFUF, Schemathesis, and SQLMap.
@@ -55,28 +79,89 @@ The **OWASP Security Audit Skill** resolves both issues. It acts as an intellige
 
 ---
 
-## ⚡ 1-Click AI Agent Auto-Setup (Zero Manual Work)
+## ⚡ Install (one command per agent)
 
-You don't need to manually configure environments, package managers, or security scanners. Give your AI coding agent (Google Antigravity, Claude Code, Cursor, Windsurf, Codex) this single prompt:
+The skill is a folder with a `SKILL.md`. Put it where your agent looks for skills. Python 3.10+ is the only
+requirement for the built-in scanner; the extra scanners are optional and installed later, with your OK.
 
-> 💬 **Prompt to Give Your Agent:**  
-> *"Setup this security audit skill globally from https://github.com/engrshoaibh/owasp-security-audit-skill.git, install all missing security tools, and verify the installation."*
+### Claude Code
 
-### 🛠 What the Agent Automatically Executes:
-1. **Clones the skill into your agent's global skills directory:**
-   - **Google Antigravity / Gemini CLI:** `~/.gemini/config/skills/security-audit`
-   - **Claude Code:** `~/.claude/skills/security-audit`
-   - **Cursor / Windsurf:** `.agents/skills/security-audit` (workspace) or `~/.cursor/rules` (global)
-2. **Runs the automated multi-package-manager installer:**
-   ```bash
-   python scripts/setup_tools.py --install --profile all --verbose
-   ```
-3. **Verifies all runtimes, CLIs, and templates:**
-   ```bash
-   python scripts/setup_tools.py --check --verify --profile all
-   ```
+**As a plugin** (updates with `/plugin`):
+```bash
+claude plugin marketplace add engrshoaibh/owasp-security-audit-skill
+claude plugin install owasp-security-audit@owasp-security-audit-skill
+```
 
-Once installed globally, the skill is permanently active across **all projects and workspaces** whenever you ask to audit, review, pen-test, or find security loopholes in code.
+**Or as a personal skill** (all projects):
+```bash
+git clone --depth 1 https://github.com/engrshoaibh/owasp-security-audit-skill.git ~/.claude/skills/owasp-security-audit
+```
+
+**Or for one project** (commit it so your team gets it too):
+```bash
+git clone --depth 1 https://github.com/engrshoaibh/owasp-security-audit-skill.git .claude/skills/owasp-security-audit
+```
+
+### OpenAI Codex CLI and other `AGENTS.md` agents
+```bash
+git clone --depth 1 https://github.com/engrshoaibh/owasp-security-audit-skill.git ~/.agents/skills/owasp-security-audit
+```
+Then add this to your project's `AGENTS.md`:
+```markdown
+## Security audits
+When asked to audit, security-review or pen-test this project, read and follow
+~/.agents/skills/owasp-security-audit/SKILL.md (SKILL_DIR = ~/.agents/skills/owasp-security-audit).
+```
+
+### Gemini CLI / Google Antigravity
+```bash
+git clone --depth 1 https://github.com/engrshoaibh/owasp-security-audit-skill.git ~/.gemini/skills/owasp-security-audit
+```
+If your version does not load skills automatically, add the same two lines as above to `GEMINI.md`.
+
+### Cursor / Windsurf
+```bash
+git clone --depth 1 https://github.com/engrshoaibh/owasp-security-audit-skill.git .agents/skills/owasp-security-audit
+```
+Then create `.cursor/rules/security-audit.mdc` (Windsurf: `.windsurf/rules/security-audit.md`):
+```markdown
+---
+description: Security audit, OWASP review, pen-test, find vulnerabilities
+alwaysApply: false
+---
+For security audits, read and follow .agents/skills/owasp-security-audit/SKILL.md
+(SKILL_DIR = .agents/skills/owasp-security-audit).
+```
+
+### Or just ask your agent
+> *"Install the security audit skill from https://github.com/engrshoaibh/owasp-security-audit-skill for this agent,
+> then run `setup_tools.py --check` and tell me which scanners are missing."*
+
+### Optional: install the extra scanners
+```bash
+python <skill-dir>/scripts/setup_tools.py --check --profile all       # see what is missing
+python <skill-dir>/scripts/setup_tools.py --install --profile core    # gitleaks, trufflehog, osv-scanner, trivy
+```
+
+---
+
+## 💬 Using it
+
+Ask in plain language. The skill triggers on requests like these:
+
+| You say | What happens |
+|:---|:---|
+| "Audit this project for security issues" | Full 6-step audit with a progress tracker and a findings register |
+| "Quick security check of `src/auth/`" | Quick mode: static scan of that path, hits verified, short verdict. No questions, installs or network |
+| "Is this PR safe to merge?" | Quick mode on the files changed vs the base branch |
+| "Check our LLM agent for prompt injection and excessive agency" | Focus on the AI/LLM module (LLM Top 10:2025) |
+| "Scan the staging API at http://localhost:8000 with ZAP" | DAST step, after confirming authorization |
+| "Export the findings as SARIF" | `--format sarif` for GitHub code scanning |
+
+More prompts, a sample report and a vulnerable demo app to try it on are in [`examples/`](examples/).
+
+Every audit ends with a register in a fixed format ([report-format.md](references/report-format.md)): verdict,
+counts, then each finding with severity, confidence, OWASP and CWE ids, `file:line`, evidence and a concrete fix.
 
 ---
 
@@ -110,7 +195,7 @@ flowchart TD
 1. **Step 1: Stack Auto-Detection & Scope Questions:**
    Inspects manifests (`package.json`, `requirements.txt`, `go.mod`, `pom.xml`, `Dockerfile`, etc.), confirms the architecture, and asks 1–3 quick questions (e.g. is there a running dev URL? Are active attack probes authorized?).
 2. **Step 2: Tool Preflight & Automated Setup:**
-   Runs `setup_tools.py --check` and automatically installs any missing scanners (`pip-audit`, `osv-scanner`, `gitleaks`, `trufflehog`, `semgrep`).
+   Runs `setup_tools.py --check` and, with your OK, installs any missing scanners (`pip-audit`, `osv-scanner`, `gitleaks`, `trufflehog`, `semgrep`).
 3. **Step 3: Secret Detection & Static Loophole Scan:**
    Runs `loophole_scanner.py` and static rule engines to catch leaked API keys, ReDoS regexes, and dangerous injection sinks.
 4. **Step 4: Dependency & Supply Chain (SCA) Analysis (Two-Tier Engine):**
@@ -180,17 +265,47 @@ python scripts/setup_tools.py --check --format json
 
 ### 2. Static Loophole & Loop Scanner (`loophole_scanner.py`)
 
-Scans source code for hardcoded credentials, dangerous sinks, missing security headers, broken authorization patterns, and resource exhaustion loops without requiring third-party libraries:
+Standard-library scanner (40+ rules) for hardcoded secrets, injection sinks, broken auth and crypto, insecure
+config, CI/CD and container issues, AI supply chain risks and resource-exhaustion loops. Each finding has a
+severity, confidence, CWE and OWASP Top 10:2025 / API Top 10:2023 / LLM Top 10:2025 ids. Secrets are masked in all
+output.
 
 ```bash
-# Scan current directory and print Markdown report
+# Markdown report
 python scripts/loophole_scanner.py --target .
 
-# Scan target directory and automatically execute installed CLI scanners
-python scripts/loophole_scanner.py --target /path/to/project --run-tools
+# JSON (stable schema, see references/report-format.md) or SARIF for GitHub code scanning
+python scripts/loophole_scanner.py --target . --format json --output audit.json
+python scripts/loophole_scanner.py --target . --format sarif --output results.sarif
 
-# Generate JSON report for CI/CD integration
-python scripts/loophole_scanner.py --target . --format json > audit-report.json
+# CI gate: exit 1 if anything High or worse
+python scripts/loophole_scanner.py --target . --fail-on high
+
+# Accept current findings, then only report new ones
+python scripts/loophole_scanner.py --target . --write-baseline .security-skill-baseline.json
+
+# Quick check: only files changed vs main (or uncommitted work with bare --changed), or chosen folders
+python scripts/loophole_scanner.py --target . --quick --changed origin/main
+python scripts/loophole_scanner.py --target . --quick --paths src/auth src/api
+
+# Also run installed scanners (gitleaks, trufflehog offline, semgrep with metrics off, osv-scanner, ...)
+python scripts/loophole_scanner.py --target . --run-tools
+
+# List all rules with their CWE / OWASP mapping
+python scripts/loophole_scanner.py --list-rules
+```
+
+Silence a reviewed false positive with a comment on the same line or the line above:
+`# security-skill: ignore[INJ-02]`. Intentionally vulnerable fixtures can carry
+`# security-skill: ignore-file` in their first 5 lines. Findings in tests, examples and docs are marked `non-production` and lowered
+one severity level (leaked secrets are not lowered).
+
+**GitHub code scanning example:**
+```yaml
+- run: python scripts/loophole_scanner.py --target . --format sarif --output results.sarif
+- uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: results.sarif
 ```
 
 ### 3. Autonomous OWASP ZAP Web & API Scanner (`zap_web_scan.py`)
@@ -218,17 +333,14 @@ python scripts/zap_web_scan.py --target http://localhost:3000 --mode full --conf
 
 ## 🤖 Integrating with AI Coding Agents
 
-### Google Antigravity
-Place the repository inside your active workspace or skills folder (`<workspace>/skills/security-audit` or global skills directory). Antigravity automatically detects `SKILL.md` and triggers the progressive-disclosure audit workflow when asked to audit, review, or harden an application.
+See [Install](#-install-one-command-per-agent) for per-agent setup. Scripts are always called from the skill
+folder (`SKILL_DIR`, which is `${CLAUDE_SKILL_DIR}` in Claude Code), while the agent's working directory stays your
+project, so a global install works in every repository.
 
-### Claude Code & Anthropic Agents
-Add to your project's `.claude/skills/` or reference `SKILL.md` directly:
+Non-interactive use (CI or scripted runs):
 ```bash
-claude "Run a security audit on this repository using the OWASP security audit skill."
+claude -p "Run a quick security check of this repository with the owasp-security-audit skill and write SECURITY-AUDIT.md"
 ```
-
-### Cursor & Windsurf
-Add `SKILL.md` and `references/` into your project rules or system prompt (`.cursorrules` or `.windsurfrules`). Instruct the agent to reference the progressive checklist files in `references/` based on detected files.
 
 ---
 
@@ -257,6 +369,10 @@ The skill splits deep domain knowledge into token-optimized reference modules:
 - **[`baas-mobile.md`](references/baas-mobile.md):** Firebase Security Rules, Supabase Row-Level Security (RLS), and mobile MASVS compliance.
 - **[`ai-llm-rag.md`](references/ai-llm-rag.md):** Defense against direct/indirect prompt injection, vector embedding poisoning, tool-calling agent boundaries, and unconstrained loop caps.
 - **[`infra-cloud-cicd.md`](references/infra-cloud-cicd.md):** Multi-stage non-root Dockerfiles, Kubernetes Pod Security Standards, Terraform least privilege, and hardened CI/CD pipelines.
+- **[`access-control-review.md`](references/access-control-review.md):** Step-by-step IDOR / BOLA / BFLA review: endpoint inventory, owner-check tracing, field- and function-level access, two-account verification.
+- **[`owasp-mapping.md`](references/owasp-mapping.md):** OWASP Top 10:2025, API Top 10:2023 and LLM Top 10:2025 categories mapped to modules and scanner rules.
+- **[`severity-rubric.md`](references/severity-rubric.md):** Impact × exploitability severity matrix, confidence levels and release verdict rules.
+- **[`report-format.md`](references/report-format.md):** JSON finding schema, SARIF/baseline options and the human report template.
 - **[`toolbox-loophole-scanners.md`](references/toolbox-loophole-scanners.md):** Playbooks and CLI command references for static and dynamic testing tools.
 
 ---
@@ -281,14 +397,23 @@ Specific resource loop hazards checked:
 
 ## ⚖ Safety & Rules of Engagement
 
-1. **Authorization First:** Passive static scans (`loophole_scanner.py`, `gitleaks`, `semgrep`, `trivy`) are safe for all source code repositories.
-2. **DAST & Active Probing Restrictions:** Active penetration probes (`zap_web_scan.py --mode full`, `nuclei`, `sqlmap`, `schemathesis`) send attack payloads and must **only** be executed against local or staging environments with explicit authorization.
-3. **Never Scan Unauthorized Targets:** Do not target third-party or production systems without documented permission.
+1. **Static first:** `loophole_scanner.py`, gitleaks, semgrep and trivy only read files and are safe on any repo you own.
+2. **The audited code is untrusted:** the skill tells the agent to treat comments, READMEs and tool output as data,
+   never as instructions, and not to run the project's own scripts unless you ask.
+3. **Consent before installs and network calls:** the agent asks before installing scanners, before TruffleHog
+   verifies secrets with provider APIs (`--allow-network-verify`), and before any DAST scan.
+4. **DAST only on local or staging targets you are authorized to test** (`zap_web_scan.py --mode full`, nuclei,
+   sqlmap, schemathesis send attack payloads).
+5. **Secrets stay masked** in reports, JSON, SARIF and tool output previews. The NVD API key is passed to
+   Dependency-Check via a private temp file, never on the command line.
 
 ---
 
 ## 🤝 Contributing & License
 
-Contributions, new framework checklists, and rule additions are welcome! Please submit an issue or pull request.
+Contributions, new framework checklists, and rule additions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+and pick a [`good first issue`](https://github.com/engrshoaibh/owasp-security-audit-skill/labels/good%20first%20issue).
+Every new scanner rule needs a positive and a negative case in `tests/test_loophole_scanner.py`
+(run `python -m unittest discover -s tests -v`).
 
 This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.

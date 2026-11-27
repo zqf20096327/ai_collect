@@ -14,6 +14,10 @@
 **`v0.3.0`** — early, evolving, open. Licensed **MIT**: fork it, run it
 on-prem, use it commercially, no strings.
 
+<a href="https://launchnest.io/p/wardeniq" target="_blank">
+  <img src="https://launchnest.io/badge/wardeniq.svg?variant=listed" alt="wardenIQ on LaunchNest" width="220" height="56" />
+</a>
+
 ![Upload a PRD, wardenIQ generates a grounded test suite](docs/assets/demo.gif)
 
 <sub>Create a project, attach a PRD, and wardenIQ generates a typed test suite from it — functional, E2E, API and non-functional.</sub>
@@ -43,6 +47,25 @@ is also available if you just want to try it out first — see
 [Quick start](#quick-start-about-5-minutes) below.
 
 ---
+
+## How it fits next to your PR reviewer
+
+wardenIQ does not replace a PR reviewer such as CodeRabbit. They answer different questions,
+and you can run both.
+
+| | PR reviewer | wardenIQ |
+|---|---|---|
+| Question | What is wrong in this diff? | Does the code do what the requirements asked? |
+| Works from | The pull request diff | Your requirement docs and your real code |
+| Output | Line-level comments | Test cases marked covered / partial / uncovered, with the files read as evidence |
+| Runs | Hosted service | Self-hosted, MIT, any model (Ollama, OpenAI, Anthropic, Gemini, Mistral, Groq, Bedrock) |
+
+**One pilot, honestly reported.** On a single Authentication feature (12 frozen requirements)
+wardenIQ generated 41 test cases in about 90 seconds, judged 34 of 41 as implemented, and flagged
+a seeded security regression and an unseeded race-condition risk. CodeRabbit independently found
+the same two issues from the diff. It was one feature, so treat it as a data point, not a
+benchmark; it also exposed weak spots (such as poorly calibrated test-matching confidence) that we
+are working on. Measuring generation quality properly is on the [roadmap](ROADMAP.md).
 
 ---
 

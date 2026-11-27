@@ -23,6 +23,7 @@ Ragator indexe les transcriptions et les descriptions visuelles des vidéos d'un
 - 🎯 **Réponses citées** : chaque phrase renvoie au moment exact de la vidéo, vérifié par le code.
 - 🔎 **Recherche hybride** : mots exacts (BM25 : marques, noms propres, fautes de frappe) et sens (vecteurs).
 - 🧭 **Plusieurs types de questions** : précises, générales, décomptes, « la première fois que… ».
+- **Inventaire des modèles essayés.** « Quelles imprimantes 3D ont-ils testées ? » retrouve les références et le minutage de leurs essais. La première lecture peut prendre plusieurs minutes. Sa durée et son coût avec OpenRouter dépendent du nombre d’épisodes relus. D’autres modèles peuvent avoir échappé à la recherche.
 - 💬 **Relances sur une scène**. Demandez « à quel moment exactement ? ». Si la parole et l’image désignent le même passage, le chat donne directement un lien au bon minutage. Si deux passages sont distincts, choisissez « la première » ou indiquez son minutage. Quand un détail manque, répondez « oui » à la proposition de chercher dans les autres épisodes du projet.
 - 📚 **Plusieurs chaînes** dans une même base, avec un filtre par chaîne.
 - 🖥️ **Interface web**, ligne de commande et **serveur MCP** pour Claude, Cursor et les autres clients IA.
@@ -151,6 +152,7 @@ Chaque famille de questions suit son propre chemin :
 |---|---|---|
 | **Précise** | « Quel firmware pour transformer un ESP32 en répéteur Wi-Fi ? » | quelques affirmations citées |
 | **Générale** | « Quand utilisent-ils une imprimante 3D ? » | une ligne par vidéo pertinente, les plus sûres d'abord |
+| **Inventaire** | « Quelles imprimantes 3D avons-nous testées ? » | modèles distincts avec leurs essais horodatés |
 | **Décompte** | « Toutes les vidéos où on parle de Raspberry Pi » | liste exacte calculée par la base, sans IA, ~2 s |
 | **Première / dernière mention** | « La première mention du PLA » | la plus ancienne (ou récente) vidéo avec son extrait, puis toutes par date |
 | **Première / dernière fois** | « La première fois qu'ils utilisent une scie circulaire » | la première ou dernière occurrence confirmée parmi les vidéos examinées, avec les pistes encore incertaines |
@@ -235,11 +237,25 @@ Le format est décrit par [schemas/corpus.schema.json](schemas/corpus.schema.jso
 
 ### Interface web
 
+**Accès invité par collection.** Une passerelle Caddy + authentik peut donner accès à la recherche depuis un second domaine, comme `https://ragator.example.org`. Dans le fichier `.env` de Ragator, renseignez `RAGATOR_PUBLIC_URL` et `RAGATOR_GATEWAY_SECRET` (secret dédié généré avec `openssl rand -hex 32`). Publiez le port sur l’adresse Tailscale avec `RAGATOR_BIND_ADDRESS` et définissez un mot de passe d’administration `RAGATOR_PASSWORD`. Pour une installation depuis ce dépôt, appliquez ces réglages avec `docker compose up -d --build ragator`.
+
+Le site Caddy conserve le Host public, efface les en-têtes d’identité reçus du navigateur, délègue la connexion à authentik et envoie à Ragator `Remote-User`, `Remote-Name`, `Remote-Groups` et `X-Ragator-Gateway` (le secret partagé). Les seules routes à relayer sont `GET /`, `GET /invite`, `GET /api/guest/session` et `POST /api/guest/ask`. Le chemin `/outpost.goauthentik.io/*` va à authentik.
+
+**Réglages → Accès invité** liste le groupe `ragator-collection-<clé>` de chaque collection. Chaque question invitée porte sur une seule collection autorisée. Pour couper l’accès invité, appliquez `RAGATOR_GATEWAY_TRUST=0` dans le déploiement Ragator. Si vous ouvrez l’administration par un nom DNS privé, ajoutez-le à `RAGATOR_HOSTS`.
+
 | Onglet | Rôle |
 |---|---|
 | **Rechercher** | questions, réponses détaillées, courtes ou faites d'extraits ; filtre par chaîne ; vidéos proches de chaque vidéo citée |
 | **Administration** | dépôt de vidéos, mise à jour de l'index, état du corpus et de chaque vidéo, bilan par chaîne |
 | **Réglages** | mode local ou OpenRouter, état des serveurs locaux, jeton Hugging Face, clé et modèle OpenRouter, mot de passe |
+
+Dans **Rechercher**, choisissez votre chaîne et le mode **Courte** ou **Détaillée**. Le chat garde les références des cinq derniers échanges. Par exemple, après « Quelles imprimantes 3D avons-nous testées dans nos vidéos ? », cette relance sur la chaîne des Frères Poulain a donné la réponse suivante.
+
+> **Vous** — Et chez Bambu Lab ?
+>
+> **Ragator** — Oui, vous avez testé les modèles Bambu Lab H2S et Bambu Lab X1-Carbon. [H2S à 02:19](https://www.youtube.com/watch?v=umlDmDKBBLM&t=139s) · [X1-Carbon à 00:48](https://www.youtube.com/watch?v=NbUIAMTs190&t=48s)
+
+« En une phrase ? » et « Sous forme de liste ? » reprennent les modèles et les citations de la réponse. Le mode **Courte** donne aussi une réponse directe aux demandes de confirmation. En ligne de commande, la commande `chat` permet le même dialogue.
 
 ### Ligne de commande
 
@@ -331,10 +347,12 @@ flowchart LR
   A --> S[Recherche hybride<br/>BM25 + vecteurs<br/>fusion RRF]
   DB --> S
   S -->|précise| P[Réponse citée]
+  S -->|inventaire| E[Modèles essayés<br/>et scènes des essais]
   S -->|générale| G[Le juge trie<br/>chaque vidéo]
   S -->|première / dernière fois| C[Parcours<br/>chronologique]
   S -->|décompte| L[Comptage<br/>exact SQL]
   P --> R[Citations vérifiées<br/>par le code]
+  E --> R
   G --> R
   C --> R
 ```
@@ -368,7 +386,7 @@ npm run check            # types + tests (les tests d'intégration demandent la 
 
 Pour évaluer les réponses avec de vrais modèles, ingérez les deux vidéos des Frères Poulain de `tests/fixtures` dans une base dédiée, puis lancez `npm run embed`. Avec la même `DATABASE_URL` et le même mode, `node --import tsx tests/evaluation/poulain.mjs` produit une ligne JSON par question avec la réponse attendue, chaque affirmation, ses sources, la durée et le coût LLM et juge communiqué par le fournisseur. Les deux modes peuvent ainsi être comparés sur le même index.
 
-Le banc du premier tour mesure séparément la vidéo citée, le minutage et le fait demandé. Sur la collection locale de 404 vidéos des Frères Poulain, 16 réponses sur 20 remplissent automatiquement tous les critères, contre 11 avant les correctifs. Un second banc vérifie les relances de minutage, avec les citations issues d’une vraie conversation ou fournies à l’avance. [Protocole et résultats des deux bancs](docs/evaluation.md)
+Le banc du premier tour mesure séparément la vidéo citée, le minutage et le fait demandé. Sur la collection locale de 404 vidéos des Frères Poulain, 16 réponses sur 20 remplissent automatiquement tous les critères, contre 11 avant les correctifs. Les essais de conversation vérifient aussi les relances de minutage, la liste des modèles testés et le maintien des citations quand on demande une autre présentation. [Protocoles et résultats](docs/evaluation.md)
 
 ```text
 src/core/       pipeline : ingestion, enrichissement, vecteurs, recherche, aiguillage, réponse

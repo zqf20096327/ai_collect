@@ -10,7 +10,7 @@
 ![Cursor · configs](https://img.shields.io/badge/Cursor-configs%20only-lightgrey)
 ![Kilocode · configs](https://img.shields.io/badge/Kilocode-configs%20only-lightgrey)
 
-[![Lean profile · default](https://img.shields.io/badge/Lean%20profile-default-blue)](docs/agentic-v2-lean/README.md) [![Quality gate · checks + acceptance](https://img.shields.io/badge/Quality%20gate-checks%20%2B%20acceptance-blue)](docs/agentic-v2-lean/README.md#quality-gate) [![Company rules](https://img.shields.io/badge/Company%20rules-path%20or%20git-blue)](docs/company-rules.md) [![JEV · workflow + model routing](https://img.shields.io/badge/JEV-workflow%20%2B%20model%20routing-blue)](docs/jev-integration/README.md) [![Plain answers · ASD-STE100-based](https://img.shields.io/badge/Plain%20answers-ASD--STE100%20based-blue)](AGENTS.md#response-language) [![MCP · Context7, MemPalace, Playwright](https://img.shields.io/badge/MCP-Context7%20%7C%20MemPalace%20%7C%20Playwright-blue)](docs/mcp/README.md) [![Telegram · notifications](https://img.shields.io/badge/Telegram-notifications-blue)](docs/notifications/README.md) [![Smart upgrade](https://img.shields.io/badge/Smart%20upgrade-keeps%20your%20edits-blue)](docs/agentic-upgrade/README.md)
+[![Lean profile · default](https://img.shields.io/badge/Lean%20profile-default-blue)](docs/agentic-v2-lean/README.md) [![Quality gate · checks + acceptance](https://img.shields.io/badge/Quality%20gate-checks%20%2B%20acceptance-blue)](docs/agentic-v2-lean/README.md#quality-gate) [![Company rules](https://img.shields.io/badge/Company%20rules-path%20or%20git-blue)](docs/company-rules.md) [![JEV · workflow + model routing](https://img.shields.io/badge/JEV-workflow%20%2B%20model%20routing-blue)](docs/jev-integration/README.md) [![Plain answers · ASD-STE100-based](https://img.shields.io/badge/Plain%20answers-ASD--STE100%20based-blue)](AGENTS.md#response-language) [![MCP · Context7, Playwright](https://img.shields.io/badge/MCP-Context7%20%7C%20Playwright-blue)](docs/mcp/README.md) [![Telegram · notifications](https://img.shields.io/badge/Telegram-notifications-blue)](docs/notifications/README.md) [![Smart upgrade](https://img.shields.io/badge/Smart%20upgrade-keeps%20your%20edits-blue)](docs/agentic-upgrade/README.md)
 
 [Website](https://sawrus.github.io/agent-guides/) ·
 [Releases](https://github.com/sawrus/agent-guides/releases) ·
@@ -39,7 +39,7 @@ not.
 - 🔁 **Install once, keep in sync.** `agentic install` writes the native files of each agent. `agentic upgrade`
   keeps them current and keeps your own edits.
 
-14 skills and 10 workflows help the agent meet the rules. Numbers come from the tree (`areas/*/*/`) and from
+14 skills and 11 workflows help the agent meet the rules. Numbers come from the tree (`areas/*/*/`) and from
 `python3 scripts/context_budget.py --all-selections`.
 
 ---
@@ -126,6 +126,16 @@ Keep internal standards outside this public pack. `--company-rules-path <dir>` o
 `--company-rules-exclude` drops the pack rule, and a duplicate report lists the overlaps. See
 [company rules](docs/company-rules.md).
 
+## Skill packs
+
+Use ready-made skills from other repositories, for example
+[mattpocock/skills](https://github.com/mattpocock/skills). `agentic skills add <git-url|dir>` (or
+`agentic install --skill-pack <spec>`) installs every skill of the pack, unchanged, into `.claude/skills`,
+`.agents/skills`, `.opencode/skills`, and the other host directories. The manifest locks the commit;
+`agentic skills update` moves it, `agentic skills list` shows the packs, and `agentic skills remove` removes the
+pack files and nothing else. The preset `pocock` (`--skill-pack pocock --issue-tracker local|github|gitlab`)
+installs 21 of these skills and writes the project setup that they expect. See [skill packs](docs/skill-packs.md).
+
 ## Standards for the pack itself
 
 - [Artifact standard](docs/artifact-standard.md): the acceptance contract for rules, skills, workflows and company
@@ -175,7 +185,7 @@ All numbers and earlier rounds: [round 6 results](docs/agentic-v2-lean/results.m
 - [Reference: layout, platform matrix, install options](docs/agentic-reference.md)
 - [Docs site: rules, skills and workflows per specialization](https://sawrus.github.io/agent-guides/)
 - [Artifact standard](docs/artifact-standard.md) · [Review regulation](docs/regulation.md) ·
-  [Company rules](docs/company-rules.md)
+  [Company rules](docs/company-rules.md) · [Skill packs](docs/skill-packs.md)
 - [Claude Code integration](docs/claude-code/README.md) · [Telegram notifications](docs/notifications/README.md)
 - [Review pipeline](docs/review-pipeline.md) · [JEV hooks and real CLI testing](docs/jev-integration/README.md)
 - [Smart upgrade](docs/agentic-upgrade/README.md)

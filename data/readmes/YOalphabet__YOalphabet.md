@@ -501,9 +501,6 @@ It does not change the way the script is read, written, or understood as a writi
   <img src="images/402.png" width="90%"/>
 </p>
 
-<p align="center">
-  <img src="images/546.jpg" width="100%"/>
-</p>
 
 # PART 2: YOconlang CORE SPECIFICATION 1.1.0
 
@@ -524,7 +521,6 @@ YOconlang is designed around the MECE principle (Mutually Exclusive, Collectivel
 The language utilizes strict morphological word templates:
 
 * Verbs, Adjectives, Adverbs: Rigid three-letter roots following the C₁VC₂ structure.
-* Nouns: Rigid four-letter roots following the C₁V₁C₂V₂ structure.
 * Pronouns and Structural Particles: Two-letter combinations following VC or CV templates.
 * System markers: two-vowel forms following the VV pattern.
 
@@ -743,38 +739,26 @@ o   a   e   t   u   n   l   v   i   b   s   h   p   m   k   j
 ---
 
 <p align="center">
-  <img src="images/528.jpg" width="90%"/>
+  <img src="images/546.jpg" width="100%"/>
 </p>
 
+### Eight sentences decoded
 
-   YOconlang Translation Specification: Universal Declaration of Human Rights (Article 1) 
-    This section provides a complete, granular, word-by-word morphemic breakdown and phonetical transcription 
-    of the First Article of the Universal Declaration of Human Rights translated into YOconlang. 
-    The translation strictly adheres to the unchangeable root axiom, SVO linear syntax,
-    and fixed first-syllable stress phonotactics.
+Position is the row and column of the first glyph, counted from the top-left cell of the 32×32 grid.
 
+| # | Position | YOconlang | Word by word | Meaning |
+| :-: | :-: | :--- | :--- | :--- |
+| 1 | row 1, col 28 | `im ta nan it` | `im` I · `ta` present · `nan` love · `it` you | I love you. |
+| 2 | row 9, col 19 | `in to vep an` | `in` he/she · `to` past · `vep` see · `an` this | He/she saw this. |
+| 3 | row 8, col 1 | `is te lel` | `is` we (without you) · `te` future · `lel` come | We will come. |
+| 4 | row 8, col 12 | `it ni lel` | `it` you · `ni` command · `lel` come | You, come! |
+| 5 | row 22, col 12 | `im ne kem an` | `im` I · `ne` can · `kem` read · `an` this | I can read this. |
+| 6 | row 25, col 20 | `uu us ta vep an` | `uu us` nobody · `ta` present · `vep` see · `an` this | Nobody sees this. |
+| 7 | row 10, col 26 | `im ta hoh ko im ta sas` | `im` I · `ta` present · `hoh` think · `ko` therefore · `im` I · `ta` present · `sas` live | I think, therefore I live. |
+| 8 | row 32, col 19 | `in tu sos` | `in` he/she · `tu` completed · `sos` sleep | He/she has slept. |
 
-##  Sentence 1: On Birth, Freedom, and Equality of All Human Beings
+---
 
-* Original (American English): "All human beings are born free and equal in dignity and rights."
-* YOconlang Orthography: OS TO SIS MA LIS KE MA JOJ HA NONO KE HA HOHO.
-* IPA Phonetic Transcription: [ˈos ˈto ˈsis ˈma ˈlis ˈke ˈma ˈjoj ˈha ˈno.no ˈke ˈha ˈho.ho]
-
-##  Word-by-Word Breakdown:
-
-* OS — [os] : Universality pronoun from the approved Block O. Semantics: "All people / All human beings". Functions as the syntactic Subject (S).
-* TO — [to] : Grammatical tense particle from Block T. Marks the past perfective tense (Preterite).
-* SIS — [sis] : Immutable verbal root from Block 5 (Biosphere & Life). Core semantics: "To release new living organisms outward / To give birth / To reproduce" (Mode I — Outbound/Output Flow).
-* MA — [ma] : Functional grammatical marker from Block 8 (Semiotics) that transforms the subsequent root into the Adjective class.
-* LIS — [lis] : Immutable three-letter root from Block 1 (Space). Acts as an adjective due to the preceding MA marker. Core semantics: "To release a living organism outside / To liberate the physical body / To grant freedom" (Mode I — Outbound Flow). MA LIS translates directly to "free".
-* KE — [ke] : Logical conjunction operator "AND" from Block 9 (Data & Memory).
-* MA — [ma] : Repeated functional adjective marker preceding the second quality.
-* JOJ — [joj] : Immutable three-letter root from Block 11 (Sociosphere) acting as an adjective. Core semantics: "To preserve an internal network of connections / To be identical to oneself / Equal in status" (Mode O — Statics/Parity). MA JOJ translates directly to "equal".
-* HA — [ha] : Procedural operator particle meaning "Regarding / Concerning / In relation to" from Block 10 (Logic). Defines the semantic scope or plane where the qualities manifest.
-* NONO — [ˈno.no] : Four-letter Noun structured as C₁V₁C₂V₂. Derived from the mental root NON (self-reflection, tranquility of mind, consciousness) and the final functional vowel O (Substance/Rest). Semantics: "Personal dignity / The inner mental 'Self' of a subject".
-* KE — [ke] : Logical conjunction operator "AND".
-* HA — [ha] : Repeated procedural operator particle "Regarding / In relation to".
-* HOHO — [ˈho.ho] : Four-letter Noun structured as C₁V₁C₂V₂. Derived from the logical root HOH (to execute a pure algorithm) and the final functional vowel O (Substance). Semantics: "Abstract law / Legal right / Unalterable systemic norm".
 
 <p align="center">
   <img src="images/403.png" width="90%"/>

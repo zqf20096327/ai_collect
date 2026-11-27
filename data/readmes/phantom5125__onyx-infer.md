@@ -97,6 +97,20 @@ Native generation caches DiT modulation tables by default in `~/Library/Caches/o
 Project site & engineering blog: **https://phantom5125.github.io/onyx-infer/**
 (sources in [`site/`](site/), blog built by [`tools/build_blog.py`](tools/build_blog.py)).
 
+## Edit with reference images
+
+On Apple Silicon, the CLI accepts up to 16 ordered reference images with the H3 W4 model. Build from the current source and install the optional `reference` extra. Use one `--reference` flag per image, and refer to them as `<Picture 1>`, `<Picture 2>`, and so on.
+
+```bash
+uv run --frozen --no-dev --extra reference onyx native-generate \
+  --models artifacts/models/h3-w4 \
+  --reference room.png --reference chair.png \
+  --prompt "Add the chair from <Picture 2> to the room in <Picture 1>." \
+  --output artifacts/edit.png
+```
+
+The [reference-image guide](docs/QUICKSTART.md#edit-with-reference-images) covers setup, input limits, replay, and the experimental DiT memory option.
+
 ## Guides
 
 Guides we've published on the engineering blog, most recent first:
@@ -107,7 +121,7 @@ Guides we've published on the engineering blog, most recent first:
 
 ## License
 
-Onyx Infer source code is available under the [MIT License](LICENSE). Vendored and derived MLX code retains its [Apple MLX license](ops/metal/mlx_root/LICENSE). H3 model files are obtained separately and governed by the [upstream MiniMax license](https://github.com/MiniMax-AI/MiniMax-H3-Image/blob/main/LICENSE).
+Onyx Infer source code is available under the [MIT License](LICENSE). Vendored and derived MLX code retains its [Apple MLX license](ops/metal/mlx_root/LICENSE). The reference encoders include code adapted from h3-image-mlx under [Apache-2.0](LICENSE.h3-image-mlx). H3 model files are obtained separately and governed by the [upstream MiniMax license](https://github.com/MiniMax-AI/MiniMax-H3-Image/blob/main/LICENSE).
 
 ## Cite
 

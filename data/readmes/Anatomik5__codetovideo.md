@@ -155,13 +155,26 @@ Your LLM decides which mode the instruction needs:
 
 ### Export scene subtitles
 
-Every render also writes `final.srt` into the session folder (`out/sessions/<id>/`, next to `final.mp4`): one cue per scene, shifted by the intro, using the scene title when a caption is empty. In the desktop app press **Export subtitles (.srt)** under the video to save a copy wherever you like. For an older session, or from a script, run `npm run subtitles -- out/sessions/<id>/manifest.json`.
+Every render writes `final.srt` and `final.vtt` beside the session video. Long captions wrap to about 42 characters per line and at most two lines per cue. Each cue gets a share of the scene duration based on its text length, after the intro. An empty caption uses the scene title. In the desktop app, choose SRT or WebVTT and press **Export subtitles**. To generate both files for a saved session, run `npm run subtitles -- out/sessions/<id>/manifest.json`.
+
+## Which model?
+
+First community-style comparison on one laptop (RTX 3060 6 GB), one app, one run each ([full report](docs/benchmarks/2026-11-gemma4-vs-qwen.md)):
+
+| | qwen3.5:4b | gemma4:e2b | gemma4:e4b |
+| --- | --- | --- | --- |
+| Speed (plan · total) | 25 s · 225 s | **14 s · 121 s** | 25 s · 167 s |
+| Plan / captions | **concise, accurate** | marketing tone, too long | **balanced, accurate** |
+| Navigation | 12/12 steps | 12/12 steps | 12/12 steps |
+| Draws its own background | no (falls back to a motif) | yes, but in the center | **yes, along the edges** |
+
+Short version: `qwen3.5:4b` or `gemma4:e2b` with `--backdrop motif` for speed and clean captions; `gemma4:e4b` if you want the model to draw the background. Try your own model with `node scripts/bench-models.cjs --models a,b,c` and share the result in [#11](https://github.com/Anatomik5/codetovideo/issues/11).
 
 ## Honest status
 
 **CTV is alpha.** It works end to end, but on a very small test surface. Please read this before you invest time:
 
-- **Tested on:** Windows 11; Ollama with `qwen3.5:4b`; Gemini 2.5 and 3.5 via the OpenAI-compatible API (author's own runs); one real Next.js + FastAPI app and the bundled example. **Not tested:** macOS, Linux, other providers, most real-world apps.
+- **Tested on:** Windows 11; Ollama with `qwen3.5:4b`, `gemma4:e2b` and `gemma4:e4b` (see [Which model?](#which-model)); Gemini 2.5 and 3.5 via the OpenAI-compatible API (author's own runs); one real Next.js + FastAPI app and the bundled example. The unit tests also pass on macOS and Linux (contributor runs). **Not tested:** the full pipeline on macOS and Linux, other providers, most real-world apps.
 - **Navigation is heuristic.** Logins, multi-tab flows, drag-and-drop, canvas apps, iframes and shadow DOM will probably defeat it. It stops with a `stopReason` instead of looping, but "stops" is not "works".
 - **Small models give small results.** A 4B model writes serviceable but generic captions, sometimes splits scenes oddly, and its background drawings are often sparse (hence the motif fallback). Bigger models should do better; I have not verified how much.
 - **Web UIs only.** No native desktop apps.
@@ -169,7 +182,7 @@ Every render also writes `final.srt` into the session folder (`out/sessions/<id>
 - **Slow on CPU.** A ~75 s video at 720p takes a few minutes to render; 1080p and above take much longer.
 - **Remotion's license is not plain MIT.** Companies above a small size need a paid license. See [THIRD_PARTY.md](THIRD_PARTY.md). "Free" here means *no per-use fees*, not "no license terms anywhere".
 - **Quality bar of the output** is "decent first cut", not a replacement for a human editor.
-- **Tests:** unit tests for the pure helpers plus a type check (`npm run check`). No automated end-to-end tests and no hosted CI yet.
+- **Tests:** 25 unit tests (helpers, subtitles, scene planning, partial-render planning, scene editing) plus a type check (`npm run check`). No automated end-to-end tests and no hosted CI yet.
 - **No audio / narration.** Out of scope for now.
 
 If any of this bites you, [open a run report](https://github.com/Anatomik5/codetovideo/issues/new?template=run_report.yml): that is exactly the feedback the project needs.
@@ -182,7 +195,8 @@ I built CTV alone because I was annoyed, and it has outgrown what one person on 
 - 🙋 **macOS and Linux testers.**
 - 🙋 Try **bigger / other models** (Gemini, OpenRouter, Groq, local 7B-14B) and tell us what changes.
 - 🙋 Improve **scene planning prompts** and **caption quality** for small models.
-- 🙋 `.srt` subtitle export, more promo templates, vertical (9:16) formats, installers, Docker image.
+- 🙋 More promo templates, vertical (9:16) formats ([#3](https://github.com/Anatomik5/codetovideo/issues/3)), installers ([#5](https://github.com/Anatomik5/codetovideo/issues/5)), Docker image.
+- 🙋 Small, well-scoped tasks: background edge check ([#13](https://github.com/Anatomik5/codetovideo/issues/13)), tests for scene editing ([#14](https://github.com/Anatomik5/codetovideo/issues/14)), runtimes without an OpenAI-compatible API ([#15](https://github.com/Anatomik5/codetovideo/issues/15)), predictable pacing ([#16](https://github.com/Anatomik5/codetovideo/issues/16)).
 - Design discussion: a **free local TTS** option and an alternative renderer without Remotion's license constraint.
 
 The full list with context is in [ROADMAP.md](ROADMAP.md); ground rules are in [CONTRIBUTING.md](CONTRIBUTING.md). Small PRs and honest bug reports are equally welcome. ⭐ A star helps others find the project.
@@ -216,10 +230,12 @@ Details and how to report a vulnerability: [SECURITY.md](SECURITY.md).
 app/                       desktop app (Electron): main.js, preload.js, index.html
 scripts/demo-pipeline.ts   the whole pipeline + CLI
 scripts/build-diagram.cjs  regenerates docs/architecture.*
+scripts/export-srt.ts      subtitles (.srt / .vtt) from a session manifest
+scripts/bench-models.cjs   compares models on the same scenario (see Which model?)
 src/                       Remotion compositions: DynamicDemoScene (demo), PromoScene (promo)
 examples/hello-wizard/     tiny app to try CTV with
 tests/                     unit tests (npm test)
-docs/                      manual, architecture diagram, demo, translations
+docs/                      manual, architecture diagram, demo, benchmarks, translations
 out/sessions/              your saved sessions (git-ignored)
 ```
 
@@ -231,7 +247,9 @@ Translations: [Русский](docs/ru/README.md) *(community-style translation,
 
 ## Thanks
 
-- [Dathinel](https://github.com/Dathinel): the first outside contribution, the SRT subtitle exporter (#7), which the desktop app's **Export subtitles** button and the per-session `final.srt` build on.
+- [Dathinel](https://github.com/Dathinel): the first outside contribution, the subtitle exporter (#7) and WebVTT with readable, timed cues (#10). The desktop app's **Export subtitles** button and the per-session `final.srt` / `final.vtt` build on it.
+- [TONstories](https://github.com/TONstories): tests for scene planning and partial-render planning (#12), and the first run on macOS.
+- [avaldivieso-meraki](https://github.com/avaldivieso-meraki): tests for scene editing (#17), and the first run on Linux.
 
 ## License
 

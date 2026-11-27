@@ -78,7 +78,7 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (426 total)
+- `hostinger-api-mcp` — unified server over every operation (419 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
@@ -86,7 +86,6 @@ This package installs the following MCP server commands:
 - `hostinger-domains-mcp` — 43 operations for domains
 - `hostinger-ecommerce-mcp` — 33 operations for ecommerce
 - `hostinger-gpu-mcp` — 12 operations for gpu
-- `hostinger-horizons-mcp` — 8 operations for horizons
 - `hostinger-hosting-mcp` — 59 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
 - `hostinger-reach-mcp` — 73 operations for reach
@@ -2004,154 +2003,6 @@ Use this endpoint to choose a pool before listing its instance types.
 - **Method**: `GET`
 - **Path**: `/api/gpu/v1/pools`
 
-### `hostinger-horizons-mcp`
-
-#### changelog_list-entries
-
-What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
-
-- **Method**: `custom`
-- **Path**: `custom`
-
-#### horizons_websites_clone
-
-Clone a Hostinger AI Builder website into a new website.\n
-Use this tool when the user wants a copy of an existing website, for example to try out
-changes without touching the original.\n
-This tool returns the ID and URL of the newly created copy.
-The original website is left untouched.\n
-To edit the copy, use the `Edit website` tool with the returned website ID, or the user can
-open the provided website URL in Hostinger AI Builder interface.
-
-- **Method**: `POST`
-- **Path**: `/api/horizons/v1/websites/{websiteId}/clone`
-
-#### horizons_websites_list
-
-List the Hostinger AI Builder websites the user owns.\n
-Use this tool when the user asks which websites they have, or when you need a website ID
-before editing, publishing or cloning a website.\n
-Each website is returned with its ID, status, domain and the URL to open it
-in Hostinger AI Builder interface.\n
-The complete list of websites is returned in a single response - it is not paginated.
-
-- **Method**: `GET`
-- **Path**: `/api/horizons/v1/websites`
-
-#### horizons_websites_create
-
-Create new Hostinger AI Builder website from the given message.\n
-Use this tool when user asks you to create a website, landing page, blog
-or any other type of application.\n
-This tool initiates the website creation process and returns a website URL, ID and build `task`.
-The generation happens asynchronously. To learn whether it succeeded, poll the
-`Get website build task` tool with `task.id`; `is_generating` turning false on `Get website`
-happens whether the build completed or failed.\n
-After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
-that Hostinger AI Builder is now creating their website and it will be ready in a few minutes
-and you should provide the website URL to the user immediately
-Do not write code.\n\nTo edit afterwards, use the `Edit website` tool with the returned
-website ID, or the user can go to Hostinger AI Builder interface in the provided website URL.
-If the tool call fails with an error, you should provide a clear explanation of the error
-and do not generate code yourself in the chat.
-\n
-TECHNOLOGY STACK CONSTRAINTS (STRICTLY ENFORCED):\n
-The environment is limited to the following technologies.
-You MUST NOT use, suggest, or implement any technology outside this list:\n
-\n
-- Language: JavaScript ONLY.
-- Languages like TypeScript, Rust, Python, Java, PHP, etc., are STRICTLY PROHIBITED.\n
-- Framework: React.\n
-- Navigation: React Router.\n
-- Styling: TailwindCSS.\n
-- Components: shadcn/ui (built with @radix-ui primitives).\n
-- Icons: Lucide React.\n
-- Animations: Framer Motion.\n
-\n
-BACKEND & DATA STORAGE:\n
-- Hostinger AI Builder integrated backend is the EXCLUSIVE solution for persistent data storage,
-authentication, and database needs.\n
-- Local databases (SQLite, MySQL, etc.) are STRICTLY PROHIBITED.\n
-- Third-party services (Firebase, AWS Amplify) are allowed ONLY if explicitly requested by the user.\n
-\n
-MAPS:\n
-- OpenStreetMap is the default provider.\n
-- Alternative providers (Google Maps, Mapbox) are allowed ONLY if explicitly requested by the user.\n
-
-- **Method**: `POST`
-- **Path**: `/api/horizons/v1/websites`
-
-#### horizons_websites_edit
-
-Edit an existing Hostinger AI Builder website with a follow-up message.\n
-Use this tool when the user wants to change, extend or fix a website that already exists.\n
-This tool queues the requested changes and returns the website URL, ID and build `task`.
-The changes are applied asynchronously. To learn whether they were applied, poll the
-`Get website build task` tool with `task.id`; `is_generating` turning false on `Get website`
-happens whether the build completed or failed.\n
-After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
-that Hostinger AI Builder is now applying the requested changes and they will be ready
-in a few minutes, and you should provide the website URL to the user immediately.
-Do not write code.\n
-If the tool call fails with an error, you should provide a clear explanation of the error
-and do not generate code yourself in the chat.
-
-- **Method**: `POST`
-- **Path**: `/api/horizons/v1/websites/{websiteId}/messages`
-
-#### horizons_websites_publish
-
-Publish a Hostinger AI Builder website so its latest changes go live.\n
-Use this tool when the user asks to publish, deploy or make their website live.\n
-If you created or edited the website in this conversation, first check its build with the
-`Get website build task` tool and publish only when its `state` is `TASK_STATE_COMPLETED`.
-After a failed build, tell the user instead of publishing.\n
-This tool starts the publish process and returns the URL the website will be live on.
-Publishing happens asynchronously and takes a few minutes.\n
-Set `is_template` only when the user explicitly asks to share the website as a template:
-true adds a "Use template" banner to its published pages that copies the website into the
-visitor's own account, and false removes it. Leave it out to keep the current setting.\n
-After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
-that the website is being published and you should provide the published URL to the user immediately.
-
-- **Method**: `POST`
-- **Path**: `/api/horizons/v1/websites/{websiteId}/publish`
-
-#### horizons_websites_get
-
-Get the link for the user to open their website in Hostinger AI Builder interface.\n
-Use this tool when the user wants the link to an existing website, or when you need its
-website URL before or after editing it.\n
-`is_in_progress` is true while changes are being generated or the website is being published;
-wait until it is false before publishing. `is_generating` is true while changes are being generated,
-and `actions_in_progress` has `website_publish` while the website is being published.
-`is_generating` turns false whether the build completed or failed: use the `Get website build task`
-tool to learn its outcome.
-`published_at` is when the website was last published,
-`is_template` is whether its published pages show the "Use template" banner, and
-`has_ecommerce_store` is whether it has an online store.\n
-Websites can be edited with the `Edit website` tool, or by the user in Hostinger AI Builder
-interface in the provided website URL.
-
-- **Method**: `GET`
-- **Path**: `/api/horizons/v1/websites/{websiteId}`
-
-#### horizons_websites_build-task
-
-Get the state and outcome of a website build started by the `Create website` or `Edit website` tool.\n
-Use this tool with the `task.id` those tools return to find out whether the build completed or failed.
-Poll it every 30 seconds or so while `state` is `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING`.\n
-When `state` is `TASK_STATE_FAILED` or `TASK_STATE_REJECTED`, the website does not contain the requested
-changes: tell the user, using `message` and `reason_code`, and do not publish it.
-When `state` is `TASK_STATE_CANCELED`, the user stopped the build and changes made before that may be kept:
-publish only if the user asks to.
-`reason_code` `insufficient_credits` means the user must get more credits before building again.\n
-When `state` is `TASK_STATE_COMPLETED`, the website can be published. A `reason_code` of
-`iteration_limit` on a completed build means it stopped early and kept the work done so far.
-
-- **Method**: `GET`
-- **Path**: `/api/horizons/v1/websites/{websiteId}/tasks/{taskId}`
-
 ### `hostinger-hosting-mcp`
 
 #### changelog_list-entries
@@ -2354,4 +2205,183 @@ the application reads it from the environment.
 
 Written variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` and
 `DATABASE_URL` (`mysql://user:password@host:port/name`, user and password percent-encoded).
-Existing variables are kept. If the website already has any variable with
+Existing variables are kept. If the website already has any variable with one of these
+names the call fails with 422 and nothing is created; the `Replace Node.js environment
+variables` endpoint removes them.
+
+After this call the variables are ordinary environment variables: the
+`Replace Node.js environment variables` endpoint changes or removes them like any other.
+
+A restart is enough for apps that read environment variables at process start, such as
+Express or NestJS. Frameworks that bake variables into the build output (Next.js,
+`NEXT_PUBLIC_*`) see the new values only after a fresh build (`Start Node.js build` endpoint).
+
+A password in the request is ignored; the platform always generates it. The optional `name`
+and `user` are identifiers, not secrets.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/databases/setup`
+
+#### hosting_databases_phpmyadmin-link
+
+Returns a direct sign-on link to phpMyAdmin for the specified database.
+
+Use this when a visual database interface is needed for SQL queries, imports, exports, or table management.
+The database name must be the full name returned by the list databases endpoint.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/databases/{name}/phpmyadmin-link`
+
+#### hosting_datacenters_list
+
+Retrieve a list of datacenters available for setting up hosting plans
+based on available datacenter capacity and hosting plan of your order.
+The first item in the list is the best match for your specific order
+requirements.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/datacenters`
+
+#### hosting_domains_verify-ownership
+
+Verify ownership of a single domain and return the verification status.
+
+Use this endpoint to check if a domain is accessible for you before using it for new websites.
+If the domain is accessible, the response will have `is_accessible: true`.
+If not, add the given TXT record to your domain's DNS records and try verifying again.
+Keep in mind that it may take up to 10 minutes for new TXT DNS records to propagate.
+
+Skip this verification when using Hostinger's free subdomains (*.hostingersite.com).
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/domains/verify-ownership`
+
+#### hosting_files_list-website-and-directories
+
+List files and directories under a website's document root.
+
+Use `directory` to browse a subdirectory relative to the document root. Symlinked entries
+are listed but never traversed into or resolved.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/domains/{domain}/files`
+
+#### hosting_files_website-content
+
+Get a single file's content, relative to a website's document root.
+
+Read-only; refuses symlinks, oversized files, non-text file types, and files identified as
+containing secrets (e.g. credential files) — none of these are returned by this endpoint.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/domains/{domain}/files/content`
+
+#### hosting_git_delete-auto-deployment-settings
+
+Removes the Git auto-deployment settings of the website. Files already deployed stay on the
+website; pushes stop deploying until settings are saved again. Succeeds also when nothing is
+configured.
+
+- **Method**: `DELETE`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/auto-deployments/settings`
+
+#### hosting_git_deploy-website-repository
+
+Clones a Git repository into a directory of the website, or pulls it again. An empty or missing
+directory gets a clone of the branch. A directory that already holds this repository and branch is
+reset to its last commit and pulled: changes made on the server to files the repository tracks are
+discarded, files it does not track stay. A directory that holds other files, including another
+repository or another branch of this one, is rejected. `composer install` runs after the clone or
+pull when the repository has a `composer.json`.
+
+The call waits for the deployment and returns its log. `is_success` false means Git or composer
+failed and the log says why. A second call for the same directory is rejected while the first is
+still waiting for the server. If the request times out, the deployment may still finish on the
+server; calling again later with the same repository and branch pulls.
+
+Private repositories need an SSH URL and the account's Git SSH key from `Generate Git SSH key`,
+added to the repository as a deploy key.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/repositories/deploy`
+
+#### hosting_git_list-website-repositories
+
+Lists the Git repositories linked to directories of the website, with
+`Deploy website Git repository` or in the Git section of hPanel: clone URL, branch and directory of
+each one. A repository whose clone failed stays listed; deploying it again retries the clone. GitHub
+and GitLab auto-deployments are not listed here; see `Get Git auto-deployment settings`.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/repositories`
+
+#### hosting_git_ssh-public-key
+
+Returns the public SSH key of the hosting account. `Deploy website Git repository` uses this key to
+clone and pull over SSH, so a private repository works once the key is added to it as a deploy key
+on the Git host. `public_key` is null when the account has no key yet.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/git/ssh-key`
+
+#### hosting_git_generate-ssh-key
+
+Creates the SSH key pair of the hosting account and returns the public key. When the account already
+has a key, returns that key unchanged. One key serves every website of the account; add the public
+key to a private repository as a deploy key before deploying it.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/accounts/{username}/git/ssh-key`
+
+#### hosting_headless_submit-build-report
+
+Submits the build report the headless skill writes at the end of a run (including early
+stops), so Hostinger can learn where builds get stuck. Send one report per call, with the
+report JSON as the request body, unchanged.
+
+The report must match report.schema.json v1; an invalid report returns 422 and is not
+stored. The report is linked to the authenticated account, so do not add account details
+to it.
+
+- **Method**: `POST`
+- **Path**: `/api/hosting/v1/headless/agent-reports`
+
+#### hosting_nodejs_list-environment-variables
+
+Lists the Node.js environment variables currently set for the website. Values are always
+masked as `********` and cannot be read back through this API. Use this endpoint to see
+which keys are configured or to verify a change, not to read values.
+
+To change variables, use the `Replace Node.js environment variables` endpoint. It replaces
+the whole set, so never copy the masked values from this response into that request; send
+the full desired set with real values taken from the project `.env` file or the user
+prompt instead.
+
+- **Method**: `GET`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/env`
+
+#### hosting_nodejs_replace-environment-variables
+
+Replaces the website's Node.js environment variables with the ones provided. This is a
+full replace: any variable not in the request is deleted, and sending an empty `env_vars`
+array deletes every variable. Saving writes the values and restarts the running Node.js
+process.
+
+A restart is enough for apps that read environment variables at process start, such as
+Express or NestJS. It is not enough for frameworks that bake variables into the build.
+Next.js standalone is one of those: build-time values (including `NEXT_PUBLIC_*`) need a
+fresh build. After this call, use the `Start Node.js build` endpoint so those apps
+pick up the new values.
+
+The `List Node.js environment variables` endpoint returns masked values (`********`), so
+never copy values from it into this request. Always send the full desired set with real
+values taken from the project `.env` file or the user prompt.
+
+- **Method**: `PUT`
+- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/env`
+
+#### hosting_nodejs_runtime-logs
+
+Returns the Node.js application's runtime console log entries, oldest first, each with
+timestamp, level and message. On the first call send `period` (`1h`, `1d`, `1w` or `1m`)
+an

@@ -226,6 +226,15 @@ cockpit stop
 `start` accepts the same flags as `cockpit` (`--port`, `--token`). Output goes
 to `~/.cockpit/logs/server.log`.
 
+With token authentication enabled, five consecutive incorrect tokens block the
+client IP for ten minutes. Cockpit detects a same-host reverse proxy over
+loopback automatically. For remote proxies or longer proxy chains, set
+`COCKPIT_TRUSTED_PROXIES` to a comma-separated list of their IPv4 or IPv6
+addresses or CIDR ranges, for example `10.0.0.5,2001:db8:100::/48`.
+Each trusted proxy should set `X-Forwarded-For` to the address it has verified
+or append its connecting peer's address. Cockpit walks the chain from right
+to left and uses the first address outside the trusted proxy list.
+
 `restart` asks the running server to replace itself, so the port and token it
 was started with are preserved — you do not need to repeat them.
 
@@ -250,6 +259,44 @@ If it is **not running**, `cockpit update` simply installs.
 
 Once the new server is up, any browser tab left open from the old version shows
 a "reload" prompt — its cached assets belong to the previous build.
+
+### Desktop app (macOS / Windows)
+
+The OpenCockpit desktop app is a dedicated window onto the same server — think
+of it as a browser that only opens Cockpit. It does not bundle a server: it
+uses your npm install, starts it with `cockpit start` when it is not running,
+and installs the npm package for you if it is missing (Node.js ≥ 22.19 required).
+Closing the window leaves the server running in the background; browser tabs on
+the same server keep working alongside it.
+
+```bash
+cockpit app install      # installs the app matching your cockpit version
+```
+
+This puts `OpenCockpit.app` in `~/Applications` (macOS) or the app in
+`%LOCALAPPDATA%\Programs\OpenCockpit` with a Start-menu entry (Windows). The
+app is a thin shell that rarely changes: updating cockpit (`cockpit update`, or
+the version pill) does not require a new app. When a cockpit release does
+change the app, the app menu offers *Download Update*, downloads it in the
+background while you work, and switches over when you restart or quit it. Turn on
+*Download Updates Automatically* in the same menu to skip the prompt.
+`cockpit app update` and `cockpit app uninstall` do the same by hand.
+
+The builds are **not code-signed**. `cockpit app install` verifies each
+download against a SHA-256 published inside the npm package, and the files it
+writes carry no "downloaded from the internet" mark, so the app opens normally.
+If you download a `.dmg` (macOS) or `.zip` (Windows) from
+[GitHub Releases](https://github.com/Surething-io/cockpit/releases) instead
+(checksums in `SHA256SUMS`), the OS asks once:
+
+- **macOS**: open the app, dismiss the warning, then go to *System Settings →
+  Privacy & Security* and click **Open Anyway** — or run
+  `xattr -dr com.apple.quarantine /Applications/OpenCockpit.app`.
+- **Windows**: unzip it anywhere and run `OpenCockpit.exe`; in the SmartScreen
+  dialog click **More info → Run anyway**.
+
+To build it yourself: `npm run desktop:build` in a source checkout (output in
+`desktop/dist/`).
 
 ### Windows
 

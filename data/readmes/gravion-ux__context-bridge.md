@@ -1,8 +1,10 @@
+<p align="center"><img src="assets/banner.svg" alt="context-bridge banner" width="100%"/></p>
+
 # Gravion Context Bridge
 
-[![CI](https://github.com/gravion-ux/context-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/context-bridge/actions/workflows/ci.yml)
+[![CI](https://github.com/gravion-ux/context-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/context-bridge/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Create privacy-conscious Markdown handoffs that carry an AI-assisted coding session forward.
+**Create privacy-conscious Markdown handoffs that carry an AI-assisted coding session forward.**
 
 When a chat ends, a model changes, or a new agent takes over, the next session starts from
 zero. You re-explain the project, the architecture, the bug, the decisions and the unfinished

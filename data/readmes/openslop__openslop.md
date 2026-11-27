@@ -3,7 +3,7 @@
   <img src="./assets/openslop-lockup-animated-dark.svg#gh-dark-mode-only" alt="OpenSlop" width="560">
 </p>
 
-<p align="center"><b>The open-source AI production studio.</b><br>Chat your way to finished films, shows, audiobooks, YouTube videos, documentaries, dramas, and more.</p>
+<p align="center"><b>The open-source AI production studio.</b><br>Chat your way to finished films, shows, audiobooks, music videos, documentaries, dramas, and more.</p>
 
 <p align="center">
   <a href="https://openslop.ai"><img src="https://img.shields.io/badge/status-private%20beta-6b6bcf?style=flat" alt="Status: private beta"></a>
@@ -194,19 +194,19 @@ How the code is laid out and how its layers fit together: [`ARCHITECTURE.md`](AR
 
 ## Scripts
 
-| Command                   | What it does                |
-| ------------------------- | --------------------------- |
-| `npm run dev`             | Start the dev server        |
-| `npm run local`           | Run in local mode           |
-| `npm run build`           | Production build            |
-| `npm run lint`            | ESLint                      |
-| `npm run format:check`    | Prettier check              |
-| `npm run typecheck`       | TypeScript check            |
-| `npm run knip`            | Dead-code check             |
-| `npm run test:run`        | Run tests once (Vitest)     |
-| `npm run test:e2e`        | Smoke tests (Playwright)    |
-| `npm run db:push`         | Push migrations to Supabase |
-| `npm run remotion:studio` | Open Remotion Studio        |
+| Command                   | What it does                                    |
+| ------------------------- | ----------------------------------------------- |
+| `npm run dev`             | Start the dev server                            |
+| `npm run local`           | Run in local mode                               |
+| `npm run build`           | Production build                                |
+| `npm run lint`            | ESLint                                          |
+| `npm run format:check`    | Prettier check                                  |
+| `npm run typecheck`       | TypeScript check                                |
+| `npm run knip`            | Dead-code check                                 |
+| `npm run test:run`        | Run tests once (Vitest)                         |
+| `npm run test:e2e`        | Smoke tests (Playwright)                        |
+| `npm run db:push`         | Push migrations to your linked Supabase project |
+| `npm run remotion:studio` | Open Remotion Studio                            |
 
 ## Contributing
 

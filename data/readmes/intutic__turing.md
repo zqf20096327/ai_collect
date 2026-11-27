@@ -1,26 +1,51 @@
 # ⚡ Turing Engine
 
-**An LLM inference server whose int8/int4 KV cache finds the layers low-bit storage would break and keeps them in full
-precision**, with HuggingFace parity tests on 16 model types, 4-bit GPTQ weights, and OpenAI, Anthropic and Ollama
-APIs on one port. It runs on NVIDIA GPUs, Apple Silicon and CPUs. With Qwen2.5-1.5B on an NVIDIA L4, its int4 KV cache
-holds 2.4× as many tokens as a 16-bit cache in the same GPU memory, at +0.02 nats, and 4-bit decoding with the opt-in
-4-bit LM head is 1.15–1.16× faster than vLLM at batch sizes 1 and 8.
+**Storing an LLM's KV cache in 8 or 4 bits fits more tokens on a GPU, but on some models it silently breaks the
+output**: vLLM's fp8 cache takes Qwen2.5-1.5B-Instruct from 57% to 2% on GSM8K. Turing Engine is an LLM inference
+server that finds the layers a low-bit cache would break, keeps them in full precision, and lets you measure what
+every KV-cache or quantization change costs on real models.
+
+* **Low-bit KV caches that stay correct.** int8, fp8 and int4, with the damaged layers found at startup and nothing
+  to tune. The int4 cache holds 2.4× the tokens of a 16-bit one at +0.02 nats.
+* **Fast on one GPU.** On an NVIDIA L4, 4-bit decoding is 1.09–1.34× vLLM's speed; in fp16 and with EAGLE-3 draft
+  heads it is level with vLLM or a little ahead ([how it compares](#how-it-compares)).
+* **Checked against HuggingFace.** Logits match on 16 model types, and 13 GGUF files agree with llama.cpp.
+* **OpenAI, Anthropic and Ollama APIs on one port**, plus LangChain, LlamaIndex and LiteLLM clients.
+* **Runs where you work.** NVIDIA GPUs, Apple Silicon, x86 and ARM CPUs; pip, Docker, Helm or KServe.
+* **Small enough to change.** Paged KV, Triton kernels, GPTQ and speculative decoding in a few Python modules, with
+  the eval scripts to measure a change.
 
 [![Docs: Live](https://img.shields.io/badge/Documentation-intutic.github.io%2Fturing-blue.svg)](https://intutic.github.io/turing/)
 [![PyPI: turing-engine](https://img.shields.io/pypi/v/turing-engine.svg)](https://pypi.org/project/turing-engine/)
-[![Python 3.10–3.12](https://img.shields.io/badge/Python-3.10–3.12-blue.svg)](https://pypi.org/project/turing-engine/)
-[![Release: v2.0.0](https://img.shields.io/badge/Release-v2.0.0-blue.svg)](CHANGELOG.md)
+[![Python 3.10–3.13](https://img.shields.io/badge/Python-3.10–3.13-blue.svg)](https://pypi.org/project/turing-engine/)
+[![Release: v2.1.1](https://img.shields.io/badge/Release-v2.1.1-blue.svg)](CHANGELOG.md)
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-green.svg)](LICENSE)
-[![Tests: 1108](https://img.shields.io/badge/Tests-1108-brightgreen.svg)](https://github.com/intutic/turing/actions)
+[![Tests: 1507](https://img.shields.io/badge/Tests-1507-brightgreen.svg)](https://github.com/intutic/turing/actions)
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/intutic/turing/blob/master/demo/turing_quickstart_colab.ipynb)
 
-It loads HuggingFace checkpoints, llama.cpp GGUF files and its own 4-bit `.tgate4` directories, and matches
-HuggingFace's logits when the KV cache is kept in the model's dtype. It is built for trying KV-cache and quantization
-changes against real models, not for production serving ([how it compares](#how-it-compares)).
+It loads HuggingFace checkpoints, llama.cpp GGUF files and its own 4-bit `.tgate4` directories. It is built for
+trying KV-cache and quantization changes against real models, not for production serving
+([how it compares](#how-it-compares)).
 
-[Get started](#get-started) · [What it is good for](#what-it-is-good-for) · [How it compares](#how-it-compares) ·
-[More ways to run it](#more-ways-to-run-it) · [Models](#models) · [Features](#features) · [Documentation](#documentation)
+[What's new](#whats-new-in-210) · [Get started](#get-started) · [What it is good for](#what-it-is-good-for) ·
+[How it compares](#how-it-compares) · [More ways to run it](#more-ways-to-run-it) · [Models](#models) ·
+[Features](#features) · [Documentation](#documentation)
+
+---
+
+## What's new in 2.1.0
+
+* **EAGLE-3 draft heads** (`--draft-head`): Qwen3-8B with a published head runs at 101.0–102.4% of vLLM with the same
+  head in 13 of 15 cells on an L4.
+* **fp8 KV cache** (`--kv-cache-dtype fp8`), calibrated like int8 and int4: at 16K-token prompts 99.0–101.3% of
+  vLLM's fp8, and it keeps Qwen2.5-1.5B-Instruct at 56.6% on GSM8K where vLLM's fp8 drops it to 2.4%.
+* **4-bit MoE**: `turing convert` packs the experts too and Marlin kernels run them (Qwen1.5-MoE at 101–127% of
+  vLLM); `--moe-expert-slots` computes some experts on the CPU, which fits Mixtral-8x7B on a 24 GB GPU.
+* **Shorter steps**: overlapped decode, CUDA graphs for prefill, and a warm-up before the server listens.
+* **A CUDA image that starts on a GPU.** `v2.0.0-cuda` lacks the C compiler Triton needs; `v2.1.0-cuda` has it.
+
+Everything else, with the measurements behind it, is in the [changelog](CHANGELOG.md).
 
 ---
 
@@ -28,7 +53,7 @@ changes against real models, not for production serving ([how it compares](#how-
 
 ### 1. Install
 ```bash
-pip install turing-engine                  # Python 3.10–3.12
+pip install turing-engine                  # Python 3.10–3.13
 pip install "turing-engine[structured]"    # optional: JSON-schema and tool_choice enforcement (llguidance)
 ```
 Wheels with the C++ extension are built for Linux x86_64 and aarch64 and macOS arm64; elsewhere (Windows, Intel
@@ -36,8 +61,8 @@ Macs) pip builds it from the source package, which needs a C++20 compiler. From 
 
 Or run the server in Docker ([docs/docker.md](docs/docker.md)):
 ```bash
-docker run --rm -p 127.0.0.1:8000:8000 ghcr.io/intutic/turing:v2.0.0 --model smollm2
-docker run --rm --gpus all -p 127.0.0.1:8000:8000 ghcr.io/intutic/turing:v2.0.0-cuda --model Qwen/Qwen2.5-7B-Instruct --device cuda
+docker run --rm -p 127.0.0.1:8000:8000 ghcr.io/intutic/turing:v2.1.1 --model smollm2
+docker run --rm --gpus all -p 127.0.0.1:8000:8000 ghcr.io/intutic/turing:v2.1.1-cuda --model Qwen/Qwen2.5-7B-Instruct --device cuda
 ```
 
 ### 2. Chat in the terminal
@@ -59,26 +84,27 @@ OpenAI (`/v1/chat/completions`, `/v1/completions`, `/v1/embeddings`), Anthropic 
 
 ## What it is good for
 
-* **Low-bit KV caches that do not silently break the model.** When a pool stores KV in int8 or int4, Turing measures
-  at startup which layers that format damages (each layer's K and V are round-tripped alone and the change in the
-  next-token distribution is measured on random tokens, in a few seconds) and keeps those layers in the model's
-  dtype; outlier key channels are scaled down for int4. On Qwen2.5-1.5B-Instruct vLLM's default fp8, per-token fp8
-  and per-token int4 caches collapse (GSM8K 0.6–2.4%); Turing's int8 and int4 keep it working with no setting:
+* **Low-bit KV caches that do not silently break the model.** When a pool stores KV in int8, fp8 or int4, Turing
+  measures at startup which layers that format damages (each layer's K and V are round-tripped alone and the change in
+  the next-token distribution is measured on random tokens, in a few seconds) and keeps those layers in the model's
+  dtype; outlier key channels are scaled down for int4. On Qwen2.5-1.5B-Instruct vLLM's default fp8, per-token fp8 and
+  per-token int4 caches collapse (GSM8K 0.6–2.4%); Turing's int8, fp8 and int4 keep it working with no setting:
 
 <!-- table:vs_kv_short -->
 | KV cache | Layers kept in bf16 | GSM8K | Pass-key 2K–32K | ΔNLL vs bf16 | s/request (16K, B=128) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| Turing bf16 (reference) | — | 57.2% | 100.0% | — | 2.05 |
-| Turing int8 | — | 58.2% | 100.0% | +0.003 ± 0.002 | 2.32 |
-| Turing int4 | automatic | 52.8% | 100.0% | +0.020 ± 0.005 | 2.95 |
-| vLLM bf16 (reference) | — | 57.4% | 100.0% | — | 2.51 |
-| vLLM fp8 | — | 2.4% | 5.0% | +2.286 ± 0.394 | 1.66 |
-| vLLM fp8 | layer 0 (manual) | 56.8% | 100.0% | +0.013 ± 0.003 | 1.73 |
+| Turing bf16 (reference) | — | 57.2% | 100.0% | — | 1.90 |
+| Turing int8 | automatic | 58.6% | 100.0% | -0.000 ± 0.002 | 1.72 |
+| Turing fp8 | automatic | 56.6% | 100.0% | +0.009 ± 0.005 | 1.68 |
+| Turing int4 | automatic | 52.8% | 100.0% | +0.020 ± 0.005 | 2.06 |
+| vLLM bf16 (reference) | — | 57.4% | 100.0% | — | 2.65 |
+| vLLM fp8 | — | 2.4% | 5.0% | +2.286 ± 0.394 | 1.72 |
+| vLLM fp8 | layer 0 (manual) | 56.8% | 100.0% | +0.013 ± 0.003 | 1.79 |
 <!-- /table -->
 
-  vLLM fp8 with layer 0 skipped *by hand* matches Turing's quality at 0.6–0.75× Turing's time per request, which is
-  the point: the calibration finds that layer automatically. vLLM's per-token int8 and int4 caches are in the
-  [full table](docs/comparison.md). It is also packaged on its own for vLLM users, under
+  vLLM fp8 with layer 0 skipped *by hand* matches Turing's quality at 0.80–1.07× Turing's time per request (int4
+  to fp8), which is the point: the calibration finds that layer automatically. vLLM's per-token int8 and int4
+  caches are in the [full table](docs/comparison.md). It is also packaged on its own for vLLM users, under
   Apache-2.0: [`packages/kv-layer-guard`](packages/kv-layer-guard). Validated on six instruct models (Qwen2.5 1.5B
   and 7B, Llama 3.2, Gemma 2, Phi-3.5, Mistral), including one limit it does not catch
   ([benchmarks §2](docs/benchmarks.md#2-kv-cache-quality-and-the-layers-it-keeps)).
@@ -90,45 +116,66 @@ OpenAI (`/v1/chat/completions`, `/v1/completions`, `/v1/embeddings`), Anthropic 
   `turing eval-niah`, the Turing-vs-vLLM and llama.cpp benchmarks) run any idea against real models.
 
 **Limitations:** tensor and pipeline parallelism are tested as CPU processes only, not on multiple GPUs; the largest
-model run end to end is Qwen2.5-7B (7.6B).
+dense model run end to end is Qwen3-8B, and the largest MoE model Mixtral-8x7B in 4 bits with some experts on the CPU.
 
 ---
 
 ## How it compares
 
-Is it faster than vLLM or llama.cpp? Mostly no; in a few settings, yes. On one NVIDIA L4, same model and prompts
-(Qwen2.5-1.5B-Instruct, 512-token prompts, 256 new tokens):
+Is it faster than vLLM or llama.cpp? On one NVIDIA L4 with models of 0.4B to 8B parameters it is ahead of vLLM in
+fp16 by a few percent and at 4 bits with its default settings by more, and behind in the settings listed below. Same
+model and prompts (Qwen2.5-1.5B-Instruct, 512-token prompts, 256 new tokens):
 
 <!-- table:vs_4bit -->
 | Setting | Batch 1, tok/s | Batch 8, tok/s | Batch 64, tok/s | GSM8K (n=500) |
 | :--- | :---: | :---: | :---: | :---: |
-| llama.cpp Q4_K_M | 180 | 752 | 2,157 | 52.4% ± 2.2% |
-| vLLM GPTQ-Int4 (Qwen's checkpoint) | 171 | 1,093 | 3,065 | 50.2% ± 2.2% |
-| Turing GPTQ | 155 | 1,035 | 2,739 | 50.4% ± 2.2% |
-| Turing GPTQ + 4-bit LM head (opt-in) | 197 | 1,266 | 2,961 | 51.8% ± 2.2% |
-| Turing GPTQ + TEAL 25% | 107 | 953 | 2,600 | 46.2% ± 2.2% |
-| Turing GPTQ + TEAL 40% | 112 | 960 | 2,614 | 42.0% ± 2.2% |
-| vLLM fp16 (reference) | 75 | 537 | 2,235 | — |
-| Turing fp16 (reference) | 73 | 530 | 2,152 | — |
+| llama.cpp Q4_K_M | 183 | 764 | 2,171 | 52.4% ± 2.2% |
+| vLLM GPTQ-Int4 (Qwen's checkpoint) | 171 | 1,096 | 3,082 | 50.2% ± 2.2% |
+| vLLM AWQ (Qwen's checkpoint) | 169 | 1,081 | 3,046 | — |
+| Turing GPTQ, fp16 LM head (`--no-quantize-lm-head`) | 174 | 1,117 | 3,092 | 50.4% ± 2.2% |
+| Turing GPTQ (4-bit LM head, the default) | 229 | 1,385 | 3,350 | 51.8% ± 2.2% |
+| Turing GPTQ, fp16 LM head, TEAL 25% | 107 | 953 | 2,600 | 46.2% ± 2.2% |
+| Turing GPTQ, fp16 LM head, TEAL 40% | 112 | 960 | 2,614 | 42.0% ± 2.2% |
+| vLLM fp16 (reference) | 75 | 538 | 2,236 | — |
+| Turing fp16 (reference) | 77 | 547 | 2,265 | — |
 <!-- /table -->
 
-* **fp16:** vLLM is 1.01–1.04× faster at batch 1–64. On SmolLM2 at 1,024-token prompts Turing reaches 88–103% of
-  vLLM's throughput, and its first token at batch 64 on SmolLM2-1.7B takes 2.3× as long (6.7 s against 2.9 s).
-* **4 bits, fp16 LM head (default):** vLLM is 1.06–1.12× faster. llama.cpp is 1.17× faster at batch 1; Turing is
-  faster than llama.cpp at batch 8 and 64 (1.38× and 1.27×).
-* **4 bits with the opt-in 4-bit LM head** (`--quantize-lm-head`): Turing is 1.15–1.16× vLLM at batch 1 and 8 and 1.09×
-  llama.cpp at batch 1; vLLM stays 1.04× faster at batch 64. This quantizes one more matrix than vLLM's GPTQ
-  checkpoint does; GSM8K 51.8% against vLLM's 50.2% (each ± 2.2%).
-* **16K-token prompts, fp16 KV at equal memory:** Turing is 1.0–1.22× faster per request than vLLM, more at larger
-  batches. vLLM's fp8 cache with layer 0 kept in fp16 (the setting that is correct on this model) is 1.3–1.4×
-  faster than Turing's int8 at equal quality.
+* **fp16:** Turing is at 101–103% of vLLM's throughput at batch 1–64 (the median of three runs of each engine,
+  taken in turn; repeated runs of one setting differ by up to 3%), and at 101–114% on SmolLM2 at 1,024-token
+  prompts.
+* **First token:** a prompt arriving alone gets its first token sooner than on vLLM (18 against 28–29 ms on
+  SmolLM2-360M, 27 against 32 ms on Qwen2.5-1.5B, 68 against 71–73 ms on SmolLM2-1.7B). In a burst of 32 or 64
+  SmolLM2 prompts the mean first token is 10–16% sooner than vLLM's when both engines take 8,192 tokens per step
+  and from 5% sooner to 2% later when both take 2,048.
+* **4 bits** (the LM head in 4 bits too, the default): Turing is 1.34 / 1.26 / 1.09× vLLM and 1.25 / 1.81 / 1.54×
+  llama.cpp at batch 1 / 8 / 64 (the three engines in turn on one L4, within one boot). This quantizes one more
+  matrix than vLLM's GPTQ checkpoint does; GSM8K 51.8% against vLLM's 50.2% (each ± 2.2%), and the 4-bit head adds
+  0.007–0.009 nats of next-token NLL on three models (`results_quality_head_cuda.json`).
+* **4 bits with the LM head in fp16** (`--no-quantize-lm-head`): Turing is at 100–102% of vLLM. llama.cpp is 1.05×
+  faster at batch 1; Turing is faster than llama.cpp at batch 8 and 64 (1.46× and 1.42×).
+* **16K-token prompts, fp16 KV at equal memory:** Turing is 1.06–1.40× faster per request than vLLM, more at larger
+  batches. With one byte per value, at the same step budget, Turing's fp8 cache is at 99.0–101.3% of vLLM's fp8
+  and its int8 at 97.0–99.0%; vLLM's fp8 keeps no layer in fp16 and wrecks this model's output (above), and with
+  layer 0 kept in fp16 as Turing keeps it Turing's fp8 is at 103.5–106.2% and its int8 at 100.7–103.8%.
+* **Speculative decoding:** with prompt lookup (8 drafts) Turing is at 100–121% of vLLM's n-gram speculator on code,
+  rewrite and chat prompts; with a published EAGLE-3 head on Qwen3-8B it is at 101.0–102.4% of vLLM with the same
+  head in 13 of 15 cells. The other two are within the spread of vLLM's own runs: code with chains of 7 at 4
+  requests at 99.3–99.8%, and chat at 4 requests at 98.3% of vLLM's fastest of four processes and 100.2% of their
+  mean (vLLM's outputs, and with them its speed, change from one process to the next).
+* **MoE models:** OLMoE in bf16 is level with vLLM at batch 1 and 8 and 3% behind at batch 32; Qwen1.5-MoE in 4
+  bits is at 101–127% of vLLM on Qwen's GPTQ checkpoint (99.1–101.5% with its LM head in fp16, as in that
+  checkpoint; 100.0–102.6% converted with `--symmetric`, the grid of that checkpoint).
+  Mixtral-8x7B does not fit a 24 GB GPU in 4 bits: with two of each layer's eight experts computed on the CPU
+  (`--moe-expert-slots 6`) it runs at 13.7 / 16.5 tok/s at batch 1 / 2, against 13.2 / 14.0 for llama.cpp with 26
+  of its layers on the GPU.
 * **Cold start:** from process start to first token Turing takes 25.4 s from a cold page cache and 10.0 s warm,
   against vLLM's 51.7 s and 34.2 s (vLLM ran in an earlier run, alongside a Turing build that took 27.4 s and
   12.1 s: 1.9–2.8× sooner); llama.cpp with its 4-bit GGUF takes 7.1 s and 1.3 s.
 
 Details and every other setting are in the [comparison](docs/comparison.md); the results files and the commands
-that produced them are in [`benchmarks/`](benchmarks/). For production serving use vLLM, SGLang
-or TensorRT-LLM; on a laptop, llama.cpp or Ollama.
+that produced them are in [`benchmarks/`](benchmarks/). These are one GPU and five models: for production serving
+(multi-GPU, larger models, a longer track record) use vLLM, SGLang or TensorRT-LLM; on a laptop, llama.cpp or
+Ollama.
 
 ---
 
@@ -196,7 +243,7 @@ PyTorch reports them; those backends are untested.
 | :--- | :--- |
 | KV cache | One paged pool per model (16-token pages), `native`/`int8`/`int4` storage with the layers that format damages kept in the model dtype (chosen at startup), copy-on-write forks; Quest page selection (`--kv-page-budget`), also inside CUDA graphs |
 | Prefix caching | Automatic: full pages indexed by chained token hashes, reused copy-on-write, evicted LRU (`--no-prefix-caching`) |
-| Speculative decoding | Prompt lookup (no draft model), `--draft-tokens` (default 4); output distribution equals plain decoding for greedy and sampling |
+| Speculative decoding | Prompt lookup or an EAGLE-3 draft head (`--draft-head`), `--draft-tokens` (default 8); a request drafts only while it pays; output distribution equals plain decoding for greedy and sampling |
 | Weights | fp32/fp16/bf16; 4-bit GPTQ or RTN (`turing convert`, `--quantization`); TEAL-style activation sparsity in batch-1 decode on CUDA (`--activation-sparsity`, off by default) |
 | LoRA | Several PEFT adapters at once (`--lora NAME=PATH`), chosen per request by `model: "base:NAME"` or `X-Turing-Adapter` |
 | API | Chat templates, tools (OpenAI and Anthropic; Hermes, Mistral and Llama 3 call formats), reasoning (`reasoning_content`, Anthropic thinking blocks, effort budgets), JSON schema by token-level constrained decoding, stop strings, usage with cached tokens |
@@ -206,8 +253,8 @@ PyTorch reports them; those backends are untested.
 | Evals | `turing eval-accuracy` (GSM8K exact match) and `turing eval-niah` (pass-key retrieval), through the engine on real weights |
 
 The `turing.experimental` package holds research components outside the serving path: cross-model KV transfer, `clean_base`
-lineage, k-slot pooling, an MoE expert-offload runner, hybrid linear/softmax attention (needs a model trained with it)
-and untrained Matryoshka draft heads. What each does, and how it performed on real models, is in
+lineage, k-slot pooling, an MoE expert-offload runner and hybrid linear/softmax attention (needs a model trained with
+it). What each does, and how it performed on real models, is in
 [experimental components](docs/experimental.md).
 
 ---
@@ -255,9 +302,11 @@ LiteLLM, KServe, Helm and llm-d: [integrations](docs/integrations.md).
 
 ## Documentation
 
-* [Quickstart](https://intutic.github.io/turing/quickstart/) · [Models & hardware](https://intutic.github.io/turing/models_and_hardware/) · [Serving & API](https://intutic.github.io/turing/serving/)
-* [Architecture](https://intutic.github.io/turing/architecture/) · [Benchmarks](https://intutic.github.io/turing/benchmarks/)
-* [Comparison](https://intutic.github.io/turing/comparison/) · [Docker](https://intutic.github.io/turing/docker/) · [Kubernetes & llm-d](https://intutic.github.io/turing/llmd-integration/) · [Integrations](https://intutic.github.io/turing/integrations/) · [Licensing](https://intutic.github.io/turing/licensing/)
+* **Getting started:** [Quickstart](https://intutic.github.io/turing/quickstart/) · [Docker](https://intutic.github.io/turing/docker/)
+* **User guide:** [Serving & API](https://intutic.github.io/turing/serving/) · [Models & hardware](https://intutic.github.io/turing/models_and_hardware/) · [Integrations](https://intutic.github.io/turing/integrations/) · [Kubernetes & llm-d](https://intutic.github.io/turing/llmd-integration/)
+* **Performance:** [Comparison](https://intutic.github.io/turing/comparison/) · [Benchmarks](https://intutic.github.io/turing/benchmarks/)
+* **Internals:** [Architecture](https://intutic.github.io/turing/architecture/) · [Experimental components](https://intutic.github.io/turing/experimental/)
+* **Project:** [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md) · [Licensing](https://intutic.github.io/turing/licensing/)
 
 ---
 

@@ -31,7 +31,7 @@ against [libuvcpp](https://github.com/Antruly/libuvcpp), starts it, drives
 requests at it, and hands back a report that separates what it **observed** from
 what it **derived** and from what it could **not establish**.
 
-It is one CLI and one MCP server. The same 22 tool contracts back both, so
+It is one CLI and one MCP server. The same 23 tool contracts back both, so
 an agent and a shell script get identical behaviour and identical evidence.
 
 The generated code is not a uvp artifact. It is ordinary libuvcpp C++ that builds
@@ -43,18 +43,23 @@ can walk away from uvp and keep the project.
 ### Requirements
 
 - Node.js `^22.19.0 || ^24.11.0 || >=26.0.0`
-- A C++14 toolchain (`g++` or `clang++`; MSVC 2019+ on Windows, where CI has
-  exercised Visual Studio 2026 / MSVC 14.51 only) and CMake 3.20+
-- [libuvcpp](https://github.com/Antruly/libuvcpp) **1.7.0 or newer**, either
-  `cmake --install`ed or unpacked from a
-  [release archive](https://github.com/Antruly/libuvcpp/releases). `uvp doctor`
-  and a failed `uvp build` both name this requirement, with the release URL and
-  the environment variables that make an install discoverable, when none is
-  found.
-- `pkg-config` (or `pkgconf`, which CMake 3.22 and newer search) when libuvcpp
-  comes from a release archive. Those ship only `lib/pkgconfig/uvcpp.pc` and no
-  CMake package, so the generated project's pkg-config fallback is the route
-  that runs; an install made with `cmake --install` answers
+- A C++14 compiler (`g++` or `clang++`; MSVC 2019+ or MinGW-w64 on Windows).
+  This is the one host prerequisite `uvp env` does not download.
+- Everything else is installed by uvp:
+
+  ```bash
+  npm install -g uvp-agents
+  uvp env
+  ```
+
+  `uvp env` proposes the newest supported [libuvcpp](https://github.com/Antruly/libuvcpp)
+  (1.11.0) and CMake (3.31.6) for this host and selects them. Every question has
+  a default, so pressing Enter through the prompts is a complete install. On
+  Windows the default libuvcpp archive is MinGW; pass `--variant msvc-x64` to use
+  the MSVC one. See [Install the C++ toolchain](docs/environment.md).
+
+- `pkg-config` (or `pkgconf`) is still needed for the release archive's
+  `lib/pkgconfig/uvcpp.pc` route. A `cmake --install`ed libuvcpp answers
   `find_package(uvcpp CONFIG)` instead and does not need it.
 
 On Windows the archive route uses the same `pkg-config` lookup CMake does:
@@ -155,23 +160,23 @@ That last rule is the one that shapes everything else. A tool that says
 
 ## What uvp can do
 
-| Task                                                                                              | Tools                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Check the toolchain and which libuvcpp modules are present                                        | `uvp_doctor`                                                                                                                                                                         |
-| Scaffold a buildable project (7 templates)                                                        | `uvp_workspace_create`                                                                                                                                                               |
-| Search, validate, import, export, and remove template packages, and generate a workspace from one | `uvp_template_search`, `uvp_template_get`, `uvp_template_validate`, `uvp_template_import`, `uvp_template_export`, `uvp_template_remove`; `uvp_workspace_create` (`template_package`) |
-| Configure and build with CMake                                                                    | `uvp_build`                                                                                                                                                                          |
-| Install and build a generated Node frontend app                                                   | `uvp_frontend_build`                                                                                                                                                                 |
-| Start a service and wait for it to actually answer                                                | `uvp_run`, `uvp_run_stop`                                                                                                                                                            |
-| Drive HTTP/1.1, HTTP/2, and HTTP/3 requests, and report TLS                                       | `uvp_http_request`                                                                                                                                                                   |
-| Probe a WebSocket endpoint                                                                        | `uvp_websocket_probe`                                                                                                                                                                |
-| Post a SOAP envelope and read the reply                                                           | `uvp_soap_call`                                                                                                                                                                      |
-| Measure throughput and latency percentiles                                                        | `uvp_load_test`                                                                                                                                                                      |
-| Record a session of exchanges for later reading                                                   | `uvp_capture_start`, `uvp_capture_read`                                                                                                                                              |
-| Replay a recorded session against a live target                                                   | `uvp_capture_replay`                                                                                                                                                                 |
-| Evaluate assertions against a recorded exchange                                                   | `uvp_assert_exchange`                                                                                                                                                                |
-| Do all of the above as one supervised pass                                                        | `uvp_verify`                                                                                                                                                                         |
-| Compare two verification reports and see what moved                                               | `uvp_bundle_diff`                                                                                                                                                                    |
+| Task                                                                                                     | Tools                                                                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Check the toolchain and which libuvcpp modules are present                                               | `uvp_doctor`                                                                                                                                                                                               |
+| Scaffold a buildable project (7 templates)                                                               | `uvp_workspace_create`                                                                                                                                                                                     |
+| Search, fetch, validate, import, export, and remove template packages, and generate a workspace from one | `uvp_template_search`, `uvp_template_get`, `uvp_template_fetch`, `uvp_template_validate`, `uvp_template_import`, `uvp_template_export`, `uvp_template_remove`; `uvp_workspace_create` (`template_package`) |
+| Configure and build with CMake                                                                           | `uvp_build`                                                                                                                                                                                                |
+| Install and build a generated Node frontend app                                                          | `uvp_frontend_build`                                                                                                                                                                                       |
+| Start a service and wait for it to actually answer                                                       | `uvp_run`, `uvp_run_stop`                                                                                                                                                                                  |
+| Drive HTTP/1.1, HTTP/2, and HTTP/3 requests, and report TLS                                              | `uvp_http_request`                                                                                                                                                                                         |
+| Probe a WebSocket endpoint                                                                               | `uvp_websocket_probe`                                                                                                                                                                                      |
+| Post a SOAP envelope and read the reply                                                                  | `uvp_soap_call`                                                                                                                                                                                            |
+| Measure throughput and latency percentiles                                                               | `uvp_load_test`                                                                                                                                                                                            |
+| Record a session of exchanges for later reading                                                          | `uvp_capture_start`, `uvp_capture_read`                                                                                                                                                                    |
+| Replay a recorded session against a live target                                                          | `uvp_capture_replay`                                                                                                                                                                                       |
+| Evaluate assertions against a recorded exchange                                                          | `uvp_assert_exchange`                                                                                                                                                                                      |
+| Do all of the above as one supervised pass                                                               | `uvp_verify`                                                                                                                                                                                               |
+| Compare two verification reports and see what moved                                                      | `uvp_bundle_diff`                                                                                                                                                                                          |
 
 Templates: `hello-http`, `rest-api`, `websocket-echo`, `websocket-test`,
 `soap-service`, `static-files`, `http3-service`.
@@ -202,7 +207,7 @@ registry owns the data and the review that admits a version. Where the two
 disagree, uvp wins.
 
 A package is data, not code: nothing in it runs when it is searched, indexed, or
-validated. uvp's side is the local store and the six `uvp_template_*` tools:
+validated. uvp's side is the local store and the seven `uvp_template_*` tools:
 
 ```bash
 # There is no package server: a checkout is the source for a package.
@@ -213,6 +218,7 @@ cd uvp-templates
 uvp template validate ./packages/hello-package/1.0.0
 uvp template import ./packages/hello-package/1.0.0 --dry-run
 uvp template import ./packages/hello-package/1.0.0
+uvp template fetch hello-package@1.0.0
 uvp template search --text hello
 uvp init ./svc --name svc --template-package hello-package@1.0.0
 ```
@@ -238,6 +244,11 @@ templates. The generated projects build via `find_package(uvcpp 1.7.0 CONFIG)`
 where a CMake package exists and via `pkg-config` where it does not, because the
 prebuilt release archives ship the latter and not the former. The version floor
 is enforced on both routes.
+
+A Linux x64 1.11.0 release archive (pkg-config only) also passed the 12 real
+toolchain cases, and the separate `uvp-templates` runtime lane passed all seven
+packages against the same prefix. 1.7.0 remains the floor and the CI pin; the
+1.11.0 sample is compatibility evidence, not a second baseline.
 
 The CLI and the MCP server are both built, and both are exercised as processes
 rather than as modules: `tests/boundary/cli/cliContract.test.ts` runs the CLI and
@@ -404,6 +415,10 @@ templates are verified against. It is a floor rather than a pin because the API
 the templates use has been stable across the 1.x line, and pinning would force a
 rebuild of libuvcpp for no benefit.
 
+The floor is not a claim that 1.7.0 is the newest build exercised. A Linux x64
+1.11.0 archive passed the real-toolchain lane on 2026-11-26; Windows and the
+CMake-package route for 1.11.0 have not been sampled.
+
 An older libuvcpp fails the check with the version it found named in the message.
 </details>
 
@@ -422,6 +437,8 @@ otherwise.
 
 ## Documentation
 
+- [Install the C++ toolchain](docs/environment.md) — one-command libuvcpp and
+  CMake install, versions, variants, and mirrors
 - [Installation and setup](docs/installation.md) — requirements, libuvcpp
   discovery, agent configuration
 - [CLI and evidence](docs/cli.md) — every command, output shape, exit status

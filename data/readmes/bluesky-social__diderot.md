@@ -16,9 +16,9 @@ There is no reranker and no keyword index.
 - **Sources.** Slack, with live Socket Mode events and a continuous sync that
   catches anything missed during restarts; image attachments are captioned and
   PDF, DOCX, and XLSX attachments are extracted to text. Coding-agent sessions
-  (Claude Code, Codex, Copilot CLI, Gemini CLI, OpenCode, Pi, Polytoken, ATIF,
-  Hugging Face STS), pushed over HTTP or polled from a session feed,
-  summarized and expandable to the exact records behind a hit.
+  (Antigravity, Claude Code, Codex, Copilot CLI, Gemini CLI, OpenCode, Pi,
+  Polytoken, ATIF, Hugging Face STS), pushed over HTTP or polled from a
+  session feed, summarized and expandable to the exact records behind a hit.
   Discord channels, threads and forum posts, over the gateway with a daily
   re-read. Notion page trees, Linear issues and comments, Zendesk tickets,
   comments, and Help Center articles, and the Markdown files in a mounted

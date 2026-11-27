@@ -270,16 +270,21 @@ Three things keep the loop cheap:
 - **A failure comes back short.** formal returns the first error and a hint, never Lean's
   full output, which for a Mathlib failure runs to thousands of tokens.
 - **formal recovers what it can.** Before it reports a failure, it replaces the proof
-  with an automatic tactic chain (`rfl`, `omega`, `norm_num`, `linarith`, `ring`,
-  `decide`, `simp`), then with a premise search (`exact?`). A proof recovered this way
-  appears under `recovered` and never goes back to the agent.
+  with an automatic tactic chain, then with a premise search (`exact?`). On a spec
+  property, the chain first unfolds the property and the spec's definitions, and
+  introduces the variables. It tries `rfl`, `omega`, `decide`, `simp`, `simp_all` and
+  `grind`. When the file imports Mathlib, it also tries `norm_num`, `linarith`, `ring`,
+  `positivity` and `nlinarith`. A proof recovered this way appears under `recovered`
+  and never goes back to the agent.
 
 ### One command: `formal check`
 
 `formal check <spec>` runs the whole loop on a Lean spec in one process, with no server.
 It runs the counterexample search, checks each proof it finds at
 `proofs/<Namespace>/<name>.lean`, compares the code's answers when you pass them, and
-exits. It prints one line per property and per compared function, and no log lines. The
+exits. For a property with no proof file, it tries the tactic chain first. A property
+the chain proves prints `verified by formal's own tactics`, and the agent writes no proof
+for it. It prints one line per property and per compared function, and no log lines. The
 exit code is:
 
 - 0 when everything holds.
@@ -311,6 +316,37 @@ $ formal check Ring.lean --answers answers.json
 - `--inputs <file>` writes the inputs of each compared function to that file, as
   `{"<function>": [inputs]}`. A function with many inputs prints only their count.
 - A hint that already appeared in the run appears again as `hint: as above`.
+
+### In CI: the GitHub Action
+
+The repository is also a GitHub Action that runs `formal check` on each change. It
+fails when a property is refuted, when a proof no longer holds, or when the code no
+longer matches its spec. Each spec's output goes to the job summary. formal's own CI
+runs it on `spec/` like this:
+
+```yaml
+- uses: ./
+  with:
+    formal: rust/target/debug/formal
+    specs: spec/*.lean
+    answers: rust/target/debug/examples/answers "$FORMAL_SPEC" "$FORMAL_INPUTS" "$FORMAL_ANSWERS"
+```
+
+Another repository uses `yamafaktory/formal@<tag>` in place of `./`, and leaves
+out `formal` so that the action installs a release.
+
+The action installs formal and Lean, then checks each spec. It caches Lean and
+Mathlib between runs, keyed on the formal version, so only the first run of a version
+downloads them. formal never runs your
+code. For a spec that compares functions with the code, the action runs the
+`answers` command you give. That command reads the inputs formal writes to
+`$FORMAL_INPUTS`, runs your code on them, and writes the answers to
+`$FORMAL_ANSWERS` as `{"<function>": [answers]}`. The action skips the command for a
+spec that compares no function.
+
+`formal` takes a binary to use instead of a release. `version` picks the release to
+install, and defaults to the release of the action's own tag. `proofs` defaults to `proofs`. formal's own `answers` command
+is `rust/formal-lean/examples/answers.rs`.
 
 ### The spec file
 

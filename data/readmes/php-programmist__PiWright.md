@@ -2,16 +2,17 @@
 
 ![Release](https://img.shields.io/github/v/release/php-programmist/PiWright)
 ![License](https://img.shields.io/github/license/php-programmist/PiWright)
-![Platform](https://img.shields.io/badge/platform-Windows-blue)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-blue)
 
-**PiWright** is an open-source desktop GUI for the [pi coding agent](https://github.com/earendil-works/pi) — a native Windows app (Electron + React) that turns pi into a full IDE-like workspace: AI chat, agent-driven kanban, git branch graph, Monaco editor, terminal and remote access from your phone — in one window.
+**PiWright** is an open-source desktop GUI for the [pi coding agent](https://github.com/earendil-works/pi) — a native Windows and Linux app (Electron + React) that turns pi into a full IDE-like workspace: AI chat, agent-driven kanban, git branch graph, Monaco editor, terminal and remote access from your phone — in one window.
 
 ## Highlights
 
-- **Windows + WSL** — two pi backends, native and WSL, auto-detection per project
+- **Windows, Linux + WSL** — pi backends: native, WSL and SSH, auto-detection per project
+- **Background sessions** — closing a tab keeps the agent running in a daemon; sessions survive app restart
 - **Agent-driven kanban** — the agent picks tasks, moves cards, reports via comments
 - **Everything in one window** — chat, git branch graph, diffs, editor, terminal
-- **Remote access** — Telegram notifications and a PIN-protected web UI from a phone
+- **Remote access** — Telegram notifications, a PIN-protected web UI from a phone, or the full UI in any browser via the headless server
 
 ---
 
@@ -26,7 +27,7 @@
 - Live tok/s during streaming, turn timer, per-bucket context token breakdown popover
 - **Prompt editing with fork**: edit a sent prompt and fork the session from that point, after any agent reply
 - **Rewind**: roll back to any assistant answer — the session forks to a new branch and the working directory is restored from a snapshot taken before the next prompt (current state saved to git stash as a safety net)
-- **Built-in `/loop`**: run the agent in iterations with an exit condition, `loop_stop` tool, loop flags in session names and icons
+- **Built-in `/loop`**: run the agent in iterations with an exit condition, `loop_stop` tool, loop flags in session names and icons; loops survive session detach/attach and app restart, a turn ending with a model error stops the loop
 - Interactive question cards (ask_question) with options, free-text answers and multi-select
 - Todo widget pinned above the chat, live context-usage indicator with color grading and cache stats
 - Paste images and attach files (copied to `.pi/attachments` in the repo root so worktree sessions share them and survive worktree removal), with image previews and lightbox in the chat feed; click a pending attachment thumbnail to preview it before sending
@@ -36,6 +37,14 @@
 - Copy button on code blocks, view-diff button for write tool blocks, full command shown when a tool block is expanded
 
 ![Chat with todo widget and tool calls](docs/screenshots/chat.png)
+
+### Background sessions
+
+- Sessions run in a separate daemon process: closing a tab mid-turn keeps the turn running, and quitting the app lets running turns finish in the background
+- Sessions survive app restart: open tabs are restored, history sessions reopen and attach to the live process
+- Footer counter with a popup list of background sessions, eject button on running tabs and session rows, stop-all button
+- Sound and Telegram notifications when a background turn or dialog finishes; configurable idle grace before a finished session is stopped
+- Off by default — enable in Settings → Advanced
 
 ### Kanban
 
@@ -51,7 +60,7 @@
 
 - Multiple projects in a sidebar, each with its own sessions, git repo and settings; drag to reorder projects
 - Project and branch in the app header (IDE style): project switcher, branch popup, ahead/behind arrows with automatic fetch
-- Two pi backends: native Windows and WSL (per-project choice, auto-detection)
+- Pi backends: native (Windows or Linux), WSL and SSH (per-project choice, auto-detection)
 - **SSH backend**: run pi on a remote Linux server over SSH (password, key + passphrase or ssh-agent) — remote projects with file browsing, git, terminal and kanban over SFTP/exec; add projects via a remote directory browser, manage servers in Settings → SSH
 - Git worktree support: create, reuse and delete worktrees, sessions grouped under the project
 
@@ -61,13 +70,15 @@
 - **Git Log dock**: PHPStorm-style branch graph with side branches shown by default, converging lanes, search by message or hash, branch filter
 - Commit context menu: cherry-pick, checkout revision, reset soft/mixed/hard, revert, edit commit message, squash, drop commit, interactive rebase from here, new branch/tag
 - Stage / unstage / commit, unified and split diffs; arrow keys step through the files of a commit diff
-- Branch popup in IDE style: search, create, checkout, rename, delete, pin branches to the top
+- Branch popup in IDE style: search, create, checkout, rename, delete, pin branches to the top; push/force-push and pull (rebase / merge / fast-forward) per branch with ahead/behind arrows
+- **Resolve Conflicts dialog** after a failed pull/rebase/merge: Yours/Theirs per file, resolve with AI, Continue/Abort; rebase items in the branch submenu
 
 ![Git Log dock with branch graph](docs/screenshots/git-log-dock.png)
 
 ### Files and editor
 
 - File browser with Monaco editor, soft wrap toggle
+- "Show in folder" context menu item opens the file or folder in the system file manager
 - Markdown files: Obsidian-style live preview — click a block to edit the source, everything else renders
 
 ![Markdown live preview in the file tab](docs/screenshots/files-markdown.png)
@@ -81,7 +92,7 @@
 
 ### Models, MCP and skills
 
-- Manage pi providers and models (`models.json`) for both backends: add, edit, copy between backends
+- Manage pi providers and models (`models.json`) for all backends: add, edit, copy to any backend (Windows/WSL/SSH), raw models.json editor with validation
 - Model dropdown re-reads the pi model catalog when opened and after saving models
 - MCP servers: user-level and per-project, enable/disable, exposure toggles, JSON import, live connection check
 - Skills: user-level and per-project directories with toggles
@@ -90,7 +101,7 @@
 
 - Sound notifications for completed turns, questions and errors (system sounds or custom wav), with a play button to preview the selected sound
 - Telegram bot notifications with per-event checkboxes and per-session toggle
-- Remote control from a phone: built-in WebSocket bridge with PIN auth (static PIN option) serves the web UI — session list, chat with images, abort, dialog answers, session creation; web UI follows the app language, failed server start retries with backoff
+- Remote control from a phone: built-in WebSocket bridge with PIN auth (static PIN option) serves the web UI — session list, chat with images, abort, dialog answers, session creation; kanban boards with card editing, comments and column loops on the phone; web UI follows the app language, failed server start retries with backoff
 
 ![Agent questions on the remote web UI](docs/screenshots/remote-question.png)
 
@@ -113,18 +124,19 @@
 
 ## Requirements
 
-- Windows 10/11
-- Node.js ≥ 22.19 and Git for Windows
+- Windows 10/11 or a modern Linux distribution
+- Node.js ≥ 22.19; on Windows also Git for Windows, on Linux `build-essential` (node-pty compiles from source)
 - [pi CLI](https://github.com/earendil-works/pi): native (`irm https://pi.dev/install.ps1 | iex`) and/or inside WSL — selectable per project in settings
 
 ## Installation
 
-Download the latest installer from [Releases](https://github.com/php-programmist/PiWright/releases/latest). The app checks this feed for updates automatically (configurable in Settings → Launch → Update feed URL). Updates are never downloaded silently — a banner offers to download and install or skip the version; click the version in the projects panel footer to see What's new.
+Download the latest installer (Windows) or AppImage/deb package (Linux) from [Releases](https://github.com/php-programmist/PiWright/releases/latest). The app checks this feed for updates automatically (configurable in Settings → Launch → Update feed URL). Updates are never downloaded silently — a banner offers to download and install or skip the version; click the version in the projects panel footer to see What's new.
 ## Building from source
 ```sh
 npm install
 npm run build          # compile to out/
 npm run dist           # build the NSIS installer (release/)
+npm run dist:linux     # AppImage + deb (from a Linux environment)
 ```
 ## Development
 ```sh
@@ -136,6 +148,47 @@ npm run lint           # eslint
 ```
 ## Settings
 App settings live in `%APPDATA%\PiWright\settings.json` and are editable from the in-app settings window: backends, WSL distro, pi path, update feed, appearance, notifications, remote access.
+
+## Web mode (headless server)
+Besides the desktop window, PiWright can run as a headless web server serving the full UI to a browser. It is also published as the `piwright-server` npm package:
+
+```sh
+npm i -g piwright-server
+piwright-server --port 7691
+```
+
+```sh
+npm run serve                                   # dev build required first (npm run build)
+# packaged (Windows/Linux):
+ELECTRON_RUN_AS_NODE=1 <binary> <app>/out/headless/index.js
+```
+
+Options: `--port` (default 7691), `--user-data` (defaults to the same directory the desktop app uses, so settings/projects/sessions are shared), `--host` (bind address, default `127.0.0.1`), `--tls-cert`/`--tls-key` (PEM files, enable HTTPS).
+
+### Security model
+
+- **PIN auth**: a 6-digit PIN is printed to the console on start (or the static PIN from Settings → Notifications → Remote); login sets an `HttpOnly; SameSite=Strict` session cookie. Changing the static PIN revokes all sessions. 5 failed attempts lock the peer out for 30 seconds.
+- **Loopback by default**: the server binds `127.0.0.1` unless `--host` is given. An authenticated browser gets full access to the host (file system, terminal, RPC), so only expose it on the LAN if you accept that.
+- **Origin checks**: `POST /login` and WebSocket upgrades with an `Origin` header are rejected unless it matches `Host` (or `X-Forwarded-Host` behind a reverse proxy) — CSRF and DNS-rebinding protection on top of `SameSite=Strict`.
+- **HTTPS for LAN**: pass a certificate and key:
+
+  ```sh
+  # one-off self-signed certificate (browsers will warn; accept to proceed)
+  openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=piwright"
+  node out/headless/index.js --host 0.0.0.0 --tls-cert cert.pem --tls-key key.pem
+  ```
+
+  With TLS the session cookie is additionally marked `Secure`.
+- **Reverse proxy**: terminate TLS at the proxy and forward WebSocket upgrades; the proxy must pass `Host` or `X-Forwarded-Host` matching the public URL. Caddy example:
+
+  ```caddyfile
+  piwright.example.com {
+      reverse_proxy 127.0.0.1:7691
+  }
+  ```
+
+  (Caddy sets `X-Forwarded-Host` and upgrades WebSockets automatically; for nginx add `proxy_set_header X-Forwarded-Host $host;` and the usual `Upgrade`/`Connection` headers.)
+
 ## Project structure
 - `src/main` — Electron main process: pi RPC client, backends (native/WSL), settings, git, files, terminal, MCP, notifications, remote bridge
 - `src/preload` — contextBridge, the only IPC boundary

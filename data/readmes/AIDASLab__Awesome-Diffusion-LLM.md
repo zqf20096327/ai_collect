@@ -149,6 +149,7 @@ A comprehensive and structured list of research papers about **Large-Language-Di
 | [Acceleration of Diffusion Language Model through Discrete Average Generator](https://arxiv.org/abs/2609.38364) | 2026.09 | Arxiv | CTMC training objective |
 | [Know When to Hold 'em: Correct-Token Retention in Uniform-State Diffusion Language Models](https://arxiv.org/abs/2610.01275) | 2026.10 | Arxiv | Correct-token retention loss |
 | [ALoDLM: Adaptively Looped Diffusion Language Models](https://arxiv.org/abs/2610.04198) | 2026.10 | Arxiv | Adaptive recurrent architecture |
+| [On the Importance of Hidden-State Refinement in Masked Diffusion Language Models](https://arxiv.org/abs/2611.32416) | 2026.11 | Arxiv | Cross-step hidden-state refinement |
 
 ### 2.2 Continuous & Latent Space Diffusion
 | Paper Title | Year | Venue | Remark |
@@ -765,5 +766,4 @@ A comprehensive and structured list of research papers about **Large-Language-Di
 | [Faster but Different: Diagnosing and Controlling Content Drift in Accelerated Multimodal Diffusion Language Models](https://arxiv.org/abs/2607.29079) | 2026.07 | Arxiv | Training-free, KV cache |
 | [What Does a Discrete Diffusion Model Learn?](https://arxiv.org/abs/2607.05381) | 2026.07 | Arxiv | Backfill, Discrete diffusion theory |
 | [Answer First, Reason Later: When Commitment Order Costs Accuracy in Diffusion Language Models](https://arxiv.org/abs/2608.05687) | 2026.08 | Arxiv | When Commitment Order Costs Accuracy in |
-| [Lost in Interpolation: Why Predictive Feedback Fails in Diffusion Language Models](https://arxiv.org/abs/2608.06529) | 2026.08 | Arxiv | Why Predictive Feedback Fails in Diffusion |
-| [Scaling Inherent
+| [Lost in Interpolation: Wh
