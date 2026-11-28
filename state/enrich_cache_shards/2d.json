@@ -223,10 +223,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -338,11 +338,11 @@
   }
  },
  "jx-sec/jxwaf": {
-  "commit_90d": 29,
-  "commit_7d": 4,
+  "commit_90d": 31,
+  "commit_7d": 3,
   "rel_ver": "v4.5",
   "rel_pub": "2025-03-28",
-  "rel_days": 603,
+  "rel_days": 610,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -358,10 +358,10 @@
    "Go Template": 3,
    "CSS": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4902,6 +4902,71 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "Sleiman-Eid/ralor-dlss5-enhancer": {
+  "commit_90d": 4,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "commit": "20261128",
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "j4flmao/agent-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 89,
+   "Shell": 11
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "krunlp/AI-Prep-Buddy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 97,
+   "Python": 2,
+   "JavaScript": 1,
+   "Shell": 0,
+   "SCSS": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

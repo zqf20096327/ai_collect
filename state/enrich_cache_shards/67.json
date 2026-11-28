@@ -208,11 +208,11 @@
   }
  },
  "huggingface/datatrove": {
-  "commit_90d": 26,
-  "commit_7d": 0,
+  "commit_90d": 28,
+  "commit_7d": 2,
   "rel_ver": "v0.10.1",
   "rel_pub": "2026-09-30",
-  "rel_days": 52,
+  "rel_days": 59,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -226,10 +226,10 @@
    "Rust": 2,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -282,11 +282,11 @@
   }
  },
  "Twigpine/zero": {
-  "commit_90d": 157,
-  "commit_7d": 9,
+  "commit_90d": 153,
+  "commit_7d": 6,
   "rel_ver": "v0.14.0",
   "rel_pub": "2026-11-17",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -302,10 +302,10 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4872,6 +4872,89 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "LofiSu/OfferHunter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "SenpaiSpide664/ai-visual-prompt-cookbook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "SNTKida/CELL-UPDATER-S3": {
+  "rel_ver": "ver0.2.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "Cansiny0320/bili-agent-kit": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 33,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

@@ -131,7 +131,7 @@
   "commit_90d": 2,
   "rel_ver": "1.3.10.0",
   "rel_pub": "2025-07-28",
-  "rel_days": 481,
+  "rel_days": 488,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -147,18 +147,18 @@
    "Shell": 1,
    "Cuda": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/tflite-micro": {
-  "commit_7d": 5,
-  "commit_90d": 203,
+  "commit_7d": 1,
+  "commit_90d": 200,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -173,10 +173,10 @@
    "Shell": 2,
    "Makefile": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -247,7 +247,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.2.0",
   "rel_pub": "2020-09-04",
-  "rel_days": 2269,
+  "rel_days": 2276,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -304,10 +304,10 @@
  },
  "trycompai/comp": {
   "commit_7d": 2,
-  "commit_90d": 36,
+  "commit_90d": 38,
   "rel_ver": "v3.111.1",
   "rel_pub": "2026-08-05",
-  "rel_days": 108,
+  "rel_days": 115,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -323,10 +323,10 @@
    "JavaScript": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -446,12 +446,12 @@
   }
  },
  "neo4j/neo4j-graphrag-python": {
-  "commit_7d": 5,
-  "commit_90d": 109,
+  "commit_7d": 10,
+  "commit_90d": 116,
   "rel_ver": "1.24.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "rel_days": 18,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -462,10 +462,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4627,11 +4627,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261128",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261029",
+   "security": "20261128",
    "contrib": "20261029",
    "lang": "20261029"
   }

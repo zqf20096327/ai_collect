@@ -210,12 +210,12 @@
   }
  },
  "xyproto/algernon": {
-  "commit_90d": 66,
-  "commit_7d": 1,
-  "rel_ver": "v1.17.13",
-  "rel_pub": "2026-11-05",
-  "rel_days": 16,
-  "rel_n90": 2,
+  "commit_90d": 81,
+  "commit_7d": 17,
+  "rel_ver": "v1.18.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 13,
@@ -239,10 +239,10 @@
    "Shell": 1,
    "Roff": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -363,7 +363,7 @@
   "commit_7d": 0,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-11-11",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -378,10 +378,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -443,8 +443,8 @@
   }
  },
  "legeling/awesome-codex-pet": {
-  "commit_90d": 676,
-  "commit_7d": 16,
+  "commit_90d": 631,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -459,10 +459,10 @@
    "CSS": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4766,10 +4766,10 @@
   }
  },
  "ccch1mneyyy/dsh-Go": {
-  "commit_90d": 3054,
-  "commit_7d": 651,
-  "rel_ver": "v1.3.0",
-  "rel_pub": "2026-11-20",
+  "commit_90d": 4285,
+  "commit_7d": 1231,
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4786,10 +4786,10 @@
    "Python": 2,
    "TypeScript": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
@@ -5400,6 +5400,29 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "arjunkshah12345-hash/tandem": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

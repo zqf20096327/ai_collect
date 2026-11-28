@@ -168,11 +168,11 @@
   }
  },
  "jundizhou/easy-stock": {
-  "commit_90d": 260,
-  "commit_7d": 15,
-  "rel_ver": "v1.7.6",
-  "rel_pub": "2026-11-18",
-  "rel_days": 3,
+  "commit_90d": 250,
+  "commit_7d": 17,
+  "rel_ver": "v1.8.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -188,22 +188,22 @@
    "JavaScript": 6,
    "Python": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "geek-fun/dockit": {
-  "commit_90d": 121,
-  "commit_7d": 9,
-  "rel_ver": "v2.0.3",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
-  "rel_n90": 6,
+  "commit_90d": 132,
+  "commit_7d": 11,
+  "rel_ver": "v2.0.4",
+  "rel_pub": "2026-11-24",
+  "rel_days": 4,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -218,10 +218,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

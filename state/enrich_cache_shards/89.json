@@ -185,11 +185,11 @@
   }
  },
  "jeremylongshore/tons-of-skills-marketplace": {
-  "commit_7d": 26,
-  "commit_90d": 1138,
+  "commit_7d": 7,
+  "commit_90d": 679,
   "rel_ver": "@intentsolutionsio/intent-labs-pack@0.1.0",
   "rel_pub": "2026-07-23",
-  "rel_days": 121,
+  "rel_days": 128,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -205,10 +205,10 @@
    "Shell": 5,
    "Astro": 4
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -325,7 +325,7 @@
   }
  },
  "kyegomez/awesome-multi-agent-papers": {
-  "commit_7d": 8,
+  "commit_7d": 0,
   "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
@@ -338,10 +338,10 @@
    "TeX": 92,
    "Python": 8
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -489,11 +489,11 @@
   }
  },
  "codelibs/fess": {
-  "commit_7d": 61,
-  "commit_90d": 503,
+  "commit_7d": 97,
+  "commit_90d": 582,
   "rel_ver": "fess-15.9.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -511,10 +511,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5270,13 +5270,16 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261115",
    "security": "20261115",
    "contrib": "20261115",
-   "lang": "20261115"
-  }
+   "lang": "20261115",
+   "commit": "20261128"
+  },
+  "commit_90d": 558,
+  "commit_7d": 17
  },
  "AvivSham/DeepLabv3": {
   "rel_ver": null,
@@ -5556,6 +5559,56 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "Lyl101010/antigravity-codex-monitor": {
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-11-28",
+  "rel_days": 0,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 22,
+   "JavaScript": 13,
+   "PowerShell": 4,
+   "Shell": 3
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "prathameshk421/Heimdall": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 72,
+   "HTML": 26,
+   "Shell": 1,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

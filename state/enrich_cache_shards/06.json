@@ -48,10 +48,10 @@
   }
  },
  "rlaope/oh-my-hermes": {
-  "commit_90d": 7151,
-  "commit_7d": 945,
-  "rel_ver": "v4.0.9",
-  "rel_pub": "2026-11-20",
+  "commit_90d": 7769,
+  "commit_7d": 863,
+  "rel_ver": "omher-v1.2.4",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -68,10 +68,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -140,10 +140,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -205,12 +205,12 @@
   }
  },
  "kubeshop/testkube": {
-  "commit_90d": 415,
-  "commit_7d": 28,
-  "rel_ver": "2.15.2",
-  "rel_pub": "2026-11-12",
-  "rel_days": 9,
-  "rel_n90": 7,
+  "commit_90d": 412,
+  "commit_7d": 27,
+  "rel_ver": "2.16.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -227,10 +227,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

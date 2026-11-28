@@ -268,11 +268,11 @@
   }
  },
  "vmoranv/jshookmcp": {
-  "commit_90d": 727,
-  "commit_7d": 90,
+  "commit_90d": 828,
+  "commit_7d": 142,
   "rel_ver": "v0.4.5",
   "rel_pub": "2026-11-16",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -291,21 +291,21 @@
    "Python": 0,
    "AppleScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "hyperfield/ai-file-sorter": {
-  "commit_90d": 202,
-  "commit_7d": 23,
+  "commit_90d": 203,
+  "commit_7d": 1,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-11-19",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -321,10 +321,10 @@
    "Python": 3,
    "CMake": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -355,8 +355,8 @@
   }
  },
  "antoniolupetti/algebrica": {
-  "commit_90d": 90,
-  "commit_7d": 5,
+  "commit_90d": 108,
+  "commit_7d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -365,10 +365,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

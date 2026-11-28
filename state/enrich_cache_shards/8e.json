@@ -190,11 +190,11 @@
   }
  },
  "anthropics/anthropic-sdk-go": {
-  "commit_90d": 533,
-  "commit_7d": 46,
-  "rel_ver": "v2.13.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "commit_90d": 537,
+  "commit_7d": 18,
+  "rel_ver": "v2.15.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -208,10 +208,10 @@
    "Shell": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4300,11 +4300,11 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261128",
   "dim_ts": {
    "commit": "20261029",
    "release": "20261029",
-   "security": "20261029",
+   "security": "20261128",
    "contrib": "20261029",
    "lang": "20261029"
   }

@@ -330,12 +330,12 @@
   }
  },
  "mateaix/mateclaw": {
-  "commit_7d": 26,
-  "commit_90d": 234,
+  "commit_7d": 22,
+  "commit_90d": 244,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-11-20",
-  "rel_days": 1,
-  "rel_n90": 4,
+  "rel_days": 8,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -350,10 +350,10 @@
    "TeX": 2,
    "Python": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4639,6 +4639,33 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "nanless/audio-research-workbench": {
+  "rel_ver": "v1.5.2",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 57,
+   "Python": 22,
+   "Kotlin": 9,
+   "Swift": 7,
+   "HTML": 5
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

@@ -200,11 +200,11 @@
   }
  },
  "whiteguo233/OpenBiliClaw": {
-  "commit_90d": 782,
-  "commit_7d": 10,
-  "rel_ver": "sponsored-runtime-2026-11-16.1",
-  "rel_pub": "2026-11-15",
-  "rel_days": 6,
+  "commit_90d": 820,
+  "commit_7d": 64,
+  "rel_ver": "openbiliclaw-v0.3.241",
+  "rel_pub": "2026-11-25",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -220,10 +220,10 @@
    "HTML": 2,
    "CSS": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -259,11 +259,11 @@
   }
  },
  "NxcoreAI/EverRoom": {
-  "commit_90d": 389,
+  "commit_90d": 197,
   "commit_7d": 0,
-  "rel_ver": "desktop-v0.1.9-nightly.20261031.123",
-  "rel_pub": "2026-10-31",
-  "rel_days": 21,
+  "rel_ver": "fa-v0.1.9-fa.20261122.5",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -319,11 +319,11 @@
   }
  },
  "openai/openai-dotnet": {
-  "commit_90d": 88,
-  "commit_7d": 5,
+  "commit_90d": 95,
+  "commit_7d": 14,
   "rel_ver": "OpenAI_2.15.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -338,10 +338,10 @@
    "PowerShell": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -400,13 +400,13 @@
   }
  },
  "golemcloud/golem": {
-  "commit_90d": 735,
-  "commit_7d": 135,
-  "rel_ver": "v1.6.4-rc1",
-  "rel_pub": "2026-11-10",
-  "rel_days": 11,
+  "commit_90d": 806,
+  "commit_7d": 93,
+  "rel_ver": "golem-shared-v1.6.4",
+  "rel_pub": "2026-11-25",
+  "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -420,18 +420,18 @@
    "Scala": 4,
    "MoonBit": 4
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "EthicalML/awesome-artificial-intelligence-regulation": {
-  "commit_90d": 77,
-  "commit_7d": 6,
+  "commit_90d": 83,
+  "commit_7d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -440,10 +440,10 @@
   "sec_ids": [],
   "contrib_n": 48,
   "lang": {},
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -472,11 +472,11 @@
   }
  },
  "cognizant-ai-lab/neuro-san-studio": {
-  "commit_90d": 512,
-  "commit_7d": 10,
+  "commit_90d": 487,
+  "commit_7d": 4,
   "rel_ver": "0.4.5",
   "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -492,10 +492,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5189,6 +5189,31 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "mk668a/inline-scribe": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-06-25",
+  "rel_days": 156,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "HTML": 5,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

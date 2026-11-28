@@ -271,12 +271,12 @@
   }
  },
  "fastmachinelearning/hls4ml": {
-  "commit_90d": 65,
-  "commit_7d": 3,
-  "rel_ver": "v1.3.0",
-  "rel_pub": "2026-03-20",
-  "rel_days": 246,
-  "rel_n90": 0,
+  "commit_90d": 71,
+  "commit_7d": 9,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -291,10 +291,10 @@
    "Logos": 3,
    "SystemVerilog": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4943,6 +4943,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Naruto859/MugenRoutes": {
+  "rel_ver": "v3.0.3",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "HTML": 20,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Procfile": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

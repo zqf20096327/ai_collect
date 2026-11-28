@@ -1,10 +1,10 @@
 {
  "holaboss-ai/holaOS": {
-  "commit_7d": 2,
+  "commit_7d": 0,
   "commit_90d": 2,
   "rel_ver": "latest",
   "rel_pub": "2026-08-06",
-  "rel_days": 107,
+  "rel_days": 114,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

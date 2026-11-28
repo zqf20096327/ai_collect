@@ -246,10 +246,10 @@
  },
  "ForceInjection/AI-fundamentals": {
   "commit_7d": 17,
-  "commit_90d": 189,
+  "commit_90d": 197,
   "rel_ver": "v4.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 53,
+  "rel_days": 60,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -265,10 +265,10 @@
    "Shell": 6,
    "Cuda": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -327,11 +327,11 @@
   }
  },
  "tphakala/birdnet-go": {
-  "commit_7d": 86,
-  "commit_90d": 877,
-  "rel_ver": "20261031",
-  "rel_pub": "2026-10-31",
-  "rel_days": 21,
+  "commit_7d": 54,
+  "commit_90d": 890,
+  "rel_ver": "20261122",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -349,10 +349,10 @@
    "Shell": 2,
    "Python": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -391,11 +391,11 @@
   }
  },
  "rynfar/meridian": {
-  "commit_7d": 40,
-  "commit_90d": 636,
-  "rel_ver": "meridian-v1.93.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 4,
+  "commit_7d": 16,
+  "commit_90d": 641,
+  "rel_ver": "meridian-v1.94.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -411,10 +411,10 @@
    "CSS": 0,
    "Nix": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -447,10 +447,10 @@
   }
  },
  "heymrun/heym": {
-  "commit_7d": 148,
-  "commit_90d": 665,
-  "rel_ver": "v0.0.165",
-  "rel_pub": "2026-11-20",
+  "commit_7d": 45,
+  "commit_90d": 675,
+  "rel_ver": "v0.0.171",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -476,10 +476,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -576,11 +576,11 @@
   }
  },
  "OpenCSGs/csghub-server": {
-  "commit_7d": 9,
-  "commit_90d": 240,
+  "commit_7d": 8,
+  "commit_90d": 219,
   "rel_ver": "v2.7.0-ce",
   "rel_pub": "2026-11-05",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -596,10 +596,10 @@
    "PLpgSQL": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

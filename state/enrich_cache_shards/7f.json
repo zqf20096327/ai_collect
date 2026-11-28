@@ -216,11 +216,11 @@
   }
  },
  "huggingface/optimum": {
-  "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_7d": 1,
+  "commit_90d": 11,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-08-04",
-  "rel_days": 109,
+  "rel_days": 116,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -234,10 +234,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4803,13 +4803,16 @@
    "Swift": 4,
    "Go": 3
   },
-  "enriched_at": "20261126",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261126",
    "security": "20261126",
    "contrib": "20261126",
-   "lang": "20261126"
-  }
+   "lang": "20261126",
+   "commit": "20261128"
+  },
+  "commit_90d": 3963,
+  "commit_7d": 287
  },
  "kuhung/ask-jev": {
   "rel_ver": null,
@@ -4831,6 +4834,25 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "Birubhai1964/interview-copilot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

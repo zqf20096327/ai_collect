@@ -296,12 +296,12 @@
   }
  },
  "qufei1993/skills-hub": {
-  "commit_7d": 3,
-  "commit_90d": 322,
+  "commit_7d": 0,
+  "commit_90d": 304,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-11-13",
-  "rel_days": 8,
-  "rel_n90": 9,
+  "rel_days": 15,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -316,10 +316,10 @@
    "JavaScript": 5,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2174,10 +2174,10 @@
   }
  },
  "jessepinkman9900/claude-second-brain": {
-  "rel_ver": "v1.1.0",
-  "rel_pub": "2026-04-20",
-  "rel_days": 184,
-  "rel_n90": 0,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-28",
+  "rel_days": 0,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2189,9 +2189,9 @@
    "JavaScript": 89,
    "TypeScript": 11
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261128",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",

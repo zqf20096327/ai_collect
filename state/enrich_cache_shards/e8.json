@@ -260,13 +260,13 @@
   }
  },
  "makecindy/cindy": {
-  "commit_90d": 17743,
-  "commit_7d": 2981,
-  "rel_ver": "v0.1.143",
-  "rel_pub": "2026-11-20",
+  "commit_90d": 20092,
+  "commit_7d": 2650,
+  "rel_ver": "v0.1.149-beta",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -280,10 +280,10 @@
    "Python": 0,
    "Rust": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -372,11 +372,11 @@
   }
  },
  "neuron-core/neuron-ai": {
-  "commit_90d": 435,
-  "commit_7d": 12,
-  "rel_ver": "4.1.27",
-  "rel_pub": "2026-11-17",
-  "rel_days": 4,
+  "commit_90d": 445,
+  "commit_7d": 9,
+  "rel_ver": "4.1.29",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -396,22 +396,22 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "WenjieDu/PyPOTS": {
-  "commit_90d": 24,
-  "commit_7d": 7,
-  "rel_ver": "v2.0",
-  "rel_pub": "2026-11-09",
-  "rel_days": 12,
-  "rel_n90": 1,
+  "commit_90d": 74,
+  "commit_7d": 50,
+  "rel_ver": "v2.1",
+  "rel_pub": "2026-11-25",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -423,10 +423,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -494,11 +494,11 @@
   }
  },
  "open-edge-platform/geti": {
-  "commit_90d": 371,
-  "commit_7d": 21,
+  "commit_90d": 354,
+  "commit_7d": 7,
   "rel_ver": "app/v3.3.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -514,22 +514,22 @@
    "Rust": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "braindecode/braindecode": {
-  "commit_90d": 529,
-  "commit_7d": 143,
-  "rel_ver": "v2.0.0",
-  "rel_pub": "2026-11-02",
-  "rel_days": 19,
-  "rel_n90": 4,
+  "commit_90d": 587,
+  "commit_7d": 82,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -540,10 +540,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

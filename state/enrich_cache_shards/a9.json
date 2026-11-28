@@ -362,11 +362,11 @@
   }
  },
  "gufo-org/gufo": {
-  "commit_90d": 853,
-  "commit_7d": 51,
-  "rel_ver": "v0.35.0",
-  "rel_pub": "2026-11-17",
-  "rel_days": 4,
+  "commit_90d": 877,
+  "commit_7d": 100,
+  "rel_ver": "v0.37.0",
+  "rel_pub": "2026-11-25",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -382,10 +382,10 @@
    "CMake": 1,
    "Nix": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5092,6 +5092,52 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "Leeseunghun03/DPVI-SLAM": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 76,
+   "Python": 12,
+   "CMake": 7,
+   "Cuda": 4,
+   "C": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "aventisia/avintra": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "C#": 41,
+   "TypeScript": 36,
+   "MDX": 7,
+   "Python": 7,
+   "Bru": 6
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

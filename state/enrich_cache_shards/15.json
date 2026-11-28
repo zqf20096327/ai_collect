@@ -230,11 +230,11 @@
   }
  },
  "deepmodeling/deepmd-kit": {
-  "commit_7d": 5,
-  "commit_90d": 78,
+  "commit_7d": 6,
+  "commit_90d": 81,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-08-19",
-  "rel_days": 94,
+  "rel_days": 101,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -250,10 +250,10 @@
    "C": 1,
    "CMake": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4721,6 +4721,26 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "simonorozcoarias/Inpactor2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 95,
+   "Python": 5
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

@@ -454,12 +454,12 @@
   }
  },
  "HelgeSverre/ollama-gui": {
-  "commit_7d": 0,
-  "commit_90d": 38,
-  "rel_ver": "v2.0.5",
-  "rel_pub": "2026-10-23",
-  "rel_days": 29,
-  "rel_n90": 6,
+  "commit_7d": 5,
+  "commit_90d": 43,
+  "rel_ver": "v2.0.7",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -474,10 +474,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4252,11 +4252,11 @@
   }
  },
  "OpenByteInc/QuantDinger": {
-  "commit_90d": 296,
-  "commit_7d": 10,
-  "rel_ver": "v5.9.3",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
+  "commit_90d": 303,
+  "commit_7d": 16,
+  "rel_ver": "v6.0.2",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4272,10 +4272,10 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
@@ -4731,6 +4731,25 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "mlx-community/speculative-decoding": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

@@ -57,12 +57,12 @@
   }
  },
  "datawhalechina/easy-vibe": {
-  "commit_7d": 12,
-  "commit_90d": 143,
+  "commit_7d": 1,
+  "commit_90d": 14,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-08-07",
-  "rel_days": 77,
-  "rel_n90": 1,
+  "rel_days": 113,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -75,10 +75,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -232,11 +232,11 @@
   }
  },
  "heavyai/heavydb": {
-  "commit_7d": 3,
-  "commit_90d": 32,
+  "commit_7d": 0,
+  "commit_90d": 26,
   "rel_ver": "v10.0.0",
   "rel_pub": "2026-10-08",
-  "rel_days": 44,
+  "rel_days": 51,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -252,10 +252,10 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -371,11 +371,11 @@
   }
  },
  "dyoshikawa/rulesync": {
-  "commit_7d": 199,
-  "commit_90d": 3370,
-  "rel_ver": "v43.11.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "commit_7d": 301,
+  "commit_90d": 3400,
+  "rel_ver": "v43.16.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -391,10 +391,10 @@
    "Ruby": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -426,11 +426,11 @@
   }
  },
  "coollabsio/jean": {
-  "commit_7d": 52,
-  "commit_90d": 886,
+  "commit_7d": 111,
+  "commit_90d": 993,
   "rel_ver": "v1.0.16",
   "rel_pub": "2026-11-15",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -446,10 +446,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,12 +483,12 @@
   }
  },
  "NVIDIA-NeMo/labs-molt": {
-  "commit_7d": 14,
-  "commit_90d": 171,
+  "commit_7d": 7,
+  "commit_90d": 175,
   "rel_ver": "v0.2.3",
   "rel_pub": "2026-11-17",
-  "rel_days": 4,
-  "rel_n90": 10,
+  "rel_days": 11,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -501,10 +501,10 @@
    "Dockerfile": 2,
    "Shell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4460,13 +4460,16 @@
    "PowerShell": 9,
    "Python": 2
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261128"
+  },
+  "commit_90d": 1640,
+  "commit_7d": 525
  },
  "zhangjinshuai0711/SIXU": {
   "rel_ver": "v0.4.0",
@@ -4760,6 +4763,26 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "amdnaji/WhatsApp-Agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

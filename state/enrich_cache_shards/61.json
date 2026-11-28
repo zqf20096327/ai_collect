@@ -426,7 +426,7 @@
  },
  "deepseek-ai/TileKernels": {
   "commit_7d": 2,
-  "commit_90d": 4,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -437,20 +437,20 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "mlrun/mlrun": {
-  "commit_7d": 5,
-  "commit_90d": 118,
-  "rel_ver": "v1.14.0-rc8",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 8,
+  "commit_90d": 124,
+  "rel_ver": "v1.14.0-rc9",
+  "rel_pub": "2026-11-26",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
@@ -467,10 +467,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -529,13 +529,13 @@
   }
  },
  "import-ai/omnibox": {
-  "commit_7d": 1,
-  "commit_90d": 15,
-  "rel_ver": "v0.1.58",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
+  "commit_7d": 2,
+  "commit_90d": 16,
+  "rel_ver": "v0.1.60-beta.1",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -546,10 +546,10 @@
    "Python": 92,
    "Shell": 8
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -583,11 +583,11 @@
   }
  },
  "symfony/ai": {
-  "commit_7d": 77,
-  "commit_90d": 743,
+  "commit_7d": 19,
+  "commit_90d": 689,
   "rel_ver": "v1.0.0-BETA1",
   "rel_pub": "2026-10-26",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -603,10 +603,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -629,10 +629,10 @@
    "Kotlin": 2,
    "Shell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5336,6 +5336,29 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "datArtist-io/backline": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 84,
+   "CSS": 11,
+   "JavaScript": 4,
+   "HTML": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

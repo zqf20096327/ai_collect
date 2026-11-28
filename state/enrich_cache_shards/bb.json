@@ -230,11 +230,11 @@
   }
  },
  "huggingface/huggingface.js": {
-  "commit_7d": 25,
-  "commit_90d": 308,
-  "rel_ver": "tasks-v0.22.22",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
+  "commit_7d": 28,
+  "commit_90d": 304,
+  "rel_ver": "tasks-v0.22.30",
+  "rel_pub": "2026-11-28",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -250,10 +250,10 @@
    "Python": 1,
    "Jinja": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -318,12 +318,12 @@
   }
  },
  "microsoft/azure-pipelines-agent": {
-  "commit_7d": 11,
-  "commit_90d": 54,
+  "commit_7d": 0,
+  "commit_90d": 49,
   "rel_ver": "v5.283.1",
   "rel_pub": "2026-11-20",
-  "rel_days": 1,
-  "rel_n90": 8,
+  "rel_days": 8,
+  "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -338,10 +338,10 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -402,11 +402,11 @@
   }
  },
  "Denys88/rl_games": {
-  "commit_7d": 29,
-  "commit_90d": 46,
+  "commit_7d": 8,
+  "commit_90d": 54,
   "rel_ver": "v1.6.5",
   "rel_pub": "2026-02-20",
-  "rel_days": 274,
+  "rel_days": 281,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -419,10 +419,10 @@
    "Jupyter Notebook": 97,
    "Python": 3
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

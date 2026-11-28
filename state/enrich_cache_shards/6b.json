@@ -602,12 +602,12 @@
   }
  },
  "ThinkOffApp/CarWatch": {
-  "commit_90d": 492,
-  "commit_7d": 0,
+  "commit_90d": 97,
+  "commit_7d": 1,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-09-07",
-  "rel_days": 41,
-  "rel_n90": 8,
+  "rel_days": 82,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -620,10 +620,10 @@
    "Shell": 7,
    "HTML": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

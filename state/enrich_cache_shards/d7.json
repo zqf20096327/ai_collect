@@ -45,13 +45,13 @@
   }
  },
  "alibaba/spring-ai-alibaba": {
-  "commit_7d": 0,
-  "commit_90d": 41,
-  "rel_ver": "v2.0.0-M1.1",
-  "rel_pub": "2026-06-25",
-  "rel_days": 113,
-  "rel_n90": 0,
-  "rel_pre": true,
+  "commit_7d": 27,
+  "commit_90d": 29,
+  "rel_ver": "v2.1.0.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -65,10 +65,10 @@
    "Less": 2,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -164,12 +164,12 @@
   }
  },
  "Mesh-LLM/mesh-llm": {
-  "commit_7d": 70,
-  "commit_90d": 1078,
+  "commit_7d": 15,
+  "commit_90d": 1029,
   "rel_ver": "v0.80.0",
   "rel_pub": "2026-11-16",
-  "rel_days": 5,
-  "rel_n90": 12,
+  "rel_days": 12,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -184,10 +184,10 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4710,6 +4710,54 @@
    "security": "20261124",
    "contrib": "20261124",
    "lang": "20261124"
+  }
+ },
+ "John99101/claude-code-project-template": {
+  "rel_ver": "v2.2.1.2",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "fang2hou/dito": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 92,
+   "Python": 5,
+   "Shell": 1,
+   "SVG": 1,
+   "Text": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

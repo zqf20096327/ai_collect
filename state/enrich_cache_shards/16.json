@@ -415,10 +415,10 @@
  },
  "asreview/asreview": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 2,
   "rel_ver": "v3.0.8",
   "rel_pub": "2026-06-18",
-  "rel_days": 156,
+  "rel_days": 163,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

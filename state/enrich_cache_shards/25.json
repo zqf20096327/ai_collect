@@ -284,8 +284,8 @@
   }
  },
  "rafska/awesome-local-llm": {
-  "commit_90d": 44,
-  "commit_7d": 1,
+  "commit_90d": 47,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -294,21 +294,21 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "lobehub/lobe-icons": {
-  "commit_90d": 221,
-  "commit_7d": 30,
-  "rel_ver": "v6.18.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 3,
+  "commit_90d": 238,
+  "commit_7d": 17,
+  "rel_ver": "v6.20.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -323,10 +323,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -411,8 +411,8 @@
   }
  },
  "xianshang33/llm-paper-daily": {
-  "commit_90d": 74,
-  "commit_7d": 6,
+  "commit_90d": 75,
+  "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -425,10 +425,10 @@
    "JavaScript": 7,
    "Shell": 3
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4246,10 +4246,10 @@
   }
  },
  "wici-ai/inferssd": {
-  "rel_ver": "261119.309",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "rel_ver": "261127.393",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4264,16 +4264,16 @@
    "Cuda": 5,
    "TypeScript": 3
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "release": "20261121",
+   "release": "20261128",
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031",
-   "commit": "20261121"
+   "commit": "20261128"
   },
-  "commit_90d": 326,
-  "commit_7d": 60
+  "commit_90d": 396,
+  "commit_7d": 70
  },
  "ATLAS-0321/compress-fast": {
   "rel_ver": "v0.4.0",
@@ -5176,6 +5176,60 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "EricTechPro/jarvis": {
+  "rel_ver": "v0.2.12",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 74,
+   "Rust": 12,
+   "Swift": 8,
+   "HTML": 5,
+   "CSS": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "vieforge/vieforge": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-28",
+  "rel_days": 0,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 78,
+   "HTML": 19,
+   "JavaScript": 2,
+   "CSS": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

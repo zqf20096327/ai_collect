@@ -187,11 +187,11 @@
   }
  },
  "FB208/OpenBidKit_Yibiao": {
-  "commit_90d": 398,
-  "commit_7d": 7,
-  "rel_ver": "v2.32.3",
-  "rel_pub": "2026-11-12",
-  "rel_days": 9,
+  "commit_90d": 328,
+  "commit_7d": 9,
+  "rel_ver": "v2.33.2",
+  "rel_pub": "2026-11-24",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -207,10 +207,10 @@
    "C#": 5,
    "Python": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -247,11 +247,11 @@
   }
  },
  "DevXDojo/MrRSS": {
-  "commit_90d": 539,
-  "commit_7d": 19,
-  "rel_ver": "v1.3.43",
-  "rel_pub": "2026-11-14",
-  "rel_days": 7,
+  "commit_90d": 545,
+  "commit_7d": 29,
+  "rel_ver": "v1.3.45",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -272,10 +272,10 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

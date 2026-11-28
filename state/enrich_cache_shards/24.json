@@ -168,11 +168,11 @@
   }
  },
  "pytorch/ao": {
-  "commit_7d": 9,
-  "commit_90d": 86,
+  "commit_7d": 2,
+  "commit_90d": 79,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-08-03",
-  "rel_days": 110,
+  "rel_days": 117,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -188,10 +188,10 @@
    "Metal": 1,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2547,13 +2547,16 @@
    "Shell": 8,
    "Dockerfile": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261128"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "Tencent-Hunyuan/Precise": {
   "rel_ver": null,

@@ -345,11 +345,11 @@
   }
  },
  "pgrundev/pgbot": {
-  "commit_7d": 2,
-  "commit_90d": 147,
-  "rel_ver": "v0.10.0",
-  "rel_pub": "2026-11-16",
-  "rel_days": 5,
+  "commit_7d": 25,
+  "commit_90d": 161,
+  "rel_ver": "v0.11.1",
+  "rel_pub": "2026-11-24",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -365,10 +365,10 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

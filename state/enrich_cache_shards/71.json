@@ -218,8 +218,8 @@
   }
  },
  "taichengguo/LLM_MultiAgents_Survey_Papers": {
-  "commit_7d": 4,
-  "commit_90d": 20,
+  "commit_7d": 2,
+  "commit_90d": 22,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -228,10 +228,10 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4124,11 +4124,11 @@
   }
  },
  "directionally-local/autopilot": {
-  "commit_90d": 339,
-  "commit_7d": 37,
-  "rel_ver": "v2.6.2",
-  "rel_pub": "2026-10-28",
-  "rel_days": 1,
+  "commit_90d": 623,
+  "commit_7d": 45,
+  "rel_ver": "v3.37.0",
+  "rel_pub": "2026-11-28",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4141,10 +4141,10 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
@@ -5026,6 +5026,25 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "thebodytheory01-commits/final-round-ai-desktop": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

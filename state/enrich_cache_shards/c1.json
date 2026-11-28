@@ -83,12 +83,12 @@
   }
  },
  "leptonai/leptonai": {
-  "commit_90d": 40,
-  "commit_7d": 4,
-  "rel_ver": "0.47.0rc1",
-  "rel_pub": "2026-10-20",
-  "rel_days": 32,
-  "rel_n90": 1,
+  "commit_90d": 36,
+  "commit_7d": 0,
+  "rel_ver": "0.48.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -100,10 +100,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

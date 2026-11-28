@@ -1,7 +1,7 @@
 {
  "rasbt/LLMs-from-scratch": {
-  "commit_7d": 0,
-  "commit_90d": 29,
+  "commit_7d": 9,
+  "commit_90d": 35,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -14,10 +14,10 @@
    "Python": 27,
    "Dockerfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -239,11 +239,11 @@
   }
  },
  "vllm-project/vllm-ascend": {
-  "commit_90d": 2156,
-  "commit_7d": 248,
+  "commit_90d": 2321,
+  "commit_7d": 311,
   "rel_ver": "v0.32.0rc1",
   "rel_pub": "2026-11-10",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
@@ -259,10 +259,10 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1492,13 +1492,16 @@
    "CSS": 4,
    "HTML": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261128"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "qdrant/bm42_eval": {
   "rel_ver": null,
@@ -3905,13 +3908,16 @@
    "TLA": 4,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261128"
+  },
+  "commit_90d": 296,
+  "commit_7d": 21
  },
  "OolongMint/agent-beyond-hype": {
   "rel_ver": null,

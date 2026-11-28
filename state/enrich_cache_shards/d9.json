@@ -88,11 +88,11 @@
   }
  },
  "onehumanbeing/esp32-iphone-agent": {
-  "commit_90d": 281,
-  "commit_7d": 78,
-  "rel_ver": "v1.0.7",
-  "rel_pub": "2026-11-18",
-  "rel_days": 3,
+  "commit_90d": 355,
+  "commit_7d": 49,
+  "rel_ver": "v1.0.12",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "C++": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4028,12 +4028,12 @@
   }
  },
  "antvis/AVA": {
-  "commit_90d": 116,
-  "commit_7d": 9,
-  "rel_ver": "v4.0.4",
-  "rel_pub": "2026-11-17",
+  "commit_90d": 129,
+  "commit_7d": 12,
+  "rel_ver": "v4.0.5",
+  "rel_pub": "2026-11-24",
   "rel_days": 4,
-  "rel_n90": 9,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4048,10 +4048,10 @@
    "CSS": 3,
    "Python": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
@@ -4679,6 +4679,32 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "amanda-burgos/Nuggit": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "CSS": 10,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

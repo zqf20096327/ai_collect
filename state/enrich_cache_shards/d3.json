@@ -59,8 +59,8 @@
   }
  },
  "microsoft/mcp-for-beginners": {
-  "commit_7d": 15,
-  "commit_90d": 423,
+  "commit_7d": 0,
+  "commit_90d": 380,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -75,10 +75,10 @@
    "Java": 3,
    "C#": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -336,11 +336,11 @@
   }
  },
  "a-r-j/graphein": {
-  "commit_7d": 6,
-  "commit_90d": 63,
+  "commit_7d": 5,
+  "commit_90d": 68,
   "rel_ver": "v1.7.8",
   "rel_pub": "2026-01-24",
-  "rel_days": 301,
+  "rel_days": 308,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -356,10 +356,10 @@
    "TeX": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4573,13 +4573,16 @@
    "C++": 8,
    "Shell": 5
   },
-  "enriched_at": "20261122",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261122",
    "security": "20261122",
    "contrib": "20261122",
-   "lang": "20261122"
-  }
+   "lang": "20261122",
+   "commit": "20261128"
+  },
+  "commit_90d": 3,
+  "commit_7d": 1
  },
  "jenul-ferdinand/doomsday": {
   "rel_ver": null,
@@ -4747,6 +4750,29 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "insistgang/Luyao_AI_Project": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "CSS": 7,
+   "JavaScript": 4,
+   "HTML": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

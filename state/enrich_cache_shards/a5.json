@@ -111,11 +111,11 @@
   }
  },
  "google/tunix": {
-  "commit_90d": 844,
-  "commit_7d": 65,
+  "commit_90d": 822,
+  "commit_7d": 31,
   "rel_ver": "v0.1.8",
   "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "Jupyter Notebook": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -171,8 +171,8 @@
   }
  },
  "xenodium/agent-shell": {
-  "commit_90d": 449,
-  "commit_7d": 29,
+  "commit_90d": 447,
+  "commit_7d": 21,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -183,10 +183,10 @@
   "lang": {
    "Emacs Lisp": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

@@ -117,11 +117,11 @@
   }
  },
  "amazon-science/chronos-forecasting": {
-  "commit_90d": 7,
+  "commit_90d": 5,
   "commit_7d": 0,
   "rel_ver": "v2.3.2",
   "rel_pub": "2026-09-08",
-  "rel_days": 38,
+  "rel_days": 81,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -357,11 +357,11 @@
   }
  },
  "xuzhougeng/wisp-science": {
-  "commit_90d": 889,
-  "commit_7d": 25,
-  "rel_ver": "v1.25.0",
-  "rel_pub": "2026-11-14",
-  "rel_days": 7,
+  "commit_90d": 748,
+  "commit_7d": 13,
+  "rel_ver": "v1.26.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -377,10 +377,10 @@
    "TypeScript": 7,
    "C#": 4
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5472,6 +5472,49 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "straff2002/OpenGlasses": {
+  "commit_90d": 3511,
+  "commit_7d": 396,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Swift": 96,
+   "Go": 2,
+   "Python": 1,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "commit": "20261128",
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "MelissaCroston361308/coregold-usdt-vcc-overseas-gpu-rental-multi-cloud-treasury-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

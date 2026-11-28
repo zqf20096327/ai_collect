@@ -316,8 +316,8 @@
   }
  },
  "felladrin/awesome-ai-web-search": {
-  "commit_90d": 17,
-  "commit_7d": 3,
+  "commit_90d": 40,
+  "commit_7d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -328,10 +328,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

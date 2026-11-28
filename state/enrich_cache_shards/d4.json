@@ -172,11 +172,11 @@
   }
  },
  "iflytek/astron-rpa": {
-  "commit_90d": 40,
-  "commit_7d": 1,
+  "commit_90d": 43,
+  "commit_7d": 3,
   "rel_ver": "v1.1.7",
   "rel_pub": "2026-10-22",
-  "rel_days": 29,
+  "rel_days": 37,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -192,10 +192,10 @@
    "TypeScript": 15,
    "HCL": 1
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261120",
-   "release": "20261120",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -264,8 +264,8 @@
   }
  },
  "openvinotoolkit/openvino_notebooks": {
-  "commit_90d": 208,
-  "commit_7d": 25,
+  "commit_90d": 219,
+  "commit_7d": 23,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -280,22 +280,22 @@
    "TypeScript": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "papersgpt/papersgpt-for-zotero": {
-  "commit_90d": 36,
-  "commit_7d": 6,
-  "rel_ver": "papersgpt-v2.4.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "commit_90d": 35,
+  "commit_7d": 1,
+  "rel_ver": "papersgpt-v2.4.3",
+  "rel_pub": "2026-11-25",
+  "rel_days": 3,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -308,10 +308,10 @@
    "TypeScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5004,6 +5004,33 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "a2-stuff/MultiClaw": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-03-21",
+  "rel_days": 252,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 67,
+   "Python": 29,
+   "Shell": 4,
+   "CSS": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

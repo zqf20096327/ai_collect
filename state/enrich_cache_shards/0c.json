@@ -159,12 +159,12 @@
   "rel_pre": false
  },
  "superlinked/sie": {
-  "commit_7d": 19,
-  "commit_90d": 781,
-  "rel_ver": "v0.11.1",
-  "rel_pub": "2026-11-12",
-  "rel_days": 9,
-  "rel_n90": 11,
+  "commit_7d": 32,
+  "commit_90d": 812,
+  "rel_ver": "v0.11.3",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -179,10 +179,10 @@
    "Go Template": 1,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -378,10 +378,10 @@
  },
  "modu-ai/moai-adk": {
   "commit_7d": 0,
-  "commit_90d": 12805,
+  "commit_90d": 12166,
   "rel_ver": "v3.1.2",
   "rel_pub": "2026-08-21",
-  "rel_days": 92,
+  "rel_days": 99,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -397,18 +397,18 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "microsoft/aspire-samples": {
-  "commit_7d": 4,
-  "commit_90d": 182,
+  "commit_7d": 23,
+  "commit_90d": 200,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -421,10 +421,10 @@
    "Shell": 6,
    "Batchfile": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5119,6 +5119,92 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "microsoft/typescript-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "TDYSKY/TDYCODER": {
+  "rel_ver": "release",
+  "rel_pub": "2025-10-08",
+  "rel_days": 416,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "zou-group/reward_subsystem": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "caoj47883-create/wangzhe-jiaoyanshi": {
+  "rel_ver": "v2.8.2",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 52,
+   "Java": 17,
+   "Python": 16,
+   "CSS": 12,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

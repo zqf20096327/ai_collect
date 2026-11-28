@@ -303,10 +303,10 @@
    "Cuda": 2,
    "C++": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -450,9 +450,9 @@
  },
  "editor-code-assistant/eca": {
   "commit_90d": 437,
-  "commit_7d": 65,
-  "rel_ver": "0.173.1",
-  "rel_pub": "2026-11-20",
+  "commit_7d": 15,
+  "rel_ver": "0.175.1",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -468,10 +468,10 @@
    "Shell": 0,
    "Nix": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5010,6 +5010,33 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "guaidao2/Trail": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 53,
+   "JavaScript": 29,
+   "CSS": 11,
+   "HTML": 6,
+   "Shell": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

@@ -166,10 +166,10 @@
   }
  },
  "NeptuneHub/AudioMuse-AI": {
-  "commit_7d": 40,
-  "commit_90d": 356,
-  "rel_ver": "v3.7.3",
-  "rel_pub": "2026-11-20",
+  "commit_7d": 30,
+  "commit_90d": 351,
+  "rel_ver": "v3.7.5",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -188,10 +188,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -328,8 +328,8 @@
   }
  },
  "jxzhangjhu/Awesome-LLM-RAG": {
-  "commit_7d": 2,
-  "commit_90d": 42,
+  "commit_7d": 3,
+  "commit_90d": 46,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -338,22 +338,22 @@
   "sec_ids": [],
   "contrib_n": 25,
   "lang": {},
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Team-Commonly/commonly": {
-  "commit_7d": 120,
-  "commit_90d": 2783,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-28",
-  "rel_days": 24,
-  "rel_n90": 1,
+  "commit_7d": 182,
+  "commit_90d": 2851,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-11-24",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 7,
@@ -376,21 +376,21 @@
    "CSS": 3,
    "HTML": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "aws/deep-learning-containers": {
-  "commit_7d": 38,
-  "commit_90d": 314,
+  "commit_7d": 8,
+  "commit_90d": 278,
   "rel_ver": "v1.0-hf-5.22.2-pt-2.14.0-tr-neuronx-sdk2.33.0-py314",
   "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -406,10 +406,10 @@
    "JavaScript": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4704,6 +4704,50 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "Khip01/opencode-rich-presence": {
+  "rel_ver": "v3.6.7",
+  "rel_pub": "2026-11-16",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "JavaScript": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "hasanimer/karar-derlemeleri": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

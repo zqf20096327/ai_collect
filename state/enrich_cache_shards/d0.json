@@ -274,11 +274,11 @@
   }
  },
  "DasterProkio/awesome-ai-companion": {
-  "commit_90d": 250,
-  "commit_7d": 4,
+  "commit_90d": 252,
+  "commit_7d": 14,
   "rel_ver": "v26.10",
   "rel_pub": "2026-10-24",
-  "rel_days": 28,
+  "rel_days": 35,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "HTML": 97,
    "Python": 3
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

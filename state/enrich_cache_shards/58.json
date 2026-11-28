@@ -1,7 +1,7 @@
 {
  "CarterPerez-dev/Cybersecurity-Projects": {
   "commit_7d": 0,
-  "commit_90d": 178,
+  "commit_90d": 170,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "TypeScript": 12,
    "Zig": 6
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -221,11 +221,11 @@
   }
  },
  "nobodywho-ooo/nobodywho": {
-  "commit_7d": 1,
-  "commit_90d": 138,
+  "commit_7d": 0,
+  "commit_90d": 130,
   "rel_ver": "nobodywho-swift-v6.0.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -241,10 +241,10 @@
    "Swift": 3,
    "Kotlin": 3
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -356,12 +356,12 @@
   }
  },
  "langchain-ai/langchain-skills": {
-  "commit_7d": 11,
-  "commit_90d": 41,
-  "rel_ver": "v0.3.0",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
-  "rel_n90": 4,
+  "commit_7d": 10,
+  "commit_90d": 50,
+  "rel_ver": "v0.4.4",
+  "rel_pub": "2026-11-24",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -374,21 +374,21 @@
    "Python": 33,
    "Shell": 4
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "unstablebuild/rune": {
-  "commit_7d": 33,
-  "commit_90d": 672,
+  "commit_7d": 74,
+  "commit_90d": 746,
   "rel_ver": "v1.3.4",
   "rel_pub": "2026-11-05",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -404,10 +404,10 @@
    "Makefile": 0,
    "Tree-sitter Query": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

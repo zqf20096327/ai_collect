@@ -132,11 +132,11 @@
   }
  },
  "biolab/orange3": {
-  "commit_90d": 121,
-  "commit_7d": 17,
+  "commit_90d": 130,
+  "commit_7d": 2,
   "rel_ver": "3.41.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -152,10 +152,10 @@
    "Jupyter Notebook": 0,
    "C++": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -275,11 +275,11 @@
   }
  },
  "TNT-Likely/PanWatch": {
-  "commit_90d": 84,
-  "commit_7d": 8,
-  "rel_ver": "0.21.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "commit_90d": 125,
+  "commit_7d": 42,
+  "rel_ver": "0.24.4",
+  "rel_pub": "2026-11-26",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -295,10 +295,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4573,10 +4573,10 @@
   }
  },
  "herdodp/snapgent-connector": {
-  "rel_ver": "V3.4",
-  "rel_pub": "2026-10-29",
-  "rel_days": 0,
-  "rel_n90": 5,
+  "rel_ver": "V3.9.14",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4591,9 +4591,9 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "release": "20261029",
+   "release": "20261128",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029",

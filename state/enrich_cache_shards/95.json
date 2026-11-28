@@ -349,11 +349,11 @@
   }
  },
  "MacPaw/OpenAI": {
-  "commit_90d": 224,
-  "commit_7d": 12,
+  "commit_90d": 231,
+  "commit_7d": 4,
   "rel_ver": "0.6.1",
   "rel_pub": "2026-11-15",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -367,10 +367,10 @@
    "Python": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -621,11 +621,11 @@
   }
  },
  "Farama-Foundation/Stable-Retro": {
-  "commit_90d": 19,
-  "commit_7d": 1,
+  "commit_90d": 23,
+  "commit_7d": 4,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-25",
-  "rel_days": 149,
+  "rel_days": 156,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -641,10 +641,10 @@
    "GLSL": 0,
    "HTML": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -889,11 +889,11 @@
   }
  },
  "Ikalus1988/MisakaNet": {
-  "commit_90d": 4018,
-  "commit_7d": 146,
-  "rel_ver": "v2.47.0",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 3196,
+  "commit_7d": 149,
+  "rel_ver": "v3.23.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -909,10 +909,10 @@
    "PowerShell": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -6484,6 +6484,29 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "wangyuchao-dev/zhiyuan": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "HTML": 5,
+   "PowerShell": 1,
+   "Dockerfile": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

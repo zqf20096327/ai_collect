@@ -60,8 +60,8 @@
   }
  },
  "HisMax/RedInk": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -76,10 +76,10 @@
    "CSS": 5,
    "Shell": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -169,10 +169,10 @@
   }
  },
  "Simon-He95/markstream-vue": {
-  "commit_7d": 60,
-  "commit_90d": 402,
-  "rel_ver": "stream-markdown-parser@1.2.28",
-  "rel_pub": "2026-11-19",
+  "commit_7d": 62,
+  "commit_90d": 337,
+  "rel_ver": "markstream-vue@2.0.33",
+  "rel_pub": "2026-11-26",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -189,10 +189,10 @@
    "Svelte": 5,
    "HTML": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -225,11 +225,11 @@
   }
  },
  "NVIDIA-NeMo/DataDesigner": {
-  "commit_7d": 6,
-  "commit_90d": 112,
+  "commit_7d": 4,
+  "commit_90d": 113,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-11-18",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -245,21 +245,21 @@
    "HTML": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "openai/openai-java": {
-  "commit_7d": 30,
-  "commit_90d": 399,
-  "rel_ver": "v4.111.0",
-  "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "commit_7d": 13,
+  "commit_90d": 392,
+  "rel_ver": "v4.114.0",
+  "rel_pub": "2026-11-26",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -275,10 +275,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5064,6 +5064,55 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "LiowNathan/helio": {
+  "commit_90d": 22,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 58,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "HTML": 1,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "commit": "20261128",
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "wexare-ai/modelxare": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "CSS": 6,
+   "HTML": 1,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

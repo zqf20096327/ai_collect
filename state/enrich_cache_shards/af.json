@@ -243,11 +243,11 @@
   }
  },
  "rzru/nightingale": {
-  "commit_7d": 7,
-  "commit_90d": 163,
+  "commit_7d": 11,
+  "commit_90d": 151,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-11-09",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "Shell": 3,
    "Astro": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

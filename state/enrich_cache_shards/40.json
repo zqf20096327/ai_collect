@@ -259,11 +259,11 @@
   }
  },
  "kizuna-ai-lab/sokuji": {
-  "commit_7d": 544,
-  "commit_90d": 2972,
-  "rel_ver": "v0.51.1",
-  "rel_pub": "2026-11-21",
-  "rel_days": 0,
+  "commit_7d": 53,
+  "commit_90d": 2911,
+  "rel_ver": "v0.52.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "HTML": 3,
    "SCSS": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -316,11 +316,11 @@
   }
  },
  "AltanS/collie": {
-  "commit_7d": 900,
-  "commit_90d": 6456,
-  "rel_ver": "v1.29.1",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
+  "commit_7d": 504,
+  "commit_90d": 7034,
+  "rel_ver": "v1.30.2",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -336,10 +336,10 @@
    "PowerShell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

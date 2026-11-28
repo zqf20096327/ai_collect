@@ -23,8 +23,8 @@
   }
  },
  "TheAlgorithms/C-Plus-Plus": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 2,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -38,10 +38,10 @@
    "Python": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -182,8 +182,8 @@
   }
  },
  "dongrixinyu/JioNLP": {
-  "commit_7d": 1,
-  "commit_90d": 21,
+  "commit_7d": 7,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -195,10 +195,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -239,7 +239,7 @@
   "commit_90d": 358,
   "rel_ver": "v5.0.0-teaser-01",
   "rel_pub": "2026-05-11",
-  "rel_days": 194,
+  "rel_days": 201,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -255,22 +255,22 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Eynzof/Hermes-CN-Desktop": {
-  "commit_7d": 2,
-  "commit_90d": 23,
+  "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": "v0.9.1",
   "rel_pub": "2026-11-11",
-  "rel_days": 10,
-  "rel_n90": 9,
+  "rel_days": 17,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -285,10 +285,10 @@
    "JavaScript": 2,
    "Python": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5242,6 +5242,74 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "MathewJames044/ai-api-proxy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "DDharm007/mars-terrain-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 78,
+   "Python": 14,
+   "TypeScript": 7,
+   "Batchfile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "kai217/Adobe-after-effects-premiere-mcp": {
+  "rel_ver": "demo",
+  "rel_pub": "2026-11-15",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 86,
+   "Python": 11,
+   "HTML": 3,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

@@ -208,11 +208,11 @@
   }
  },
  "YanWenKun/ComfyUI-Docker": {
-  "commit_90d": 13,
-  "commit_7d": 1,
+  "commit_90d": 18,
+  "commit_7d": 6,
   "rel_ver": "v6.0",
   "rel_pub": "2025-10-15",
-  "rel_days": 402,
+  "rel_days": 409,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Dockerfile": 52,
    "Shell": 48
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -265,11 +265,11 @@
   }
  },
  "moyangzhan/langchain4j-aideepin": {
-  "commit_90d": 94,
-  "commit_7d": 12,
+  "commit_90d": 92,
+  "commit_7d": 6,
   "rel_ver": "v3.32.0",
   "rel_pub": "2026-11-07",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
    "PLpgSQL": 3,
    "Less": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

@@ -5146,5 +5146,85 @@
    "contrib": "20261127",
    "lang": "20261127"
   }
+ },
+ "astra-vision/PODA": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2024-08-06",
+  "rel_days": 844,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "commit": "20261128",
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "John-Varghese-EH/Vant": {
+  "rel_ver": "v1.0.0-beta",
+  "rel_pub": "2026-09-23",
+  "rel_days": 66,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 50,
+   "TypeScript": 47,
+   "CSS": 3,
+   "Python": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "aslahtp/meetmind": {
+  "rel_ver": "v4.19.4",
+  "rel_pub": "2026-11-17",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 80,
+   "HTML": 14,
+   "CSS": 3,
+   "JavaScript": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
  }
 }

@@ -272,7 +272,7 @@
   "commit_7d": 7,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-02-28",
-  "rel_days": 266,
+  "rel_days": 273,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -323,10 +323,10 @@
   }
  },
  "Besty0728/Unity-Skills": {
-  "commit_90d": 350,
-  "commit_7d": 6,
-  "rel_ver": "v3.0.2",
-  "rel_pub": "2026-11-20",
+  "commit_90d": 345,
+  "commit_7d": 14,
+  "rel_ver": "v3.0.4",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -340,10 +340,10 @@
    "C#": 98,
    "Python": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -378,13 +378,13 @@
   }
  },
  "ginlix-ai/LangAlpha": {
-  "commit_90d": 2809,
-  "commit_7d": 384,
-  "rel_ver": "desktop-v0.3.2",
-  "rel_pub": "2026-11-14",
-  "rel_days": 7,
+  "commit_90d": 3082,
+  "commit_7d": 310,
+  "rel_ver": "desktop-oss-nightly",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -398,10 +398,10 @@
    "CSS": 1,
    "Jinja": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -544,11 +544,11 @@
   }
  },
  "uxlfoundation/scikit-learn-intelex": {
-  "commit_90d": 126,
-  "commit_7d": 5,
+  "commit_90d": 124,
+  "commit_7d": 9,
   "rel_ver": "2026.2.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 33,
+  "rel_days": 40,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -564,10 +564,10 @@
    "Cython": 1,
    "CMake": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

@@ -163,12 +163,12 @@
   }
  },
  "abundantbeing/hermes-browser-extension": {
-  "commit_90d": 1205,
-  "commit_7d": 94,
+  "commit_90d": 1266,
+  "commit_7d": 69,
   "rel_ver": "v0.4.1",
   "rel_pub": "2026-11-12",
-  "rel_days": 9,
-  "rel_n90": 6,
+  "rel_days": 16,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -183,10 +183,10 @@
    "Python": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1413,9 +1413,9 @@
   }
  },
  "tianemon/EasyMint": {
-  "rel_ver": "v1.3.0",
-  "rel_pub": "2026-10-18",
-  "rel_days": 1,
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1431,13 +1431,16 @@
    "Python": 4,
    "CSS": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261128",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261128"
+  },
+  "commit_90d": 1107,
+  "commit_7d": 6
  },
  "CMU-SAFARI/Hermes": {
   "rel_ver": "v1.3",
@@ -2012,16 +2015,16 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261120",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261029"
+   "commit": "20261128"
   },
-  "commit_90d": 233,
-  "commit_7d": 45
+  "commit_90d": 294,
+  "commit_7d": 1
  },
  "NVIDIA/TensorRT-RTX-EP-ABI": {
   "rel_ver": "v0.5.0",

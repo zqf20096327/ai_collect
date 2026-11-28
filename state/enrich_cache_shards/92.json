@@ -60,11 +60,11 @@
   }
  },
  "mlfoundations/open_clip": {
-  "commit_7d": 20,
-  "commit_90d": 93,
+  "commit_7d": 10,
+  "commit_90d": 98,
   "rel_ver": "v4.2.2",
   "rel_pub": "2026-11-10",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -262,11 +262,11 @@
   }
  },
  "felinics/Memoh": {
-  "commit_7d": 21,
-  "commit_90d": 523,
+  "commit_7d": 11,
+  "commit_90d": 507,
   "rel_ver": "v1.0.2",
   "rel_pub": "2026-11-08",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -282,10 +282,10 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -484,11 +484,11 @@
   }
  },
  "mariadb-operator/mariadb-operator": {
-  "commit_7d": 1,
-  "commit_90d": 206,
+  "commit_7d": 4,
+  "commit_90d": 210,
   "rel_ver": "26.10.2",
   "rel_pub": "2026-10-24",
-  "rel_days": 28,
+  "rel_days": 35,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -504,10 +504,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -719,10 +719,10 @@
  },
  "StartLuxLabs/StartLux-Decision": {
   "commit_7d": 2,
-  "commit_90d": 43,
+  "commit_90d": 45,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 11,
+  "rel_days": 45,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -738,10 +738,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261025",
-   "release": "20261025",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3970,11 +3970,11 @@
   }
  },
  "dapr/python-sdk": {
-  "commit_90d": 75,
+  "commit_90d": 89,
   "commit_7d": 5,
   "rel_ver": "v1.19.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 7,
+  "rel_days": 37,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -3988,10 +3988,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
@@ -4800,6 +4800,54 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "chrisbray85/headless-ista": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-02",
+  "rel_days": 87,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "PowerShell": 47,
+   "VBScript": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "EliHei2/scicraft": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "JavaScript": 8,
+   "TeX": 7,
+   "Shell": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

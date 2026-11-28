@@ -212,11 +212,11 @@
   }
  },
  "MAIF/shapash": {
-  "commit_90d": 121,
+  "commit_90d": 47,
   "commit_7d": 0,
   "rel_ver": "v2.10.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 39,
+  "rel_days": 46,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -232,10 +232,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -272,11 +272,11 @@
   }
  },
  "vercel/chat": {
-  "commit_90d": 198,
-  "commit_7d": 7,
+  "commit_90d": 184,
+  "commit_7d": 11,
   "rel_ver": "create-chat-sdk@0.7.1",
   "rel_pub": "2026-11-13",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -349,12 +349,12 @@
   }
  },
  "vllm-project/vllm-metal": {
-  "commit_90d": 470,
-  "commit_7d": 15,
-  "rel_ver": "v0.34.0.dev20261119200334",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "commit_90d": 492,
+  "commit_7d": 31,
+  "rel_ver": "v0.34.0.dev20261128000553",
+  "rel_pub": "2026-11-28",
+  "rel_days": 0,
+  "rel_n90": 8,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -369,22 +369,22 @@
    "Shell": 0,
    "Objective-C++": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ai4s-research/open-science": {
-  "commit_90d": 338,
-  "commit_7d": 17,
+  "commit_90d": 333,
+  "commit_7d": 3,
   "rel_ver": "v0.7.3",
   "rel_pub": "2026-11-16",
-  "rel_days": 5,
-  "rel_n90": 7,
+  "rel_days": 12,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -399,10 +399,10 @@
    "Python": 4,
    "PowerShell": 1
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -438,11 +438,11 @@
   }
  },
  "OpenOSINT/OpenOSINT": {
-  "commit_90d": 217,
-  "commit_7d": 10,
-  "rel_ver": "v2.38.1",
-  "rel_pub": "2026-11-14",
-  "rel_days": 1,
+  "commit_90d": 200,
+  "commit_7d": 3,
+  "rel_ver": "v2.38.2",
+  "rel_pub": "2026-11-15",
+  "rel_days": 13,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -462,10 +462,10 @@
    "Shell": 2,
    "Tape": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261115",
-   "release": "20261115",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -582,11 +582,11 @@
   }
  },
  "SakuraMathcraft/LaTeXSnipper": {
-  "commit_90d": 208,
-  "commit_7d": 14,
-  "rel_ver": "v3.3.0",
-  "rel_pub": "2026-11-18",
-  "rel_days": 3,
+  "commit_90d": 218,
+  "commit_7d": 24,
+  "rel_ver": "v3.4.0-LTS",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -602,10 +602,10 @@
    "Typst": 3,
    "Inno Setup": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1611,10 +1611,10 @@
   }
  },
  "Wilooper/Lyrica": {
-  "rel_ver": "new",
-  "rel_pub": "2026-09-19",
-  "rel_days": 31,
-  "rel_n90": 4,
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 33,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1629,13 +1629,16 @@
    "CSS": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261128",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261128"
+  },
+  "commit_90d": 28,
+  "commit_7d": 0
  },
  "crazyyanchao/llmcompiler": {
   "rel_ver": "v2.0.1",
@@ -5049,13 +5052,16 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261126",
+  "enriched_at": "20261128",
   "dim_ts": {
    "release": "20261126",
    "security": "20261126",
    "contrib": "20261126",
-   "lang": "20261126"
-  }
+   "lang": "20261126",
+   "commit": "20261128"
+  },
+  "commit_90d": 20,
+  "commit_7d": 12
  },
  "danicat/aida": {
   "rel_ver": null,
@@ -5095,6 +5101,29 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "JayDev-27/Hikari": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 18,
+   "CSS": 10,
+   "Rust": 7,
+   "Python": 3
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

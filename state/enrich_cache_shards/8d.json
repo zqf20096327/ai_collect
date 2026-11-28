@@ -217,11 +217,11 @@
   }
  },
  "cosmicstack-labs/mercury-agent": {
-  "commit_7d": 99,
-  "commit_90d": 937,
-  "rel_ver": "v1.5.4",
-  "rel_pub": "2026-11-17",
-  "rel_days": 4,
+  "commit_7d": 33,
+  "commit_90d": 1003,
+  "rel_ver": "v1.5.5",
+  "rel_pub": "2026-11-22",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -244,21 +244,21 @@
    "JavaScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "dwgx/WindsurfAPI": {
-  "commit_7d": 84,
-  "commit_90d": 1140,
-  "rel_ver": "v3.2.10",
-  "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "commit_7d": 141,
+  "commit_90d": 1292,
+  "rel_ver": "v4.0.2",
+  "rel_pub": "2026-11-25",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -277,10 +277,10 @@
    "PowerShell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -317,10 +317,10 @@
   }
  },
  "HarnessRouter/harnessrouter": {
-  "commit_7d": 24,
-  "commit_90d": 741,
-  "rel_ver": "v0.41.24",
-  "rel_pub": "2026-11-20",
+  "commit_7d": 19,
+  "commit_90d": 640,
+  "rel_ver": "v0.41.29",
+  "rel_pub": "2026-11-27",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -346,22 +346,22 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "huggingface/tau": {
-  "commit_7d": 2,
-  "commit_90d": 92,
-  "rel_ver": "v0.4.11",
-  "rel_pub": "2026-11-13",
-  "rel_days": 8,
-  "rel_n90": 12,
+  "commit_7d": 1,
+  "commit_90d": 74,
+  "rel_ver": "v0.4.12",
+  "rel_pub": "2026-11-21",
+  "rel_days": 7,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -376,10 +376,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -462,11 +462,11 @@
   }
  },
  "microsoft/azure-skills": {
-  "commit_7d": 9,
-  "commit_90d": 76,
+  "commit_7d": 0,
+  "commit_90d": 72,
   "rel_ver": "v1.2.133",
   "rel_pub": "2026-11-20",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -482,10 +482,10 @@
    "TypeScript": 8,
    "Astro": 4
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

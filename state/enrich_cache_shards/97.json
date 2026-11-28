@@ -149,12 +149,12 @@
   }
  },
  "zai-org/ZCode": {
-  "commit_90d": 11,
-  "commit_7d": 0,
-  "rel_ver": "v3.18.2",
-  "rel_pub": "2026-11-16",
+  "commit_90d": 12,
+  "commit_7d": 1,
+  "rel_ver": "v4.0.0",
+  "rel_pub": "2026-11-23",
   "rel_days": 5,
-  "rel_n90": 4,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -169,10 +169,10 @@
    "MDX": 0,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -206,11 +206,11 @@
   }
  },
  "infobyte/faraday": {
-  "commit_90d": 160,
-  "commit_7d": 0,
-  "rel_ver": "v5.25.4",
-  "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "commit_90d": 226,
+  "commit_7d": 12,
+  "rel_ver": "v5.26.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -228,10 +228,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -353,8 +353,8 @@
   }
  },
  "amitshekhariitbhu/ai-engineering-interview-questions": {
-  "commit_90d": 76,
-  "commit_7d": 14,
+  "commit_90d": 91,
+  "commit_7d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -365,10 +365,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -391,10 +391,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "WASasquatch/was-node-suite-comfyui": {
-  "commit_90d": 112,
-  "commit_7d": 8,
+  "commit_90d": 131,
+  "commit_7d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -497,21 +497,21 @@
    "JavaScript": 27,
    "CSS": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Open-Source-Legal/OpenContracts": {
-  "commit_90d": 502,
-  "commit_7d": 39,
+  "commit_90d": 469,
+  "commit_7d": 2,
   "rel_ver": "v3.1.1",
   "rel_pub": "2026-09-10",
-  "rel_days": 72,
+  "rel_days": 79,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -527,21 +527,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "goodroot/hyprwhspr": {
-  "commit_90d": 370,
-  "commit_7d": 47,
-  "rel_ver": "v1.56.1",
-  "rel_pub": "2026-11-19",
-  "rel_days": 2,
+  "commit_90d": 434,
+  "commit_7d": 78,
+  "rel_ver": "v1.58.0",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -557,21 +557,21 @@
    "Nix": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorlakeai/tensorlake": {
-  "commit_90d": 138,
-  "commit_7d": 8,
+  "commit_90d": 114,
+  "commit_7d": 1,
   "rel_ver": "cli-v0.5.165",
   "rel_pub": "2026-11-13",
-  "rel_days": 1,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -594,10 +594,10 @@
    "JavaScript": 1,
    "Just": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261114",
-   "release": "20261114",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -752,10 +752,10 @@
   }
  },
  "NVIDIA/SkillEvaluator": {
-  "commit_90d": 619,
-  "commit_7d": 223,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-11-18",
+  "commit_90d": 674,
+  "commit_7d": 67,
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-11-25",
   "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
@@ -772,10 +772,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5459,6 +5459,28 @@
    "security": "20261127",
    "contrib": "20261127",
    "lang": "20261127"
+  }
+ },
+ "southenempire/stockpilot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "Rust": 9,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }

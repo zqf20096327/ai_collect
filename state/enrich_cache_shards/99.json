@@ -245,11 +245,11 @@
  },
  "intel/auto-round": {
   "commit_7d": 15,
-  "commit_90d": 252,
-  "rel_ver": "v0.16.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 36,
-  "rel_n90": 4,
+  "commit_90d": 245,
+  "rel_ver": "v0.17.0",
+  "rel_pub": "2026-11-27",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -264,10 +264,10 @@
    "CMake": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

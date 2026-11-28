@@ -242,8 +242,8 @@
   }
  },
  "Barca0412/Introduction-to-Quantitative-Finance": {
-  "commit_7d": 83,
-  "commit_90d": 246,
+  "commit_7d": 19,
+  "commit_90d": 254,
   "rel_ver": "radar-data",
   "rel_none": false,
   "sec_n": 0,
@@ -254,16 +254,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   },
   "rel_pub": "2026-11-13",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 1,
   "rel_pre": false
  },

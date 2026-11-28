@@ -319,12 +319,12 @@
   }
  },
  "datastax/jvector": {
-  "commit_7d": 1,
-  "commit_90d": 33,
-  "rel_ver": "4.0.2",
-  "rel_pub": "2026-10-19",
-  "rel_days": 33,
-  "rel_n90": 2,
+  "commit_7d": 25,
+  "commit_90d": 58,
+  "rel_ver": "4.1.0-rc.1",
+  "rel_pub": "2026-11-23",
+  "rel_days": 5,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -339,10 +339,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "anthropics/oss-scanner": {
-  "commit_7d": 68,
-  "commit_90d": 1111,
+  "commit_7d": 48,
+  "commit_90d": 1182,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -496,10 +496,10 @@
    "Dockerfile": 72,
    "Python": 28
   },
-  "enriched_at": "20261121",
+  "enriched_at": "20261128",
   "dim_ts": {
-   "commit": "20261121",
-   "release": "20261121",
+   "commit": "20261128",
+   "release": "20261128",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5091,6 +5091,48 @@
    "security": "20261126",
    "contrib": "20261126",
    "lang": "20261126"
+  }
+ },
+ "zhaji2333/ck-finder": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 82,
+   "HTML": 9,
+   "Vue": 5,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
+  }
+ },
+ "Wither033/ComfyUI-MiniMaxH3-PixelHead": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261128",
+  "dim_ts": {
+   "release": "20261128",
+   "security": "20261128",
+   "contrib": "20261128",
+   "lang": "20261128"
   }
  }
 }
