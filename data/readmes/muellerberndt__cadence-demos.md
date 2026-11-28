@@ -318,6 +318,10 @@ python3 -m http.server 8800 --directory connectome/web   # open http://localhost
 
 See the [Connectome README](connectome/README.md) to run, teach and check the demo.
 
+## Contact
+
+Questions, collaboration and press: [info@floatingpragma.ai](mailto:info@floatingpragma.ai).
+
 ## Licence
 
 The code in this repository is GPL-3.0, as Cadence ([`LICENSE`](LICENSE)). Third-party assets keep

@@ -41,7 +41,7 @@ It's written so a five-year-old can follow the story, while the **"For grown-ups
 
 ## Certificates
 
-Finish a chapter, a learning path or the whole course and you can make a **certificate** with your name. It is a link of the form `certificate.html#<name+section+date>.<checksum>`: anyone who opens it sees the certificate drawn from the link, and can copy it, share it, print it or download it as a picture. The name lives after the `#`, so it is never sent to a server. The checksum (SHA-256) catches edits, but with no server it cannot prove someone really finished, so it is a friendly certificate, not a qualification. `node tools/check-cert.js` tests it.
+Finish a chapter, a learning path or the whole course and you can make a **certificate** with your name. Every chapter page (and each chapter's last lesson), every learning path and the course map show the certificate from the start, locked with "N lessons left" until you finish. The certificate is a short link such as `certificate.html#csup.ic1y2.Asha_K.1f4b1a9b` (section, level, style, date, name, checksum). Anyone who opens it sees the certificate drawn from the link in a plain, standard layout, with a QR code that opens a verify page (`verify.html#...`) saying whether the certificate is valid and what it was awarded for. They can copy it, share it, print it or download it as a picture. The name lives after the `#`, so it is never sent to a server. The checksum (SHA-256) catches edits, but with no server it cannot prove someone really finished, so it is a friendly certificate, not a qualification. Older long links still work. `node tools/check-cert.js` tests it; the QR code comes from a small built-in encoder in `js/qr.js`.
 
 ## How each lesson works
 

@@ -69,6 +69,13 @@ curl -fsSL https://tokensafe.dev/install.sh | bash
 
 The installer detects which agents live on your machine, registers the TokenSafe MCP server, injects project rules, and wires lifecycle hooks where the agent supports them.
 
+### Runtime requirements
+
+- **CPython 3.10+** (3.11+ recommended). If no suitable interpreter is found, the npm launcher provisions a pinned, SHA-256-verified CPython 3.12 build into `~/.tokensafe/runtime` and installs the dependencies there, so TokenSafe works on a machine without Python. One-time download: 25 MB on macOS, 47 MB on Windows, 53-68 MB on Linux. Opt out with `TOKENSAFE_NO_DOWNLOAD=1`, force a specific interpreter with `TOKENSAFE_PYTHON=/path/to/python3`, relocate the whole tree with `TOKENSAFE_HOME`.
+- **`cryptography>=42.0`** is the only required Python dependency (Ed25519 license checks, under 1 ms per validation).
+- **Optional accelerators**, installed by default but not required: `tree-sitter` plus grammar wheels for AST-accurate slicing across 10 languages (without them the slicer falls back to stdlib heuristics; disable with `TOKENSAFE_TREESITTER=off`), and `Pillow` for cross-platform image downscaling (macOS falls back to `sips`).
+- The managed runtime is pinned in [`bin/python-runtime.json`](bin/python-runtime.json): CPython 3.12.16 from `astral-sh/python-build-standalone`, five platform builds, every archive verified against a hardcoded SHA-256 before extraction.
+
 | Agent | Integration |
 |---|---|
 | **Google Antigravity** | Plugin symlink + hooks + skills + MCP (loaded automatically on startup) |
@@ -233,26 +240,30 @@ Full matrix and details: [docs/OUMV.md](docs/OUMV.md).
 
 ## Benchmarks
 
-### Measured agent matrix (Go, DeepSeek — 3 tasks × 5 runs × 3 arms)
+### Measured agent matrix v5 (Go, DeepSeek — 3 tasks × 5 runs × 3 arms, 200-file target)
 
 Real 12-assertion oracle re-run after every step; tokens and cost from the provider's `usage`
 payload. `baseline` = file/search/command tools, `tokensafe` = this product's MCP server
-(`scoped_search` → `smart_read_file` → `apply_edits` with inline `verify="auto"`), `oumv` = the
-OUMV protocol runtime. All three arms solve every session.
+(`smart_read_file(endpoint="POST /api/…")` in one call → `apply_edits` with the hunk and inline
+`verify="auto"`), `oumv` = the OUMV protocol runtime (`observe L3` on the endpoint →
+`applyEdit mode=patch`). The sandbox is the benchmark module plus **200 generated service
+files**; all three arms solve every session.
 
 | Arm | Solved | Mean steps | Mean input | Mean output | Cost/run |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| `baseline` | 15/15 | 4.5 | 19,538 | 1,599 | $0.0035 |
-| `tokensafe` | 15/15 | 4.7 | 17,616 | **750** | **$0.0025** |
-| `oumv` | 15/15 | 4.3 | **12,323** | 1,735 | $0.0032 |
+| `baseline` | 15/15 | 5.6 | 26,412 | 1,670 | $0.0044 |
+| `tokensafe` | 15/15 | **3.1** | **8,177** | **414** | **$0.0012** |
+| `oumv` | 15/15 | 3.7 | 9,553 | 521 | $0.0014 |
 
-**vs baseline: −9.8% input tokens, −53.1% output tokens, −28.7% cost.** The output column is
-where the product's advantage is structural: `apply_edits` sends the hunk and its target
-snippet, so a one-line fix never resends the file — the other arms reread and rewrite whole
-files. Full method, per-task table, artifacts and limits (including the ±5% run-to-run noise at
-this sample size): [`OUMV_AGENT_MATRIX_V4.md`](https://github.com/tokensafe-dev/tokensafe-backend/blob/main/go/benchmark/OUMV_AGENT_MATRIX_V4.md)
+**vs baseline: −69.0% input tokens, −75.2% output tokens, −73.3% cost.** Tree size is the
+lever: on the same tasks with a 69-file tree the file-tool arm costs 22,356 input tokens per
+run and the two endpoint-keyed arms 8,823 / 9,756 — growing the tree by 200 files moves only
+`baseline` (+18%). Full method, per-task table, the small-target comparison, artifacts and
+limits (one model, ±5% run-to-run noise at this sample size):
+[`OUMV_AGENT_MATRIX_V5.md`](https://github.com/tokensafe-dev/tokensafe-backend/blob/main/go/benchmark/OUMV_AGENT_MATRIX_V5.md)
 in the backend repo, generated from the run JSON by
-`go/benchmark/render_agent_matrix.py`.
+`go/benchmark/render_agent_matrix.py`. The previous measured run is
+[`OUMV_AGENT_MATRIX_V4.md`](https://github.com/tokensafe-dev/tokensafe-backend/blob/main/go/benchmark/OUMV_AGENT_MATRIX_V4.md).
 
 ### Agent Usability Benchmarks (AUB) — Full-Stack Agent Velocity
 
@@ -472,7 +483,7 @@ All hook adapters fail open: an internal error never stalls your agent. Failures
 |---|---|
 | `get_architecture_graph` | Architectural hotspots, dependency topology, and God Nodes detection before multi-file reading (persisted in SQLite cache) |
 | `get_api_surface` | Compact markdown map of all exported interfaces, classes, and types |
-| `smart_read_file` | AST-skeletonized file read preserving a target symbol and 1-hop dependencies; OpenAPI/Prisma/GraphQL/SQL auto-slice; lockfiles/CSV/TSV/SQL dump auto-reduction with reversible stash |
+| `smart_read_file` | AST-skeletonized file read preserving a target symbol and 1-hop dependencies; `endpoint="POST /api/x"` resolves route → handler body + path + line range + whole-file version in one call; OpenAPI/Prisma/GraphQL/SQL auto-slice; lockfiles/CSV/TSV/SQL dump auto-reduction with reversible stash |
 | `smart_bundle` | 3–8 related symbols across files in one call: merged skeletons, deduplicated shared imports, unified 1-hop signatures |
 | `scoped_search` | Sub-millisecond keyword and symbol search powered by native SQLite FTS5 trigram index with BM25 relevance ranking (<1ms) |
 | `expand_ref` | Reversible stash expansion: recovers original un-truncated content by its 8-char hex hash anchor (`#a1b2c3d4`) without re-running tools |
@@ -604,7 +615,7 @@ More documentation: [docs/OUMV.md](docs/OUMV.md) · [docs/AGENT_SETUP.md](docs/A
 
 ## Development and License
 
-The client runs on Python 3.10+ with `cryptography>=42.0` as its sole runtime dependency for Ed25519 license checks; all AST slicing, SQLite metrics, MCP tooling, and guardrails run on the standard library ([details](docs/AGENT_SETUP.md#6-runtime-dependency-cryptography)).
+The client runs on CPython 3.10+ with `cryptography>=42.0` as its only *required* runtime dependency for Ed25519 license checks and fail-closed RS256 session verification. `tree-sitter` grammars and `Pillow` are optional accelerators with stdlib fallbacks, so the engine still slices, guards, and records metrics when they are absent. If no Python 3.10+ exists, the npm launcher downloads a pinned, SHA-256-verified CPython into `~/.tokensafe/runtime`; all AST slicing, SQLite metrics, MCP tooling, and guardrails run on the standard library ([details](docs/AGENT_SETUP.md#6-runtime-dependencies)).
 
 ```bash
 # Run the unit test suite (compact failure report; full: --traceback / -v)

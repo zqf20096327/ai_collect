@@ -8,7 +8,7 @@
 
 <p align="center">Window-shop coding agents, IDE assistants, MCP tooling, evals, observability, security, and self-hosted AI dev stacks.</p>
 
-<p align="center"><code>391 tools</code> <code>303 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
+<p align="center"><code>395 tools</code> <code>307 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
 
 ## Why this exists
 
@@ -74,7 +74,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ### Extend agents
 
-[MCP servers](#mcp-servers) (24) · [MCP clients](#mcp-clients) (7) · [MCP tooling](#mcp-tooling) (19) · [Agent skill packs](#agent-skill-packs) (28)
+[MCP servers](#mcp-servers) (26) · [MCP clients](#mcp-clients) (7) · [MCP tooling](#mcp-tooling) (19) · [Agent skill packs](#agent-skill-packs) (30)
 
 ### Operate agents
 
@@ -86,11 +86,11 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ### Automate repo work
 
-[Repo automation tools](#repo-automation-tools) (28) · [AI code review tools](#ai-code-review-tools) (11) · [Documentation agents](#documentation-agents) (24) · [Test generation agents](#test-generation-agents) (7)
+[Repo automation tools](#repo-automation-tools) (28) · [AI code review tools](#ai-code-review-tools) (12) · [Documentation agents](#documentation-agents) (24) · [Test generation agents](#test-generation-agents) (8)
 
 ## Comparison Matrix
 
-_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 303 reviewed tools._
+_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 307 reviewed tools._
 
 | Tool | Main shelf | OSS | Local | Self-hosted | CLI | IDE | MCP | Links |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -127,6 +127,7 @@ _Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) fo
 | [Agent Notifications](https://agent-notifications.com/) | MCP servers | Yes | Yes | No | Yes | No | Yes | [Website](https://agent-notifications.com/) / [Docs](https://github.com/777genius/agent-notifications/blob/main/docs/INSTALLATION.md) / [Repo](https://github.com/777genius/agent-notifications) |
 | [Atomic Agent](https://atomicagent.io) | Terminal agents | Yes | Yes | No | Yes | No | Yes | [Website](https://atomicagent.io) / [Docs](https://atomicagent.io/docs) / [Repo](https://github.com/AtomicBot-ai/atomic-agent) |
 | [ax](https://github.com/Necmttn/ax) | Agent observability | Yes | Yes | No | Yes | No | Yes | [Repo](https://github.com/Necmttn/ax) |
+| [behave](https://github.com/emirmrkaljevic/behave) | Test generation agents | Yes | Yes | No | Yes | No | Yes | [Docs](https://github.com/emirmrkaljevic/behave/blob/main/docs/mcp.md) / [Repo](https://github.com/emirmrkaljevic/behave) |
 | [Gemini CLI](https://developers.google.com/gemini-code-assist/docs/gemini-cli) | Coding agents | Yes | Yes | No | Yes | No | Yes | [Docs](https://developers.google.com/gemini-code-assist/docs/gemini-cli) / [Repo](https://github.com/google-gemini/gemini-cli) |
 | [Goose](https://goose-docs.ai/) | Coding agents | Yes | Yes | No | Yes | No | Yes | [Website](https://goose-docs.ai/) / [Docs](https://goose-docs.ai/docs/quickstart/) / [Repo](https://github.com/aaif-goose/goose) |
 | [Harbor CLI Stack](https://github.com/harbor-ai/harbor#readme) | Self-hosted AI dev stacks | Yes | Yes | Yes | Yes | No | No | [Docs](https://github.com/harbor-ai/harbor#readme) / [Repo](https://github.com/harbor-ai/harbor) |
@@ -143,7 +144,6 @@ _Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) fo
 | [Ruflo](https://github.com/ruvnet/ruflo) | Coding agents | Yes | No | Yes | Yes | No | Yes | [Docs](https://github.com/ruvnet/ruflo#readme) / [Repo](https://github.com/ruvnet/ruflo) |
 | [SandBase CLI](https://github.com/sandbaseai/cli) | MCP tooling | Yes | Yes | No | Yes | No | Yes | [Docs](https://github.com/sandbaseai/cli#readme) / [Repo](https://github.com/sandbaseai/cli) |
 | [Self-hosted AI Starter Kit (n8n)](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/) | Self-hosted AI dev stacks | Yes | Yes | Yes | Yes | No | No | [Docs](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/) / [Repo](https://github.com/n8n-io/self-hosted-ai-starter-kit) |
-| [Sillage](https://github.com/MarlBurroW/sillage) | Coding agents | Yes | No | Yes | Yes | No | Yes | [Repo](https://github.com/MarlBurroW/sillage) |
 
 <p align="center"><img src="assets/awesome-ai-devtools-social-preview.gif" alt="Awesome AI Devtools ecosystem map" width="100%"></p>
 
@@ -288,6 +288,7 @@ Model Context Protocol servers that expose tools, resources, or prompts.
 | [Anki MCP Server](https://ankimcp.ai) | MCP server that lets AI assistants interact with Anki flashcards and spaced-repetition workflows. | MCP · Local | [Website](https://ankimcp.ai) / [Repo](https://github.com/ankimcp/anki-mcp-server) |
 | [ArXiv MCP Server](https://github.com/blazickjp/arxiv-mcp-server) | MCP server for searching arXiv papers and exposing academic paper content to AI assistants. | MCP · Local | [Repo](https://github.com/blazickjp/arxiv-mcp-server) |
 | [ax](https://github.com/Necmttn/ax) | Local telemetry and recall graph for AI coding agents, with CLI, dashboard, MCP queries, and OTLP ingestion. | CLI · MCP · Web · Local | [Repo](https://github.com/Necmttn/ax) |
+| [behave](https://github.com/emirmrkaljevic/behave) | CLI and MCP server that records a command-line tool as a black box (cases generated from --help and the man page) and diffs a rewrite or refactor against that recording. | CLI · MCP · Local | [Docs](https://github.com/emirmrkaljevic/behave/blob/main/docs/mcp.md) / [Repo](https://github.com/emirmrkaljevic/behave) |
 | [Browserbase MCP Server](https://browserbase.com) | MCP server that lets AI agents control cloud browsers through Browserbase and Stagehand. | MCP · Hybrid | [Website](https://browserbase.com) / [Repo](https://github.com/browserbase/mcp-server-browserbase) |
 | [Chrome DevTools MCP](https://developer.chrome.com/blog/chrome-devtools-mcp) | MCP server that gives AI agents Chrome DevTools debugging capabilities for web applications. | MCP · Local | [Docs](https://developer.chrome.com/blog/chrome-devtools-mcp) / [Repo](https://github.com/ChromeDevTools/chrome-devtools-mcp) |
 | [Concord](https://getconcord.ai) | MCP server and CLI that lets coding agents such as Claude Code, Codex, Cursor and Gemini CLI message each other, claim work, share task memory and hand off. | CLI · MCP · Hybrid | [Website](https://getconcord.ai) / [Repo](https://github.com/Get-Concord-AI/concord-mcp) |
@@ -307,6 +308,7 @@ Model Context Protocol servers that expose tools, resources, or prompts.
 | [ServiceGraph MCP](https://github.com/servicegraph/mcp-server) | MCP server for exposing observability data such as service metrics and logs to AI agents. | MCP · Hosted | [Repo](https://github.com/servicegraph/mcp-server) |
 | [Supabase MCP Server](https://github.com/supabase-community/supabase-mcp) | Official Supabase MCP server for connecting AI assistants to Supabase projects and database operations. | MCP · Hosted | [Repo](https://github.com/supabase-community/supabase-mcp) |
 | [UIZZE](https://uizze.com) | UI reference platform and agent skill providing web and iOS screen patterns, design contracts, and finish-gate reviews for coding agents. | MCP · Skill Pack · Web · Hosted | [Website](https://uizze.com) / [Docs](https://uizze.com/docs) |
+| [usb-rea](https://github.com/emirmrkaljevic/usb-rea) | CLI and MCP server that infers a USB device protocol from captured vendor-app traffic and generates a Python/libusb driver for Linux. | CLI · MCP · Local | [Docs](https://github.com/emirmrkaljevic/usb-rea/blob/main/docs/mcp.md) / [Repo](https://github.com/emirmrkaljevic/usb-rea) |
 
 ### MCP clients
 
@@ -354,6 +356,7 @@ Reusable instruction, workflow, or capability packs for coding agents.
 
 | Tool | Good for | Experience | Links |
 | --- | --- | --- | --- |
+| [100x Engineer Skill](https://github.com/DeadInternetStudios/100x-engineer-skill) | Skill and CLI for Claude Code, Cursor and Codex that checks formal properties and requires recorded review evidence before a run can finish. | CLI · Skill Pack · Local | [Docs](https://github.com/DeadInternetStudios/100x-engineer-skill#readme) / [Repo](https://github.com/DeadInternetStudios/100x-engineer-skill) |
 | [Agent Powerups](https://github.com/yeaight7/agent-powerups) | Curated skill packs, commands, MCP configs, hooks, templates, and workflows for coding agents. | CLI · Desktop · MCP · Skill Pack · Template · Local | [Repo](https://github.com/yeaight7/agent-powerups) |
 | [Agent Skills](https://github.com/datalayer/agent-skills) | Python package to create, manage, and execute reusable code-based tool compositions for AI agents with MCP integration. | MCP · Local | [Repo](https://github.com/datalayer/agent-skills) |
 | [Agent Skills Specification](https://github.com/agentskills/agentskills) | Open specification and documentation for Agent Skills format maintained by Anthropic with reference SDK and examples. | Framework · Skill Pack | [Repo](https://github.com/agentskills/agentskills) |
@@ -369,6 +372,7 @@ Reusable instruction, workflow, or capability packs for coding agents.
 | [Cursorrules Collection](https://github.com/nedcodes-ok/cursorrules-collection) | 110+ tested .cursorrules and .mdc rule files for Cursor, Claude Code, Copilot, Windsurf, Gemini CLI, and Codex. | Template · Local | [Repo](https://github.com/nedcodes-ok/cursorrules-collection) |
 | [Custom Modes for Roo Code](https://github.com/jtgsystems/Custom-Modes-Roo-Code) | Collection of 171 specialized AI agent configurations for Roo Code across 9 categories with security-first principles. | Skill Pack · Template · Local | [Repo](https://github.com/jtgsystems/Custom-Modes-Roo-Code) |
 | [dbt Agent Skills](https://github.com/dbt-labs/dbt-agent-skills) | Curated Agent Skills for working with dbt to help AI agents understand and execute analytics engineering workflows. | Skill Pack · Local | [Repo](https://github.com/dbt-labs/dbt-agent-skills) |
+| [DESIGN:OS CLI](https://github.com/jangtrinh/design-os) | CLI and agent skills that compile a project's tokens, components and docs into a design store that Claude Code or Codex loads, with deterministic UI gates. | CLI · Skill Pack · Local | [Repo](https://github.com/jangtrinh/design-os) |
 | [dotskills](https://github.com/vincentkoc/dotskills) | Personal .skills repository for Codex, Cursor, and OpenClaw with reusable skill units bundling prompts, scripts, and validation workflows. | Skill Pack · Template · Local | [Repo](https://github.com/vincentkoc/dotskills) |
 | [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) | Agent harness performance system with skills, hooks, MCP configs, memory optimization, and cross-harness workflows. | CLI · MCP · Local | [Docs](https://github.com/affaan-m/everything-claude-code#readme) / [Repo](https://github.com/affaan-m/everything-claude-code) |
 | [helderberto/skills](https://github.com/helderberto/skills) | Reusable AI agent skills for development workflows including code review, refactoring, TDD, security audit, and git automation. | Skill Pack · Local | [Repo](https://github.com/helderberto/skills) |
@@ -509,8 +513,4 @@ Tools that help developers run or integrate local models in coding workflows.
 
 | Tool | Good for | Experience | Links |
 | --- | --- | --- | --- |
-| [Atomic Agent](https://atomicagent.io) | Local-first CLI and TUI coding agent that runs open-weight models on your machine via llama.cpp, with 56 built-in tools and MCP support. | CLI · MCP · Local | [Website](https://atomicagent.io) / [Docs](https://atomicagent.io/docs) / [Repo](https://github.com/AtomicBot-ai/atomic-agent) |
-| [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ#readme) | Python library for GPTQ weight-only quantization of Transformer language models for efficient local inference. | Library · Local | [Docs](https://github.com/AutoGPTQ/AutoGPTQ#readme) / [Repo](https://github.com/AutoGPTQ/AutoGPTQ) |
-| [ChromaDB](https://www.trychroma.com) | Lightweight vector database and Python library for local embeddings storage and RAG-style similarity search. | API · Library · Local | [Website](https://www.trychroma.com) / [Docs](https://docs.trychroma.com) / [Repo](https://github.com/chroma-core/chroma) |
-| [Docker Model Runner](https://www.docker.com/products/model-runner) | Docker Desktop-integrated local model runtime that runs GGUF models via an OpenAI-compatible API. | API · CLI · Local | [Website](https://www.docker.com/products/model-runner) / [Docs](https://docs.docker.com/ai/model-runner/) |
-| [ExLlamaV2](https://github.com/turboderp-org/exllamav2#readme) | Inference library for running GPTQ-quantized LLMs on modern consumer GPUs with high performance. | CLI · Library · Local | [Docs](https://github.com/turboderp-org/exllamav2#readme) / [Repo](https://github
+| [A

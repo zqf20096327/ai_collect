@@ -16,6 +16,29 @@
 
 </div>
 
+<!-- andy-geo:start -->
+## 一句话简介
+
+**🚀 AI驱动的IP内容创作工具箱 | 29个技能+19个工具 | 文案/PPT/视频/合规全链路 | 让个人品牌打造更简单**
+
+- 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
+- 阅读或使用：[GitHub 仓库](https://github.com/AIPMAndy/andy-ip-skill)
+- 联系：微信 `AIPMAndy`（备注「andy-ip-skill」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
+- 许可：MIT。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**Andy IP Skill Stack - AI驱动的个人IP增长工具箱：🚀 AI驱动的IP内容创作工具箱 | 29个技能+19个工具 | 文案/PPT/视频/合规全链路 | 让个人品牌打造更简单
+
+**包含什么？**主要模块：核心价值、架构设计、快速开始、核心项目清单、典型工作流、项目统计。
+
+**要花钱吗？**按 MIT 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**克隆仓库后按下方 README 的快速开始部分操作；无需付费账号即可阅读全部内容。
+
+<!-- andy-geo:end -->
+
 ---
 
 ## 💡 核心价值

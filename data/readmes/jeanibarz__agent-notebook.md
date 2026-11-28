@@ -23,7 +23,7 @@ Node.js 18+, no runtime dependencies.
 ```
 $ nb add build-and-test "run lint before claiming done"
 added — 1 line
-note: created new shelf "build-and-test"
+note: created new shelf "build-and-test"; it has no description, so the index shows its top lesson. Say when to open the shelf: nb describe build-and-test "<when to open this shelf>"
 
 $ nb show build-and-test
 acf179  [+1]  run lint before claiming done
@@ -168,6 +168,26 @@ To set up lessons, ideas or both, follow the [setup guide](examples/SETUP.md). T
 
 ## Install
 
+### Claude Code: one command (beta)
+
+1. Install Node.js 18 or later: the LTS version from [nodejs.org](https://nodejs.org). Check it with `node --version`.
+2. Open a terminal (Terminal on macOS, PowerShell on Windows) and paste:
+
+   ```
+   claude plugin install agent-notebook --marketplace https://raw.githubusercontent.com/jeanibarz/agent-notebook/main/.claude-plugin/marketplace.json
+   ```
+
+   You need neither git nor Node.js for this step. It was tested with Claude Code 2.1.332 (check yours with `claude --version`).
+3. Start a new chat, and ask "is agent-notebook working?". If Node.js is missing, the assistant says so in its first reply.
+
+- **What it changes:** nothing you need to edit. Claude Code adds its own entries to `~/.claude/settings.json`.
+- **Update:** `claude plugin marketplace update agent-notebook`, then `claude plugin update agent-notebook@agent-notebook`. If it says "already at the latest version", wait a few minutes and run both again. Then start a new chat.
+- **Remove:** `claude plugin uninstall agent-notebook@agent-notebook`. Your notes in `~/.agent-notebook` (`%USERPROFILE%\.agent-notebook` on Windows) stay.
+- **On a company computer** where the install is refused, ask your administrator to read [the company-machines guide](https://github.com/jeanibarz/agent-notebook/blob/main/docs/enterprise.md#claude-code-plugin).
+- **Hooks copied by hand before:** see [moving to the plugin](https://github.com/jeanibarz/agent-notebook/blob/main/docs/harness-setup.md#moving-to-the-plugin).
+
+### The `nb` command alone, or another agent
+
 ```
 npm install -g agent-notebook
 ```
@@ -233,7 +253,8 @@ nb project [--why] [--json]              print the project name of this director
 nb place  [--json]                       say where this directory's lessons live and why, and list the project folders under ~/.agent-notebook/projects
 nb place  own [--json]                   give this project its own notebook: create ~/.agent-notebook/projects/<project>/ and move its shelves there
 nb place  shared [--json]                move this project's shelves back to the shared notebook and remove its folder
-nb brief  [--max-chars N] [--session <id>] [--hook <label>] [--json]  print what an assistant should see at the start of a session: instructions, the notebook index (default budget 9000 characters)
+nb place  default [shared|own|ask] [--json]  say, or record, where the notes of every project are kept (never moves notes)
+nb brief  [--max-chars N] [--session <id>] [--hook <label>] [--welcome] [--json]  print what an assistant should see at the start of a session: instructions, the notebook index (default budget 9000 characters)
 nb retro  --session <id> [--work-dir <dir>] [--hook <label>] [--json]  print the end-of-task retrospective text the first time it is called for a session, nothing afterwards
 nb status [--json]                       say whether chats start the notebook here: two plain lines, then the details (read-only; exit 0 only when it is running)
 nb list   [prefix] [--limit N]          index notebooks richest-first: one line each (name, lesson count, description)

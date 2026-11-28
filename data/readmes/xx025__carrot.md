@@ -142,7 +142,7 @@
 
 <a name="category-2"></a>
 
-<h2>通用助手与智能搜索 <sub>(102)</sub></h2>
+<h2>通用助手与智能搜索 <sub>(103)</sub></h2>
 
 <table>
     <thead>
@@ -595,6 +595,11 @@
         <td>🔑 </td>
     </tr>
     <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/ce3267d3be43cf45dc7c0200.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://whizi.io/">Whizi</a></td>
+        <td>🆕多模型 AI 对话平台，可切换模型并处理文档，提供图像生成等功能，采用订阅付费。</td>
+    </tr>
+    <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/658ba9c58d3776d0fbd73d7f.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://unbottled.ai/en-US">unbottled.ai</a></td>
         <td>🆕多模型 AI 聊天与创作平台，提供不同过滤程度的模型及图片、视频、音乐生成，支持开源自部署；免费账户提供每月积分。</td>
@@ -749,6 +754,11 @@
         <td>Codex 应用专为多代理工作流程而设计，是代理编码的指挥中心。</td>
     </tr>
     <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/664a332c3406e1d7820462bc.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://remio.ai/">remio</a></td>
+        <td>🆕面向知识工作的桌面 AI 智能体，可搜索和利用文件、网页、会议、邮件等资料，并生成可编辑的 Word 文档、Excel 表格和 PowerPoint 演示文稿。</td>
+    </tr>
+    <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/096d6566f7adad2560935c96.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://sourceweft.com/zh-CN">SourceWeft</a></td>
         <td>🆕开源、可自托管的 AI 工作空间，结合多智能体协作、Skills、MCP 与带引用的知识库，支持研究、规划和创作，提供 Web 与桌面端。</td>
@@ -779,11 +789,6 @@
         <td>🆕为 AI Agent 提供真实电话任务，可联系美国商家订位、预约和询价，返回结果、文字记录与录音，提供 MCP 和 REST API。</td>
     </tr>
     <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/f296b362cbc6158a2a727e0d.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://remio.ai/">Remio</a></td>
-        <td>本地优先的 AI 记忆与知识库客户端，为 Agent 索引和检索个人文件、网页、录音等上下文。</td>
-    </tr>
-    <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/30caf4380630340a6308995a.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://skillhub.cn/enterprise/org-j3zmzop1?publisher=%E5%94%90%E5%8F%AF%E5%88%9B%E7%A0%94">唐可创研 TANCO SkillHub</a></td>
         <td>面向 AI Agent 与 AI 工作流的可复用 Skill 中心，提供调研、项目拆解、任务链和多 Agent 交接等工作流。</td>
@@ -805,7 +810,7 @@
 
 <a name="category-4"></a>
 
-<h2>模型、API 与算力 <sub>(35)</sub></h2>
+<h2>模型、API 与算力 <sub>(37)</sub></h2>
 
 <table>
     <thead>
@@ -891,6 +896,16 @@
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/b4035038d1be9bcf9dbb5a82.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://huggingface.co/spaces/AUST001/ChatGPT">huggingface.co</a></td>
         <td>😄</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/c935d5d2450ac9d2df2e5b9e.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://beiluoxi.xyz/">北洛API</a></td>
+        <td>🆕面向开发者的第三方多模型 API 接入服务，提供 OpenAI、Claude 和 Gemini 兼容接口及用量、额度管理。</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/7331d355e850d36c577ad363.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://api.yisama.asia/">YisamaAPI</a></td>
+        <td>🆕第三方多模型 API 网关，提供文本、图像和视频模型接入，支持兼容接口，并按模型和分组计费用量。</td>
     </tr>
     <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/72c682540482d4cdbcac67ee.png" alt="" width="32" height="32"></td>
@@ -994,7 +1009,7 @@
 
 <a name="category-5"></a>
 
-<h2>编程与开发工具 <sub>(34)</sub></h2>
+<h2>编程与开发工具 <sub>(36)</sub></h2>
 
 <table>
     <thead>
@@ -1065,6 +1080,16 @@
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/2921b615ff35951d5175d7e9.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://ideaiai.com/">创想AI</a></td>
         <td>免登录、免费GPT，支持GPT4，支持Midjourney绘图</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/2b98066ee3790ed0a3817f3d.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://tesseract.dev/zh-Hans/agentic-ide">Tesseract</a></td>
+        <td>🆕桌面智能体 IDE，在同一应用中使用多种编程智能体，集成代码编辑器、终端和实时预览，可使用自己的账号或 API Key。</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/ed1fa80643dc09e21b1048a6.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://kliv.dev/zh">Kliv</a></td>
+        <td>🆕通过自然语言构建并托管应用的 AI 开发平台，集成数据库、用户登录、支付、邮件和自定义域名。</td>
     </tr>
     <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/8a8939ad10bfdc196652a390.png" alt="" width="32" height="32"></td>
@@ -1178,7 +1203,7 @@
 
 <a name="category-6"></a>
 
-<h2>图像、设计与视觉创作 <sub>(30)</sub></h2>
+<h2>图像、设计与视觉创作 <sub>(31)</sub></h2>
 
 <table>
     <thead>
@@ -1276,6 +1301,11 @@
         <td>🔑AI对话、文生图、文字生成PPT</td>
     </tr>
     <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/25f77e3ef568f0d8351bd35e.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://image2ai.cloud/zh">Image2AI</a></td>
+        <td>🆕在线 AI 图像生成与图片编辑工具，支持多模型选择，按积分使用，并提供图片处理工具。</td>
+    </tr>
+    <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/c981ab2d265a23cd2ac6ec28.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://picyep.com/zh">PicYep</a></td>
         <td>🆕浏览器端 AI 写真与图片编辑工具，支持通过文字或参考照片生成职业照、全家福、宠物写真和产品图，并提供图生视频；按点数付费。</td>
@@ -1342,7 +1372,7 @@
 
 <a name="category-7"></a>
 
-<h2>音频、视频与数字人 <sub>(17)</sub></h2>
+<h2>音频、视频与数字人 <sub>(19)</sub></h2>
 
 <table>
     <thead>
@@ -1378,6 +1408,16 @@
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/b211bd64b96bafb2b198a199.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://ai.yunyan.chat/chat">云衍AI</a></td>
         <td>🔑3.5模型永久免费。对接官网全部GPTS应用，无需自己再写提示词，一站式AI应用，AI对话，AI绘画，AI音乐，AI视频，一套全搞定！！</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/f94b73e2df52c70c6afc9c5f.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://fastscribe.org/">FastScribe</a></td>
+        <td>🆕在线音视频转写工具，提供带时间戳的逐字稿、内容整理，以及 TXT、DOCX、XLSX 和 SRT 导出。</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/cfc23570df8f3be871d729ca.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://mimi.yuxino.cn/">Mimi</a></td>
+        <td>🆕免费开源的实时双语字幕工具，可将系统声音转成悬浮字幕；云端语音与翻译服务需要自行配置凭证，可能按用量收费。</td>
     </tr>
     <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/d86e11988a1282bb6bb40a00.png" alt="" width="32" height="32"></td>
@@ -1610,7 +1650,7 @@
 
 <a name="category-9"></a>
 
-<h2>学习、教育与科研 <sub>(9)</sub></h2>
+<h2>学习、教育与科研 <sub>(11)</sub></h2>
 
 <table>
     <thead>
@@ -1636,6 +1676,16 @@
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/0a11254d6ef8e7fe4dfe6240.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://yagc.tahriver.online/">YAGC</a></td>
         <td> YAGC是一个动态的移动学习平台，提供多样化的教育资源，支持用户随时随地进行学习，促进灵活的教育方式。</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/4083214a742fd32e09957e6f.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://stylefuse.top/">StyleFuse</a></td>
+        <td>🆕面向学术写作的风格分析与改写工具，可参考范文调整表达，提供修改对照、局部重改及 Word 导出。</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/8f184542803d72bb3833cc5f.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://aizuosha.com/howto/prompts">AI能做啥 · 中文提示词学习指南</a></td>
+        <td>🆕面向中文 AI 初学者的提示词学习指南，通过任务示例对照不同写法，说明目标、背景和交付要求的表达方式。</td>
     </tr>
     <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/0342c40a9a1f844501fe9e8a.png" alt="" width="32" height="32"></td>
@@ -1669,7 +1719,7 @@
 
 <a name="category-10"></a>
 
-<h2>营销、商业与客户服务 <sub>(12)</sub></h2>
+<h2>营销、商业与客户服务 <sub>(13)</sub></h2>
 
 <table>
     <thead>
@@ -1685,6 +1735,11 @@
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/f538f48dd867c7f049371ee9.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://www.delilegal.com/"> 得理法律大模型</a></td>
         <td>基于法律大模型开发的智慧法律系统 为用户提供“AI+律师”的解决方案</td>
+    </tr>
+    <tr>
+        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/0633dc6197b0f2c11178d965.png" alt="" width="32" height="32"></td>
+        <td width="180"><a href="https://www.hifrank.ai/">Frank AI Researcher</a></td>
+        <td>🆕AI 客户访谈与用户研究工具，可组织语音访谈、整理访谈记录，并分析主题和情绪。</td>
     </tr>
     <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/fe75787b6df195a9589843de.png" alt="" width="32" height="32"></td>
@@ -1763,71 +1818,4 @@
     <tr>
         <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/00857a6a1429517e3582a3da.png" alt="" width="32" height="32"></td>
         <td width="180"><a href="https://sammiai.app/">Sammi: AI Girlfriend</a></td>
-        <td>🆕安卓 AI 角色陪伴应用，支持文字聊天、语音互动、角色定制与剧情扮演；Google Play 可免费下载，含应用内购买。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/63d58397a794a132442fc8b6.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://suzhe.ai/">苏哲AI</a></td>
-        <td>🆕面向中文用户的 AI 会员开通平台，提供 ChatGPT、Gemini 等会员服务，支持支付宝付款与网页自助激活。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/5945996010fd733cc5e1645c.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://www.memebako.com/">MemeBako 表情包图片大全</a></td>
-        <td>🆕表情包与网络热梗图片站，提供高清专题、贴纸、GIF、壁纸及在线表情包制作，支持免登录浏览和复制。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/e1ce5ec7cf33c9764c5e4f5f.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://disconfirmai.com/zh">DisconfirmAI / 证伪AI</a></td>
-        <td>🆕面向投资研究的阅读与研究平台，整理公开信源、财报与数据，帮助寻找反面证据并构建研究框架，不执行自动交易。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/de685cfe00af7c1cfb204c84.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://colorgenius.art/">Color Genius</a></td>
-        <td>🆕通过拖动 RGB 滑块还原目标颜色的浏览器色感测试小游戏，无需注册。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/106f1e72702ed35867db40ab.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://dg.meslcloud.org/">MESL 机场</a></td>
-        <td>🆕提供多地区节点的网络订阅服务，采用 BGP 入口与 IEPL/IPLC 中继，面向 AI 工具访问与日常网络需求。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/89e254c99d84abf14451d0b0.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://ai-meme.cdqyfdbymn.me/">DeepSeek酱语录</a></td>
-        <td>DeepSeek 娘化梗图库，支持瀑布流浏览、台词搜索、图片保存和分享图生成。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/52d933e8b71c4e8ca97da795.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://aigzero.ai/">aigZero</a></td>
-        <td>提供 AI 内容检测、查重、事实核查与文本 Humanize 的在线工具。</td>
-    </tr>
-    </tbody>
-</table>
-
-[返回分类导航](#categories)
-
-<a name="category-12"></a>
-
-<h2>导航、资讯与社区 <sub>(56)</sub></h2>
-
-<table>
-    <thead>
-        <tr><th align="center" width="48">图标</th><th align="left" width="180">站点</th><th align="left">简介</th></tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/b91238e2c82459e3535908b0.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://navtools.ai/">Navtools.ai</a></td>
-        <td>人工智能工具导航站，探索最佳人工智能网站与工具</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/09836f5fce5083c5300b1c87.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://www.mambabit.com/">曼巴比特</a></td>
-        <td>为每项任务找到完美的人工智能工具。</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/53655e878f98779ea0994617.png" alt="" width="32" height="32"></td>
-        <td width="180"><a href="https://www.gptdemo.net/cn/">Gpt Demo</a></td>
-        <td>😄ChatGPT、生成式 AI 和 GPT 应用程序</td>
-    </tr>
-    <tr>
-        <td align="center" width="48"><img src="https://ai55.cc/catalog-icons/45c779b4db9b8c94da1
+        <td>🆕安

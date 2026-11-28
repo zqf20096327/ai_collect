@@ -192,21 +192,22 @@ The Settings tab writes `~/.moqi/config.json`; you can also edit it by hand (the
 }
 ```
 
-| Field           | Default                 | Meaning                                                                                                                                                                                                                 |
-| --------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `model`         | none                    | OpenAI-compatible endpoint: `baseURL`, `model`, optional `apiKey`. Without a model, briefings and watches still work; chat does not.                                                                                    |
-| `model.noThink` | off                     | For Qwen3-style models that think first: background requests get the `/no_think` switch.                                                                                                                                |
-| `persona`       | none                    | Who moqi is to you; put at the top of the system prompt.                                                                                                                                                                |
-| `briefingAt`    | `"08:00"`               | Time of the daily briefing; `null` turns it off.                                                                                                                                                                        |
-| `todoReviewAt`  | `"21:00"`               | Time of the evening look at unfinished todos; `null` turns it off.                                                                                                                                                      |
-| `quiet`         | 22:30 to 08:00          | Quiet hours: offers wait in the feed unless they are urgent and worth 0.9 or more.                                                                                                                                      |
-| `dailyBudget`   | `3`                     | Most notifications per day.                                                                                                                                                                                             |
-| `weather`       | no place                | Weather plugin (Open-Meteo, no key): `{ latitude, longitude, place }` is your own place. The weather tool also answers for any city it is asked about, and when moqi knows you live elsewhere it offers once to switch. |
-| `calendar`      | off                     | Calendar plugin reading a local `.ics` file.                                                                                                                                                                            |
-| `news`          | 少数派, IT之家, Solidot | News plugin: RSS or Atom feeds to read headlines from; `{ "feeds": [] }` turns it off. The console also offers 爱范儿 and Hacker News.                                                                                  |
-| `model.effort`  | none                    | `low`, `medium` or `high`: reasoning strength for background work, for models that support it (Muse Glimmer, gpt-oss).                                                                                                  |
-| `mcp.servers`   | none                    | MCP servers (stdio) moqi may use, by name: `command`, `args`, `env`, `cwd`                                                                                                                                              |
-| `a2a.agents`    | none                    | A2A agents moqi may ask: `name`, `url` (the agent or its card), optional `key`                                                                                                                                          |
+| Field                 | Default                 | Meaning                                                                                                                                                                                                                 |
+| --------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `model`               | none                    | OpenAI-compatible endpoint: `baseURL`, `model`, optional `apiKey`. Without a model, briefings and watches still work; chat does not.                                                                                    |
+| `model.noThink`       | off                     | For Qwen3-style models that think first: background requests get the `/no_think` switch.                                                                                                                                |
+| `persona`             | none                    | Who moqi is to you; put at the top of the system prompt.                                                                                                                                                                |
+| `briefingAt`          | `"08:00"`               | Time of the daily briefing; `null` turns it off.                                                                                                                                                                        |
+| `todoReviewAt`        | `"21:00"`               | Time of the evening look at unfinished todos; `null` turns it off.                                                                                                                                                      |
+| `quiet`               | 22:30 to 08:00          | Quiet hours: offers wait in the feed unless they are urgent and worth 0.9 or more.                                                                                                                                      |
+| `dailyBudget`         | `3`                     | Most notifications per day.                                                                                                                                                                                             |
+| `weather`             | no place                | Weather plugin (Open-Meteo, no key): `{ latitude, longitude, place }` is your own place. The weather tool also answers for any city it is asked about, and when moqi knows you live elsewhere it offers once to switch. |
+| `calendar`            | off                     | Calendar plugin reading a local `.ics` file.                                                                                                                                                                            |
+| `news`                | 少数派, IT之家, Solidot | News plugin: RSS or Atom feeds to read headlines from; `{ "feeds": [] }` turns it off. The console also offers 爱范儿 and Hacker News.                                                                                  |
+| `model.effort`        | none                    | `low`, `medium` or `high`: reasoning strength for background work, for models that support it (Muse Glimmer, gpt-oss).                                                                                                  |
+| `model.sendReasoning` | on                      | In tool loops, send the model's own reasoning back as `reasoning_content`; DeepSeek V4 and Kimi need it. `false` turns it off for endpoints that refuse the field, such as Groq and Cerebras.                           |
+| `mcp.servers`         | none                    | MCP servers (stdio) moqi may use, by name: `command`, `args`, `env`, `cwd`                                                                                                                                              |
+| `a2a.agents`          | none                    | A2A agents moqi may ask: `name`, `url` (the agent or its card), optional `key`                                                                                                                                          |
 
 Environment variables: `MOQI_BASE_URL` with `MOQI_MODEL` replaces the model; `MOQI_API_KEY` supplies the key so it stays out of the file.
 
@@ -271,9 +272,13 @@ setInterval(() => void moqi.tick(), 60_000); // the proactive heartbeat
 
 `effect: "read"` tools run freely and can be used by watches. `"write"` tools start at "ask first" and earn trust; pass `confirm: (question) => Promise<boolean>` to ask the user, otherwise unearned writes are refused. State lives in memory by default; `fileEventStore` from `moqi-agent/node` keeps it in a JSONL file.
 
+`model` takes any taugraph `LLMModel` (`{ id, complete(request, { signal }) }`); `openAICompatible` covers OpenAI-compatible endpoints. Each conversation turn runs as a [`taugraph/agent`](https://github.com/wangcao-hub/taugraph) run and each watch as a taugraph flow; pass `onTrace` to receive their traces, event by event.
+
 ## Data and privacy
 
 All state is replayed from `~/.moqi/events.jsonl`, one event per line, append-only. API keys never go into the log, and `config.json` is created readable only by you.
+
+Each conversation turn and each watch run also leaves a trace under `~/.moqi/runs/`, one JSONL file per run, with every request to the model (the system prompt with your memories, the conversation), its reply, and every tool call with what it returned (files, the clipboard, web pages). Traces are for looking back and later for replaying real conversations after a change; the log stays the only record of state. They are kept 30 days. The folder is readable only by you. Images appear in them as `media:<id>` references, not as image data.
 
 The console listens on `127.0.0.1` only. Its address carries a random key after `#`, so the key never reaches a server log; every API call must present it, requests whose `Host` is not this machine are refused (against DNS rebinding), and the page loads nothing from outside under a strict Content Security Policy. A saved API key is never sent to the page.
 

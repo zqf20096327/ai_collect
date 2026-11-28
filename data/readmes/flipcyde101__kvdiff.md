@@ -49,6 +49,12 @@ npx @drod915/kvdiff -- gemini
 npx @drod915/kvdiff --heal -- claude
 ```
 
+In wrap mode, the host and path of an existing `GOOGLE_GEMINI_BASE_URL` are
+used for the Gemini upstream. If it is unset or empty, `GEMINI_API_BASE_URL`
+is used instead. `--upstream-gemini <url>` takes priority over either
+environment variable. Query parameters embedded in upstream base URLs are not
+currently preserved. Standalone `serve` and `ui` modes use explicit flags.
+
 Or run as a persistent local proxy for Antigravity, Cursor, IDE plugins, or local `llama.cpp`/vLLM:
 
 ```bash

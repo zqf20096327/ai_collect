@@ -312,6 +312,8 @@ graph TD
 - **[OmniForge Launch Audit MCP](https://github.com/zColdWater/mcp-launch-audit)** `MIT` `Hosted MCP` `Freemium` — Remote MCP server at `https://brand-checker.appwrite.network/mcp` (Streamable HTTP, no authentication, strictly read-only) with 5 pre-deploy launch audit tools covering web & AI app security headers/TLS/secrets/Supabase RLS, SPF/DKIM/DMARC email DNS deliverability, domain & USPTO trademark screening (up to 6 TLDs per check), and `/llms.txt` AI search readiness. Free unlimited read-only audits; optional one-time fix kits. Companion 50-skill pack: [github.com/zColdWater/omniforge-skills](https://github.com/zColdWater/omniforge-skills) · Registry: [`io.github.zColdWater/mcp-launch-audit`](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.zColdWater%2Fmcp-launch-audit/versions/latest).
 - **[Lantern Works](https://thelanternworks.com/?ref=ha2345567-awesome-autonomus-ai-agents)** `MIT` `Hosted MCP` `Free` — Free, read-only MCP server for GPU cloud rental prices, price changes and deals. Remote endpoint `https://lantern-works-mcp.lantern-works.workers.dev/mcp` (Streamable HTTP, no API key), or run `uvx lantern-works-deals-mcp`. Docs: https://thelanternworks.com/api/ · Repo: https://github.com/connormatthewdouglas/agent-work-stack-deals
 - **[Public Records MCP](https://github.com/GeminiGeorge22/publicrecords-mcp)** — 18 Apify-hosted MCP servers for public data: SAM.gov, Grants.gov, USAspending, EU TED and UK tenders, city council meetings, Ashby/Greenhouse/Lever/SmartRecruiters jobs, company social links, Google Ads Transparency, Etsy sales, sports odds, Spotify play counts.
+- **[Google Jobs MCP](https://github.com/johnisanerd/alphaosint-mcp-servers/tree/main/servers/google-jobs)** — Apify-hosted MCP server at `https://mcp.apify.com/?tools=johnvc/Google-Jobs-Scraper` (Streamable HTTP, Apify OAuth or Bearer token) that searches Google Jobs by keyword and location and returns title, company, location, posting age, highlights, apply links and the full description. Billed per results page (up to 10 jobs) on your Apify account.
+- **[Fork](https://fork.zone/from/github-autonomous-agents)** `Hosted MCP` `Free` — No-account remote MCP server (`https://fork.zone/api/mcp/core`) for a site where agents share and fork harness improvements (rules, skills, tools): `search_posts` and `get_post` read posts, other tools join, post and vote. Companion skill: [moxclaw/fork-skill](https://github.com/moxclaw/fork-skill) (`MIT-0`).
 
 ---
 
@@ -768,20 +770,4 @@ To be included in NEXUM, a project must undergo the **Lead Designer's Vetting Pr
 
 ## 14. Join the Vanguard
 
-We welcome contributions from the open-source community to keep NEXUM the premier reference for autonomous systems.
-
-### 14.1. Contributing Workflow
-1. **Fork** the repository: [github.com/HA2345567/awesome-autonomus-ai-agents](https://github.com/HA2345567/awesome-autonomus-ai-agents)
-2. **Add Your Tool** in alphabetical or relevance order within the matching architectural layer:
-   ```markdown
-   - **[Tool Name](https://link.to.tool)** `License / Badge` `Tag` — Authoritative description highlighting 2026 context and standout capabilities.
-   ```
-3. **Validate**: Ensure links are live, formatting matches the surrounding section, and the tool satisfies the [NEXUM Standard](#13-the-nexum-standard).
-4. **Open a Pull Request**: Submit your PR with a clear summary of the addition.
-
-### 14.2. Contributors
-
-<div align="center">
-
-<a href="https://github.com/HA2345567/awesome-autonomus-ai-agents/graphs/contributors">
-  <img src="https://contrib.rocks/ima
+We welcome contributions from the open-source community to keep NEXUM the premier reference for autonomous 

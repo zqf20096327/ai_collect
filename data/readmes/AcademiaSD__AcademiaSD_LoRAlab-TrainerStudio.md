@@ -8,6 +8,10 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-27**
+
+- **Krea 2: FP32 LoRA, balanced buckets and Timestep Sampling** — the LoRA now trains in FP32 while the model computes in BF16/FP16 (in BF16 many small updates of the LoRA were rounded away), with about 0.4 GB more VRAM and 5% slower steps; the file is still exported in BF16. Every image is used once per epoch instead of picking a resolution bucket at random each step. A new **Timestep Sampling** selector (`krea2_shift` by default, as before, plus `logit_normal`, `sigmoid` and `style`) can change while training. By [@Synergyart](https://github.com/Synergyart) ([details](#krea-2--image-loras-for-krea-2-raw-and-turbo)) [`6664668`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/6664668) [`2d5fccd`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/2d5fccd) ([#93](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/pull/93))
+
 **2026-11-26**
 
 - **Settings assistant** — 🪄 Suggest settings in the Training Settings of the image trainers proposes steps, learning rate, rank, warmup, save and preview interval, masked loss and caption type for a character, a style or an object, from the number of images and the model's own defaults ([details](#-settings-assistant)) [`93b5b4f`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/93b5b4f)
@@ -620,8 +624,4 @@ When the training ends, the trainer makes the same image (same prompt and seed) 
 
 - **Turn it on** in **2b. Training Previews**, under Preview Size: **Final XY grid**, with **Checkpoints** (rows, 4 by default) and **Strengths** (columns, `0.75, 1.0, 1.25` by default, from 0 to 3; 0 is the model without the LoRA). Off by default, because it adds time at the end: one preview per image.
 - **Checkpoints** are spread over the training: with 4 and 800 steps, steps 200, 400, 600 and the final one. The trainer keeps a small copy of the LoRA at those steps while it trains (in `xy_grid/snapshots`, about the size of the LoRA), even when they are not multiples of Save Every, so **turn it on before the training ends**. A new training in the same project deletes the copies of the previous one; resuming keeps them.
-- **Prompts:** one grid per Custom Prompt or, without them, one with the caption of the first dataset image. Each image uses the same size, steps, CFG and seed as the previews (with Seed = 0, one random seed for the whole grid).
-- **Strength works as in ComfyUI:** the weight becomes W + strength × ΔW, also with DoRA and LoKr.
-- **Face likeness:** with [Face likeness](#-face-likeness-in-the-previews) installed, each image shows its % in the corner, with the colours of the gallery, and the console says which step and strength are the most alike for each prompt.
-- The grids show above the previews (click one to open it full size) and are saved as `xy_grid_step_<N>_<prompt>.png` in the `xy_grid` folder of the output, with the prompt inside the PNG. If the grid fails (for example, out of VRAM), the console says so and the LoRA is already saved.
-- **Trainers:** Z-Image, Anima, Anima 2.9B, FLUX.1 Dev, FLUX.2 Klein 9B
+- **Prompts:** one 

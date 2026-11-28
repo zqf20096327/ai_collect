@@ -1,41 +1,55 @@
 # [pgvector](https://github.com/pgvector/pgvector) binary compile, Microsoft Windows x64, PostgreSQL
 
-<!-- 
-<br>[![oosmetrics](https://api.oosmetrics.com/api/v1/badge/achievement/440ad839-a8d7-4eb7-ad42-b5497ce3ef3d.svg)](https://oosmetrics.com/repo/andreiramani/pgvector_pgsql_windows)
--->
-<hr>
-<b>***** Unofficial release *****</b>
+[![GitHub all releases](https://img.shields.io/github/downloads/andreiramani/pgvector_pgsql_windows/total)](https://github.com/andreiramani/pgvector_pgsql_windows/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/andreiramani/pgvector_pgsql_windows)](https://github.com/andreiramani/pgvector_pgsql_windows/releases/latest)
 
-<hr>
-See <a href="https://github.com/andreiramani/pgvector_pgsql_windows/releases#release-0.8.7">latest releases</a> for available version and read the <a href="https://github.com/andreiramani/pgvector_pgsql_windows/wiki">wiki</a>
-<br><br><p></p>
-<b>How to's v0.8.x</b>:
-<br>
-1. Check readme.txt (inside archive)<br>
-<br>
-<b>How to's v0.7.3, v0.7.4</b>:
-<br>
-1. Extracted zip file to "[pg_installed folder]\share\extension\"<br>
-2. Activate extension with <code>create extension vector</code>
-<br>
-<a href="https://www.navicat.com/en/products/navicat-premium">
-    <img src="img/01-create_extension.jpg" alt="Screenshot made with Navicat Premium">
-</a><br><br>
-3. Run this query to check if the extension is enable (t) <br> <code>SELECT extname,extrelocatable,extversion FROM pg_extension where extname='vector'</code>
-<br>
-<a href="https://www.navicat.com/en/products/navicat-premium">
-    <img src="img/02-check_extension.jpg" alt="Screenshot made with Navicat Premium">
-</a>
+> [!NOTE]
+> **Unofficial release**
 
-<p></p>
-<hr>
-Contributor compiler: <a href="https://github.com/vjivandro">vjivandro</a> (v0.7.3, v0.7.4), <a href="https://github.com/andreiramani">andreiramani</a> (v0.8.0 - v0.8.7)
-<p></p>
+See the [latest releases](https://github.com/andreiramani/pgvector_pgsql_windows/releases/latest) for available versions and read the [wiki](https://github.com/andreiramani/pgvector_pgsql_windows/wiki).
 
-<!-- 
-[![oosmetrics](https://api.oosmetrics.com/api/v1/badge/achievement/440ad839-a8d7-4eb7-ad42-b5497ce3ef3d.svg)](https://oosmetrics.com/repo/andreiramani/pgvector_pgsql_windows)
+## How to's (v0.8.x)
 
-[![Star History Chart](https://api.star-history.com/svg?repos=andreiramani/pgvector_pgsql_windows&type=Date)](https://star-history.com/#andreiramani/pgvector_pgsql_windows&Date)
--->
+​	Check `readme.txt` inside the archive.
+
+## Upgrading
+
+Extract the latest version (check `readme.txt` inside the zip release). Then in each database you want to upgrade, run:
+
+```sql
+ALTER EXTENSION vector UPDATE;
+```
+
+You can check the version in the current database with:
+
+```sql
+SELECT extversion FROM pg_extension WHERE extname = 'vector';
+```
+
+<details>
+<summary><b>How to's (v0.7.3, v0.7.4)</b></summary>
+
+1. Extract the zip file to `[pg_installed folder]\share\extension\`.
+2. Activate the extension:
+
+   ```sql
+   CREATE EXTENSION vector;
+   ```
+
+   [![Screenshot made with Navicat Premium](img/01-create_extension.jpg)](https://www.navicat.com/en/products/navicat-premium)
+
+3. Run this query to check if the extension is enabled (`t`):
+
+   ```sql
+   SELECT extname, extrelocatable, extversion FROM pg_extension WHERE extname = 'vector';
+   ```
+
+   [![Screenshot made with Navicat Premium](img/02-check_extension.jpg)](https://www.navicat.com/en/products/navicat-premium)
+
+</details>
+
+---
+
+**Contributor compiler:** [vjivandro](https://github.com/vjivandro) (v0.7.3, v0.7.4), [andreiramani](https://github.com/andreiramani) (v0.8.0 - v0.8.7)
 
 [![Star History Chart](https://api.star-history.com/chart?repos=andreiramani/pgvector_pgsql_windows&type=date&legend=bottom-right)](https://www.star-history.com/?repos=andreiramani%2Fpgvector_pgsql_windows&type=date&legend=bottom-right)

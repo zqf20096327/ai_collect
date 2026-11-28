@@ -80,16 +80,28 @@ Gemini Pro 12 个月会员充值成功。
 
 有其他合适的 Token 供应来源，也欢迎在评论区补充。
 
-<!-- andy-geo-faq:start -->
+<!-- andy-geo:start -->
 ## 一句话简介
 
-**海外 AI 服务、账号订阅、网络环境与 Token 供应的个人实测记录，仅为测试笔记，不构成采购或合规建议。**
+**🧾 AI 服务、账号订阅、网络环境与 Token 供应的个人实测记录：覆盖 20+ 平台的可用性、价格与踩坑过程，附知识库原始页面。仅为个人测试笔记，不构成采购或合规建议。**
 
 - 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
-- 阅读或使用：[仓库](https://github.com/AIPMAndy/aitoken)
+- 阅读或使用：[在线阅读/使用](https://kb.metaver.vip/aitoken) · [GitHub 仓库](https://github.com/AIPMAndy/aitoken)
 - 联系：微信 `AIPMAndy`（备注「aitoken」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
-- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
-<!-- andy-geo-faq:end -->
+- 许可：MIT。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**AI 供应测试 26M10：🧾 AI 服务、账号订阅、网络环境与 Token 供应的个人实测记录：覆盖 20+ 平台的可用性、价格与踩坑过程，附知识库原始页面。仅为个人测试笔记，不构成采购或合规建议。
+
+**包含什么？**主要模块：一、酋长自用、二、防诈及推荐板块、说明。
+
+**要花钱吗？**按 MIT 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**直接打开 https://kb.metaver.vip/aitoken 在线阅读；想本地运行或参与贡献，见下方 README 的快速开始部分。
+
+<!-- andy-geo:end -->
 
 
 ## 说明

@@ -25,7 +25,7 @@ The codebase is generic - the bot's identity (name, persona, labels) lives in th
 - **macOS first.** It is developed and run on a Mac. These parts are Mac-only:
   - **desktop control** (`bin/desktop.ts`, `bin/mac-ui.js`: `osascript` and the Accessibility permission, see [Desktop access](#desktop-access));
   - **Keychain token key mode** (`TOKEN_KEY_SOURCE=keychain`; the default `file` mode works anywhere);
-  - **restart via launchd**: `bin/jarvis-restart.sh` asks the running bot to exit once idle and relies on a supervisor to start it again. The repo ships no launchd plist; on a Mac write a LaunchAgent with `KeepAlive`, elsewhere use anything that restarts the process on exit (systemd `Restart=always`, a container restart policy, ...).
+  - **restart via launchd**: `bin/jarvis-restart.sh` asks the running bot to exit once idle and relies on a supervisor to start it again. On a Mac the repo ships a LaunchAgent template (`launchd/com.example.jarvis.plist`) that runs the release supervisor `bin/jarvis-release.sh` instead of `bun` directly: each restart is built and checked in its own per-commit folder, health-checked after the start and rolled back by itself, with `jarvis-release.sh rollback` as the way back that needs neither the bot nor CI (see `docs/releases.md`, including the one-time manual install). Elsewhere use anything that restarts the process on exit (systemd `Restart=always`, a container restart policy, ...); `jarvis-restart.sh` then checks the checkout in place, as before.
 - **On Linux** everything else runs (Slack, memory, dashboard, commands, GitHub App, reviews). Desktop control is unavailable, keychain mode is unavailable (stay on `file`), and restarts need your own supervisor.
 - **Orca is optional.** It is the multi-agent IDE the owner's turns use for background workers; with it missing or stopped, turns get no `ORCA_TERMINAL_HANDLE` and fall back to the Agent tool. Turn it off with `ORCA_TERMINAL_WORKTREE=off`.
 
@@ -95,6 +95,8 @@ Required / notable env (see `.env.example`):
 | `RESTART_TURN_BUDGET_MS` | while a restart waits, new messages still run, each turn on this budget (default `120000`); past it the thread is told to hold on and the turn is cut, then picked up again on the same session after the restart |
 | `DRAIN_NOTICE_CHANNEL` | channel for the one restart notice listing waiting threads (unset: silent); also where the inner child logs voice drift unless `inner_child_drift_channel` is set, and where a press on Slack's stop button is reported (the stopped thread is not told) |
 | `OFFLINE_ALARM_CHANNEL` | channel told when the host loses its connection, via a Slack scheduled message kept armed; a channel id, not a name (unset: no alarm) |
+| `COORDINATOR_NAME` | what the housekeeping coordinator signs its messages with and answers to (default `Coordinator`) |
+| `COORDINATOR_INTERVAL_MS`, `COORDINATOR_STALE_JOURNEY_MS`, `COORDINATOR_PROD_REPING_MS`, `COORDINATOR_QUIET_START_HOUR`, `COORDINATOR_QUIET_END_HOUR`, `COORDINATOR_TZ_OFFSET_MIN`, `COORDINATOR_LANG` | The housekeeping coordinator that lives only in the owner's DM: tick every 30 min (0 = off), journeys stale after 3 days, an undecided prod blocker asked again every 30 min, quiet hours 22 -> 5 in UTC+7 (prod blockers excepted), digest and blockers in `vi` (or `en`) with the day's usage footer; see "The coordinator sweeps" in CLAUDE.md |
 | `SLASH_MIRROR_CHANNEL` | channel for the owner's copy of other people's slash commands, one thread per run; a channel id (unset: the owner's DM) |
 | `GITHUB_APP_ID` | GitHub App id (unset: `app.json` beside the private key) - see [Calling it from GitHub](#calling-it-from-github) |
 | `GITHUB_APP_PRIVATE_KEY_PATH` | app private key (default `~/.config/jarvis/github-app/private-key.pem`) |
@@ -103,6 +105,9 @@ Required / notable env (see `.env.example`):
 | `GITHUB_APP_SLUG` | app slug, `@<slug>` calls it (default `jarvis`) |
 | `GITHUB_APP_ALLOWED_OWNERS` | repo owners the app acts for, comma list (default empty: the app acts for no owner until set) |
 | `GITHUB_APP_LABEL` | label that calls it on an issue/PR (default `jarvis`) |
+| `MERGE_GATE` | `on`: the bot merges the PR itself, with the app's credential, once the gate holds (see [Who merges](#who-merges-one-principal-per-job)); `off` (default) keeps `bin/merge-when-green.sh` on the human token |
+| `MERGE_GATE_REQUIRED_CHECKS` | checks that must be green on the head sha, comma list (default `checks,gitleaks`) |
+| `MERGE_GATE_ATTESTERS` | accounts whose `[review round N]` / `[verify]` words count, comma list; required for runtime code (default empty: nobody's count, so no runtime PR merges; the repo is public and "anyone but the author" would let any GitHub user vouch) |
 | `SELF_PR_AUTHOR` / `SELF_PR_REVIEWER` | gh logins for the bot's own PRs: the author opens the PR and answers reviews, the reviewer posts its reviews (request changes or approve) and merges. Both or neither, and not the same login (otherwise: one account) |
 | `ACCEPTED_BOT_IDS` | Slack bot ids, comma list, whose messages are answered as the person they post for. A bot that posts with a person's user token carries both a `bot_id` and that person's `user`; with its id listed the message is handled as that user speaking, authorized through the normal access check (exactly that person's role, never more). A bot message without a `user` is still ignored, and after 3 accepted-bot turns in a row in one thread with no person writing, the bot stops answering bots there until a person does. The turn's context marks such a message `via bot` next to the person. Default empty: every bot message is ignored |
 | `REVIEW_ROUNDS_MAX` | review rounds a PR is followed for, the review that was asked for included (default `5`; `0` turns following off). See [Review rounds](#review-rounds) |
@@ -111,7 +116,9 @@ Required / notable env (see `.env.example`):
 | `DB_MCP_SERVERS` | names of the local database MCP servers on this host (as `claude mcp list` shows them, e.g. `pg-prod,clickhouse-ro`), comma list. **Security setting:** each is denied by name to every role that may not use databases (pal, executer, side questions), and a denial has to name the server, so a server missing here is reachable by EVERY role. Default empty denies nothing - list every database server you configure (at boot the activity log warns about local servers in `~/.claude.json` that are not listed) |
 | `EXECUTER_DB_MCP_SERVERS` | the subset of `DB_MCP_SERVERS` the executer role may query; list only servers whose credential is read-only on the server side. Default empty: executers get none |
 | `WORKER_MCP_DENY` | user-scope MCP servers (names as `claude mcp list` shows them) kept out of the Orca workers the bot starts, comma list. Default empty: every worker loads every server, as before. See "Keeping MCP servers out of workers" |
-| `WORKER_HOME_DIR` | the one folder every Orca worker starts in (`--worktree path:<it>`); the MCP exclusion is written there and never into a folder you work in. Default `~/.jarvis/worker-home`, created at boot and registered with Orca (as a plain folder) the first time a worker is about to start. See "Keeping MCP servers out of workers" |
+| `WHISPER_BIN`, `WHISPER_MODEL_PATH`, `FFMPEG_BIN`, `WHISPER_TIMEOUT_MS` | voice messages are transcribed locally (ffmpeg, then whisper.cpp's `whisper-cli`, language auto-detected). Defaults: `/opt/homebrew/bin/whisper-cli`, `~/.local/share/whisper-models/ggml-large-v3-turbo-q5_0.bin`, `/opt/homebrew/bin/ffmpeg`, 120000 ms per step. A missing binary or model never drops the clip: the turn starts with a note that it could not be transcribed |
+| `WORKER_ROLE_MCP_DENY` | servers kept out of one role's Orca workers on top of `WORKER_MCP_DENY`, `role=names` pairs split by `;` (`reviewer=pg-prod,ch-ro;investigator=pg-prod`; roles `writer`, `reviewer`, `verifier`, `investigator`). Default empty. See "Tools by worker role" |
+| `WORKER_HOME_DIR` | the shared worker home; each role's workers start in `<it>-<role>` (`--worktree path:<it>-<role>`), made next to it; the MCP exclusion and the role's tool rules are written there and never into a folder you work in. Default `~/.jarvis/worker-home`, created at boot and registered with Orca (as a plain folder) the first time a worker is about to start. See "Keeping MCP servers out of workers" |
 | `DASHBOARD_PORT` | dashboard port (local, loopback-only, no auth) |
 | `DASHBOARD_ALLOWED_ORIGINS` | extra browser origins allowed to POST (proxy/tunnel access) |
 | `DATABASE_PATH` | the live sqlite file (default `data/bot.db`). Put it **outside the git checkout**, `~/` works, e.g. `~/.jarvis/data/bot.db` - see [Where the database lives](#where-the-database-lives) |
@@ -150,6 +157,7 @@ The **Console** tab additionally needs read scopes to list and open conversation
 - It tags people with their Slack `<@id>` when they are in the conversation
 - For workspace questions it calls the Slack Web API through the bot (a helper that presents a per-turn ticket; the bot token itself is never in a turn's environment), never a third-party connector
 - **It opens what you share.** Links in a message (or earlier in the thread) are fetched before it answers, and attachments - screenshots, logs, documents - are downloaded and read. It will not ask you to paste something it could have opened, and if something genuinely cannot be read it says so rather than answering around it
+- **It hears voice messages.** A Slack voice clip (audio, no text) starts a turn like a typed message: the clip is transcribed on the host (whisper.cpp, nothing leaves the machine), the transcript is marked as such, and it answers in text plus a spoken clip of the reply. If the audio cannot be transcribed it says so instead of staying silent
 
 ### Commands
 
@@ -158,7 +166,7 @@ Every command has two interfaces - use whichever you like. Both triggers are con
 - **slash**: `<SLASH_COMMAND> <command> <args>` (register that single slash command in the Slack app config; it sub-routes to all commands. Socket Mode needs no request URL)
 - **message**: `<COMMAND_PREFIX> <command> <args>` (or the legacy `!<command>`), in a DM or by @-mentioning the bot
 
-A few commands are **internal**: the bot's own tools (today `journey`, its work log, and `bug-report`, which DMs the owner a bug it found in itself with Approve / Reject), run only by the brain in its own turn through the run helper. A typed line, the slash command, the menu, a schedule or the dashboard gets a short refusal whatever the caller's role (the owner included); they are not in `help`, the command menu, the dashboard command list or the role grants, because no role holds them - the brain runs them as whoever its turn serves.
+A few commands are **internal**: the bot's own tools (today `journey`, its work log, `bug-report`, which tells the owner about a bug it found in itself - the coordinator approves the small ones in code, the rest wait for the owner's Approve / Reject, or for the agent's own `bug-report approve <id>` inside a turn the owner's message started, which DMs the owner an audit line with a Reject button - and `claim`, which keeps one writer per job), run only by the brain in its own turn through the run helper. A typed line, the slash command, the menu, a schedule or the dashboard gets a short refusal whatever the caller's role (the owner included); they are not in `help`, the command menu, the dashboard command list or the role grants, because no role holds them - the brain runs them as whoever its turn serves.
 
 Every command is gated by its own `command:<name>` grant, and its sub-actions by the permission named in the cell (see [Roles & tool access](#roles--tool-access)). **Only `owner` is hard-coded.** `pal`, `executer` and `admin` are custom roles like any other: the *seeded to* column only says which of them a fresh install starts with the grant, and the owner moves it with `role grant` / `role revoke` or the Roles page. A role you create holds exactly what you grant it. Rows marked *owner* are hard-coded and never grantable.
 
@@ -181,7 +189,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `add @user [role]` | admin; only roles ranking below your own | grant access under any role, custom ones included; no role given means the default one (`pal`); an unknown role name is refused |
 | `remove @user` | admin (only someone ranking below your own role) | revoke access |
 | `learn <fact>` | executer, admin | teach a durable fact: the owner's own typing is saved at once, anyone else's (and any `learn` the agent runs for itself) waits as *pending* for the owner's approval and is not part of any reply until then |
-| `learn pending` / `learn approve <id> [global\|<channel ids>]` / `learn reject <id>` | *owner* | list what waits (with its scope), approve it (it is carried into every reply from then on, or only in the channels you name) or reject it (never). Typed by the owner only: the agent cannot run these for itself. The owner also gets each pending learning as a DM with Approve / Reject buttons |
+| `learn pending` / `learn approve <id> [global\|<channel ids>]` / `learn reject <id>` | *owner* | list what waits (with its scope), approve it (it is carried into every reply from then on, or only in the channels you name) or reject it (never). Typed by the owner, or run by the agent inside a turn the owner's own message started (never in a watch, worker, `tell` or loop turn): then the owner is DMed an audit line with the thread and how to take it back. The owner also gets each pending learning as a DM with Approve / Reject buttons |
 | `learnings` / `relearn <id> <text>` / `unlearn <id>` | executer, admin | list, reword or delete learnings. Rewording by anyone but the owner sends the learning back to pending |
 | `review-policy [owner/repo] [first\|after\|default]` (alias `rvpolicy`) | pal, executer, admin (setting: `settings:manage`) | how a repo gets approved - see [Review policy per repo](#review-policy-per-repo) |
 | `review-agents [n\|default]` (alias `rvagents`) | pal, executer, admin (setting: `settings:manage`) | how many child agents one review may fan out to - see [How wide a review fans out](#how-wide-a-review-fans-out) |
@@ -191,7 +199,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `quick-review <pr-url\|help\|prompt> [--policy first\|after] [what to look at]` (alias `rv`) | pal, executer, admin | quick review of a PR, **when a person asks** (tag the bot with `review <pr-url>` or `approve <pr-url>`, or type this; or a review requested on GitHub starts the same one - never from a thread, workflow or hand-back - see [Asking for a review in words](#asking-for-a-review-in-words) and [Reviews that start by themselves](#reviews-that-start-by-themselves)): read all of it, post a comment on GitHub *and* back in the thread with the blockers first and the non-blocking findings after them; request changes on a blocker only (big PRs are cloned + reviewed by child agents that split the files between them); a new push to a reviewed PR gets the next round by itself, see [Review rounds](#review-rounds). CI is read first: red requests changes before the review, a running CI gets a watcher (see [CI comes first](#ci-comes-first)). Runs full-access. |
 | `bomb [categories] [count] <message-link>` (alias `br`) | admin | reaction-bomb a message. Combine categories with commas and set a count: `bomb money,face,negative 9 <link>`. Up to 23; `bomb help` lists every category |
 | `brief <thread-link\|reference> <text>` (`brief help`) | admin | leave a short note FOR another thread: what you posted there, why, what you wait for. Posts nothing, starts no turn; that thread's session reads it on its next turn, whoever speaks (it is part of that turn's message, so the session keeps it for the turns after), then it is marked read for that access tier. It is background information only, never instructions. The receiver sees only an opaque reference to your thread (never a link) and answers with `brief <reference> <text>`. `tell` is for when the other side must act now |
-| `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. The command is the audited route; the Slack proxy lets only the owner's own turn write elsewhere by hand, and any other turn only into its own channel. Owner only (anyone else is told who can), audit logged like every command, and it files a `brief` in the target thread so its session knows why (an owner's turn writing there directly through the Slack proxy files the same brief) and, for 7 days after the last such write, that thread's human messages come back to the posting thread as relay briefs (untrusted data, no turn, nothing posted); the footer under the message never names the requester; the bot must be in the channel |
+| `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. The command is the audited route; the Slack proxy lets only the owner's own turn write elsewhere by hand, and any other turn only into its own channel. Owner only (anyone else is told who can), audit logged like every command, the message carries no footer (it is not in the session's own thread), and it files a `brief` in the target thread so its session knows why (an owner's turn writing there directly through the Slack proxy files the same brief) and, for 7 days after the last such write, that thread's human messages come back to the posting thread as relay briefs (untrusted data, no turn, nothing posted); the footer under the message never names the requester; the bot must be in the channel |
 | `slack-methods list \| add <method> read\|write [channelParam] \| remove <method>` | owner | manage the Slack Web API methods a turn may call beyond the built-in ones (the `Slack.` paragraph of the security notes lists them); writes stay locked to the turn's channel (in the owner's turn they may name another channel, logged), `auth.*` / `admin.*` / `apps.*` / `oauth.*` are refused, and the change applies on the next call |
 | `mcp-tools pending \| list <server> \| approve <server> <tool> \| deny <server> <tool>` | owner | approve or deny the tools an MCP server started listing after its first run; a new tool stays hidden and refused until approved (a typed line only, never from a turn) |
 | `reply <message-link>` (alias `jrp`) | admin | draft and post an AI reply to a message |
@@ -432,10 +440,67 @@ Claude sessions there. They start in a dedicated worker home instead,
 `WORKER_HOME_DIR` (default `~/.jarvis/worker-home`). Boot creates it; the helper,
 run with no argument, registers it with Orca as a plain folder when `orca repo
 list` does not know it (`--worktree path:` only takes folders Orca knows), trims
-it, and the prompts then start the worker with `--worktree path:$BOT_WORKER_HOME`.
+it, and the prompts then start the worker with `--worktree path:$BOT_WORKER_HOME-<role>` (see the next section; `worker-mcp-trim.ts` with no `--role` still makes and trims the shared home itself).
 The bot never writes `.claude/settings.local.json` anywhere you work. A worker
 that has to change code cuts its own `git worktree add <absolute path>` from the
 real repository, so its brief uses absolute paths.
+
+### Tools by worker role
+
+Every worker used to start with the same tools. Now a worker has a role, and the
+role decides what its session may run. The mechanism is the one above: a session
+reads `.claude/settings.local.json` of its working directory once, when it starts,
+and a single shared folder cannot hold different settings for workers that run at
+the same time, so each role has a folder of its own, `$BOT_WORKER_HOME-<role>`
+(next to `WORKER_HOME_DIR`). `bin/worker-mcp-trim.ts --role <role>` creates it,
+registers it with Orca and writes into it the host's MCP exclusions
+(`WORKER_MCP_DENY`, plus `WORKER_ROLE_MCP_DENY` for that role) and the role's
+`permissions.allow` / `permissions.deny`. The prompts that start a worker say to
+run it with the role first and to start the worker in that folder.
+
+| Role | Cannot | Can |
+|---|---|---|
+| `writer` | merge by hand (`gh pr merge`, `github-app.sh pr-merge`, a merge through `gh api`) | edit, commit, push its branch, open the PR, land it with `bin/merge-when-green.sh` |
+| `reviewer` | edit, commit, push, merge, open or edit a PR, any github-app action but `comment` | read the PR (`gh pr view` / `diff` / `checks`, `gh api` for reviews and comments), post a review, cut its own `git worktree` to run the checks |
+| `verifier` | the same as the reviewer, and no review | run the change in a worktree of its own, comment its verdict |
+| `investigator` | edit or write a file, commit, push, merge, comment, any write to GitHub | read the repository and GitHub |
+
+Deny rules are enforced by the session before a tool runs, whatever its permission mode (checked on Claude Code 2.1.285 against `git push`, `gh pr merge` and a merge through `gh api`, also behind a `GH_TOKEN=$(...)` assignment and through `cd <repo> && git ...`, which is how a worker reaches the repository: `git -C` is not allowed). The allow list only
+matters in a permission mode that asks: there a command in neither list asks for
+approval and the watch reports the worker parked on it. Orca launches workers
+with prompts off, where the allow list changes nothing and the deny list is the
+whole boundary. Rules match command prefixes (also behind a `VAR=value`
+assignment; `git -c ...` and `git --...` are denied outright for the read-only
+roles, and `gh api graphql` too), so a `bash -c` or `env git ...` wrapper, a shell
+redirect (`> file`, `tee`, `sed -i`) or a GraphQL mutation read from a file is not
+caught: the investigator has no write tool, but it is not stopped from a
+redirect, and a reviewer or verifier may use the file tools in scratch
+folders (`/tmp`, `/private/tmp`, `/var/folders`) and is refused under a home
+folder (`/Users`, `/home`; other paths such as `/etc` are not listed). The
+writer can still push to any branch it can reach: keeping `main` closed to it is
+branch protection's job, not this profile's. This takes away what a role never
+needs, it is not a sandbox, and the credentials a shell can read are a separate
+boundary. The two
+lists in a role's folder are replaced on every run (a rule dropped from a profile
+is dropped there), other settings in the file stay. Change a role's profile in
+`src/domain/workerRoles.ts`.
+
+A worker ends its report with one fenced block, so the hand-back reads fields
+instead of prose:
+
+````
+```worker-report
+{"role":"reviewer","status":"succeeded","pr":123,"head_sha":"<the head it read>","verdict":"changes","findings":[{"severity":"blocker","summary":"what is wrong","file":"src/x.ts","line":42}],"owner_actions":[],"cost":null}
+```
+````
+
+`status` is `succeeded`, `failed` or `blocked`; `verdict` is `clean`, `changes`,
+`verified`, `failed` or `none` (a writer or investigator); `findings` are
+`blocker` or `nit`; `owner_actions` are steps only the owner can do. The last such
+block wins. `bin/orca-worker-wait.ts` finds it in the worker's record and the
+hand-back names it as the worker's claim: the turn still checks `head_sha` against
+the PR's head and the verdict on the PR itself. The `VERDICT:` line in review and
+verifier comments stays; the review loop and the verifier gate read it there.
 
 - `fanout` gives each worker a checkout of its own instead: the checkout is
   created first without an agent (`orca worktree create`, no `--agent`),
@@ -847,6 +912,24 @@ running:
 It answers `503` when deaf, so an uptime check sees an outage instead of a
 process that happens to be alive.
 
+### Releases and the way back
+
+A restart after a merged change is built **outside the live checkout**: HEAD is
+exported to `~/.jarvis/releases/<sha>`, typechecked, tested and bundled there
+(`bin/jarvis-restart.sh` still refuses on red, and still drains), and only then
+does the supervisor's `current` link move. After the start the supervisor waits
+for `GET /health` to say `ok: true`; a release that does not come up in
+`RELEASE_HEALTH_TIMEOUT_S` (180) or exits first is undone by itself and the last
+known good one runs again. By hand, when the bot is too broken to help:
+
+```bash
+~/.jarvis/releases/bin/jarvis-release.sh status
+~/.jarvis/releases/bin/jarvis-release.sh rollback        # last known good, restarts at once
+```
+
+It needs only bash and `launchctl`. Installing the supervisor is a one-time
+manual step (the LaunchAgent lives outside the repo): `docs/releases.md`.
+
 ## Stuck work
 
 Every 15 minutes, outside any turn, the bot looks for work that died without
@@ -984,6 +1067,24 @@ the console routes (`/api/slack/post`, ...) with `curl` and act as the bot in an
 channel. Closing those is a separate decision about what a full-access turn may
 read and call.
 
+## Seatbelt
+
+> **Not ready to switch on.** The final review of this change confirmed holes that are still open (Claude's shell snapshots and other repos under `~/Workspaces` can be planted, some home dot-files and other repos' `.env` files can be read, package caches are writable, the dashboard's other endpoints have no authentication). Merging it is safe because it is off by default and changes nothing then. The list and the fixes are in `CLAUDE.md`, the "Seatbelt" entry.
+
+Every turn, every Orca worker and the bot are one macOS user, so a worker's shell could read the GitHub App key and run `gh auth token`. The seatbelt takes those credentials out of reach of anything the bot or Orca *starts*, with no second user and no sudo. It is **off by default**: until you switch it on, nothing changes.
+
+What runs under it is cut off from the keychain, `~/.config/gh`, `~/.config/jarvis` (a worker keeps only its own ticket file), `~/.ssh` and the ssh agent, the cloud credential folders, the Orca runtime token, the bot's `.env` and databases, and from starting anything outside it (`launchctl`, `open`, `osascript`, cron, `at`). It cannot write shell startup files, LaunchAgents, Claude's settings, Orca's profiles or the checkout's `bin/` and hooks. Its `gh`, `orca` and `git` push credential are shims that ask the bot over loopback with the caller's ticket; the bot decides (merge is never available to a worker) and runs the real command.
+
+**Switch it on** (owner, once):
+
+1. `claude setup-token`, then `umask 077; pbpaste > ~/.config/jarvis/sandbox-claude-token` (Claude Code's own login lives in the keychain, which the sandbox denies).
+2. In Orca: Settings, Agents, `claude`, command override: `<checkout>/bin/sandboxed-claude.sh`. This is what wraps every Orca worker, including one a worker starts itself.
+3. In `.env`: `SEATBELT=on`. Restart the bot.
+4. A reviewer or verifier posts with a ticket that carries `comment` (a proxied review is a comment; approvals are not available inside).
+5. Run `bin/sandbox-selftest.sh` (macOS) to see every escape refused. Switch off: `SEATBELT=off` and clear the Orca override.
+
+Inside, the home folder is closed by default (reads and writes) with an allowlist; `ps` cannot run; ssh remotes and `gh auth token` do not work, so push over https with a `push` ticket. Before you rely on it, run `bin/sandboxed-claude.sh -p hi` once with the token file in place: a turn through the OAuth token was not exercised end to end here. Limits, honestly: outside the checkout and the home's dot-entries the profile is a denylist, so another repo's `.git/config` is still writable; gh writes through the proxy are authored by the host's gh login (use `bin/github-app.sh` for the app's name); git metadata of a worker's own worktree stays writable (run unsandboxed git there with `-c core.fsmonitor=false -c core.hooksPath=/dev/null`); a wrapped worker's agent-hook status reports no longer reach Orca; the dashboard's other endpoints have no authentication and loopback stays reachable (the proxy needs it), so a sandboxed process can still call them until a separate decision closes that; a push-grant ticket's token is held inside; `git push -u` cannot write the shared `.git/config` (push with an explicit branch); a process outside the sandbox (your own terminal, the host's `gh` login) still holds the credentials;  owner turns lose the claude.ai connectors and desktop control while it is on. The real fix is a separate macOS user for the keys (not built here).
+
 ## Stopping a turn
 
 A chat turn can run for the better part of an hour, so there is a way to end one
@@ -1068,200 +1169,4 @@ those messages wait in a short per-thread buffer first:
    who wrote each.
 
 Never held, and handled exactly as before: tagged messages, DMs, threads that are
-just the bot and one person, command lines (`//bot ...`) and spoken review
-requests (those are only ever a tag: an untagged reply is never one). A message from somebody off the allowlist is not buffered either. A
-one-on-one thread is recognised from the thread itself (the bot has written and
-exactly one human has), not from why it is followed: it is followed for good from
-its second message on, which makes its route read "asked", and it must still never
-wait.
-
-A message that is not held is answered at once, and takes over whatever the thread
-had buffered only when it will itself run a chat turn for an allowed user (allowed,
-not a command line, has text beyond the tag): that turn reads the buffered messages
-in its thread context, so the pending batch is dropped and its inbox rows settle,
-and it cannot fire later into a second, out-of-order answer. A message from
-somebody off the allowlist (untagged, or an @-mention that becomes an access
-request) and a command line answer none of the buffered messages, so they leave the
-batch alone to fire on its own. Past the hard cap the gate never loops: a newer
-message arriving while the model reads does not restart the window. Any answer
-except `skip` replies with the whole current batch; a `skip` settles only the
-messages the gate actually read (they were skipped) and carries the unseen ones
-into a fresh batch with a new cap, so a skip never swallows a message the model
-did not see and a busy thread cannot hold its rows open for ever. The batch runs as its least-privileged author (role, tools and access), so a
-lower-role request plus a higher-role "+1" in the same window never runs on the
-higher role's tools. A turn that fails marks its rows failed, not done.
-
-A restart does not lose the buffer: a message's inbox row stays open until its
-batch is answered or skipped, so after a restart the row is redelivered and the
-message is buffered again.
-
-**Settings** (the `settings` table, edited like `follow_own_threads`; read per
-message, so a change needs no restart):
-
-| key | default | meaning |
-| --- | --- | --- |
-| `follow_gate` | on | `off` goes back to one main turn per message |
-| `follow_debounce_seconds` | `25` | quiet time after the latest message before the batch is judged |
-| `follow_debounce_max_seconds` | `90` | longest a batch is held, from its first message (at most 600) |
-
-Not a number, or not above zero, means the default; the cap is never shorter than the
-quiet window. The gate uses the model for the `pal` role (`CLAUDE_MODEL_PAL`, or
-`model:pal`), see [Model per role](#model-per-role-and-per-channel).
-
-**Tuning.** Every decision logs one line, including `skip`, so you can see what the
-gate is keeping quiet about:
-
-```
-follow gate channel=C0123 thread=1731.0001 batch=3 verdict=skip: people are talking among themselves
-```
-
-A line for a window that was extended, a verdict that was superseded by a newer
-message, or a gate that timed out says so in parentheses. If it skips things it
-should have answered, read the reasons first (the prompt is `gateSystem` in
-`src/domain/followGate.ts`), or set `follow_gate=off` while you decide. If replies
-come too late, lower `follow_debounce_seconds`.
-
-## Muting a thread
-
-`//bot mute` (in the thread, or `//bot mute <thread link>`) turns the bot off for
-that one thread: it answers nobody there, even when tagged. A message from a person
-is dropped at the door, before any turn or session starts, so it costs no tokens and
-gets no reply, no reaction and no "working" placeholder. This holds for channel
-threads, a DM thread's replies and an untagged reply it would otherwise follow.
-`//bot mute list` shows the muted threads; `//bot mute off` lifts it.
-
-- Known commands still run in a muted thread (`//bot mute off`, with a leading tag
-  or the legacy `!status`), which is how `mute off` works from inside it.
-  Everything else a person writes is ignored, an unknown command included.
-- A mute outranks a `follow`: the follow stays saved but is suppressed while the
-  thread is muted, and comes back with `mute off`. `follow list` and `mute list`
-  both say so.
-- It is about people's messages. Work the bot already has bound to the thread keeps
-  running and may still post there: a watch handing the thread back, a loop, a tell
-  and a workflow's steps.
-- Same role level as `follow` (executer and up). Stored in `muted_threads`
-  (`db/muteRepo.ts`), checked in memory.
-
-## One turn at a time
-
-A thread's turns run one after another, never beside each other. Two messages a
-few minutes apart used to spawn two independent runs that each did the whole
-task: two branches, two implementations, two pull requests, neither aware of the
-other.
-
-It is also what the session model requires - a thread holds one CLI session, and
-two `--resume` processes on one session id are two conversations overwriting
-each other's history. Queued this way, the second message runs with the first's
-result already in the session, which is what makes a follow-up mean "and the
-rest" rather than "again, from scratch".
-
-Commands are deliberately not queued: a review is its own process with its own
-session, and holding one behind a long chat turn would make it look dead.
-
-### Messages queued behind a turn are answered together
-
-Send a, then b, c, d, e while a runs, and b..e do not take four turns of their own:
-they wait as one group, and when a ends - finished, failed or stopped - they run
-as ONE turn with one reply. The turn reads them from the thread, so each keeps its
-author, timestamp, attachments and links, and is told these were several messages
-sent while it was busy. The newest message carries the turn (its stream and
-reply); the others settle when it ends and post nothing (their inbox rows stay open until then, so a restart that cuts the turn re-delivers each of them).
-
-Only a person's own typed messages from the same author merge. Every turn the bot
-starts itself (a watch hand-back, a worker's question, a loop, a nudge, a
-workflow step) keeps its own turn and is a barrier the groups do not merge
-across: each carries its own instruction, and a turn runs under one person's role
-and budget. Messages that arrive while the combined turn runs form the next group.
-
-Stop ends only the running turn, so waiting messages are never dropped by it:
-after a stop they start at once as one turn. With nothing running (only messages
-queued behind a bot-started turn) there is nothing to stop, and `stop` says how
-many are waiting.
-
-## One session per thread
-
-A Slack thread is one conversation, so it gets **one Claude Code CLI session**.
-The first message in a thread opens it (`--session-id`), every later one resumes
-it (`--resume`), and the model keeps its context, its reasoning and its files
-between turns instead of starting cold and being handed a transcript each time.
-
-A resumed turn is given only what it has not seen: everything said in the thread
-since its last turn, including messages the bot was not addressed in. The bot's
-own SQLite memory still records every turn - it is the fallback when a session
-is gone, and what the dashboard reads.
-
-Sessions are keyed by **thread and access tier**, not thread alone. Full-access
-(`tools:full-access`, the owner as seeded) and sandboxed roles run the CLI in different
-working directories, and the CLI files a session under the directory it ran in -
-so they could not share one in any case, and sharing would hand a sandboxed user
-whatever a full-access session had read.
-
-A session that will not resume is not an error anyone sees: the CLI prunes its
-own history and a committed database outlives the machine it was written on, so
-`No conversation found with session ID` means "start a fresh one and read the
-thread back in", silently. A genuine failure still surfaces.
-
-```
-//bot session          what this thread is on
-//bot session reset    drop it; the next message starts fresh
-//bot session off      admins: back to a cold call per turn
-//bot session on       admins: back on
-```
-
-## Calling it from GitHub
-
-A GitHub App lets people call the bot where the work is. Mention it in an
-issue or PR comment, a review comment or a submitted review
-(`@<slug> why does this fail?`), or add the `jarvis` label to an issue
-or PR. It puts 👀 on the comment, posts the request into a Slack channel
-(`github-app channel #channel`, else the review inbox channel) and runs a turn
-in that post's thread **as the person who called**, matched like the review
-inbox does (`review-inbox link <github-login>`, else exactly one display-name
-match), so their role applies and the turn runs on the bot's credential. Someone it cannot
-place gets one comment explaining how to link, and nothing runs.
-
-**A mention that asks for a review on a PR, the label on a PR, or a review
-requested from the app is not that kind of call**: it starts a review, see
-[Reviews that start by themselves](#reviews-that-start-by-themselves). (GitHub
-does not let a PR request a review from an App's bot - the reviewers API refuses
-it - so in practice the mention and the label are the two ways in; if a
-`pull_request.review_requested` event with the app as the reviewer does arrive it
-is handled the same.) Subscribe the app to `pull_request`, `issue_comment`,
-`pull_request_review` and `pull_request_review_comment` events, with pull
-requests and issues read & write and contents read.
-
-The turn posts its answer back on the issue/PR, as the app, through
-`bin/github-app-comment.sh <owner/repo> <number> <body-file>` -> loopback
-`/api/github-app/comment`. The request carries the turn's ticket, and the bot
-only posts to the issue that turn's thread was opened for. If the turn ends
-without posting, its reply is posted for it.
-
-For anything wider, a turn can act as the app on any repository it is installed on
-(`acme`, `cute-me-on-repos`, ...) when the person it runs as holds the action's grant
-(`github:<action>`, one per action below: `git` and `push` are separate grants, and `push`
-must use the `push` subcommand). As seeded that is the **admin and the owner** (all twelve), and the **executer** for `git` (commit as the app, **identity only, no token**: a role gets the installation token only when it also holds `github:push`), `pr-create`, `pr-edit`, `comment`, `labels-add` and `reviewers-request` - never push, review, merge or close. The owner
-grants any of them to another role (`role grant executer github:pr-create github:comment`)
-with no code change:
-
-```
-bin/github-app.sh pr-create <owner/repo> --head <branch> --base <branch> --title <t> --body-file <f> [--draft]
-bin/github-app.sh comment <owner/repo> <n> <body-file>
-bin/github-app.sh review <owner/repo> <n> APPROVE|REQUEST_CHANGES|COMMENT [body-file]
-bin/github-app.sh pr-edit <owner/repo> <n> [--title <t>] [--body-file <f>]
-bin/github-app.sh pr-close|pr-reopen <owner/repo> <n>
-bin/github-app.sh pr-merge <owner/repo> <n> [--method merge|squash|rebase]
-bin/github-app.sh labels-add|labels-remove <owner/repo> <n> <label>...
-bin/github-app.sh reviewers-request <owner/repo> <n> <login|team:slug>...
-bin/github-app.sh git <owner/repo> <local-repo-dir> -- <git args>...
-bin/github-app.sh push <owner/repo> <local-repo-dir> <branch> [--force-with-lease]
-```
-
-`git` runs `git -C <dir> <args>` **as the app**: commits and cherry-picks are
-committed by `<slug>[bot]` (`<id>+<slug>[bot]@users.noreply.github.com`,
-no GPG signing; the id is looked up once with `GET /users/<slug>[bot]`), and
-anything that talks to github.com (fetch, pull, push, ls-remote; an ssh remote
-is read as https) carries a fresh installation token. `push` pushes one branch
-to the remote of `<dir>` that points at `<owner/repo>`. The token is a one-shot
-credential: the bot hands it back for the `git-auth` action (same ticket, same
-grant gate (an executer gets the identity with no token, so it can commit but not push), same command log row, no token in the log) and the helper puts
-it in that one git process's environment as `http.extraheader` throu
+just the bot and one person, 

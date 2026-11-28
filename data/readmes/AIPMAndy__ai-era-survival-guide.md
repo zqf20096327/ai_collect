@@ -89,16 +89,28 @@
 
 <!-- andy-author-card:start -->
 
-<!-- andy-geo-faq:start -->
+<!-- andy-geo:start -->
 ## 一句话简介
 
-**面向普通人的 2027—2029 职场判断：岗位 AI 用法、守住主业，并在已有经验上发展第二收入。**
+**AI 时代不被淘汰保姆级攻略：2027—2029 职场判断、30 种岗位 AI 用法、第二收入路径｜AI-era career survival guide**
 
 - 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
-- 阅读或使用：[在线阅读](https://aipmandy.github.io/ai-era-survival-guide/) · [仓库](https://github.com/AIPMAndy/ai-era-survival-guide)
-- 联系：微信 `AIPMAndy`（备注「AI时代生存」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
-- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
-<!-- andy-geo-faq:end -->
+- 阅读或使用：[在线阅读/使用](https://aipmandy.github.io/ai-era-survival-guide/) · [GitHub 仓库](https://github.com/AIPMAndy/ai-era-survival-guide)
+- 联系：微信 `AIPMAndy`（备注「ai-era-survival-guide」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
+- 许可：代码 MIT / 内容 CC BY 4.0。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**AI 时代不被淘汰保姆级攻略：2027—2029 职场判断、30 种岗位 AI 用法、第二收入路径｜AI-era career survival guide
+
+**包含什么？**主要模块：快速开始、内容、图文版、开源资料、关于 Andy 与联系方式、来源与使用说明。
+
+**要花钱吗？**按 代码 MIT / 内容 CC BY 4.0 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**直接打开 https://aipmandy.github.io/ai-era-survival-guide/ 在线阅读；想本地运行或参与贡献，见下方 README 的快速开始部分。
+
+<!-- andy-geo:end -->
 
 
 ## 作者 / About the author

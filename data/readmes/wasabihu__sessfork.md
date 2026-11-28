@@ -5,6 +5,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-22c55e.svg)](pyproject.toml)
 [![wasabihu/sessfork MCP server](https://glama.ai/mcp/servers/wasabihu/sessfork/badges/score.svg)](https://glama.ai/mcp/servers/wasabihu/sessfork)
+[![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/wasabihu/sessfork)
 
 **English** · [简体中文](README.zh-CN.md) · [Native Rust CDP MCP](rust/sessfork-mcp/README.md) · [Interactive Visual Guide](https://wasabihu.github.io/sessfork/) · [Stress Benchmarks](docs/benchmarks.md) · [Security Audit Report](docs/security-report.md)
 
@@ -32,7 +33,7 @@ When AI coding agents ([Google Antigravity](https://antigravity.google/docs/comm
 
 ### Option A · One-Click Auto-Setup (Recommended — zero prerequisites)
 
-Auto-detects installed AI tools (**Antigravity**, **Claude Code**, **Cursor**), registers the background `sessfork-browser` MCP server, and installs the global Agent `SKILL.md`:
+Auto-detects installed AI tools (**Antigravity**, **Claude Code**, **Cursor**, **OpenCode**, **Gemini CLI**, **WorkBuddy**, **Windsurf**, **Codex CLI**), registers the background `sessfork-browser` MCP server, and installs the global Agent `SKILL.md`:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/wasabihu/sessfork/v0.2.1/install.sh | bash
@@ -70,7 +71,7 @@ uv tool install -e .
 
 ---
 
-## 6 Real-World Copy-Paste Examples
+## 7 Real-World Copy-Paste Examples
 
 Once installed, you don't even have to remember CLI flags. Copy any prompt below straight to your AI agent — or run the 1-line command directly.
 
@@ -128,6 +129,29 @@ Because `sessfork` writes standard Playwright `storageState` JSON (`0600`), you 
 sessfork example.com --target none --state-file ~/.sessfork/agent-browser.json
 agent-browser --state ~/.sessfork/agent-browser.json open https://example.com
 ```
+
+### 7. Authenticated Crawling with `Crawl4AI` (Zero Re-Login, Zero Profile Clone)
+
+Feed a single domain's live Chrome/Edge session (`0600` Playwright `storageState`) directly into local [`unclecode/crawl4ai`](https://github.com/unclecode/crawl4ai) without re-authenticating in a second Chromium window (`crwl profiles`) or copying GB-sized profile folders — including Windows Chrome 127+ `v20` via the Companion Extension:
+
+```bash
+sessfork docs.example.com --target none --state-file ~/.sessfork/crawl4ai.json
+```
+
+```python
+import asyncio, os
+from crawl4ai import AsyncWebCrawler, BrowserConfig
+
+async def main():
+    cfg = BrowserConfig(headless=True, storage_state=os.path.expanduser("~/.sessfork/crawl4ai.json"))
+    async with AsyncWebCrawler(config=cfg) as crawler:
+        result = await crawler.arun(url="https://docs.example.com/private")
+        print(result.markdown.raw_markdown)
+
+asyncio.run(main())
+```
+
+*(Full runnable script with `fit_markdown` and JSONL export for local RAG ingestion: [`examples/crawl4ai_auth_crawl.py`](examples/crawl4ai_auth_crawl.py). Complements Crawl4AI's `ManagedBrowser` — for strict anti-bot / device-fingerprint portals, keep using a persistent `ManagedBrowser` profile.)*
 
 ---
 
@@ -189,7 +213,9 @@ python3 scripts/stress_test.py --heavy-compare
 | Fork SQLite Cookies only | `sessfork github.com --no-local-storage` |
 | Choose source browser (`chrome`, `arc`, `brave`, `edge`, `canary`) | `sessfork x.com --browser arc` |
 | Target specific profile folder | `sessfork github.com --profile "Profile 1"` |
-| Wire Antigravity + Claude Code + Cursor explicitly | `sessfork --setup --target all` |
+| Wire OpenCode (`~/.config/opencode/opencode.json`) explicitly | `sessfork --setup --target opencode` |
+| Wire WorkBuddy / Gemini CLI / Windsurf / Codex CLI explicitly | `sessfork --setup --target codex` *(or `workbuddy` / `gemini` / `windsurf`)* |
+| Wire all 8 supported harnesses explicitly | `sessfork --setup --target all` |
 | Open the local visual control panel (`127.0.0.1`, zero deps) | `sessfork --ui` |
 | Switch headless engine (`chrome` default / `moli` Rust / `dual` fallback) | `sessfork --engine dual` *(or `chrome` / `moli`)* |
 | Attach MCP to an existing external CDP server (`moli serve`) | `sessfork --setup --cdp-endpoint http://127.0.0.1:9222` |
@@ -245,6 +271,27 @@ By default `sessfork` does **not** store the derived decryption key anywhere, so
   ```powershell
   powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/wasabihu/sessfork/main/install.ps1 | iex"
   ```
+  - **Manual OpenCode config** (`%USERPROFILE%\.config\opencode\opencode.json` on Windows, `~/.config/opencode/opencode.json` on macOS/Linux — also auto-wired by `install.ps1` / `sessfork-mcp setup --mcp-file <path>`):
+    ```json
+    {
+      "$schema": "https://opencode.ai/config.json",
+      "mcp": {
+        "sessfork-moli": {
+          "type": "local",
+          "command": ["sessfork-mcp"],
+          "enabled": true
+        }
+      }
+    }
+    ```
+  - **Hermes Agent (`~/.hermes/config.yaml`) & Codex CLI (`~/.codex/config.toml`)**:
+    - **Codex CLI**: `codex mcp add sessfork-moli -- ~/.local/bin/sessfork-mcp`
+    - **Hermes Agent**: add under `mcp_servers:` in `~/.hermes/config.yaml` and run `/reload-mcp` (or `hermes import-agent claude-code`):
+      ```yaml
+      mcp_servers:
+        sessfork-moli:
+          command: "sessfork-mcp"
+      ```
 
 </details>
 
@@ -300,7 +347,7 @@ Need to silently capture authenticated Notion, Feishu, Confluence, or internal r
 
 | Stage | Project / Model | Role in the Local-First AI Stack |
 | :--- | :--- | :--- |
-| **1. Capture** | **[`wasabihu/sessfork`](https://github.com/wasabihu/sessfork)** (`skills/xerj-auth-ingest/`) | Zero-focus-theft Chrome auth fork (`sessfork-moli` / `sessfork-browser`) + secret-redacting HTML/Markdown/JSONL cleaner into local XERJ. |
+| **1. Capture** | **[`wasabihu/sessfork`](https://github.com/wasabihu/sessfork)** (`skills/xerj-auth-ingest/`, `examples/crawl4ai_auth_crawl.py`) | Zero-focus-theft Chrome auth fork (`sessfork-moli` / `sessfork-browser` / optional local [`Crawl4AI`](https://github.com/unclecode/crawl4ai) `fit_markdown` batch crawl) + secret-redacting HTML/Markdown/JSONL cleaner into local XERJ. |
 | **2. Index & Neural Retrieval** | **[`xerj-org/xerj`](https://github.com/xerj-org/xerj)** + HF **[`wasabihu/xerj-bilingual-fin-law-384`](https://huggingface.co/wasabihu/xerj-bilingual-fin-law-384)** *(MIT)* & **[`wasabihu/VeriCorpus-Reranker-0.6B`](https://huggingface.co/wasabihu/VeriCorpus-Reranker-0.6B)** *(Apache-2.0)* | Single-binary Rust ES-compatible search engine (`~9.9 MB` idle RSS) paired with compact bilingual CJK/EN financial & legal embedding and reranker models. |
 | **3. Read-Only Agent Firewall** | **[`wasabihu/kbwall`](https://github.com/wasabihu/kbwall)** | `~1 MB` air-gapped, loopback-only read-only Rust MCP firewall for XERJ with offline BMP CJK enhancement and `xerj://` evidence URIs. |
 | **4. Citation & Corpus Verification** | **[`wasabihu/claimcite`](https://github.com/wasabihu/claimcite)** + **[`wasabihu/vericorpus`](https://github.com/wasabihu/vericorpus)** | Verifies verbatim quotes against DOIs/PMIDs and `xerj://` evidence URIs (`claimcite`), backed by audit-grade CJK/fin/law benchmarks (`vericorpus`). |

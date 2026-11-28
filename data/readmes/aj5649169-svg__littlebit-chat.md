@@ -24,7 +24,7 @@ Both editions are signed ARM64 APKs of about **41 MB**, bundling two native engi
 
 The catalog groups models into **0.55-Bit (LittleBit)**, **8B spotlight**, **Compact**, **Large 2-bit** and **Image**. Badges (`Great fit` / `Tight — use 2K ctx` / `May OOM`) and the **Fits my phone** filter are computed from **total device RAM** minus realistic Android OS headroom — not from the fluctuating `availMem` value — so results stay stable while other apps run.
 
-- **0.55-Bit (LittleBit).** The exclusive `Q1_0` path sits right next to the 8B spotlight and carries an **Exclusive · Q1_0** badge. An 8B model fits in roughly 1.2 GiB of weights — an experimental early checkpoint for ultra-low-RAM testing, not an everyday model yet. Correctness and long-context quality are still being measured, and the entry links to the upstream conversion instructions rather than a prebuilt file.
+- **0.55-Bit (LittleBit).** The exclusive `Q1_0` path sits right next to the 8B spotlight and carries an **Exclusive · Q1_0** badge. The card size badge and RAM note describe the same build: the Q4_K-embedding file is ~1.46 GB on disk and ~1.20 GiB resident, and F16-embedding builds are ~3.0 GB. An experimental early checkpoint for ultra-low-RAM testing, not an everyday model yet. Correctness and long-context quality are still being measured, and the entry links to the upstream conversion instructions rather than a prebuilt file.
 - **8B spotlight.** Qwen3 8B, DeepSeek R1 0528 Qwen3 8B, Ministral 3 8B, Llama 3.1 8B and Qwen2.5 Coder 7B at roughly 2.8–3.8 GB. A 3.5 GB 2-bit 8B model is `Great fit` on a 12 GB phone and stays visible with **Fits my phone** on.
 - **Image.** Verified Hugging Face links that open in the browser, so the Offline edition keeps zero internet permission:
   - **SD 1.5 Inpainting** — recommended for 6–8 GB phones such as the Exynos 1380; brush-mask photo inpainting. Ships as a single 1.9 GB `Q8_0` **`.gguf`** (no unsupported `.ckpt` checkpoint).
@@ -46,7 +46,7 @@ The bundled `stable-diffusion.cpp` engine runs fully on-device. SD 1.5 / SD-Turb
 - Otherwise a confirmation dialog shows the exact size and a progress bar while the copy runs on `Dispatchers.IO`, writes `<name>.tmp`, and renames atomically. Cancelling or failing deletes the partial file.
 - The active staged model name and size are shown in the slot card with a one-tap **Delete staged copy** button, and **Generate** enables once every required slot is staged.
 
-**Cancel** stops a run, chat RAM is released before generation starts, and resolution chips scroll horizontally so `1024×1024` is never clipped. Results can be saved to Photos or shared.
+Generation unloads the active chat model first (the last-used path stays for one-tap reload in Chat), then reports **Freed chat model RAM — generating…**. The VAE always decodes with `vae_tiling_params.enabled`, weights stay file-backed through `enable_mmap`, and the optional **Fast VAE (TAESD)** toggle passes a staged `taesd.safetensors` through `sd_ctx_params_t.taesd_path` to cut decoding to ~1–3 s; without it Image Studio falls back to the tiled full VAE. **Cancel** signals `sd_cancel_generation(SD_CANCEL_ALL)`, so the run exits cleanly instead of sitting on *Decoding VAE…*, and resolution chips scroll horizontally so `1024×1024` is never clipped. Results can be saved to Photos or shared.
 
 ## Chat
 
@@ -91,11 +91,20 @@ Web Search is per-message and opt-in. When it is on and snippets attach for a tu
 
 Device & memory banner, backend and sampling sliders built on the lightweight `LittleBitSlider` (thin track, no tick dots, 16 dp thumb, haptic steps, numeric value pill), appearance (System/Light/Dark/AMOLED, accents, 13/15/17 sp), generation notification, auto-unload policy, KV cache controls, cloud panel (Standard only) and a readable last-crash log with real line breaks.
 
+## What changed in 1.3.1(still in development)
+
+- **RAM guard, calibrated for real phones.** `RamBudgetEstimator` scores every local load (`SAFE` / `TIGHT` / `DANGER`) against **total RAM**, crediting the model that will be unloaded first. DANGER is `lowMemory` or >75 % of total; TIGHT is >62 %; a low `availMem` reading only adds a warning on 6.5 GB-or-smaller devices or when the model exceeds 55 % of total RAM and free-plus-reclaimed is short by 40 %. A 12 GB phone loading a 5.9 GB estimate (~52 %) stays SAFE. The dialog only suggests a *lower* context than the one requested, offers **Load on CPU** only when Vulkan is on, always has **Load Anyway** and **Cancel**, scrolls on small screens, and Settings → *RAM safety warnings* (default on) can bypass it entirely. First launch on a 6.5 GB-or-smaller device keeps a 2K window unless the user chose one.
+- **Benchmark setup dialog.** Tap Benchmark to pick a backend (`Current` / `CPU` / `Vulkan`) and a preset (`Quick 64/64`, `Standard 128/128`, `Stress 256/256`), see live free/total RAM, get a low-memory warning and cancel a running run. A non-current backend is loaded for the run and restored afterwards.
+- **Calmer offline prompt.** The offline clause now asks for direct answers from training knowledge and mentions being offline only for live data — small 1B models no longer refuse static questions. An intentionally blank system prompt stays blank when web search is off.
+- **Chat display controls.** New **Show context usage bar** toggle and a compact `Context used / max · %` read-out; TTFT now sits beside the speed in message metrics.
+- **Idle auto-unload + thermal notice.** Settings → *Unload idle model* (`Off`, `2 min`, `5 min` default, `10 min`) frees RAM after inactivity (never mid-generation, TTS or benchmark) and leaves a one-tap Reload pill. `ThermalGuard` reads `getThermalHeadroom(10)` with a status fallback and shows a non-blocking *Device warm — throttling likely* pill with **Run anyway**.
+- **Fork and export.** *Fork chat from here* clones the conversation through any reply, and *Export Markdown* writes clean Markdown with reasoning stripped through `ACTION_SEND` — no storage or network permission.
+
 ## What changed in 1.3.0
 
 - **Image Studio input fix.** No component opens `/proc/self/fd/<N>` by string path any more; weights are validated through SAF streams and staged once into app-private storage with progress, atomic writes and a delete button. Top spacing and scrolling resolution chips fix the clipped UI.
 - **Image models rejected by Model Hub.** A filename plus GGUF metadata guard stops diffusion files from reaching `llama.cpp` and offers **Open Image Studio** instead.
-- **0.55-Bit (LittleBit).** The sub-1-bit tier is promoted next to the 8B spotlight with an **Exclusive · Q1_0** badge and an honest ~1.2 GiB RAM note.
+- **0.55-Bit (LittleBit).** The sub-1-bit tier is promoted next to the 8B spotlight with an **Exclusive · Q1_0** badge and a consistent ~1.46 GB file / ~1.20 GiB resident RAM note (F16-embedding builds ~3.0 GB).
 - **Search grounding.** The system prompt switches between offline and search modes, follow-up queries are resolved against the previous substantive message, and the searched query is recorded on the message.
 - **Polished UI.** Sheet action rows, aligned drawer icons, minimal sliders, jump-to-bottom, keyboard dismissal, context usage bar and both thinking tag forms.
 - **Offline TTS.** Speak/Stop per reply with chunking and full lifecycle cleanup.

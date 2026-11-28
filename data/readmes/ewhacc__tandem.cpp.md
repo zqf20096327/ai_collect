@@ -6,7 +6,7 @@ rest are read from RAM or the SSD. **It works with any MoE model llama.cpp suppo
 Qwen3.8-Flash-Next, DeepSeek-V4.1-Flash, gpt-oss-120b, GLM-4.5-Air and Qwen3.6-35B-A3B, from 22 GB to over 300 GB of weights.
 
 It is an independent project, not affiliated with ggml-org. Base: llama.cpp `f5222f25c` (2026-10-28, see `BASE_COMMIT`).
-Version **v0.5.1** (2026-11-27). Changes: [CHANGELOG.md](CHANGELOG.md).
+Version **v0.5.2** (2026-11-27). Changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Speed and quality at a glance
 
@@ -35,7 +35,7 @@ For a big card serving many concurrent streams, use [Tandem-vLLM](https://github
 ## What's new in v0.5.1 (2026-11-27)
 
 - **The CPU/upload split now tunes itself on your PC and remembers it.** While it runs, tandem.cpp tries uploading slightly more
-  and slightly fewer of the missed experts than the rule says, and moves when the same side wins twice. The result is saved per
+  and slightly fewer of the missed experts than the rule says, and moves once one side is clearly faster. The result is saved per
   model, GPU, RAM and thread count in `~/.cache/tandem/share-tune.tsv` and used from the next start. On a 16 GB card with 64 GB,
   from the second run: Qwen3.8 IQ3_S 74 → 80 tok/s, IQ4_XS 47.6 → 50.5. The first run is about the same as v0.5.0 (the table
   above). `LLAMA_MOE_SHARE_TUNE=0` turns it off; `LLAMA_MOE_TUNE_FILE` moves the file (`0`: no file).

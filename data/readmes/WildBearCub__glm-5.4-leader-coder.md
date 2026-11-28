@@ -103,16 +103,18 @@ Coder 写完自己跑测试。Leader 不逐行看，只在收尾时对着清单�
 
 ## 7. 安装
 
-见 [INSTALL.md](INSTALL.md)，一页看完获取方式、使用顺序和一键安装提示词。
+把 [INSTALL.md](INSTALL.md) 整份交给你的 AI，它会照着自动安装（英文，写给 AI 看的）。第一次用：新会话的第一条消息以「Leader」开头，后面跟任务；思考强度用「高」就够。
 
 ## 8. 包内文件
 
 | 文件 | 是什么 |
 |---|---|
-| `INSTALL.md` | 安装与使用顺序 |
+| `INSTALL.md` | 安装提示词（英文，整份交给 AI 自动安装） |
 | `leader-SKILL.md` | Leader 技能（英文，给模型读） |
 | `coder.md` | Coder 子智能体定义（中文） |
-| `AGENTS-discuss-before-diverging.md` | 追加到项目 `AGENTS.md` 的一节规则：让强模型别在思考里发散 |
+| `AGENTS-discuss-before-diverging.md` | 插到项目 `AGENTS.md` 最前面的三节规则：让强模型别在思考里发散；让子智能体只做最小必要的验证 |
+| `任务台账-模板.md` | 共享任务状态：一个战役一份的任务台账文件模板，只有主会话写 |
+| `task_ledger.py` | 提示钩子：每条消息把总目标行、台账里没关闭的行、队长自己的上下文大小带到主会话眼前；上下文到 40 万提醒、到 55 万强制交接 |
 | `evaluation-longimage.png` | 本文的评测长图 |
 | `source-review.jpg` | 第 1 节评测的原帖截图 |
 | `usage-opening.png`、`usage-thinking-level.png`、`session-example.png` | 第 2、3 节里的三张截图：开场消息、思考强度设置、一次实际的会话 |

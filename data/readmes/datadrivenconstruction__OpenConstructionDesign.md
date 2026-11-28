@@ -56,7 +56,7 @@
 </p>
 
 <p align="center">
-  <b>v1.2.0</b> · Windows 10/11 x64 · Linux x64 · 8 GB RAM · works offline · no account
+  <b>v1.3.0</b> · Windows 10/11 x64 · Linux x64 · macOS (beta) · 8 GB RAM · works offline · no account
 </p>
 
 | Platform | Get it | Notes |
@@ -64,7 +64,8 @@
 | **Windows 10/11 x64** | [**Download the zip**](https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest) | Full editor. Unzip and run `ddc-app.exe`. |
 | **Browser** | [**Open the online demo**](https://openconstructiondesign.com/demo/) | Full editor in a browser tab with sample projects, nothing to install. Register with your email, then the editor opens right away. |
 | **Linux x64** | [**Download the tar.gz**](https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest) (71 MB) | Editor `ddc-app` and `ddc` CLI. Ubuntu 22.04+, Debian 12+ (glibc 2.35), X11 or Wayland. |
-| **macOS** | [Build from source](#build-from-source) | No release build; untested. |
+| **macOS, Apple silicon (beta)** | [**Download the tar.gz**](https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest) (`…-macos-arm64-beta`) | Editor `ddc-app` and `ddc` CLI. Built by CI, not tested on a Mac, not signed. If macOS blocks it, run `xattr -dr com.apple.quarantine <folder>`. |
+| **macOS, Intel (beta)** | [**Download the tar.gz**](https://github.com/datadrivenconstruction/OpenConstructionDesign/releases/latest) (`…-macos-x64-beta`) | Same as above. |
 
 <p align="center">
   <a href="https://github.com/datadrivenconstruction/OpenConstructionDesign/releases">All releases</a> ·
@@ -89,7 +90,7 @@ or run a local model through Ollama. The model and its full change history live 
 file on your machine, and IFC goes in and out.
 
 > [!NOTE]
-> The latest release is **v1.2.0**. The project file format, the APIs and the interface
+> The latest release is **v1.3.0**. The project file format, the APIs and the interface
 > can still change between releases. Keep the original of every model you open and keep an IFC
 > export for long-term storage. See [Current limits](#current-limits).
 
@@ -122,7 +123,8 @@ cargo run --release -p ddc-app
 <details>
 <summary>CLI quick start: a building from a brief</summary>
 
-`ddc gen` is compiled in with the `link` feature (`cargo build --release -p ddc-cli --features link`).
+`ddc gen` and `ddc publish` are in the `ddc` of every release from v1.4.0. Older releases and a
+plain `cargo build` do not have them; build with `cargo build --release -p ddc-cli --features link`.
 
 ```sh
 ddc gen --brief crates/io/contract/examples/brief.de-residential.json --out housing.ddc
@@ -224,8 +226,8 @@ ddc open housing.ddc --export ifc4 housing.ifc
 </details>
 
 > [!NOTE]
-> `ddc gen` and `ddc publish` belong to the ERP link and are compiled in with the `link` feature:
-> `cargo build --release -p ddc-cli --features link`.
+> `ddc gen` and `ddc publish` belong to the ERP link. Releases from v1.4.0 include them; to add
+> them to a source build, use `cargo build --release -p ddc-cli --features link`.
 
 ## What you can build
 
@@ -250,23 +252,16 @@ Known gap in the housing block: 30 kitchen taps are not yet connected to the wat
 
 ### Lua recipes that ship with the editor
 
-The recipes live in [`crates/script/data/recipes`](crates/script/data/recipes) (24 files). Six of
-them, rendered as they run with their default parameters:
+The recipes live in [`crates/script/data/recipes`](crates/script/data/recipes) (5 files). Each
+one passes `audit{strict = true}` with its default parameters:
 
-<table>
-<tr>
-<td width="33%"><img src="docs/images/lua-twisted-diagrid-tower.webp" alt="Twisted diagrid tower" width="100%"><br><code>twisted_diagrid_tower.lua</code><br>24 floors, 90° twist · 768 elements</td>
-<td width="33%"><img src="docs/images/lua-stadium-roof.webp" alt="Stadium roof of cantilever trusses" width="100%"><br><code>stadium_roof.lua</code><br>32 cantilever trusses round a 60 × 42 m ellipse · 1,536 elements</td>
-<td width="33%"><img src="docs/images/lua-timber-gridshell.webp" alt="Timber gridshell dome" width="100%"><br><code>timber_gridshell.lua</code><br>18 m radius, 7 m rise, glulam diagrid · 320 elements</td>
-</tr>
-<tr>
-<td><img src="docs/images/lua-fin-facade.webp" alt="Facade of rotated aluminium fins" width="100%"><br><code>fin_facade.lua</code><br>36 × 16 m, fins turned to an attractor · 149 elements</td>
-<td><img src="docs/images/lua-cable-stayed-footbridge.webp" alt="Cable-stayed footbridge" width="100%"><br><code>cable_stayed_footbridge.lua</code><br>80 m span, 4 m deck, one pylon · 602 elements</td>
-<td><img src="docs/images/lua-space-frame-hall.webp" alt="Space frame hall on perimeter columns" width="100%"><br><code>space_frame_hall.lua</code><br>12 × 8 modules of 3 m · 782 elements</td>
-</tr>
-</table>
-
-All six pass `audit{strict = true}`. Nothing in the renders was edited by hand.
+| Recipe | What it builds |
+|---|---|
+| `arches_and_vaults.lua` | Ribbed vault with glass panels and a row of free arches |
+| `long_span_grid.lua` | Double-layer space frame on perimeter columns |
+| `radial_array.lua` | Nodes on a circle joined to a hub, one component at every node |
+| `surface_lattice.lua` | Diagrid over a dome with an oculus; swap in a vault, hypar, loft or wave |
+| `tiered_frame.lua` | Storeys of columns and slabs with taper and twist |
 
 ## The editor
 
@@ -296,7 +291,7 @@ Plan and 3D in one window. Whatever the AI proposes, you can open, edit and fini
 </tr>
 </table>
 
-<sub>Lua recipes that ship with the editor, rendered with default parameters. <a href="https://openconstructiondesign.com/#ai">More on the site</a>.</sub>
+<sub>Shapes made with Lua scripts, rendered with default parameters. <a href="https://openconstructiondesign.com/#ai">More on the site</a>.</sub>
 
 <details>
 <summary>Full feature list</summary>
@@ -350,6 +345,7 @@ directly, or nothing with a local model.
 |---|---|
 | **Local** | Ollama on `localhost:11434` is found automatically. No key; data stays on the machine. |
 | **Cloud** | An address and a key (Anthropic, OpenAI, Google Gemini, Mistral, DeepSeek and others). The key is kept in the OS secure store, never in the project file. |
+| **Model gateway** | One key for many models: the address of a chat-completions compatible gateway is filled in; the model list brings prices and context sizes, and the money left is shown next to the session cost. A spent key limit and an empty account are told apart. |
 | **Custom** | Protocol, address and headers for your own server. An allow-list says which hosts the editor may call. |
 | **MCP** | Off by default, local only, same Apply rule. |
 
@@ -490,7 +486,7 @@ audit{strict = true}
 Run it headless and override a parameter:
 
 ```sh
-ddc run project.ddc crates/script/data/recipes/twisted_diagrid_tower.lua --out tower.ddc --param floors=32
+ddc run project.ddc crates/script/data/recipes/tiered_frame.lua --out tower.ddc --param floors=32
 ```
 
 ## Browser version
@@ -574,7 +570,7 @@ Details and other platforms: [docs/BUILDING.md](docs/BUILDING.md).
 |---|---|
 | Windows 10/11, x64 | Supported; primary development platform |
 | Linux | Editor and CLI in every release, built on Ubuntu 22.04; library crates tested in CI |
-| macOS | Code paths exist; not regularly built or tested |
+| macOS | Beta builds (Apple silicon and Intel) in every release, built by CI; not tested on a Mac |
 | Browser (wasm32) | [Online demo](https://openconstructiondesign.com/demo/) after a short registration; the browser build is not part of this repository yet |
 
 ## Current limits
@@ -593,6 +589,7 @@ Details and other platforms: [docs/BUILDING.md](docs/BUILDING.md).
 |---|---|
 | [Getting started](docs/user/getting-started.md) | First model, files, saving |
 | [AI assistant](docs/user/ai-assistant.md) | Providers, preview, Apply |
+| [Video and frames](docs/user/video-and-frames.md) | Stills, interface shots and build-up animation |
 | [Formats](docs/user/formats.md) | Supported formats and IFC round trip |
 | [Families](docs/user/families.md) | Parametric families |
 | [User guide](docs/USER_GUIDE.md) | Core workflows and shortcuts |

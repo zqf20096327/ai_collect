@@ -325,7 +325,8 @@ the same `build` string.
 - Vela is Apache-2.0; its in-chart attribution mark stays enabled.
 - Monaco Editor and the local Pine engine and editor packages are MIT. The
   formatter, signature help, semantic tokens and outline use the MIT
-  `pine-script-syntax-highlighter` checkout.
+  `pine-script-syntax-highlighter` core, vendored under
+  `pine-editor/src/vendor/pine-highlighter` with its `LICENSE`.
 - Indicators imported from the LuxAlgo Library keep their own licence header
   (usually CC BY-NC-SA 4.0) and are stored with it intact. Refresh the bundled
   catalog with `npm run library:catalog`.
@@ -351,6 +352,6 @@ release. See [CHANGELOG.md](CHANGELOG.md) for release history.
 ## License
 
 The app code is MIT; see `LICENSE`. Third-party components keep their own
-licences: Vela is Apache-2.0, the Pine engine, editor, Monaco and the syntax
-highlighter are MIT, and scripts imported from the LuxAlgo Library keep their
-own header (usually CC BY-NC-SA 4.0).
+licences: Vela is Apache-2.0, the Pine engine, editor, Monaco and the vendored
+syntax highlighter are MIT, and scripts imported from the LuxAlgo Library keep
+their own header (usually CC BY-NC-SA 4.0).

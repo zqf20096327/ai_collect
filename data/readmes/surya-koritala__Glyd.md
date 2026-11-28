@@ -27,7 +27,7 @@
 </p>
 
 Glyd is an open-source inference engine for large language models, written in Rust with its own CUDA kernels. It
-compresses a model's weights and KV cache, losslessly or at a lossy level you choose, plans the model to the GPUs, RAM
+compresses a model's weights, losslessly or at a lossy level you choose, plans the model to the GPUs, RAM
 and disk you have, and serves it with OpenAI-, Anthropic- and Ollama-compatible APIs. One program, no Python.
 
 ## Get started
@@ -67,39 +67,48 @@ serving, tools and troubleshooting.
 | **hummingbird** | 2 to 3 on experts | no | mixture-of-experts layers: the busiest experts at 3 bits, the rest at 2 |
 
 The planner picks the best level that fits: penguin where the model fits, else the highest lossy level that does. Ask for
-one with a tag: `glyd run google/gemma-4-12B-it:wren`. The KV cache is lossless at 12 bits a value.
+one with a tag: `glyd run google/gemma-4-12B-it:wren`. The KV cache is bf16 pages; `GLYD_KV=lossless` asks a server for 12-bit lossless pages where the plan finds them no bigger.
 
 ## Supported hardware
 
-| Platform | Hardware | Status |
-| :--- | :--- | :--- |
-| NVIDIA, Linux | Ampere, Ada, Hopper and Blackwell: RTX 30/40/50 series, RTX A-series and Ada, A100, L4, L40S, H100, H200, B200; driver R535 or newer (Blackwell R570) | supported |
-| NVIDIA, Linux aarch64 | GH200, GB200, DGX Spark, Jetson Thor | built and planned as x86_64 is; measured runs are on the roadmap |
-| NVIDIA, Windows | the same GPUs | preview |
-| Several GPUs | layers split or shared across the GPUs of one machine; mixture-of-experts experts in RAM and on NVMe | supported |
-| Several machines | one model across computers ([Starlings](starlings/), becoming `glyd cluster`) | beta |
-| AMD | RDNA 3 and 4 | development build (`GLYD_HIP=1`) |
-| Apple Silicon, CPU-only | | on the [roadmap](ROADMAP.md) |
-
-`glyd doctor` checks a machine and says what to fix.
-
-## Supported models
-
-| Family | Levels | Users at once | Experts in the computer's memory |
+| Vendor | System | GPUs | Status |
 | :--- | :--- | :--- | :--- |
-| Gemma 4 | penguin, kestrel, swift, wren | up to 64 | (dense) |
-| Qwen3.5, Qwen3.8 dense | kestrel, swift, wren | up to 64 | (dense) |
-| Qwen3 | penguin | up to 8 | (dense) |
-| Nemotron-H (Nemotron 3) | penguin, kestrel, swift, wren, hummingbird | up to 64 | kestrel, swift, wren, hummingbird |
-| Kimi-K3 | penguin, hummingbird | up to 64 on one GPU | penguin, hummingbird |
-| GLM-5.3-Flash | penguin, hummingbird | up to 64 on one GPU | penguin, hummingbird |
-| DeepSeek-V4 | penguin, hummingbird | up to 64 on one GPU | penguin, hummingbird |
-| Muse Spark | penguin, hummingbird | up to 64 on one GPU | penguin, hummingbird |
+| NVIDIA | Linux&nbsp;x86_64 | Ampere to Blackwell: RTX 30, 40 and 50 series, RTX A-series and Ada, A100, L4, L40S, H100, H200, B200 | Supported |
+| NVIDIA | Linux&nbsp;aarch64 | GH200, GB200, DGX Spark, Jetson Thor | Built, not&nbsp;measured |
+| NVIDIA | Windows&nbsp;x86_64 | The same GPUs as Linux x86_64 | Preview |
+| AMD | Linux&nbsp;x86_64 | RDNA 3 and 4 | Development&nbsp;build |
+| Apple | macOS | M-series Macs | [Planned](ROADMAP.md) |
+| None (CPU&nbsp;only) | x86_64, arm64 | | [Planned](ROADMAP.md) |
 
-Users at once is as many as the GPU's memory holds, up to that number; a model split over several GPUs, or drafting with a draft model,
-serves one request at a time. A mixture of experts too big for the GPU keeps its experts in the computer's memory with a cache on the GPU
-at the levels listed. Any size or fine-tune of a supported architecture runs, from the Hub or from 16-bit GGUF files. `glyd fit MODEL` says which
-levels a specific model runs at on your machine; `glyd pull`, `glyd ls` and `glyd rm` manage the ones you have.
+NVIDIA GPUs need driver R535 or newer (R570 for Blackwell). The AMD build is made from source with `GLYD_HIP=1`. `glyd doctor` checks a
+machine and says what to fix.
+
+| Setup | What runs | Status |
+| :--- | :--- | :--- |
+| Several GPUs, one machine | Layers split or shared across the GPUs; mixture-of-experts experts in RAM and on NVMe | Supported |
+| Several machines | One model across computers with [Starlings](starlings/), becoming `glyd cluster` | Beta |
+
+## Supported model families
+
+Glyd supports model families, not individual models: any size or fine-tune of these families runs, from the Hub or from 16-bit GGUF files.
+
+| Family | Levels |
+| :--- | :--- |
+| Gemma | penguin, kestrel, swift, wren |
+| Qwen | penguin, kestrel, swift, wren, hummingbird |
+| Llama | penguin, kestrel, swift, wren |
+| Mistral | penguin, kestrel, swift, wren |
+| Nemotron | penguin, kestrel, swift, wren, hummingbird |
+| Kimi | penguin, hummingbird |
+| GLM | penguin, hummingbird |
+| DeepSeek | penguin, hummingbird |
+| Muse | penguin, hummingbird |
+
+The engine tells a family by a model's `config.json`, not by its name.
+
+**Planned families** ([roadmap](ROADMAP.md)): AliceAI, Beam, Cosmos, Domyn Edge, dots, ERNIE, Flint, Granite, Hunyuan, Inkling, LFM, Ling, Mellum,
+MiniMax, Mistral Large, Step, Unlimited OCR. Glyd follows the families released in the last six months. A family joins the table when the
+engine runs it.
 
 ## Serving and tools
 

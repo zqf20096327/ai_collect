@@ -384,7 +384,7 @@ Three commands. Hooks register and start working immediately: no terminal popups
 
 > **WSL performance tip:** Keep active repositories on WSL's native ext4 filesystem (`~/projects/...`) rather than Windows mounts (`/mnt/c/...`) to avoid 9P cross-OS filesystem translation overhead during initial indexing.
 
-Per-harness setup for Codex, Gemini, Qwen, Kimi, opencode, OpenClaw, pi, Copilot, Grok, Antigravity, Aider, and Cline/Windsurf/Cursor, the companion CLI tools worth installing alongside it, upgrading, and the full list of what lands on your machine: **[Install guide](docs/install.md)**.
+Per-harness setup for Codex, Gemini, Qwen, Kimi, opencode (v1 and v2), OpenClaw, pi, Copilot, Grok, Antigravity, Aider, and Cline/Windsurf/Cursor, the companion CLI tools worth installing alongside it, upgrading, and the full list of what lands on your machine: **[Install guide](docs/install.md)**.
 
 ## CLI
 
@@ -715,4 +715,4 @@ Token-Goat is licensed under the PolyForm Noncommercial License 1.0.0. See the L
 
 Individual developers may install and use Token-Goat on their own machines for personal productivity without a commercial license, provided the use does not involve providing Token-Goat as a service to others, incorporating it into a commercial product or platform, or deploying it as shared infrastructure across a team or organization. Employment at a for-profit company does not by itself make use commercial — but if your employer is the primary beneficiary of the deployment, a commercial license applies. When in doubt, email token-goat@dfkhelper.com.
 
-Commercial use is reserved. That means copying or incorporating this codebase into a 
+Commercial use is reserved. That means copying or incorporating this code

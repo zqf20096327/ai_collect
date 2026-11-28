@@ -4,10 +4,10 @@
 
 **개발자 신입 · 주니어 채용 공고, 매일 아침 껍질을 까서 배달합니다**
 
-![갱신](https://img.shields.io/badge/%EB%A7%88%EC%A7%80%EB%A7%89_%EA%B0%B1%EC%8B%A0-2026--11--27-2ea44f?style=for-the-badge)
-[![오늘 새 공고](https://img.shields.io/badge/%EC%98%A4%EB%8A%98_%EC%83%88_%EA%B3%B5%EA%B3%A0-17%EA%B1%B4-e3742f?style=for-the-badge)](%EC%98%A4%EB%8A%98%EC%9D%98%20%EA%B3%B5%EA%B3%A0.md)
-![공고](https://img.shields.io/badge/%EC%A0%91%EC%88%98_%EC%A4%91_%EA%B3%B5%EA%B3%A0-597%EA%B1%B4-1f6feb?style=for-the-badge)
-![회사](https://img.shields.io/badge/%ED%9A%8C%EC%82%AC_%EC%9A%94%EC%95%BD-432%EA%B3%B3-8250df?style=for-the-badge)
+![갱신](https://img.shields.io/badge/%EB%A7%88%EC%A7%80%EB%A7%89_%EA%B0%B1%EC%8B%A0-2026--11--28-2ea44f?style=for-the-badge)
+[![오늘 새 공고](https://img.shields.io/badge/%EC%98%A4%EB%8A%98_%EC%83%88_%EA%B3%B5%EA%B3%A0-29%EA%B1%B4-e3742f?style=for-the-badge)](%EC%98%A4%EB%8A%98%EC%9D%98%20%EA%B3%B5%EA%B3%A0.md)
+![공고](https://img.shields.io/badge/%EC%A0%91%EC%88%98_%EC%A4%91_%EA%B3%B5%EA%B3%A0-610%EA%B1%B4-1f6feb?style=for-the-badge)
+![회사](https://img.shields.io/badge/%ED%9A%8C%EC%82%AC_%EC%9A%94%EC%95%BD-439%EA%B3%B3-8250df?style=for-the-badge)
 ![Stars](https://img.shields.io/github/stars/gabury1/newbie-job-hunt?style=for-the-badge&label=Stars&color=f2cc60)
 
 </div>
@@ -39,13 +39,13 @@ npx skills add gabury1/newbie-job-hunt
 
 | | |
 |---|---|
-| **공고 597건** | 공고마다 일정 · 전형 · 담당 업무 · 지원 자격 · 제출 서류를 같은 틀로 다시 정리(이미지로만 올라온 공고 포함) |
-| **회사 432곳** | 매출(전자공시) · 인원과 1년 증감(국민연금) · 블라인드 점수와 리뷰 요약 · 최근 이슈(뉴스) · 투자 단계 |
+| **공고 610건** | 공고마다 일정 · 전형 · 담당 업무 · 지원 자격 · 제출 서류를 같은 틀로 다시 정리(이미지로만 올라온 공고 포함) |
+| **회사 439곳** | 매출(전자공시) · 인원과 1년 증감(국민연금) · 블라인드 점수와 리뷰 요약 · 최근 이슈(뉴스) · 투자 단계 |
 | **오늘의 공고** | 매일 아침 새로 올라온 공고만 따로 모은 `오늘의 공고.md` |
 | **AI 이정표** | `postings.jsonl` 한 줄에 공고 하나. 노트 경로와 회사 숫자가 붙어 있어 노트를 열기 전에 거를 수 있습니다 |
 
 - 갱신: 매일 아침(한국 시간 9~10시쯤). 마감된 공고는 빠집니다. 지난 공고는 git 기록에 남습니다.
-- 마지막 갱신: 2026-11-27 · 접수 중 공고 597건 · 회사 432곳
+- 마지막 갱신: 2026-11-28 · 접수 중 공고 610건 · 회사 439곳
 - 도움이 됐다면 Star 를, 매일 갱신 소식을 받으려면 Watch 를 눌러 주세요.
 
 ## 크롤링 기준

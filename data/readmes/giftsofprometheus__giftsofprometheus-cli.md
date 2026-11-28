@@ -6,7 +6,7 @@
 
 **[Дары Прометея](https://giftsofprometheus.com/?utm_source=github&utm_medium=readme&utm_campaign=cli)** — мировые знания об ИИ на русском: доклады о разработке с AI-агентами, RAG, evals, MCP и AI-продуктах с русскими названиями, подробными описаниями с TL;DR, главами с таймкодами, профилями спикеров и полными транскриптами.
 
-Этот CLI открывает каталог для терминала и AI-агентов: Claude Code, Codex, Cursor и других. Агент сам подберёт доклады под вашу задачу, прочитает транскрипт и сохранит полезное в избранное вашего аккаунта на [giftsofprometheus.com](https://giftsofprometheus.com/?utm_source=github&utm_medium=readme&utm_campaign=cli).
+Этот CLI открывает каталог для терминала и AI-агентов: Claude Code, Codex, Cursor и других. Для ChatGPT, Claude и редакторов есть [MCP-сервер](#без-установки-mcp-сервер) — без установки. Агент сам подберёт доклады под вашу задачу, прочитает транскрипт и сохранит полезное в избранное вашего аккаунта на [giftsofprometheus.com](https://giftsofprometheus.com/?utm_source=github&utm_medium=readme&utm_campaign=cli).
 
 <p>
   <a href="https://giftsofprometheus.com/?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=cli"><img alt="Каталог: giftsofprometheus.com" src="https://img.shields.io/badge/каталог-giftsofprometheus.com-173a63.svg?style=for-the-badge&amp;labelColor=0a0f1c" height="28"></a>
@@ -23,7 +23,26 @@
 
 Удобнее читать глазами? Всё то же самое есть на [giftsofprometheus.com](https://giftsofprometheus.com/?utm_source=github&utm_medium=readme&utm_campaign=cli): [подбор докладов за минуту](https://giftsofprometheus.com/welcome?utm_source=github&utm_medium=readme&utm_campaign=cli), [персональная лента](https://giftsofprometheus.com/for-you?utm_source=github&utm_medium=readme&utm_campaign=cli) [спикеры](https://giftsofprometheus.com/speakers?utm_source=github&utm_medium=readme&utm_campaign=cli), [статьи об AI-агентах](https://giftsofprometheus.com/articles?utm_source=github&utm_medium=readme&utm_campaign=cli) и [календарь AI-конференций, митапов и хакатонов](https://giftsofprometheus.com/events?utm_source=github&utm_medium=readme&utm_campaign=cli).
 
-## Установка
+## Без установки: MCP-сервер
+
+Работаете в ChatGPT, Claude, Cursor или VS Code? Подключите удалённый MCP-сервер, CLI для этого не нужен:
+
+```text
+https://giftsofprometheus.com/mcp/account
+```
+
+Транспорт Streamable HTTP, вход по OAuth: при подключении откроется страница сайта, войдите по ссылке из письма и разрешите доступ. Сервер умеет то же, что CLI: поиск докладов и цитат, транскрипты, избранное, интересы, персональная лента и публикация ответов. Аккаунт общий с сайтом и CLI.
+
+```bash
+claude mcp add --transport http giftsofprometheus https://giftsofprometheus.com/mcp/account   # Claude Code, затем /mcp
+codex mcp add giftsofprometheus --url https://giftsofprometheus.com/mcp/account && codex mcp login giftsofprometheus
+```
+
+Инструкции для ChatGPT, Claude, Cursor, VS Code и OpenCode, кнопки установки в один клик — на [giftsofprometheus.com/agent](https://giftsofprometheus.com/agent?utm_source=github&utm_medium=readme&utm_campaign=cli#connect). Подключённые приложения видны в [кабинете](https://giftsofprometheus.com/account?utm_source=github&utm_medium=readme&utm_campaign=cli), у любого можно отозвать доступ.
+
+MCP или CLI? MCP удобнее в чат-приложениях и редакторах. CLI со skill — для агентов с терминалом: он не занимает контекст агента описаниями инструментов.
+
+## Установка CLI
 
 Нужен Node.js 22.12 или новее.
 

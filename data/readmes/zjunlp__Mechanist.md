@@ -37,8 +37,8 @@
 
 We used Mechanist-Light in two studies:
 
-- **[Letting models audit models: from sycophancy to poisoning](http://mechanist.openkg.cn/#/research/weight-audit-poisoning)** Reading only an open-weight model's weights and activations, can Claude Opus 5.5 tell whether it has been poisoned? With Mechanist-Light, Claude got all 12 paired tests right, each pairing a safe model with a poisoned one.
-- **[What can changing a few weights change in a model?](http://mechanist.openkg.cn/#/research/weight-edit-creativity)** AI models often give the same answer over and over. To address this, AI researchers edited the weights of Llama-3.2-3B directly to see whether they could make it more creative. The best edit Mechanist-Light found passed every guardrail check and raised the creativity score by 10.1%. Opus 5.5 and GPT-6 Astra on their own raised it by 3.1% and 0.1%.
+- **[Auditing Models with Models: From Sycophancy to Poisoning](http://mechanist.openkg.cn/#/research/weight-audit-poisoning)** Reading only an open-weight model's weights and activations, can Claude Opus 5.5 tell whether it has been poisoned? With Mechanist-Light, Claude got all 12 paired tests right, each pairing a safe model with a poisoned one.
+- **[Can Direct Weight Editing Make Language Models More Creative?](http://mechanist.openkg.cn/#/research/weight-edit-creativity)** AI models often give the same answer over and over. To address this, AI researchers edited the weights of Llama-3.2-3B directly to see whether they could make it more creative. The best edit Mechanist-Light found passed every guardrail check and raised the creativity score by 10.1%. Opus 5.5 and GPT-6 Astra on their own raised it by 3.1% and 0.1%.
 
 ---
 

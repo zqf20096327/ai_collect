@@ -149,27 +149,17 @@ The example's top hit is `notes/backup.md`, with the answer:
 
 ## Documentation
 
-| Page | Content |
+<!-- docs-index:begin (scripts/check-docs --render) -->
+
+| Section | Pages |
 | --- | --- |
-| [Quickstart](docs/quickstart.md) | Build, configure and search a local folder |
-| [How fyrr works](docs/architecture.md) | Terms, publication, authorization and retrieval |
-| [Security model](docs/security.md) | Trust boundaries, permissions and secrets |
-| [HTTP login and users](docs/http-users.md) | Authenticate and enroll HTTP users |
-| [Deployment](docs/deployment.md) | Production setup, images and scheduling |
-| [AWS Lambda](docs/lambda.md) | Experimental reader deployment |
-| [Operations](docs/operations.md) | Monitor, restore, retire and upgrade |
-| [Storage request costs](docs/storage-costs.md) | What a reader and a writer request from the object store |
-| [Software factories](docs/software-factory.md) | Context for a fleet of unattended coding agents |
-| [Connect an agent](docs/connect.md) | Add fyrr to Claude Code, Codex or another MCP client |
-| [Configuration](docs/configuration.md) | Storage, embeddings, sources and secrets |
-| [Identity](docs/identity.md) | Users, directories, keys and OIDC |
-| [Tuning](docs/tuning.md) | Namespace and retrieval settings |
-| [Reader and writer settings](docs/reader-writer.md) | Serving, retention and maintenance settings |
-| [CLI](docs/cli.md) | Commands, flags and exit statuses |
-| [MCP tools](docs/mcp-tools.md) | Tool arguments, results and transport |
-| [HTTP JSON API](docs/http-api.md) | Search and fetch over JSON, with status codes and limits |
-| [Connectors](docs/connectors/README.md) | Setup and limits per source |
-| [Writing a provider](docs/connectors/authoring.md) | Connector SDK contract and example |
+| Get started | [Quickstart](docs/quickstart.md) · [How fyrr works](docs/architecture.md) |
+| Guides | [Test against local storage](docs/guides/testing.md) · [Vector search](docs/guides/vector-search.md) · [Full-text search](docs/guides/full-text-search.md) · [Hybrid search with fusion](docs/guides/hybrid-search.md) · [Permissions on written documents](docs/guides/permissions.md) · [Bulk loading](docs/guides/bulk-loading.md) |
+| Run it | [Security model](docs/security.md) · [HTTP login and users](docs/http-users.md) · [Deployment](docs/deployment.md) · [AWS Lambda (experimental)](docs/lambda.md) · [Operations](docs/operations.md) · [Storage request costs](docs/storage-costs.md) · [Software factories](docs/software-factory.md) · [Connect an agent](docs/connect.md) |
+| Reference | [Configuration](docs/configuration.md) · [Identity and access](docs/identity.md) · [Tuning](docs/tuning.md) · [Reader memory investigation](docs/investigations/reader-memory-budget.md) · [Write latency investigation](docs/investigations/write-latency.md) · [Million-row query investigation](docs/investigations/million-row-query.md) · [Reader and writer](docs/reader-writer.md) · [CLI](docs/cli.md) · [MCP tools](docs/mcp-tools.md) · [HTTP JSON API](docs/http-api.md) · [API reference](docs/api-reference.md) · [Guarantees](docs/guarantees.md) · [Limits](docs/limits.md) |
+| Connectors | [Overview](docs/connectors/README.md) · [Local files](docs/connectors/local-files.md) · [Google Drive](docs/connectors/google-drive.md) · [Notion](docs/connectors/notion.md) · [GitHub](docs/connectors/github.md) · [Slack](docs/connectors/slack.md) · [Jira](docs/connectors/jira.md) · [Writing a provider](docs/connectors/authoring.md) |
+
+<!-- docs-index:end -->
 
 ## Contributing
 

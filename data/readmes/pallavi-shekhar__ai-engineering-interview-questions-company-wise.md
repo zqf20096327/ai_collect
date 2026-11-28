@@ -213,7 +213,7 @@
   - Answer: [Chunking Strategies for RAG](https://outcomeschool.com/blog/chunking-strategies-for-rag)
 - How do you choose between a sparse retriever (BM25) and a dense retriever? When do you need both?
   - Asked at: [Microsoft](#microsoft), [Perplexity](#perplexity), [Glean](#glean)
-  - Answer: [How does Hybrid Search work?](https://outcomeschool.com/blog/how-does-hybrid-search-work) and [How does BM25 work?](https://outcomeschool.com/blog/bm25)
+  - Answer: [How does Hybrid Search work?](https://outcomeschool.com/blog/how-does-hybrid-search-work) and [How does BM25 work?](https://outcomeschool.com/blog/bm25) and [How do sparse and dense embeddings differ?](https://outcomeschool.com/blog/sparse-vs-dense-embeddings)
 - What is a reranker, when should you use one, and what does a cross-encoder cost you?
   - Asked at: [Cohere](#cohere), [Microsoft](#microsoft), [Perplexity](#perplexity)
   - Answer: [How does a Reranker work?](https://outcomeschool.com/blog/how-does-a-reranker-work)
@@ -376,7 +376,7 @@
   - Asked at: [ElevenLabs](#elevenlabs)
 - How do you handle code-switching and accents in a production ASR system?
   - Asked at: [Sarvam AI](#sarvam-ai), [Abridge](#abridge)
-  - Answer: [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
+  - Answer: [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents) and [How does a voice agent detect and switch the user's language mid-call?](https://outcomeschool.com/blog/language-switching-in-voice-agents)
 - Explain streaming TTS chunking and jitter-buffer sizing.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [How does sentence chunking feed LLM output into TTS faster?](https://outcomeschool.com/blog/sentence-chunking-for-tts), [How does a TTS model start speaking before the full sentence arrives?](https://outcomeschool.com/blog/streaming-tts), and [How does a jitter buffer keep voice audio smooth over a bad network?](https://outcomeschool.com/blog/jitter-buffer)
@@ -407,7 +407,7 @@
   - Asked at: [Microsoft](#microsoft)
 - Design an LLM gateway: routing across providers, failover, caching, budgets and rate limits.
   - Asked at: [Perplexity](#perplexity), [Palantir](#palantir)
-  - Answer: [LLM Routing](https://outcomeschool.com/blog/llm-routing) and [How does Semantic Caching work?](https://outcomeschool.com/blog/how-does-semantic-caching-work)
+  - Answer: [LLM Routing](https://outcomeschool.com/blog/llm-routing) and [How does Semantic Caching work?](https://outcomeschool.com/blog/how-does-semantic-caching-work) and [How does an LLM Gateway work?](https://outcomeschool.com/blog/llm-gateway)
 - Design the serving stack for a consumer chat assistant at hundreds of millions of users.
   - Asked at: [Anthropic](#anthropic), [OpenAI](#openai), [Google DeepMind](#google-deepmind-and-google-ai), [Meta](#meta-superintelligence-labs-fair-llama), [xAI](#xai)
   - Answer: [Inside ChatGPT: What Happens After You Hit Enter](https://outcomeschool.substack.com/p/inside-chatgpt-what-happens-after) and [LLM Inference Optimization](https://outcomeschool.com/blog/llm-inference-optimization)
@@ -1277,10 +1277,4 @@
 #### ML and DL Fundamentals
 
 - How would you design the neural network architecture for multi-camera 3D object detection without lidar?
-- How do you handle extreme class imbalance in rare-event detection (e.g. a child running into the road)?
-- Explain how you would auto-label a fleet dataset and what quality controls you would put on it.
-- How would you detect and handle distribution shift between fleet data and your training set?
-
-#### Inference, Serving and GPU Performance
-
-- The onboard compute budget
+- How do you handle extreme class imbalan

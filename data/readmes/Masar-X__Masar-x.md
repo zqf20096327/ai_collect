@@ -227,6 +227,7 @@ Development workflows — adding a shared package, cross-platform contracts, and
 - Report bugs with the [bug report template](./.github/ISSUE_TEMPLATE/bug_report.md) and propose ideas with the [feature request template](./.github/ISSUE_TEMPLATE/feature_request.md).
 - Pull requests should follow the PR template; see [`.github/PULL_REQUEST_TEMPLATE.md`](./.github/PULL_REQUEST_TEMPLATE.md).
 - Everyone participating is expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
+- Contributors whose code has landed are listed in [CONTRIBUTORS.md](./CONTRIBUTORS.md) — merged PRs keep their author, and superseded fork PRs are credited upstream with a `Co-authored-by` trailer, never silently (see [Credit & recognition](./CONTRIBUTING.md#credit--recognition)).
 
 ## Security
 

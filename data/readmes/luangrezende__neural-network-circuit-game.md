@@ -1,124 +1,62 @@
 # Neural Network Circuit Game
-Neuroevolution simulation where a population of AI-controlled cars learns to drive a custom circuit through a genetic algorithm.
 
 [![Download](https://img.shields.io/github/v/release/luangrezende/neural-network-circuit-game?label=Download%20Windows%20EXE&style=for-the-badge&logo=github&color=2ea043)](https://github.com/luangrezende/neural-network-circuit-game/releases/latest)
 
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)
-![NumPy](https://img.shields.io/badge/NumPy-2.4%2B-blue?logo=numpy&logoColor=white)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-3.10%2B-green)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+Watch 80 cars learn to drive a track you draw, evolved by a
+[genetic algorithm](https://en.wikipedia.org/wiki/Neuroevolution) in about 2,000 lines of Python and NumPy, with no
+deep-learning framework.
 
----
+Each generation, the whole population drives the circuit at once. Every car is a small neural network reading seven
+distance sensors; the best drivers survive, are crossed and mutated, and the next generation tries again. No
+backpropagation: the weights only change through evolution. It runs in real time in a Matplotlib window, with live
+charts of the learning curve.
 
-## Overview
+**Status:** hobby project (v1.1.0, November 2026), maintained when I have time. It runs from source on Python 3.11+ and as a Windows
+executable; [issues](https://github.com/luangrezende/neural-network-circuit-game/issues) are welcome.
+[MIT licensed](LICENSE).
 
-Each generation, a population of cars drives the circuit simultaneously. Cars are controlled by a small feedforward neural network whose weights are evolved via selection, crossover, and mutation — no backpropagation involved. The simulation runs in real time with Matplotlib and includes an interactive track editor to design new circuits.
+## Why not NEAT-Python or ML-Agents?
 
----
+[NEAT-Python](https://github.com/CodeReclaimers/neat-python) evolves the network's shape as well as its weights, and
+[Unity ML-Agents](https://github.com/Unity-Technologies/ml-agents) trains agents with reinforcement learning inside
+a game engine. Use them for real projects. This one is meant to be read: a fixed 8-14-2 network, a plain genetic
+loop, physics and collision in NumPy, all small enough to follow in an afternoon, plus an editor to draw your own
+tracks.
 
-## Architecture
+## Getting started
 
-The codebase is split into two clear layers:
+### Windows executable
 
-- **Simulation core** (`sim/track.py`, `sim/simulacao.py`, `sim/neural_network.py`) — pure Python/NumPy with no rendering dependencies. `SimuladorBase` owns the genetic loop.
-- **Visualization layer** (`sim/visualizacao.py`) — `SimuladorAprendizado` extends `SimuladorBase` with Matplotlib real-time rendering via blit.
+Download the latest `.zip` from [Releases](https://github.com/luangrezende/neural-network-circuit-game/releases/latest),
+extract it and run `neural-network-circuit-game.exe`. No Python needed. The executable is not code-signed, so
+Windows SmartScreen may ask you to confirm.
 
-This separation makes it straightforward to run headless training or swap the renderer.
+### From source
 
----
-
-## Tech Stack
-
-- Python 3.11+
-- NumPy — car physics, SDF collision, batched neural network forward pass
-- Matplotlib — real-time simulation rendering, interactive track editor
-- PyTorch (optional, listed in requirements for future experiments)
-- tkinter — clipboard support in the track editor only
-
----
-
-## Getting Started
-
-### Option 1 — Download the pre-built executable (Windows)
-
-Grab the latest `.zip` from the [Releases page](https://github.com/luangrezende/neural-network-circuit-game/releases/latest), extract it, and run `neural-network-circuit-game.exe`. No Python required.
-
-> The executable is built automatically by GitHub Actions on every version tag using PyInstaller.
-
-### Option 2 — Run from source
-
-#### Prerequisites
-
-- Python 3.11+
-- A CUDA-capable GPU is **not required** (PyTorch is listed for optional use)
-
-#### Installation
+Python 3.11 or newer:
 
 ```bash
 git clone https://github.com/luangrezende/neural-network-circuit-game.git
 cd neural-network-circuit-game
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux / macOS
-source .venv/bin/activate
-
+.venv\Scripts\activate        # Linux / macOS: source .venv/bin/activate
 pip install -r requirements.txt
+python main.py
 ```
 
-> If you do not need PyTorch, remove the `torch`/`torchvision`/`torchaudio` lines from `requirements.txt` and run `pip install numpy matplotlib`.
+Press `Q` or close the window to stop. Training ends when a car completes 10 laps. Run from source, it then saves the
+winning network's weights, the generation and the best lap time to `resultados.json`.
 
-#### Run the simulation
+### Draw your own track
 
 ```bash
-python rede_neural_jogo.py
+python track_editor.py
 ```
 
-#### Run the track editor
+Click to place control points, set the track width with the slider, and save. The start line sits between the first
+two points. The editor writes `track.json`, and the simulator uses it on the next run.
 
-```bash
-python editor_pista.py
-```
-
-Click to place control points, adjust track width, set the start/finish line, and export to `pista.json`. The simulator picks up the new track on the next run.
-
----
-
-## Configuration
-
-All simulation hyperparameters live in `config.json`:
-
-| Section | Key parameters |
-|---|---|
-| `carros` | max speed, turn angle, car size |
-| `simulacao` | population size, target laps, top survivors, random newcomers per generation |
-| `recompensas` | weights for centerline adherence, speed, lap progress |
-| `penalidades` | collision penalty, wrong-way penalty, slow-car penalty |
-| `visualizacao` | sensor overlay, display options |
-
----
-
-## Project Structure
-
-```
-.
-├── rede_neural_jogo.py   # entry point
-├── editor_pista.py       # interactive track editor
-├── config.json           # simulation hyperparameters
-├── pista.json            # active track (control points + width)
-├── requirements.txt
-└── sim/
-    ├── neural_network.py # feedforward net + genetic operators
-    ├── simulacao.py      # genetic algorithm loop (no UI)
-    ├── track.py          # track geometry, SDF, car physics
-    └── visualizacao.py   # matplotlib rendering layer
-```
-
----
-
-## Neural Network
-
-Each car is controlled by a fully connected network:
+## The neural network
 
 ```
 8 inputs (7 distance sensors + speed)
@@ -128,4 +66,10 @@ Each car is controlled by a fully connected network:
  2 outputs: steer (-1..+1), throttle (0..1)  (sigmoid)
 ```
 
-Weights are evolved each generation via uniform crossover and Gaussian mutation. No gradient descent.
+Weights evolve each generation through uniform crossover and Gaussian mutation. Population size, rewards,
+penalties and car physics are all in `config.json`; the keys, the code layout and how the executable is built are in
+[docs/development.md](docs/development.md).
+
+## License
+
+[MIT](LICENSE).

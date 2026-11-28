@@ -37,6 +37,15 @@ In this release, we also open-source [TransRubric](./TransRubric/README.md), a r
 
 We also welcome everyone to try our Tencent Hy Translate browser extension, which supports selection translation, full-page translation and side-panel text translation. Download links: [Chrome](https://chromewebstore.google.com/detail/tencent-hy-translate-a-pe/plkeongecagdacbbldjkoaijdogfkhof?hl=en) and [Edge](https://microsoftedge.microsoft.com/addons/detail/npohaablejgdcokflkffadojdconaacm).
 
+You can also download the Tencent Hy Translate app ([Android](https://a.app.qq.com/o/simple.jsp?pkgname=com.tencent.hunyuan.translate) / [iOS](https://apps.apple.com/cn/app/%E8%85%BE%E8%AE%AFhy%E7%BF%BB%E8%AF%91/id6768870541)) by scanning the QR codes below:
+
+<table>
+  <tr>
+    <td align="center"><img src="imgs/app_android_qr.png" width="150"/><br>Android</td>
+    <td align="center"><img src="imgs/app_ios_qr.png" width="150"/><br>iOS</td>
+  </tr>
+</table>
+
 ## News
 
 * 2026.11.24  We open-sourced **Hy-MT3-1.8B**/**Hy-MT3-7B**/**Hy-MT3-30B-A3B** on HuggingFace and ModelScope, and released **TransRubric** on GitHub.

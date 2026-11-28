@@ -34,7 +34,7 @@ and the applications.
   <tr>
     <td width="33%" valign="top"><b>A microkernel in Rust</b><br>Capabilities, SMP, and services in user space that restart by themselves. Applications get Rust's standard library.</td>
     <td width="33%" valign="top"><b>Linux's drivers, contained</b><br>Linux drives the hardware in a VM on Veda's own hypervisor, held in by the IOMMU and restarted if it crashes.</td>
-    <td width="33%" valign="top"><b>A complete desktop</b><br>A compositing window system, a lock screen, a web browser on WebKit, OpenGL ES 3.0, GCC and curl in the Terminal, WPA3 Wi-Fi and a firewall that asks first.</td>
+    <td width="33%" valign="top"><b>A complete desktop</b><br>A compositing window system, a lock screen, screensavers, a web browser on WebKit, OpenGL ES 3.0, GCC and curl in the Terminal, WPA3 Wi-Fi and a firewall that asks first.</td>
   </tr>
 </table>
 
@@ -176,6 +176,7 @@ covers the rest.
 | **Graphics** | A compositing window system, the immediate-mode `ui` toolkit, and OpenGL ES 3.0 on the GPU through Mesa or in software |
 | **Programs** | Rust's standard library, and C with GCC 16 and musl, over `posix`, a POSIX layer in Rust; static or dynamically linked, loading shared libraries at run time; and Linux's programs as they were built, on glibc or musl, through Linux compatibility |
 | **Network** | IPv4 and IPv6, TLS 1.3, WPA3 Wi-Fi, and a firewall in stealth mode by default |
+| **Bluetooth** | Pairing, and headphones and speakers that play the computer's sound (A2DP), on Linux's drivers |
 
 Where a proven library exists, Veda uses it: smoltcp, rustls, RustCrypto,
 FFmpeg, dav1d, glam, WPE WebKit and [more](documentation/DEPENDENCIES.md).
@@ -200,6 +201,7 @@ a stand-in for Deepgram, so they are offline, deterministic and free.
 | [Architecture](documentation/ARCHITECTURE.md) | How the system fits together |
 | [The driver VM](documentation/DRIVERVM.md) | The hypervisor, the IOMMU and Linux's drivers |
 | [Networking](documentation/NETWORKING.md) | The network and Wi-Fi services, the firewall and TLS |
+| [Bluetooth](documentation/BLUETOOTH.md) | The Bluetooth service, pairing, headphones' audio, and Linux's drivers below them |
 | [The web browser](documentation/BROWSER.md) | The browser, WebKit's port to Veda, and how pages are drawn |
 | [C on Veda](documentation/C.md) and [Rust on Veda](documentation/RUST.md) | Programs, the POSIX layer and the toolchains |
 | [Linking and loading](documentation/LINKING.md) | Static and dynamically linked programs, shared libraries, and loading them at run time from C, C++, Rust and Python |

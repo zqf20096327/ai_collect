@@ -11,6 +11,8 @@ Pick a function, type a prompt, press Generate: the result arrives as a new laye
 
 Tested: Windows 11 · Linux Mint (X11, Cinnamon Wayland) · PhotoCraft 0.23.1 · ComfyUI 0.45.0
 
+> **PhotoCraft 0.24 is not compatible with this PxC version yet.** With 0.24 (also its release candidates) every run with a selection (Fill, Remove, Edit with a selection) stops with "no selection". Please stay on [PhotoCraft 0.23.1](https://github.com/storytold/photocraft/releases/tag/v0.23.1) until a PxC update supports it.
+
 <img src="readme-images/plugin-window.webp" alt="The PxC window next to PhotoCraft: Text to Image with MiniMax H3 Image, the result as a new layer" width="900">
 
 [Examples](#examples) · [Features](#features) · [Before you start](#before-you-start) · [Install on Windows](#install-on-windows) · [Install on Linux](#install-on-linux) · [Model downloads](#model-downloads) · [Functions](#functions) · [Help](#help) · [Technical details](#technical-details)
@@ -116,7 +118,7 @@ PhotoCraft  <-->  PxC  <-->  ComfyUI
 You need (the software is free):
 
 - **Windows 10/11 or Linux** with a GPU with at least 8 GB VRAM.
-- **[PhotoCraft](https://github.com/storytold/photocraft/releases) 0.20.2 or newer**: the image editor where you work. PxC adds AI functions to it.
+- **[PhotoCraft](https://github.com/storytold/photocraft/releases) 0.20.2 to 0.23.1**: the image editor where you work. PxC adds AI functions to it. PhotoCraft 0.24 does not work with this version yet (see the note at the top).
 - **[ComfyUI](https://github.com/comfyanonymous/ComfyUI#installing)**: runs the AI models; leave it running while you work. Flux 2 and Upscale (Flux 3, Fibo) also need the add-on [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) ([ComfyUI Easy Install](https://github.com/Tavris1/ComfyUI-Easy-Install) includes it).
 - **[Python](https://www.python.org/downloads/windows/) 3.11 or newer** (Linux: 3.10 or newer). No Python yet? On Windows the setup offers to install it for you.
 - **About 13 to 19 GB of free disk space per model you want to use, MiniMax about 38 GB, or about 30 GB with its smaller variant** (the models are large files; one model is enough to start).

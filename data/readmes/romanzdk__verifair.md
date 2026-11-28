@@ -9,6 +9,8 @@
 
 **Review the evidence, not the diff.** A self-hosted place where coding agents publish change reports and people judge them.
 
+For people and teams whose coding agents write most of the code. Reports are stored in your own Postgres, and verifair runs no AI itself.
+
 **[Try the demo review →](https://romanzdk.github.io/verifair/demo/r/demo-currency-rounding.html)** (a static copy: you can read it, but not comment)
 
 <sub>How to say it: **verifier** (/ˈvɛrɪfaɪər/, like the word) or **veri-fair** (/ˈvɛrifɛər/, “very fair”). Both are fine.</sub>
@@ -25,6 +27,8 @@
 <br>
 
 ![Demo of the full review loop: an agent publishes a report with a diagram, the author signs it, a reviewer comments on a sentence with the issue label, the agent replies and pushes version 2, the author signs again, and the reviewer resolves the thread and approves](docs/images/demo.gif)
+
+**Run it:** `git clone https://github.com/romanzdk/verifair.git && cd verifair && docker compose up`, then open http://localhost:8000. Details in the [Quickstart](#quickstart).
 
 ## Why
 
@@ -141,9 +145,9 @@ To let your coding agent set it up, locally or on Kubernetes, paste the prompt f
 | ![Execution tab with the agent's call tree, a failed test run with its output, and the plan used for the implementation](docs/images/execution.png) | ![Execution tab in dark theme](docs/images/execution-dark.png) |
 
 <p align="center">
-  <img src="docs/images/mobile.png" width="260" alt="Inbox on a phone">
+  <img src="docs/images/mobile.png" width="260" loading="lazy" alt="Inbox on a phone">
   &nbsp;&nbsp;
-  <img src="docs/images/mobile-review.png" width="260" alt="Review page on a phone: the Design diagram and an open blocking thread">
+  <img src="docs/images/mobile-review.png" width="260" loading="lazy" alt="Review page on a phone: the Design diagram and an open blocking thread">
 </p>
 
 ## The report
@@ -213,6 +217,7 @@ Full reference: [docs/api.md](docs/api.md) (push, read, comments, wait, errors).
 | [docs/configuration.md](docs/configuration.md) | All environment variables |
 | [docs/deployment.md](docs/deployment.md) | Run from source, Docker, Kubernetes, deploying behind HTTPS, Postgres, backup and restore, upgrading an HTTP deployment |
 | [docs/report-template.md](docs/report-template.md) | The report layout, as a full example |
+| [docs/privacy.md](docs/privacy.md) | What this website and its demo send to other services, and who runs them |
 | [CHANGELOG.md](CHANGELOG.md) | What changed in each version |
 
 Agents can read all of it as Markdown: [llms.txt](https://romanzdk.github.io/verifair/llms.txt), or every page in one file in [llms-full.txt](https://romanzdk.github.io/verifair/llms-full.txt).

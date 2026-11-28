@@ -15,8 +15,8 @@ Inspired by the human hippocampus, hippo saves what you teach one coding agent i
 </p>
 
 ```
-Works with:    Claude Code, Codex, Cursor, Pi, OpenClaw, OpenCode, Junie, Antigravity, Grok Build,
-               Muse Code, any MCP client
+Works with:    Claude Code, Codex, Cursor, Pi, OpenClaw, OpenCode, Hermes Agent, Junie,
+               Antigravity, Grok Build, Muse Code, any MCP client
 Imports from:  ChatGPT, Claude (CLAUDE.md), Cursor (.cursorrules), Slack, markdown
 Storage:       SQLite with markdown mirrors you can read and commit
 Dependencies:  Zero runtime deps. Node.js 22.16+. Embeddings: `hippo init` installs the local Transformers.js embedder (`@huggingface/transformers@4.3.2`, about 480 MB) into a global npm install, and `--no-embeddings` skips it. An API embedder (OpenAI/Voyage/Cohere) is opt-in.
@@ -166,6 +166,7 @@ You, your team and your platform lead read the same store.
 | Pi | reads `AGENTS.md` |
 | OpenClaw | plugin |
 | OpenCode | plugin |
+| Hermes Agent | memory provider plugin in the active profile's `plugins/hippo/`, written by `hippo init` and `hippo setup` |
 | Gemini CLI | extension: `gemini extensions install https://github.com/kitfunso/hippo-memory` |
 | Kiro | power: import `https://github.com/kitfunso/hippo-memory/tree/master/extensions/kiro-power` |
 | Junie | the hippo MCP server in `~/.junie/mcp/mcp.json`, written by `hippo init` |
@@ -410,6 +411,7 @@ Run `hippo init` inside one project. This is everything it writes, in the projec
 - **Codex,** when the project has `AGENTS.md` or `.codex` and Codex is installed (`$CODEX_HOME`, else `~/.codex`, exists): 2 hook entries in Codex's `hooks.json`, one on UserPromptSubmit that sends your pinned memories plus up to 5 that match the prompt with every prompt and one on SessionStart after a compaction. **Codex runs them only after you trust them once in `/hooks`.** Init also prints `hippo hook install codex`, the opt-in that wraps the Codex launcher to capture sessions; `hippo hook uninstall codex` removes hippo's hooks and the wrapper.
 - **GitHub Copilot,** when the Copilot CLI is installed, whatever the project holds. Init takes `$COPILOT_HOME` (else `~/.copilot`) holding more than a `hooks` folder as the sign. It writes the same files as `hippo hook install copilot`: hippo's `hooks/hippo.json`, a `hippo` server in `mcp-config.json` and a block in `copilot-instructions.md`. When VS Code has a User folder, it also adds the server to that folder's `mcp.json` and writes `prompts/hippo.instructions.md`. With VS Code alone, run `hippo setup`. [integrations/copilot.md](integrations/copilot.md) lists each file and how to remove them.
 - **Junie, Antigravity, Grok Build and Muse Code,** when the host's folder exists on the machine, whatever the project holds: `~/.junie`, `~/.gemini/antigravity` or `~/.gemini/antigravity-cli`, `$GROK_HOME` (else `~/.grok`), or `$XDG_CONFIG_HOME/muse` (else `~/.config/muse`). Each gets a `hippo` MCP server in its own config file: `~/.junie/mcp/mcp.json`, `~/.gemini/config/mcp_config.json`, `$GROK_HOME/config.toml` (else `~/.grok/config.toml`) and `$XDG_CONFIG_HOME/muse/settings.json` (else `~/.config/muse/settings.json`). `hippo hook install <name>` writes the same entry for one host (`junie`, `antigravity`, `grok-build` or `muse-code`), and `hippo hook uninstall <name>` removes it. `hippo init --no-hooks` and `HIPPO_SKIP_AUTO_INTEGRATIONS=1` leave them out.
+- **Hermes Agent,** when the active Hermes profile folder exists on the machine (`$HERMES_HOME`, else `%LOCALAPPDATA%\hermes` on Windows or `~/.hermes`, following `active_profile`), whatever the project holds: copies the memory provider plugin (`extensions/hermes-memory-provider/hippo/`) and `launcher.json` into `plugins/hippo/` and prints `hermes config set memory.provider hippo` (with `-p <profile>` for a named profile) without editing `config.yaml`. `hippo setup` and `hippo hook install hermes` do the same, and `hippo hook uninstall hermes` removes only what hippo wrote.
 - **A daily run at 6:15am,** one per machine: a crontab line on Linux and macOS, a scheduled task named `hippo-daily-runner` on Windows. It runs `hippo learn --git --days 1` and then `hippo sleep` in every project listed in `~/.hippo/workspaces.json`, and init adds this project to that list.
 - **The local embedder,** when hippo is a global npm install and no embedder is installed yet: `@huggingface/transformers@4.3.2` in the same global folder, about 480 MB. It goes in before anything else, can take a few minutes, and runs with `--ignore-scripts`, so no install script in that package tree runs. Its model (`Xenova/all-MiniLM-L6-v2`, 87 MB) downloads from Hugging Face the first time hippo embeds. Under npx, pnpm, yarn, bun or as a project dependency, init prints the command for that setup instead. `npm uninstall -g hippo-memory` leaves the embedder in place; `npm uninstall -g @huggingface/transformers` removes it.
 - **Agent memories.** On every run, the notes your coding agents keep about this project go into its store, and the ones about you go into the global store. [Agent memories](#agent-memories) lists what is read.
@@ -443,6 +445,7 @@ What is read, per tool (each tool's own environment variables and settings decid
 - **GitHub Copilot Chat in VS Code:** the memory tool's user memories and the repository memories of this project's workspace.
 - **OpenClaw:** the workspace's `MEMORY.md`.
 - **Qwen Code:** the project's auto memory folder and your user memories.
+- **Hermes Agent:** the entries of the active profile's `memories/MEMORY.md` and `memories/USER.md`.
 
 Each imported memory follows its note. It stays while the note exists, is replaced when the note changes, and is set aside as dormant when the note is deleted (`hippo dormant` lists it and can restore it). A note shorter than 10 characters, one that looks like it holds a secret (an API key, a password, an auth header or a token), and one whose text you rejected with `hippo reject` are skipped. Email addresses are stored masked, and notes are cut at 1,500 characters.
 
@@ -1052,11 +1055,4 @@ The command runs with no shell, so each argument reaches the program as written.
 | `hippo quarantine reject <id>` | Keep a held memory hidden for good (admin) |
 | `hippo quarantine edit <id> "<text>"` | Approve a held memory with your cleaned text (admin). The text is checked again, the new memory lists the held one in `parents`, and the successor keeps the lead-in of the held row the edit read. A reject drops the whole item, lead-in included. HTTP: `POST /v1/quarantine/:id/edit` |
 | `hippo doctor [--json]` | Check the install: Node, store, schema, sleep, agent hooks; each problem names its fix. It never changes `hippo.db`, though SQLite may leave empty `hippo.db-wal` and `hippo.db-shm` files beside it |
-| `hippo support-bundle [--out <file>] [--include-logs]` | Write a redacted JSON file for a support ticket: versions, doctor checks, config, store counts and log names, never memory text; `--include-logs` adds each log's last 200 lines, which can quote it |
-| `hippo tokens [--days n]` | Estimated tokens of memory text handed to agents, per surface, what later model calls re-read of the hook and compact-resume blocks, and what skipping unchanged hook blocks saved |
-| `hippo failures [--days n]` | Failed tool calls the capture-error hook saw, by outcome, and how many errors first happened in another session |
-| `hippo embed` | Embed all memories for semantic search |
-| `hippo embed --status` | Show embedding coverage |
-| `hippo watch -- <command> [args...]` | Run command with no shell, auto-learn from failures |
-| `hippo learn --git` | Scan recent git commits for lessons |
-| `hippo learn --git --days <n>` | Scan N days back (default: 7) |
+| `hippo support-bundle [--out <file>] [--include-logs]` | Write a redacted JSON file for a support ticket: versions, doctor che

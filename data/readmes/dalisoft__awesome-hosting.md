@@ -489,7 +489,7 @@ See [AI Coding Subscriptions](https://github.com/dalisoft/awesome-ai-coding?tab=
 | [SayGM](https://saygm.com)                                   | [Pricing](https://saygm.com/models)             | $1 credit | -    |
 | [Surplus Intelligence](https://surplusintelligence.ai)       | [Pricing](https://surplusintelligence.ai)       | -         | -    |
 | [TokenRouter](https://www.tokenrouter.com)                   | [Pricing](https://www.tokenrouter.com/models)   | -         | -    |
-| [UberLLM](https://uberllm.dev)                               | [Pricing](https://uberllm.dev/docs/pricing)     | -         | -    |
+| [MartLLM](https://martllm.com)                               | [Pricing](https://martllm.com/docs/pricing)     | -         | -    |
 | [UsePod.ai](https://usepod.ai)                               | [Pricing](https://usepod.ai)                    | -         | -    |
 | [Vectoree](https://vectoree.ai)                              | [Pricing](https://vectoree.ai/#pricing)         | $5 credit | -    |
 | [Venice](https://venice.ai)                                  | [Pricing](https://venice.ai)                    | -         | -    |
@@ -538,6 +538,7 @@ while executes with Build (cheap) model.
 | [Cloudorado](https://www.cloudorado.com) ⚠️          | VPS  | -         |
 | [CompareVPS](https://www.comparevps.com)             | VPS  | 4+        |
 | [FindHost](https://www.findhost.app)                 | All  | 218       |
+| [Free LLM API Hub](https://freellmapihub.com)        | LLM  | 60+       |
 | [GetDeploying](https://getdeploying.com)             | All  | 10+       |
 | [GPUs](https://gpus.io)                              | GPU  | ~5        |
 | [GPUVista](https://gpuvista.com)                     | GPU  | 12+       |
@@ -551,6 +552,7 @@ while executes with Build (cheap) model.
 | [Serverhunter](https://www.serverhunter.com)         | VPS  | 900+      |
 | [serverlist.dev](https://serverlist.dev)             | All  | 44        |
 | [StackRates](https://stackrates.ai)                  | VPS  | 60        |
+| [VPSRanker](https://vpsranker.com)                   | VPS  | 41        |
 | [vpsticker](https://vpsticker.com)                   | VPS  | 15        |
 
 ---

@@ -76,7 +76,7 @@ Say it.
 
 ## Quick start (Windows)
 
-1. Download `Lykaon-v0.2.0-windows-x64.zip` from
+1. Download `Lykaon-v0.3.0-windows-x64.zip` from
    [Releases](https://github.com/Lykaon-Lang/Lykaon/releases/latest).
 2. Unzip it anywhere.
 3. Double-click `install.bat`. It copies the tools to
@@ -122,6 +122,35 @@ On Windows, double-click `hello.exe`; it waits for Enter before closing.
 Open a `.lykaon` file and click **Run File** in the editor toolbar (top right),
 or press `Ctrl+F5`. These are editor commands, not terminal commands.
 
+## Quick start (Linux x86-64)
+
+1. Download `Lykaon-v0.3.0-linux-x64.tar.gz` from
+   [Releases](https://github.com/Lykaon-Lang/Lykaon/releases/latest).
+2. Unpack it and run the installer:
+
+   ```
+   tar xzf Lykaon-v0.3.0-linux-x64.tar.gz
+   cd Lykaon-v0.3.0-linux-x64
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+3. Open a new terminal (or add `~/.local/bin` to `PATH`, as the installer
+   explains).
+
+The archive is prebuilt: it needs no Rust or Cargo. A C compiler (`cc`, for
+example `sudo apt install build-essential`) is needed only when you build a
+native executable.
+
+```
+lykaon-cli run hello.lykaon
+lykaonc-cli build fast hello.lykaon hello
+./hello
+```
+
+The binaries require glibc 2.39 or newer (Ubuntu 24.04+); they were built and
+tested on Ubuntu 26.04 x86-64.
+
 ## Install
 
 ### Windows
@@ -131,7 +160,12 @@ whole install.
 
 ### Linux
 
-Install [Rust](https://rustup.rs) 1.85 or newer:
+The tar.gz is self-contained: unpack it and run `install.sh`. No Rust
+toolchain is needed. `install.sh` copies the commands to `~/.local/lib/lykaon`
+and links them into `~/.local/bin`; use `PREFIX=/usr/local sudo -E ./install.sh`
+for a system-wide install.
+
+Building from source is still supported:
 
 ```
 git clone https://github.com/Lykaon-Lang/Lykaon.git
@@ -150,6 +184,9 @@ separately so it stays TLS-free.
 - [Syntax tour](docs/syntax.md)
 - [CLI reference](docs/cli.md)
 - [Standard library](docs/standard-library.md)
+- [C bridge and ABI](docs/C_ABI.md)
+- [Package registry](docs/registry.md)
+- [Unsafe boundary](docs/unsafe-boundary.md)
 - [File extensions](docs/extensions.md)
 
 ## What Lykaon can do
@@ -170,19 +207,27 @@ separately so it stays TLS-free.
   transactions and `lykaon migrate`.
 - **Security and limits**: encryption, memory/time limits and the native
   permission sandbox.
+- **C, Python and JavaScript**: a C bridge (`Use C library`, `.stub.shelf`,
+  `Share for C`), Python extension modules (`build for python`), a Python
+  library bridge (`.py.shelf`), and JavaScript/WebAssembly (`build for js`).
+- **Packages and plugins**: a local package registry (`lykaon registry`),
+  `lykaon bindgen` for C headers, and C-ABI plugins (`Load plugin`).
 - **Tooling**: `lykaon lsp`, `lykaon doc`, `lykaon profile`, `lykaon outline`,
   JSON output modes and the 600-second fuzz harness.
 
 ## Status and limits
 
 Lykaon is a **command-line / console** language for **Windows x64 and
-Linux x64**. The current release is CLI-only; a GUI arrives in a later release.
-The zip contains the CLI interpreter, the CLI compiler, the runtime library and
-licenses.
+Linux x64**. The current release (0.3.0) is CLI-only; a GUI arrives in a later
+release. Each archive contains the CLI interpreter, the CLI compiler, the
+runtime library and licenses.
 
 - **Performance** is not yet a focus; correctness and byte-exact
   interpreter/native output come first.
-- **macOS** is not a target.
+- **Bridges and built-ins** (C, Python, JavaScript, plugins, the registry and
+  the M6b standard-library built-ins) run on the interpreter path, for example
+  `lykaon-cli run --interpret program.lykaon`. Native builds of programs that
+  use them fall back to the embedded evaluator.
 - **WebAssembly**: the browser playground runs the interpreter compiled to
   wasm32; native Lykaon-to-wasm output and the WASI sandbox are deferred.
 - **PostgreSQL**: MD5 auth and Add/Remove/Set/Load/transactions are verified

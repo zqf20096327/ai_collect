@@ -104,13 +104,13 @@ Before launch, the backend asynchronously runs `{binary} --version` and `{binary
 
 ##### Vulkan KV-cache guard
 
-llama.cpp's Vulkan backend cannot schedule the KV cache of a sliding-window (hybrid) model while that cache lives in a GPU buffer. Builds after b12236 abort inside the scheduler before the server binds its port:
+llama.cpp's Vulkan backend cannot schedule the KV cache of a sliding-window or recurrent-hybrid model while that cache lives in a GPU buffer. Qwen3.8 (`qwen35`) is one example: it declares recurrent layers and a full-attention interval instead of a sliding-window size. Builds after b12236 abort inside the scheduler before the server binds its port:
 
 ```text
 ggml-backend.cpp:1358: pre-allocated tensor (cache_k_l1 (view)) in a buffer (Vulkan0) that cannot run the operation (SET_ROWS)
 ```
 
-The process dies with `SIGABRT`, which the app only sees as an immediate exit. Upstream issue #29082 tracks the regression. The probe therefore also runs `--list-devices` (skipped when the build does not advertise it), and the launch adapter falls back to CPU execution (`--device none`) when all of these hold: the build advertises `-nkvo`, a Vulkan device is available, GPU layers are requested, the build is newer than b12236, and the selected GGUF declares `<architecture>.attention.sliding_window`.
+The process dies with `SIGABRT`, which the app only sees as an immediate exit. Upstream issue #29082 tracks the regression. The probe therefore also runs `--list-devices` (skipped when the build does not advertise it), and the launch adapter falls back to CPU execution (`--device none`) when all of these hold: the build advertises `-nkvo`, a Vulkan device is available, GPU layers are requested, the build is newer than b12236, and the selected GGUF declares sliding-window or hybrid recurrent attention (`<architecture>.attention.sliding_window`, `<architecture>.attention.recurrent_layers`, or a nonzero `<architecture>.full_attention_interval`).
 
 `-nkvo` is not a free substitute here: it leaves attention on the CPU while the weights stay on the GPU. Measured on a Radeon 660M iGPU with a 4 B Q5_K_M sliding-window model, that split produced 6.7 tok/s against 14.2 tok/s for a full CPU launch and 17.1 tok/s for b12236 with GPU KV offload, so a CPU launch is the safer automatic default. The substitution emits an `engine://adapter-warning` that names the issue and both overrides: `-nkvo` in **Extra llama arguments** keeps the weights on the GPU with a host KV cache (better when the model is larger than RAM), and `-kvo` forces GPU KV offload back on. Any explicit `--device`, `-nkvo` or `-kvo` in the extra arguments disables the fallback. Full-attention models, CPU-only launches, CUDA/ROCm/Metal hosts and b12236 and older are untouched.
 
@@ -261,12 +261,19 @@ MCP servers run as local stdio processes. The app does not proxy their traffic, 
 - Rust 1.77.2+ and Node 18+.
 - **Tauri 2.12.6**, pinned in `src-tauri/Cargo.lock`. This release fixes the webview-manager event-emit deadlock that could freeze the window while the `tracing` feature was enabled; keep the lockfile at 2.12.6 or newer.
 - For voice input on Linux, at least one of `parec` (usually from `pulseaudio-utils`) or `pw-record` (usually from `pipewire-bin`). The app prefers `parec` and falls back to `pw-record`. Whisper itself is downloaded by the app on demand.
-- WebKitGTK 4.1 / GTK3 development packages:
+- WebKitGTK 4.1 / GTK3 development packages, plus the GStreamer plugins that
+  `bundleMediaFramework` copies into the AppImage:
 
 ```bash
-sudo apt install build-essential libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-dev \
-  libsoup-3.0-dev libgtk-3-dev librsvg2-dev libssl-dev patchelf libfuse2
+sudo apt install build-essential pkg-config file libwebkit2gtk-4.1-dev \
+  libgtk-3-dev librsvg2-dev patchelf libfuse2 \
+  gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+  gstreamer1.0-alsa gstreamer1.0-pipewire
 ```
+
+The GStreamer runtime set covers PulseAudio/PipeWire/ALSA capture and the
+WAV/MP3/OGG/FLAC decoders used for audio attachments. The bundler copies the
+plugins installed on the build host; `-dev` packages are not needed for them.
 
 - A local Janas build is optional: startup setup downloads the current release. For a manual install, upstream's release tarball provides `janas-server`, `janas-chat`, `gguf2jns`, `janas-mcp`, `jns_planes` and the shared libraries:
 
@@ -288,9 +295,13 @@ The Vite dev server runs on `http://localhost:1420`; the Rust backend owns the w
 
 ### Build an AppImage
 
+Build on **Ubuntu 22.04** (or another system with the same glibc 2.35 baseline and WebKitGTK 4.1). An AppImage does not bundle glibc, so it can only be as old as the build host; an AppImage built on Ubuntu 24.04 or Linux Mint 22 needs glibc 2.39 and will not start on Ubuntu 22.04, which is what AppImageHub tests.
+
 ```bash
 npm run appimage
 ```
+
+The build ends with `scripts/check-appimage-glibc.sh`, which extracts the AppImage and fails if any bundled ELF file needs a glibc newer than 2.35. For a local-only build on a newer host, `APPIMAGE_MAX_GLIBC=2.39 npm run appimage` overrides the guard; do not upload that artifact. For a release build on a newer host, use the Docker target below.
 
 The artifact is written to:
 
@@ -299,6 +310,24 @@ src-tauri/target/release/bundle/appimage/MikroTitan_0.2.0_amd64.AppImage
 ```
 
 Run it with `chmod +x` and execute directly. The image bundles its WebKitGTK/GTK runtime libraries (verified with `ldd` on the extracted payload); a graphical Linux session with working display and GPU drivers is still required.
+
+For releases, run **Actions → Build AppImage** and set the release tag (for example `MikroTitan`) to replace that release's AppImage asset with the Ubuntu 22.04 build. Leave the tag empty to only produce a workflow artifact.
+
+### Build the AppImage with Docker (Ubuntu 22.04)
+
+If Docker is installed but the host is not Ubuntu 22.04, build the release artifact in a jammy container:
+
+```bash
+npm run appimage:docker
+```
+
+This uses `Dockerfile.appimage` and writes `release/MikroTitan_0.2.0_amd64.AppImage`. The first run installs the toolchain and compiles the Rust dependencies; later runs reuse the BuildKit Cargo cache. The container uses the same dependency set as the **Build AppImage** workflow, runs `scripts/check-appimage-glibc.sh` before the artifact leaves the build stage, and the wrapper checks the extracted file again on the host.
+
+Upload the local artifact to an existing release with the GitHub UI or:
+
+```bash
+gh release upload MikroTitan release/MikroTitan_0.2.0_amd64.AppImage --clobber
+```
 
 ### Dual-engine integration harness
 

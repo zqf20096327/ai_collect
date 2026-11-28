@@ -2,9 +2,7 @@
 
 *Русская версия: [README.ru.md](README.ru.md)*
 
-Nuclear Option has hundreds of vehicles fighting on the ground, yet you only ever see them from a cockpit. This mod
-puts you behind the wheel: tanks, IFVs, SAM launchers, artillery, supply trucks and tractors. Buy a vehicle at one of
-your faction's depots or airbases and drive it straight into the fight, in single player or online.
+Nuclear Option has hundreds of vehicles and warships fighting across land and sea, yet you only ever see them from a cockpit. This mod puts you behind the wheel and at the helm: tanks, IFVs, SAM launchers, artillery, supply trucks, tractors, corvettes, frigates, destroyers, carriers and supply ships. Buy a vehicle or ship at one of your faction's depots or airbases and take it straight into the fight, in single player or online.
 
 The goal is for the mod to feel like part of the game. The HUD is assembled from the game's own HUD pieces, prices
 come from the game, and kills, base captures and resupply are rewarded by the same rules that apply to pilots.
@@ -13,23 +11,29 @@ come from the game, and kills, base captures and resupply are rewarded by the sa
 
 ## Features
 
-- **Buy vehicles** at your faction's depots and airbases for the in-game price, and sell them back when you're done.
-  Order one from the tactical map without leaving your aircraft, or pick GROUND on the spawn screen and start the
-  match on the ground.
-- **Drive** in third person. Every vehicle rides on its own running gear: wheels or tracks with suspension,
+- **Buy vehicles & ships** at your faction's depots and airbases for the in-game price, and sell ground vehicles back
+  when you're done. Order from the tactical map without leaving your aircraft, or pick GROUND / NVL on the spawn
+  screen to start on land or at sea (with 3D previews and automatic deep-water placement at major coastal bases).
+- **Drive** in third person. Every ground vehicle rides on its own running gear: wheels or tracks with suspension,
   tyre grip by surface, Ackermann steering, pivot turns for tracked vehicles, and an engine and gearbox matched to
   the real prototypes. Cannon fire kicks the hull back for real. More speed on roads than off them.
-- **Fight** with every weapon the vehicle has: cannons, machine guns, ATGMs, SAMs. Lock targets, and the reticle with
-  its reload ring shows where your shot will land. The turret holds the sight line while you drive (stabilizer-style),
-  and the barrel marker warns when a hill blocks the shot (BLOCKED) or the shell won't reach (OUT OF REACH).
-- **Weapon wheel and radial menu**, the game's own: hold Weapon Wheel to pick a weapon station, hold Radial Menu for
-  vehicle actions — exit, deploy / stow, fire control computer, night vision. The aircraft radial menu gets a Drive
-  Vehicle entry. Gamepads work everywhere, including the purchase menu.
-- **Artillery and missile launchers.** A fire control computer works out direct or indirect fire, and you pick the
-  target on the map. Ballistic and anti-air missiles are both supported.
+- **Command ships:** sticky throttle with detent and auto-stop, rudder with automatic heading hold (and carrier turn-rate
+  limiting during flight ops), grouped turrets/launchers, sequential ripple fire for missile mounts, AI turret modes
+  (Engage / Defense / Hold with hull friendly-fire protection), and a 3D compartment damage silhouette.
+- **Fight** with every weapon: cannons, machine guns, ATGMs, SAMs, VLS missiles and guided shells. Lock targets, and
+  the reticle with its reload ring shows where your shot will land. Turrets hold the sight line while moving, and the
+  barrel marker warns when terrain blocks the shot (BLOCKED) or the shell won't reach (OUT OF REACH). Turret sights sit
+  above turret roofs, and turretless missile launchers view from the ship's highest mast/radar vantage point.
+- **Weapon wheel and radial menu**, the game's own: hold Weapon Wheel to pick a weapon station/group, hold Radial Menu
+  for vehicle and ship actions — exit, deploy / stow, turret mode, fire control computer, night vision. The aircraft
+  radial menu gets a Drive Vehicle entry.
+- **Artillery, missiles & guided shells.** The `B` fire control computer works out direct or indirect fire for
+  artillery, MLRS, ballistic missiles, SAMs and `Guided Shell` guns, with target selection on the tactical map.
 - **Capture bases**: drive onto an enemy or neutral airfield and watch the capture progress.
-- **Resupply**: take a supply truck to vehicles that asked for ammo and get paid for it, just like a transport pilot.
+- **Resupply**: take a supply truck or supply ship (`Rearmer`) to friendly units requesting ammo and get rewarded for it.
 - **Towing and cargo**: a tractor can tow wheeled launchers, a flatbed truck can carry containers.
+- **Full gamepad support**: spawn screen mode/base/unit navigation (`LB/RB`, stick, `X`, `A`), 3D shop and `B`-menu
+  navigation, radial menus, long-press `Turret Control` for boarding/exiting, and `Gear` for deploy.
 - **Missile warnings**, hit direction indicators, friend/foe markers and a minimap.
 
 ## Armour model
@@ -69,19 +73,21 @@ Server-side only: damage is computed by the host, clients get the vanilla damage
 
 | Key | Action |
 |---|---|
-| F7 | Get in the selected vehicle, or get out |
-| F7 with your own depot or airbase selected on the map | Open the vehicle shop |
+| F7 (or long-press Turret Control on gamepad) | Get in the selected vehicle/ship, or get out |
+| F7 with your own depot or airbase selected on the map | Open the vehicle/ship shop |
 | W A S D | Throttle, brake and reverse, steering |
 | Mouse | Look around and aim the turret |
 | Fire (LMB) | Fire the selected weapon |
-| RMB | Gun sight |
+| RMB | Gun sight / ship vantage camera |
 | Mouse wheel | Camera distance |
-| Tab, 1 / 2 / 3 | Switch weapons |
-| Hold Weapon Wheel / hold Radial Menu | Pick a weapon station (with ammo) / vehicle actions: exit, deploy or stow, fire control computer, night vision |
+| Tab, 1 / 2 / 3 | Switch weapons / ship weapon groups |
+| Turret Control (click on ship) | Cycle other turrets' AI mode (Engage / Defense / Hold) |
+| Hold Weapon Wheel / hold Radial Menu | Pick a weapon station/group (with ammo) / actions: exit, deploy or stow, turret mode, fire control computer, night vision |
 | Target Select / Target Cancel | Lock the target under the reticle / drop the lock |
-| X | Deploy or stow (artillery outriggers, radar masts); on a tractor, hitch or unhitch a trailer; on a flatbed, load or unload a container |
-| B | Fire control computer (deployed artillery and missile launchers) |
+| X (or Gear on gamepad) | Deploy or stow (artillery outriggers, radar masts); on a tractor, hitch or unhitch a trailer; on a flatbed, load or unload a container |
+| B | Fire control computer (deployed artillery, MLRS, missiles, SAMs, Guided Shell guns) |
 | V | Projectile camera: press once to arm — the next shell, bullet or missile fired from your vehicle takes the camera (the first round of a burst); press again to cancel. The camera rides right behind the projectile with the view locked to the trajectory (no free look); the vehicle HUD hides while you watch. The camera returns when the projectile's flight ends |
+| Spawn screen (gamepad) | `LB / RB` switch `AIR / GRD / NVL`, stick cycles bases or units, `X` toggles deployed units, `A` opens shop or boards |
 
 There are three ways to pick a vehicle to get into: press Target Select on it from your aircraft, click it on the
 tactical map (M), or simply point the camera at it. When you get out, the camera goes back to your aircraft, or to
@@ -187,6 +193,13 @@ Keys use Unity key names: `F7`, `X`, `UpArrow`, `Keypad5` and so on.
 | StickDeadZone | 0.15 | Gamepad stick dead zone for throttle and steering, as a fraction of the stick travel |
 | GameViewControls | true | The camera uses the game's own view controls, with its sensitivity and inversion. `false` switches to the mod's own mouse look (sensitivity is set in `[Camera]`) |
 
+**[Ships]**
+
+| Setting | Default | What it does |
+|---|---|---|
+| ThrottleStick | true | Ship throttle holds where you leave it, like an engine telegraph: the throttle keys move the set throttle and releasing them keeps it, with a detent at 0% (release and press again to reverse). `false`: hold the keys, like ground vehicles |
+| AutoStop | true | Holding throttle up and down together applies full counter throttle and slows the ship to a dead stop, then idles at 0% |
+
 **[Server]** (applies on the host and in single player)
 
 | Setting | Default | What it does |
@@ -269,7 +282,9 @@ something went wrong in game, attach `BepInEx\LogOutput.log` from your game fold
 ## Credits
 
 - Missile icons (R9 Stratolance, RAM-45) - thanks **EW-25 Medusa**!
-- Compatibility with Aryx's mods (Weapons Pack, MC-260 Chimera) - thanks **Aryx**!
+- Compatibility with Aryx's mods (Weapons Pack, MC-260 Chimera, Aryx Naval Expansion) - thanks **Aryx**!
+- Compatibility with P2082 Team's naval mods (Expansion '82) - thanks **P2082 Team**!
+- Ship gameplay (turret modes, throttle detent with auto-stop, naval map UI) was first prototyped as a stand-alone plugin by **Marcel_D'avis** and integrated here - thank you!
 
 ## AI assistance
 

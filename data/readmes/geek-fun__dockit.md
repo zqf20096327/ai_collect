@@ -47,43 +47,56 @@ DocKit replaces browser consoles like Kibana and AWS Console with a single nativ
 
 ## Installation
 
-<a href="https://www.geekfun.club/download">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/Download-macOS_|_Windows_|_Linux-orange&logo=download&logoColor=white">
-    <img src="https://img.shields.io/badge/Download-macOS_|_Windows_|_Linux-orange&logo=download&logoColor=white" alt="Download">
-  </picture>
-</a>
-&nbsp;
-<a href="https://github.com/geek-fun/dockit/releases">
-  <img src="https://img.shields.io/badge/Releases-GitHub-lightgrey&logo=github" alt="Releases">
-</a>
-&nbsp;
-<a href="https://www.geekfun.club/products/dockit/">
-  <img src="https://img.shields.io/badge/Website-geekfun.club-blue&logo=google-chrome&logoColor=white" alt="Website">
-</a>
+Download the latest installer for **macOS** (Apple Silicon & Intel `.dmg`), **Windows** (`.exe` / `.msi`), or **Linux** (`.deb`, `.rpm`, `.AppImage`):
 
-Closing the DocKit window keeps background tasks and the MCP server running. Use **Show Window** from the DocKit menu-bar or system-tray icon to return to your session. Choose **Quit** from that menu to stop the app.
+- **[Download Page (geekfun.club)](https://www.geekfun.club/download#dockit)** — direct installers for macOS, Windows, and Linux
+- **[GitHub Releases](https://github.com/geek-fun/dockit/releases/latest)** — all installers and release notes
 
-## Community vs Ultimate
+> Closing the DocKit window keeps background tasks and the MCP server running. Use **Show Window** from the DocKit menu-bar or system-tray icon to return to your session. Choose **Quit** from that menu to stop the app.
 
-DocKit follows a single official build with a runtime Community/Ultimate mode (source remains Apache-2.0).
+### AI Agent Integration (MCP)
 
-**Community (free forever):** all data sources (Elasticsearch / OpenSearch / DynamoDB / MongoDB / EasySearch), unlimited connections with basic direct authentication (user/password, static access keys), TLS, OS-keychain credential encryption, the full Monaco-powered editors and visual query builders, browsing & inline editing, result-set export (CSV / JSON / Markdown / copy), query history and saved queries, metadata browsing, DynamoDB Local.
+Connect Claude Code, OpenAI Codex, Cursor, Windsurf, OpenCode, or any MCP client to your DocKit databases via [`@geek-fun/data-studio-mcp`](https://github.com/geek-fun/data-studio-agent).
 
-**Ultimate ($9.9/mo · $99/yr, 7-day free trial):**
+```bash
+# Claude Code
+claude mcp add --transport stdio data-studio -- npx -y @geek-fun/data-studio-mcp
 
-| Feature | Included |
-|---|---|
-| AI — agent, NL2SQL, explain, optimize, one-click fix (bring your own LLM key) | ✅ |
-| Cluster management & monitoring — nodes, shards, indices, templates, allocation | ✅ |
-| Built-in MCP Server | ✅ |
-| Batch / file-level import & export | ✅ |
-| Remote connection enhancements — SSH tunnel, HTTP/SOCKS proxy | ✅ |
-| Cloud credentials — AWS Profile / SSO / IAM | ✅ |
+# OpenAI Codex
+codex mcp add data-studio -- npx -y @geek-fun/data-studio-mcp
 
-**Version lock:** every release published during an active subscription stays unlocked forever — offline, even after the subscription ends. The 7-day trial unlocks everything during the trial but does not grant version-lock rights. Cloud services (e.g. sync) require an active subscription.
+# Run directly
+npx -y @geek-fun/data-studio-mcp
+```
 
-See [pricing](https://www.geekfun.club/pricing) for details.
+<details>
+<summary><strong>JSON configuration (Cursor, Windsurf, .mcp.json, or custom port)</strong></summary>
+
+Add to `.mcp.json`, `.cursor/mcp.json`, or `~/.cursor/mcp.json` (omit `env` to auto-discover the port, default `9120`):
+
+```json
+{
+  "mcpServers": {
+    "data-studio": {
+      "command": "npx",
+      "args": ["-y", "@geek-fun/data-studio-mcp"],
+      "env": {
+        "DOCKIT_MCP_PORT": "9120"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+- **Local & private** — local HTTP bridge on `127.0.0.1`; credentials stay in DocKit and agents only see opaque connection IDs
+- **Granular permissions** — configure **Settings → MCP Bridge → Default AI permissions** (**No access**, **Read**, **Read & modify data**, **Full access**, **Custom**) with per-connection overrides
+- **NoSQL tools** — list connections, inspect indices, mappings, collections, and DynamoDB tables, run queries, and perform permitted operations
+
+> **Note:** Keep DocKit running with **Auto-start** enabled in **Settings → MCP Bridge** (on by default). Run alongside [SqlKit](https://github.com/geek-fun/sqlkit) to expose both NoSQL and SQL databases through the same MCP server.
+>
+> **Docs:** [MCP Bridge Guide](https://www.geekfun.club/docs/dockit/mcp-bridge) · [Quick Start](https://www.geekfun.club/docs/data-studio-agent/quick-start) · [MCP Server README](https://github.com/geek-fun/data-studio-agent/blob/master/packages/data-studio-mcp/README.md)
 
 ## Key Features
 

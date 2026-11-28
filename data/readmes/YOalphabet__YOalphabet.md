@@ -27,7 +27,7 @@ The shape follows from the code by rule, and the code can be read back from the 
 ## At a glance
 
 - **16 glyphs, 44 lines:** 32 outer edges and 12 internal diagonals.
-- **16 sounds:** 5 vowels and 11 consonants, chosen for wide cross-linguistic availability.
+- **16 sounds, one per glyph:** 5 vowels and 11 consonants, written in IPA and chosen for wide cross-linguistic availability.
 - **English adaptation:** 26 letters, using the 16 base glyphs plus a dot modifier.
 - **Two geometric profiles:** Canonical (simple decoding) and Rotational (90° symmetry).
 - **Many styles:** geometric, rounded, handwritten, calligraphic, digital.
@@ -50,6 +50,8 @@ The shape follows from the code by rule, and the code can be read back from the 
 The whole glyph, outer edges and internal diagonals, is computed from four bits. The edges copy the bits directly; the diagonals follow from two Boolean formulas. No shape table is needed.
 YOalphabet is a deterministic writing system generated from a 4-bit code.
 Every glyph is defined by a one-to-one assignment between a geometric symbol, a unique International Phonetic Alphabet (IPA) sound, a decimal number (0–15), and a 4-bit binary code.
+
+**Normative Stability & Fixed Core:** The core of YOalphabet is strictly locked at 16 glyphs, defined by a four-bit rule. The specification will not add a seventeenth core glyph or alter the reference shapes. Handwritten and styled forms may vary, but the canonical reference shape can always be rebuilt algorithmically from the 4-bit code. Stability of the written inventory is a structural guarantee; maintaining uniformity in spoken YOconlang over time relies on shared standards, active teaching, and communication.
 
 ## **Binary Code ⟺ Decimal Index ⟺ Spatial Geometry ⟺ IPA Phoneme**
 
@@ -181,19 +183,51 @@ By inverting the internal diagonals of just three symbols (**#2**, **#5**, and *
   <img src="images/407.png" width="80%"/>
 </p>
 
-### The 16 glyphs are assigned 16 phonemes chosen for broad cross-linguistic availability. This is a design choice; the set is not claimed to be the 16 most frequent sounds worldwide:
-   
-* **Vowels:** `[o]`, `[a]`, `[e]`, `[u]`, `[i]`
-* **Consonants:** `[t]`, `[n]`, `[l]`, `[v]`, `[b]`, `[s]`, `[h]`, `[p]`, `[m]`, `[k]`, `[j]`
+---
 
-By doing so, I ensured that the script remains **culturally and historically neutral**, making it selected as the project's base phonetic inventory.
+### One Glyph, One Sound (IPA)
+
+Used as letters, each of the 16 glyphs of YOalphabet stands for exactly one sound, written here in the [International Phonetic Alphabet (IPA)](https://www.internationalphoneticassociation.org/content/ipa-chart), and each of these 16 sounds has exactly one glyph.
+
+**1 glyph = 1 sound. 1 sound = 1 glyph.**
+
+This means:
+
+- a glyph is read the same way in every position;
+- a sound is always written with the same glyph;
+- glyphs do not combine into new sounds (no digraphs);
+- there are no silent glyphs.
+
+**Vowels (5)**
+
+| IPA | `[o]` | `[a]` | `[e]` | `[u]` | `[i]` |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Glyph #** | 0 | 1 | 2 | 4 | 8 |
+
+**Consonants (11)**
+
+| IPA | `[t]` | `[n]` | `[l]` | `[v]` | `[b]` | `[s]` | `[h]` | `[p]` | `[m]` | `[k]` | `[j]` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Glyph #** | 3 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+
+IPA `[j]` is the sound of *y* in English *yes*, not of *j* in *jam*. Shapes and binary codes are in the [summary table](#summary-table-and-color-matrix-of-all-16-glyphs) below.
 
 <p align="center">
   <img src="images/524.jpg" width="80%"/>
 </p>
 
-All 5 basic vowel sounds of the language (`[o]`, `[a]`, `[e]`, `[u]`, `[i]`) are encoded with **0 or 1 active bits**. 
-Graphically, each consists of exactly **2 lines** (including compensatory diagonals) and features a diagonal running from the bottom-left corner.
+**The sound class can be read from the bits.** A glyph is a vowel exactly when no more than one edge bit is set (#0, #1, #2, #4, #8); all other glyphs are consonants. Every vowel is drawn with 2 lines and has a diagonal starting at the bottom-left corner. Every consonant is drawn with 3 or 4 lines.
+
+**Why these sounds.** The 16 phonemes were chosen for broad cross-linguistic availability. This is a design choice; the set is not claimed to be the 16 most frequent sounds worldwide. The aim is a culturally and historically neutral base inventory, one that does not depend on the spelling rules of any single language.
+
+Small by design. YOalphabet has 16 sounds on purpose: 16 is exactly what four bits can encode, so every glyph is at once a sound, a number and a shape. It is not meant to replace any existing alphabet or to write every sound of every language. The trade-off is deliberate: words from other languages can only be approximated, and some distinctions are lost.
+
+**Type it as you hear it.** All 16 IPA symbols used by YOalphabet are plain Latin letters found on an English keyboard. No special characters or new layout are needed: type `o a e t u n l v i b s h p m k j`, and the [converter](https://yoalphabet.github.io/YOalphabet/CONVERTER.html) shows the 16 glyphs. Read the letters as IPA, not as English spelling.
+
+<p align="center">
+  <img src="images/413.png" alt="English keyboard with the 16 YOalphabet keys highlighted, each showing its glyph" width="90%"/>
+</p>
+
 
 ---
 
@@ -513,6 +547,8 @@ The matrix is intended to make lexical relationships explicit and reduce uncontr
 
 YOconlang is an a priori engineered language designed for unambiguous, frictionless communication. A foundational axiom of the language is the absolute immutability of roots. There are no inflections, suffixes, declensions, or internal conjugations. Grammatical categories, temporal shifts, and modalities are expressed exclusively via external grammatical particles.
 The phonotactics are strictly anchored in the International Phonetic Alphabet (IPA), using 5 core vowels and 11 stable consonants to reduce articulatory difficulty. Stress is fixed invariantly on the first syllable of every separate word.
+
+Spelling is transcription. YOconlang is written with 16 Latin letters, each read as the IPA sound of the same shape: a e i o u b h j k l m n p s t v. Stress falls on the first syllable of every word, so no separate IPA line is needed. Note that j is read as y in yes, and vowels are not read as in English spelling.
 
 YOconlang is designed around the MECE principle (Mutually Exclusive, Collectively Exhaustive): every root occupies a unique coordinate in the semantic matrix, and the categories are chosen to minimise overlap and gaps. Coverage and ambiguity are design goals to be tested, not established properties.
 

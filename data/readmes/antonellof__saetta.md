@@ -32,11 +32,11 @@ All on an M5 Max with 128 GB; every number is a measured run.
 
 <p align="center"><img src="web/assets/perf/resume.svg" width="900" alt="Time to the first token with the Coder pack: 37.31 s on a cold 64K prompt, 8.24 s on a cold 16K prompt, 0.20 s on a follow-up turn"></p>
 
-<p align="center"><img src="web/assets/perf/inkling.svg" width="900" alt="Inkling 2 Mini on an M5 Max, 4K prompt: answering at 85.3 tokens/s in Saetta with prompt lookup and 58.6 without, Strata 54.2, llama.cpp 47.2, Strata with DSpark 36.7; prompt reading Strata 2,990, llama.cpp 685, Saetta 473 tokens/s"></p>
+<p align="center"><img src="web/assets/perf/inkling.svg" width="900" alt="Inkling 2 Mini on an M5 Max, 4K prompt: answering at 71.5 tokens/s in Saetta with prompt lookup and 58.7 without, Strata 54.2, llama.cpp 47.3, Strata with DSpark 36.7; prompt reading Strata 2,963, Saetta 2,396, llama.cpp 685 tokens/s"></p>
 
 <p align="center"><img src="web/assets/perf/m14.svg" width="900" alt="Prompt reading at 4K on the M1 to M4 kernels, measured on the M5 Max: 27B 152 before 0.18, 256 now, 961 with the M5's accelerators; Coder 487, 742 and 1,538"></p>
 
-Strata reads Inkling prompts faster because it runs them on the M5's tensor ops, which Saetta does not do for Inkling yet. M1 to M4 are not measured on real hardware yet (reports welcome). Details: [Performance](docs/performance.md).
+Since 0.22 Saetta reads Inkling prompts on the M5's tensor ops too, 5 times faster than before; Strata is still 19% ahead there. M1 to M4 are not measured on real hardware yet (reports welcome). Details: [Performance](docs/performance.md).
 
 ## Start
 
@@ -118,13 +118,15 @@ saetta code --subagents                 # up to 3 child agents at once
 ```
 
 - **Sessions resume instantly**: the engine's state is saved with each session, so `-c`, `/resume` and `/fork` read only what is new ([Sessions](docs/sessions.md)).
+- **Tool output is read while the tool runs**: a command's output goes into the conversation as it streams, so the answer starts sooner when the command ends ([Sessions](docs/sessions.md)).
+- **Edits draft from the files**: the files the agent read or changed feed the engine's speculation, so an edit that copies a block of a file is written several tokens per step ([Sessions](docs/sessions.md)).
 - **Interrupted runs come back**: after a crash, a kill or a closed terminal, the next start offers to resume; commands and edits that were running are never re-run without asking.
 - **Parallel agents** share one loaded model ([Parallel agents](docs/parallel-agents.md)); **MCP** servers over stdio or HTTP with OAuth ([MCP](docs/mcp.md)).
 - **The terminal UI** is pi's, in C, with a footer showing the branch, the last turn's time and tok/s, and the model; `/monitor` shows the engine live. All commands: [Commands](docs/commands.md).
 
 <p align="center"><img src="web/assets/code/tools.png" width="900" alt="An edit of src/duration.ts shown as a diff, node --test with 5 tests passing, and the model's summary"></p>
 
-Coming next: prompts read while tools run; the M5's neural accelerators for Inkling 2 Mini; commands confined to the project by macOS's Seatbelt.
+Coming next: commands confined to the project by macOS's Seatbelt.
 
 ## Other agents and clients
 

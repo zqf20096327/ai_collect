@@ -4,6 +4,8 @@
 
 [![Latest release](https://img.shields.io/github/v/release/Saxo0213/line-agent-assistant)](https://github.com/Saxo0213/line-agent-assistant/releases/latest) [![Downloads](https://img.shields.io/github/downloads/Saxo0213/line-agent-assistant/total)](https://github.com/Saxo0213/line-agent-assistant/releases) ![Platform: Windows x64](https://img.shields.io/badge/platform-Windows%20x64-0078D6) [![License: MIT](https://img.shields.io/github/license/Saxo0213/line-agent-assistant)](LICENSE)
 
+### [⬇️ Download the latest version (Windows installer)](https://github.com/Saxo0213/line-agent-assistant/releases/latest)
+
 **Put Claude or Codex to work on your LINE chats.** A Windows desktop app that lets an AI agent take instructions over LINE, search and summarize your chat history, and give Claude Desktop and Codex access to LINE through a local MCP bridge.
 
 ## Features
@@ -24,7 +26,7 @@
 </tr>
 </table>
 
-v1.0.359 runs Claude on a resident process, adds several CLI account sources per provider with automatic failover, a `/model` command per chat, attachment reading for the Agent, adjustable download intervals, and automatic retry of the external monitor. Install through the app's **Check for updates**. See the [v1.0.342 → v1.0.359 release notes](docs/releases/v1.0.359.md) for the complete changes.
+v1.0.405 adds a default folder and up to 10 classification folders per chat (the Agent picks the folder for each downloaded attachment, network shares supported), a chat settings window with download, Agent access and permission tabs, sender tabs for saved files, and LINE commands to set permissions (`/權限`) and add several users at once (`/adduser`). Since v1.0.395 the app updates itself: a new version downloads in the background and installs when the app is idle, then the app reopens. Older versions update once with the app's **Check for updates**. See the [v1.0.397 → v1.0.405 release notes](docs/releases/v1.0.405.md) for the changes, and the [v1.0.397 release notes](docs/releases/v1.0.397.md) for the previous version.
 
 ## Installation
 

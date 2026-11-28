@@ -125,6 +125,12 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 
 [Open the skills folder](./skills/blotato/) · [Run the API launch project](./skills/blotato/project.md)
 
+#### [ApyHub Utility API Collection](https://apyhub.com?fpr=chris-2f0318)
+
+**Featured · 200 certified utility APIs.** AI, files, data extraction, validation, SEO, HR, marketing, and application utilities. One subscription, MCP-ready, free tier with no card.
+
+[Browse the ApyHub collection](./00-featured-apis/apyhub-utility-apis/) · [Visit ApyHub](https://apyhub.com?fpr=chris-2f0318)
+
 ### Core API Categories
 
 - [Agents](./agents-apis-623/) - 623 APIs
@@ -487,5 +493,4 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 | [Linkedin Job Scraper](https://apify.com/futurizerush/linkedin-job-scraper?fpr=p2hrc6) | Extract LinkedIn job listings with complete details including descriptions, salary ranges, company information, and benefits. No login required. |
 | [Linkedin Jobs Scraper](https://apify.com/abaddion/linkedin-jobs-scraper?fpr=p2hrc6) | Scrapes job listings from LinkedIn's public job search.  Note: LinkedIn is aggressive with rate limiting - use carefully.  When region is set to a specific country (e.g. czech), results are filtered... |
 | [LinkedIn Jobs Scraper](https://apify.com/agentx/linkedin-jobs-scraper?fpr=p2hrc6) | LinkedIn Jobs API across 72 countries. Each posting returns the full LinkedIn taxonomy — title, seniority, function, required skills, salary (FX-normalized) — plus native company signals (headcount... |
-| [LinkedIn Jobs Scraper - Search, Filter & Detail Extraction](https://apify.com/kaix/linkedin-jobs-scraper?fpr=p2hrc6) | 🔥 ~$0.1/1K jobs 🔥 Scrape LinkedIn job listings via the public guest API. Search with filters (job type, experience, remote, salary), fetch full descriptions and criteria. No login required. |
-| [LinkedIn Jobs Scraper ⚡ No Login & Fast Data Export](https://apify.com/mr.data_scientist/linkedin-jobs-scraper?fpr=p2hrc6) | Scrape LinkedIn job listings fast and without login! Extract job title, company, location, posting date, and more. 
+| [LinkedIn Jobs Scraper - Search, Filter & Detail Extraction](https://apify.com/kaix/linkedin-jobs-scraper?fpr=p2hrc6) | 🔥 ~$0.1/1K jobs 🔥 Scrape LinkedIn job listings vi

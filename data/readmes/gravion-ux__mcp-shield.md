@@ -3,6 +3,9 @@
 [![codecov](https://codecov.io/gh/gravion-ux/mcp-shield/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/mcp-shield)
 [![CI](https://github.com/gravion-ux/mcp-shield/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/mcp-shield/actions/workflows/ci.yml)
 
+> **Status: Active** — maintained flagship. New checks are welcome when
+> they are static, deterministic, and covered by tests.
+
 ![Demo](docs/demo.png)
 
 *Demo: Auditing a deliberately risky MCP config and tool set — risk score 100/100 (critical).*
@@ -43,7 +46,7 @@ the server. That creates a distinctive threat surface:
 - **No runtime dependencies** — Python standard library only.
 - **For development / the test suite:** `pip install -e ".[dev]"`
   (adds `pytest` and `pytest-cov`); CI runs
-  `python -m pytest -q --cov=mcp_shield --cov-report=xml`.
+  `python -m pytest -q --cov=mcp_shield --cov-report=xml --cov-fail-under=90`.
 
 ## Install
 
@@ -151,7 +154,7 @@ A working workflow for this repository itself lives in
 
 ```bash
 pip install -e ".[dev]"
-python -m pytest
+python -m pytest -q --cov=mcp_shield --cov-fail-under=90  # 58 tests
 ```
 
 ## Limitations

@@ -8,7 +8,7 @@
 
 <a href="https://github.com/sindresorhus/awesome"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome" height="18"></a>
 
-A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **611 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
+A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **612 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
 
 ## Contents
 
@@ -255,6 +255,7 @@ Frameworks and tools for orchestrating and managing multiple AI agents in develo
 - [agent-manager](https://github.com/YoanWai/agent-manager) - Terminal UI that runs Claude Code, Codex, OpenCode, Gemini CLI, and other coding-agent CLIs side by side in persistent tmux sessions, with live status, diff review, and a built-in MCP server that lets one agent spawn, message, and wait on another session. Built with Go + Bubble Tea, Apache-2.0.
 - [OpenBitFun](https://github.com/GCWing/OpenBitFun) - Open-source desktop agent workspace with a Rust agent runtime. Four Agent Harness modes (Minimal, Standard, Ultimate, Creative), multi-agent sessions, remote workspaces over SSH, remote control from a phone, MCP, Skills, and Hooks. Core code is MIT.
 - [pando](https://github.com/xseman/pando) - Terminal workspace that runs Claude Code, Codex, Gemini CLI, OpenCode or any shell side by side, each session in its own Git worktree. A daemon keeps agents running when the TUI closes and resumes their conversations after a restart; diffs are reviewed and committed in the TUI, and a CLI with blocking waits lets scripts or other agents drive sessions. Built with Go + Bubble Tea, Apache-2.0.
+- [Codeman](https://github.com/Ark0N/Codeman) - Self-hosted web dashboard that runs Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI and other coding-agent CLIs in persistent tmux sessions and streams the real terminals to any browser or phone, with a tile grid, alerts when an agent needs input, automatic resume after usage limits, and a skill and MCP server that let one agent start and steer other sessions. TypeScript, MIT.
 
 ## Code Generation & Automation
 
@@ -671,7 +672,4 @@ Frameworks, libraries, and configurations for building and enhancing AI coding a
 - [cursorrules 「v5」](https://github.com/kinopeee/cursorrules) - Custom instructions optimised for Cursor Agent
 - [.windsurfrules 'v5'](https://github.com/kinopeee/windsurfrules) - custom instruction files (.windsurfrules) for Windsurf. It's an optimized adaptation of cursorrules for Windsurf Cascade.
 - [> CLAUDER](https://github.com/blueraai/clauder) - a supercharged toolkit and a safety-first configuration for Claude Code, designed to provide a robust foundation for AI-assisted development — while remaining easily configurable and extensible to any project or workflow.
-- [Claude Code Subagents Collection](https://github.com/wshobson/agents) - A comprehensive collection of specialized AI subagents for Claude Code, designed to enhance development workflows with domain-specific expertise.
-- [CCPlugins](https://github.com/brennercruvinel/CCPlugins) - Best Claude Code framework that actually save time. Built by a dev tired of typing "please act like a senior engineer" in every conversation.
-- [knowhub](https://github.com/yujiosaka/knowhub) - Synchronize AI coding–agent knowledge files (rules, templates, guidelines) across your project.
-- [Claude Code Commands & Tasks (CCCT)](https://github.com/IgorWarzoch
+- [Claude Code Subagents Collection](https://github.com/wshobson/agents) - A comprehensive collection of specialized AI subagents for Claude Code, designed to enhance development workflows with domain-specific

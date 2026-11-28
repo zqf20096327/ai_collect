@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-0.13.23-blue.svg?style=flat-square)](./CHANGELOG.md) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg?style=flat-square)](./LICENSE) [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2026--07--28-8A2BE2.svg?style=flat-square)](https://modelcontextprotocol.io/specification/2026-07-28)
+[![Version](https://img.shields.io/badge/Version-0.13.24-blue.svg?style=flat-square)](./CHANGELOG.md) [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg?style=flat-square)](./LICENSE) [![MCP Spec](https://img.shields.io/badge/MCP%20Spec-2026--07--28-8A2BE2.svg?style=flat-square)](https://modelcontextprotocol.io/specification/2026-07-28)
 
 [![MCP SDK](https://img.shields.io/badge/MCP%20SDK-^2.4.0-green.svg?style=flat-square)](https://modelcontextprotocol.io/) [![TypeScript](https://img.shields.io/badge/TypeScript-^7.0.2-3178C6.svg?style=flat-square)](https://www.typescriptlang.org/) [![Bun](https://img.shields.io/badge/Bun-v1.4.4%2B-blueviolet.svg?style=flat-square)](https://bun.sh/)
 
@@ -293,18 +293,18 @@ Tool and resource handlers receive a `Context`. `ctx.enrich` and `ctx.fail` are 
 ### Subpath exports
 
 ```ts
-import { createApp, tool, resource, prompt } from '@cyanheads/mcp-ts-core';
+import { createApp, prompt, resource, tool } from '@cyanheads/mcp-ts-core';
 import { createWorkerHandler } from '@cyanheads/mcp-ts-core/worker';
-import { McpError, JsonRpcErrorCode, notFound, serviceUnavailable } from '@cyanheads/mcp-ts-core/errors';
+import { JsonRpcErrorCode, McpError, notFound, serviceUnavailable } from '@cyanheads/mcp-ts-core/errors';
 import { checkScopes } from '@cyanheads/mcp-ts-core/auth';
-import { markdown, fetchWithTimeout } from '@cyanheads/mcp-ts-core/utils';
-import { OpenRouterProvider, GraphService } from '@cyanheads/mcp-ts-core/services';
-import type { DataCanvas, CanvasInstance } from '@cyanheads/mcp-ts-core/canvas';
+import { fetchWithTimeout, markdown } from '@cyanheads/mcp-ts-core/utils';
+import { GraphService, OpenRouterProvider } from '@cyanheads/mcp-ts-core/services';
+import type { CanvasInstance, DataCanvas } from '@cyanheads/mcp-ts-core/canvas';
 import { defineMirror, sqliteMirrorStore } from '@cyanheads/mcp-ts-core/mirror';
 import { validateDefinitions } from '@cyanheads/mcp-ts-core/linter';
 import { createMockContext } from '@cyanheads/mcp-ts-core/testing';
 import { mcpTest, toolContractSuite } from '@cyanheads/mcp-ts-core/testing/vitest';
-import { fuzzTool, fuzzResource, fuzzPrompt } from '@cyanheads/mcp-ts-core/testing/fuzz';
+import { fuzzPrompt, fuzzResource, fuzzTool } from '@cyanheads/mcp-ts-core/testing/fuzz';
 import { renderAppTool } from '@cyanheads/mcp-ts-core/testing/apps';
 ```
 

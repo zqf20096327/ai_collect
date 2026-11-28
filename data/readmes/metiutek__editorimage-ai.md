@@ -11,6 +11,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/MCP%20tools-62-blueviolet?style=flat-square" alt="62 MCP tools"/>
+  <a href="https://glama.ai/mcp/servers/metiutek/editorimage-ai"><img src="https://glama.ai/mcp/servers/metiutek/editorimage-ai/badges/score.svg" alt="pedit MCP server on Glama"/></a>
   <img src="https://img.shields.io/badge/AI-local%20or%20your%20API%20key-brightgreen?style=flat-square" alt="Local AI or your own API key"/>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776ab?style=flat-square" alt="Python 3.10+"/>
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT license"/>
@@ -240,4 +241,4 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-Made by [metiu.xyz](https://metiu.xyz/)
+Created by [Mattia Cibin (Metiu)](https://metiu.xyz/) — independent developer from Italy.

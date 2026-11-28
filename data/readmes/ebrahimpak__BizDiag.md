@@ -53,6 +53,7 @@ as structured data for analysis, automation, decision support, and strategy.
     - [3.3 UML Module](#uml-module)
         - [Detailed documentation](UML/UML_MODULE_DOCUMENTATION.md)
     - [3.4 DocMaker Module](#docmaker-module)
+        - [Detailed documentation](DocMaker/DOCMAKER_DOCUMENTATION.md)
     - [3.5 Capability-Based Planning](#capability-based-planning)
         - [Detailed documentation](Capability_Based_Planning/CBP_SUITE_DOCUMENTATION.md)
         - [3.5.1 CBP Data-Entry Properties and Values](#cbp-data-entry-properties-and-values)
@@ -64,7 +65,7 @@ as structured data for analysis, automation, decision support, and strategy.
 - [6. Data Flow](#6-data-flow)
 - [7. Modular Architecture](#7-modular-architecture)
 - [8. Extensibility](#8-extensibility)
-- [9. Client / Server Capabilities](#9-client--server-capabilities)
+- [9. Deployment Capabilities](#9-deployment-capabilities)
 - [10. Intended Users](#10-intended-users)
 - [11. Example Use Cases](#11-example-use-cases)
     - [11.1 Enterprise Architecture Assessment](#111-enterprise-architecture-assessment)
@@ -110,12 +111,12 @@ information can remain difficult to analyze systematically.
 
 BizDiag addresses this by treating the architecture model as structured data rather than only as a visual diagram. 
 Automated analysis identifies suspicious structures, while architects and stakeholders determine their actual 
-significance and appropriate remedies. This briefly states BizDiag's philosophy and the importance of the "human in the
+significance and appropriate remedies. This briefly states BizDiag's philosophy and the importance of the "human in the 
 loop" maxim.
 
 The general workflow is:
 
-```text
+```
 ArchiMate Model
       │
       ▼
@@ -151,6 +152,9 @@ BizDiag modules
       ├── ClientServer_DB
       │   ├── DB_Log
       │   │   ├── ArchiModelDumper.ajs
+      │   │   ├── archi_external_sync.mv.db
+      │   │   ├── pom.xml
+      │   │   ├── Running.txt
       │   │   └── src\main\java\ArchiJDBC
       │   │       ├── H2JdbcProcessor_EN.java
       │   │       └── H2ConsoleLauncher.java
@@ -159,23 +163,37 @@ BizDiag modules
       │   │   ├── nio_interop_client.ajs
       │   │   └── nio_interop_server.js
       │   ├── GraalJS_Element_RESTLogger
+      │   │   ├── CreateDB.sql
       │   │   ├── GraalJSRESTClient.ajs
-      │   │   └── GraalJSRESTServer.js
+      │   │   ├── GraalJSRESTServer.js
+      │   │   ├── h2-2.4.240.jar
+      │   │   └── running.txt
       │   ├── GraalJS_NIOLoggerServer
+      │   │   ├── log_click.ajs
       │   │   ├── nio_interop_client.js
       │   │   ├── nio_interop_server.js
-      │   │   └── src\main\java\com\bizdiag
+      │   │   ├── pom.xml
+      │   │   ├── running.txt
+      │   │   ├── h2~mysql_migration/
+      │   │   ├── lib/
+      │   │   └── src/main/java/com/bizdiag
       │   │       └── NioInteropLauncher.java
       │   └── Java_DBLoggerServer
+      │       ├── database.sql
+      │       ├── h2-2.4.240.jar
+      │       ├── log_click.ajs
       │       ├── nio_interop_client.js
-      │       └── src\main\java\com\archi
+      │       ├── pom.xml
+      │       ├── Running.txt
+      │       └── src/main/java/com/archi
       │           └── NioInteropServer.java
       ├── DocMaker
       │   ├── AI_Element_DocMaker_EN.ajs
       │   ├── AI_View_DocMaker_EN.ajs
       │   ├── AI_REST_JSON.js
       │   ├── Mark_it_Down.ajs
-      │   └── Ollama_Olalla.ajs
+      │   ├── Ollama_Olalla.ajs
+      │   └── DOCMAKER_DOCUMENTATION.md
       ├── UML
       │   ├── Application_View_to_UML.ajs
       │   └── sendToAI.js
@@ -204,12 +222,12 @@ knowledge and the practical challenges faced by enterprise architects.
 ### 2.1 **Research Foundation**
 
 BizDiag draws on information-systems research methods [3] and Design Science Research [4], alongside research on
-Enterprise Architecture analysis approaches and IT governance [5–6] and practice-based enterprise coherence [7].
-The Business–IT Alignment module is informed by strategic and operational Business–IT alignment studies [8–14]
-and research on misalignment symptom detection [15–17]. The UML module's view-oriented and cross-notation
-context draws on software architecture views and ArchiMate/UML guidance [18–20]. BizModelCanvas builds on
+Enterprise Architecture analysis approaches and IT governance [5-6] and practice-based enterprise coherence [7].
+The Business–IT Alignment module is informed by strategic and operational Business–IT alignment studies [8-14]
+and research on misalignment symptom detection [15-17]. The UML module's view-oriented and cross-notation
+context draws on software architecture views and ArchiMate/UML guidance [18-20]. BizModelCanvas builds on
 research into modeling the Business Model Canvas with ArchiMate and aligning enterprise architecture with business
-models [21–22], as well as value proposition design [23]. These sources inform the modules' research context; the
+models [21-22], as well as value proposition design [23]. These sources inform the modules' research context; the
 implementations and assessment methodology are original work by the author. A forthcoming white paper will
 elaborate on the methodology and its research contributions.
 
@@ -277,11 +295,24 @@ Explore more content on the [JCodices YouTube channel](https://www.youtube.com/@
 
 > **Detailed documentation:** [Business-IT Alignment and Misalignment Detection](Business_IT_Alignment/BUSINESS-IT_ALIGNMENT_DOCUMENTATION.md)
 
+```text
+Business_IT_Alignment/
+├── BusinessITAlignment_EN.ajs
+├── BUSINESS-IT_ALIGNMENT_DOCUMENTATION.md
+└── img/
+    ├── labelPic.png
+    └── sellIcon.png
+```
+
+| Script | Description |
+|---|---|
+| `BusinessITAlignment_EN.ajs` | Performs the Business–IT alignment/misalignment assessment through jArchi, applies the configurable EA finding catalogue, generates the interactive report, and exports CSV/Excel results. |
+
 <a id="business-it-alignment-analysis"></a>
 #### 3.1.1 A Business–IT Alignment/Misalignment Analysis
 
 BizDiag's Business_IT_Alignment module includes analysis capabilities intended to help architects investigate
-relationships between business and IT architecture [7–14]. This module has leveraged the previously-conducted studies on
+relationships between business and IT architecture [7-14]. This module has leveraged the previously-conducted studies on
 the Business–IT alignment research methodology, mostly the studies by Őri and Szabó. However, my analysis and 
 utilized technology stack drastically differ from those used by the mentioned researchers. Unlike approaches that
 rely on Schematron/XPath-style rule-based validation, BizDiag’s Business–IT Alignment module employs a five-stage
@@ -290,7 +321,7 @@ cycles of Hevner et al.’s Design Science Research framework: the **Relevance C
 assessment to practical EA alignment concerns; the **Design Cycle**, which supports the development and 
 application of a literature-informed catalogue of misalignment symptoms; and the **Rigor Cycle**, which grounds 
 symptom selection and classification in established academic literature. Together, these cycles inform the 
-module’s systematic identification, classification, and assessment of Business–IT misalignments [3–4, 15–17].
+module’s systematic identification, classification, and assessment of Business–IT misalignments [3-4, 15-17].
 
 The analysis can identify structural conditions that may indicate potential Business–IT alignment issues. 
 Detected conditions can be classified according to configurable severity levels such as:
@@ -317,14 +348,14 @@ architecture teams systematically examine areas such as:
 <a id="business-it-alignment-research-methodology"></a>
 #### 3.1.2 Business-IT Alignment Research Methodology
 
-The Business-IT Alignment module implements a five-phase Enterprise Architecture (EA) assessment process, conceptually based on extensive conducted research. This module is grounded in original research conducted by the Ebrahim Pak (2026).The five main phases are as follows [3–4, 15–17]:
+The Business-IT Alignment module implements a five-phase Enterprise Architecture (EA) assessment process, conceptually based on extensive conducted research. This module is grounded in original research conducted by the Ebrahim Pak (2026).The five main phases are as follows [3-4, 15-17]:
 
 - **Phase 1**: Preliminary Review — The assessment is organized around six core EA domains:
   Strategy (core-based on paper 1: S.01–S.10, supplementary-based on paper 2: STR.61–STR.67),
   Business Process (B.11–B.20), Data Governance (D.21–D.30), Application Portfolio (A.31–A.40),
   Technology Infrastructure (T.41–T.48), and Cross-Layer Alignment (X.49–X.60). The script
   inspects modeled elements and relationships in these domains. Additional Operational and
-  Semantic checks and artifact-framework checks extend the core code families [15–17].
+  Semantic checks and artifact-framework checks extend the core code families [15-17].
 
 
 - **Phase 2**: Malfunctioning-Area Analysis — The script applies rules to the model’s elements,
@@ -377,6 +408,25 @@ through client/server workflows, REST or TCP communication, JSON/JSONL exports, 
 #### 3.2.1 DB_Log
 <p align="center"><img src="logo/img/DB_Log.png" alt="DB_Log [JDBCLog] module" width="100%"></p>
 
+```
+DB_Log/
+├── ArchiModelDumper.ajs
+├── archi_external_sync.mv.db
+├── pom.xml
+├── Running.txt
+├── src/main/java/ArchiJDBC/
+│   ├── H2JdbcProcessor_EN.java
+│   └── H2ConsoleLauncher.java
+├── ArchiSyncDump/
+└── img/
+```
+
+| Script or application | Description |
+|---|---|
+| `ArchiModelDumper.ajs` | Extracts selected ArchiMate model data and sends it to the JDBC-backed database workflow. |
+| `H2JdbcProcessor_EN.java` | Loads the architecture data into H2 and provides JDBC database-processing and analysis support. |
+| `H2ConsoleLauncher.java` | Starts H2 and opens the H2 web console so users can inspect and query the extracted architecture data using SQL. |
+
 DB_Log can transform architecture information into structured data suitable for programmatic analysis. Architecture 
 data can be loaded into an in-memory database, like the utilized H2 database, or any other relational database systems, 
 and queried using SQL, in a Java Swing GUI.
@@ -386,7 +436,7 @@ credentials, allowing users to query the architecture data using SQL, through a 
 
 The high-level structure of the DB_Log workflow is as follows:
 
-```text
+```
 ArchiMate Model
         │
         ▼
@@ -435,11 +485,46 @@ client and provides a basis for connection-management and lightweight TCP integr
 <a id="clientserver-db-graaljs-element-restlogger"></a>
 #### 3.2.3 GraalJS_Element_RESTLogger
 
+```text
+GraalJS_Element_RESTLogger/
+├── CreateDB.sql
+├── GraalJSRESTClient.ajs
+├── GraalJSRESTServer.js
+├── h2-2.4.240.jar
+└── running.txt
+```
+
+| Script | Description |
+|---|---|
+| `GraalJSRESTClient.ajs` | Extracts model-element data in jArchi and sends it to the GraalJS REST server. |
+| `GraalJSRESTServer.js` | Receives REST requests and stores the submitted architecture data in H2 for later analysis. |
+
 This module pairs `GraalJSRESTClient.ajs` with `GraalJSRESTServer.js`. The jArchi client sends extracted model-element
 data to the GraalJS REST server, which records the received data in H2 for later analysis.
 
 <a id="clientserver-db-graaljs-niologgerserver"></a>
 #### 3.2.4 GraalJS_NIOLoggerServer
+
+```text
+GraalJS_NIOLoggerServer/
+├── log_click.ajs
+├── nio_interop_client.js
+├── nio_interop_server.js
+├── pom.xml
+├── running.txt
+├── h2~mysql_migration/
+├── lib/
+├── src/main/java/com/bizdiag/
+│   └── NioInteropLauncher.java
+└── target/
+```
+
+| Script or application | Description |
+|---|---|
+| `log_click.ajs` | Runs in Archi/jArchi and forwards selected element click events to the JavaScript transport client. |
+| `nio_interop_client.js` | Receives element event payloads and sends them to the standalone NIO logger server over TCP. |
+| `nio_interop_server.js` | Runs the NIO selector loop and writes received architecture data to H2 and JSONL. |
+| `NioInteropLauncher.java` | Starts the GraalJS/Java launcher for the standalone NIO logging server. |
 
 This module exports element information for further analysis and integration. Its click-dumper client,
 `nio_interop_client.js`, receives element click events in Archi and writes them to both an H2 database and a JSONL file.
@@ -454,12 +539,30 @@ tools.
 <a id="clientserver-db-java-dbloggerserver"></a>
 #### 3.2.5 Java_DBLoggerServer
 
+```text
+Java_DBLoggerServer/
+├── database.sql
+├── h2-2.4.240.jar
+├── log_click.ajs
+├── nio_interop_client.js
+├── pom.xml
+├── Running.txt
+├── src/main/java/com/archi/
+│   └── NioInteropServer.java
+└── target/
+```
+
+| Script or application | Description |
+|---|---|
+| `log_click.ajs` | Captures selected element metadata in Archi/jArchi and sends it to the transport adapter. |
+| `nio_interop_client.js` | Decodes or prepares the received Base64 payload and transmits it to the Java TCP server. |
+| `NioInteropServer.java` | Runs the standalone vanilla-Java NIO server and stores logged element metadata in H2. |
+
 This module connects a jArchi client to a standalone Java server for database-backed logging. The client sends selected
 element metadata as Base64 through `log_click.ajs`; the `nio_interop_client.js` transport adapter decodes the payload
 and sends it over TCP to `NioInteropServer.java`. The server runs outside Archi and jArchi as a vanilla Java program,
 providing a deployment option for environments that require a pure-Java server rather than a GraalJS runtime. These
 examples illustrate client/server integration patterns for enterprise applications [24].
-
 
 <a id="uml-module"></a>
 ### 3.3 UML Module
@@ -520,7 +623,7 @@ view using UML-style diagram notation enhanced with AI-generated semantic classi
 **UML Module Research Methodology**
 
 Kruchten’s 4+1 model informs the module’s view-oriented architectural context, while Open Group guidance informs its
-ArchiMate/UML cross-notation context [18–20]. The script does not implement the complete 4+1 model or a formal
+ArchiMate/UML cross-notation context [18-20]. The script does not implement the complete 4+1 model or a formal
 ArchiMate-to-UML transformation: it creates a UML-inspired, component-style ArchiMate view, optionally enriched with
 AI-suggested semantic annotations.
 
@@ -530,13 +633,16 @@ AI-suggested semantic annotations.
 
 <p align="center"><img src="logo/img/DocMaker.png" alt="DocMaker module" width="100%"></p>
 
+> **Detailed documentation:** [DocMaker Module](DocMaker/DOCMAKER_DOCUMENTATION.md)
+
 ```text
 DocMaker/
 ├── AI_Element_DocMaker_EN.ajs
 ├── AI_View_DocMaker_EN.ajs
 ├── AI_REST_JSON.js
 ├── Ollama_Olalla.ajs
-└── Mark_it_Down.ajs
+├── Mark_it_Down.ajs
+└── DOCMAKER_DOCUMENTATION.md
 ```
 
 | Script | Description |
@@ -568,53 +674,53 @@ to enterprise Java [26].
 
 
 ```
-================================================================================
-                 DocMaker Module: Architectural Overview
-================================================================================
+===========================================================
+          DocMaker Module: Architectural Overview
+===========================================================
 ```
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          ARCHI (jArchi Environment)                         │
-│                                                                             │
-│   ┌──────────────────────────────────────────────────────────────────┐      │
-│   │              User: Select Element or View in Archi               │      │
-│   └────────────────────┬─────────────────────────────────────────────┘      │
-│                        │                                                    │
-│        ┌───────────────┴───────────────┐                                    |
-│        │                               │                                    │
-│        ▼                               ▼                                    │
-│   ┌─────────────────┐         ┌──────────────────┐                          |
-│   │ Element DocMaker│         │ View DocMaker    │                          │
-│   │                 │         │                  │                          │
-│   │ Element DocMaker│         │ View DocMaker    │                          │
-│   │                 │         │                  │                          │
-│   │ (jArchi Scripts │         │ (jArchi Scripts) │                          │
-│   │  in Archi)      │         │ in Archi)        │                          │
-│   └────────┬────────┘         └────────┬─────────┘                          │
-│            │                           │                                    │
-│            └───────────────┬───────────┘                                    │
-│                            │                                                │
-│                            ▼                                                │
-│                   ┌─────────────────┐                                       │
-│                   │ Ollama_Olalla   │                                       │
-│                   │ .ajs            │                                       │
-│                   │                 │                                       │
-│                   │ Local AI        │                                       │
-│                   │ Integration     │                                       │
-│                   └────────┬────────┘                                       │
-│                            │                                                │
-└────────────────────────────┼────────────────────────────────────────────────┘
-                             │
-                             ▼
-┌────────────────────────────────────────────┐
-│     AI_REST_JSON.js                        │
-│                                            │
-│  REST API Communication Layer              │
-│  JSON Payload Preparation & Parsing        │
-│  Element Context Tracking & Persistence    │
-│  Retry Logic with Timeout Handling         │
-│  File I/O for Documentation Storage        │
-└────────────────────┬───────────────────────┘
+┌──────────────────────────────────────────────────┐
+│                ARCHI (jArchi Environment)        │
+│                                                  │
+│ ┌───────────────────────────────────────────────┐│
+│ │      User: Select Element or View in Archi    ││
+│ └────────────────────┬──────────────────────────┘│
+│                      │                           │
+│      ┌───────────────┴───────────────┐           │
+│      │                               │           │
+│      ▼                               ▼           │
+│ ┌─────────────────┐         ┌──────────────────┐ │
+│ │ Element DocMaker│         │ View DocMaker    │ │
+│ │                 │         │                  │ │
+│ │ Element DocMaker│         │ View DocMaker    │ │
+│ │                 │         │                  │ │
+│ │ (jArchi Scripts │         │ (jArchi Scripts) │ │
+│ │  in Archi)      │         │ in Archi)        │ │
+│ └────────┬────────┘         └────────┬─────────┘ │
+│          │                           │           │
+│          └───────────────┬───────────┘           │
+│                          │                       │
+│                          ▼                       │
+│                 ┌─────────────────┐              │
+│                 │ Ollama_Olalla   │              │
+│                 │ .ajs            │              │
+│                 │                 │              │
+│                 │ Local AI        │              │
+│                 │ Integration     │              │
+│                 └────────┬────────┘              │
+│                          │                       │
+└──────────────────────────┼───────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────┐
+│           AI_REST_JSON.js               │
+│                                         │
+│  REST API Communication Layer           │
+│  JSON Payload Preparation & Parsing     │
+│  Element Context Tracking & Persistence │
+│  Retry Logic with Timeout Handling      │
+│  File I/O for Documentation Storage     │
+└────────────────────┬────────────────────┘
                      │
             (DocMaker scripts route here)
                      │
@@ -624,240 +730,112 @@ to enterprise Java [26].
                      │ HTTP Request
                      │ (JSON Payload)
                      ▼
-┌────────────────────────────────────────────┐
-│    OLLAMA (Local AI Runtime)               │
-│                                            │
-│  ┌──────────────────────────────────────┐  │
-│  │  Local AI Model (e.g., Llama2,       │  │
-│  │  Mistral, Neural Chat, etc.)         │  │
-│  │                                      │  │
-│  │  Generate Documentation:             │  │
-│  │  - Element descriptions              │  │
-│  │  - View analysis                     │  │
-│  │  - Architecture rationale            │  │
-│  └──────────────────────────────────────┘  │
-└────────────────────┬───────────────────────┘
+┌─────────────────────────────────────┐
+│    OLLAMA (Local AI Runtime)        │
+│                                     │
+│  ┌────────────────────────────────┐ │
+│  │  Local AI Model (e.g., Llama2, │ │
+│  │  Mistral, Neural Chat, etc.)   │ │
+│  │                                │ │
+│  │  Generate Documentation:       │ │
+│  │  - Element descriptions        │ │
+│  │  - View analysis               │ │
+│  │  - Architecture rationale      │ │
+│  └────────────────────────────────┘ │
+└────────────────────┬────────────────┘
                      │
                      │ HTTP Response
                      │ (AI-Generated Content)
                      ▼
-┌────────────────────────────────────────────────┐
-│  AI_REST_JSON.js (Response Handler)            │
-│                                                │
-│  Parse Response JSON                           │
-│  Extract AI Output                             │
-│  Save to documentation/{viewName}/json file    │
-│  Track element metadata & timestamp            │
-└────────────────────┬───────────────────────────┘
+┌─────────────────────────────────────────────┐
+│  AI_REST_JSON.js (Response Handler)         │
+│                                             │
+│  Parse Response JSON                        │
+│  Extract AI Output                          │
+│  Save to documentation/{viewName}/json file │
+│  Track element metadata & timestamp         │
+└────────────────────┬────────────────────────┘
                      │
                      ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│  ARCHI (jArchi Environment) - Post-Processing                              │
-│                                                                            │
-│           ┌──────────────────────────────────────────────┐                 │
-│           │   Mark_it_Down.ajs                           │                 │
-│           │                                              │                 │
-│           │   Markdown Export & Formatting               │                 │
-│           │   - Format AI output as Markdown             │                 │
-│           │   - Structure documentation                  │                 │
-│           │   - Add metadata/headers                     │                 │
-│           └────────────────┬─────────────────────────────┘                 │
-│                            │                                               │
-│                            ▼                                               │
-│           ┌──────────────────────────────────────────────┐                 │
-│           │   Java NIO.2 File System Operations          │                 │
-│           │                                              │                 │
-│           │   - Directory Management                     │                 │
-│           │   - File I/O Operations                      │                 │
-│           │   - Robust Path Handling                     │                 │
-│           └────────────────┬─────────────────────────────┘                 │
-│                            │                                               │
-│                            ▼                                               │
-│           ┌──────────────────────────────────────────────┐                 │
-│           │   documentation/ (Output Folder)             │                 │
-│           │                                              │                 │
-│           │   ├── element_<name>.md                      │                 │
-│           │   ├── view_<name>.md                         │                 │
-│           │   └── [AI-Generated Markdown Files]          │                 │
-│           └──────────────────────────────────────────────┘                 │
-│                                                                            │
-└────────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│ ARCHI (jArchi Environment) - Post-Processing  │
+│                                               │
+│     ┌─────────────────────────────────────┐   │
+│     │   Mark_it_Down.ajs                  │   │
+│     │   Markdown Export & Formatting      │   │
+│     │   - Format AI output as Markdown    │   │
+│     │   - Structure documentation         │   │
+│     │   - Add metadata/headers            │   │
+│     └────────────────┬────────────────────┘   │
+│                      │                        │
+│                      ▼                        │
+│     ┌─────────────────────────────────────┐   │
+│     │   Java NIO.2 File System Operations │   │
+│     │                                     │   │
+│     │   - Directory Management            │   │
+│     │   - File I/O Operations             │   │
+│     │   - Robust Path Handling            │   │
+│     └────────────────┬────────────────────┘   │
+│                      │                        │
+│                      ▼                        │
+│     ┌─────────────────────────────────────┐   │
+│     │   documentation/ (Output Folder)    │   │
+│     │   │                                 │   │
+│     │   ├── element_<name>.md             │   │
+│     │   ├── view_<name>.md                │   │
+│     │   └── [AI-Generated Markdown Files] │   │
+│     └─────────────────────────────────────┘   │
+│                                               │
+└───────────────────────────────────────────────┘
 ```
-```
-================================================================================
-                                DATA FLOW SUMMARY
-================================================================================
-```
-```
-User Input
-│
-├─→ Selects Element/View in Archi
-│
-├─→ Triggers the DocMaker Script
-│
-├─→ Extracts Element/View Metadata
-│
-├─→ Calls AI_REST_JSON.js with (prompt, element, isReplacement)
-│
-├─→ AI_REST_JSON.js Prepares JSON Payload
-│
-├─→ AI_REST_JSON.js Sends HTTP Request to Ollama
-│
-├─→ Ollama Processes with Local LLM
-│
-├─→ Ollama Returns AI-Generated Documentation (HTTP Response)
-│
-├─→ AI_REST_JSON.js Parses Response & Persists to documentation/ folder
-│
-├─→ AI_REST_JSON.js Tracks element context (ID, name, type, timestamp)
-│
-├─→ Formats as Markdown (Mark_it_Down.ajs) — optional post-processing
-│
-└─→ Documentation stored in documentation/{viewName}/ai_documentation.json
-```
-```
-================================================================================
-                         COMPONENT RESPONSIBILITIES
-================================================================================
-```
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ jArchi Scripts (Run Inside Archi)                                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ AI_Element_DocMaker_EN.ajs                                                  │
-│   • Triggered when user selects an ArchiMate element                        │
-│   • Extracts element name, type, description, relationships                 │
-│   • Calls Ollama_Olalla to initiate AI processing                           │
-│   • Returns formatted result to user                                        │
-│                                                                             │
-│ AI_View_DocMaker_EN.ajs                                                     │
-│   • Triggered when user selects an ArchiMate view                           │
-│   • Extracts view structure, contained elements, relationships              │
-│   • Prepares comprehensive view metadata                                    │
-│   • Calls Ollama_Olalla for AI analysis                                     │
-│                                                                             │
-│ Ollama_Olalla.ajs                                                           │
-│   • Orchestrates communication with Ollama                                  │
-│   • Manages request lifecycle                                               │
-│   • Handles callbacks and error conditions                                  │
-│   • Routes DocMaker requests through AI_REST_JSON.js layer                  │
-│                                                                             │
-│ Mark_it_Down.ajs                                                            │
-│   • Formats AI-generated text into structured Markdown                      │
-│   • Adds metadata headers (element type, date, author)                      │
-│   • Creates proper file structure                                           │
-│   • Formats generated documentation                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ JavaScript Libraries (Communication & Utility)                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ AI_REST_JSON.js                                                             │
-│   • Serializes EA data to JSON (conforming to request payload format)       │
-│   • Establishes HTTP connection to Ollama and sends POST requests           │
-│   • Handles timeouts and retry logic with configurable retry attempts       │
-│   • Deserializes Ollama responses from JSON                                 │
-│   • Persists AI-generated documentation to JSON files via Java NIO.2        │
-│   • Tracks element context (ID, name, type, view name, timestamps)          │
-│   • Bridges jArchi data structures ↔ REST API contract                      │
-│   • Used by: AI_Element_DocMaker_EN.ajs and AI_View_DocMaker_EN.ajs         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+At the model boundary, DocMaker translates jArchi proxy objects into bounded AI context rather than allowing the 
+language model to mutate the architecture repository directly [27]. The element workflow serializes the selected 
+element's name, ArchiMate type, specialization, existing documentation, model properties, and Markdown context of the 
+containing view; the view workflow sends the view name, type, existing documentation, and purpose-oriented instructions 
+[1]. This keeps inference anchored in explicit model data and makes omissions visible to an architect rather than 
+silently fabricating repository state.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ External Runtime (Local Machine)                                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ Ollama                                                                      │
-│   • Runs locally on the user's machine (e.g., localhost:11434)              │
-│   • No cloud dependency, no API keys, no external service calls             │
-│   • Hosts one or more AI models (configurable by user)                      │
-│   • Exposes REST API endpoint: POST /v1/chat/completions (or similar)       │
-│   • Processes each request in context window                                │
-│   • Returns model-generated text in JSON response                           │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-```
-================================================================================
-                     KEY ARCHITECTURAL CHARACTERISTICS
-================================================================================
-```
-1. LOCAL AI & OFFLINE OPERATION
-   ✓ All AI processing occurs on user's local machine via Ollama
-   ✓ No cloud API calls, no external service dependencies
-   ✓ Full control over sensitive EA data
-   ✓ Works without Internet connection
+For element outputs, the “Create Assessment” branch does more than write narrative text: it creates an ArchiMate 
+`assessment` element in the containing diagram [1] and associates it with the source concept through an association 
+relationship. Replace and append operations instead update the source element's native documentation property. View 
+output follows the same provenance principle by replacing the selected view's documentation and regenerating its 
+dedicated JSON and Markdown artifacts, so the architecture model and exported document remain separate representations 
+of the same result.
 
-2. MODULARITY
-   ✓ Each component has clear responsibility
-   ✓ Loosely coupled via JSON/REST contracts
-   ✓ Can be extended or replaced independently
-   ✓ Supports different Ollama models
+The two entry scripts operate as a small application layer inside Archi: they enumerate locally installed Ollama 
+models through `ollama list`, present SWT-based confirmation and batch dialogs [28], process multiple selections 
+serially, and expose replace, append, or assessment actions for elements. Serial processing is intentional; it limits 
+concurrent inference load, preserves predictable model updates, and allows the element or view currently being 
+documented to remain the unit of review [29, 30].
 
-3. SEPARATION OF CONCERNS
-   ✓ jArchi scripts handle EA model interaction (inside Archi)
-   ✓ JavaScript libraries handle REST/JSON communication
-   ✓ Ollama handles AI inference (external runtime)
-   ✓ File system I/O via Java NIO.2 (robust and async-ready)
+The AI transport is isolated in `AI_REST_JSON.js`. It issues a non-streaming `POST` request to the local Ollama 
+`/api/generate` endpoint [29], explicitly encodes the UTF-8 JSON body and response, honors an optional model selected in 
+the UI or the `AI_MODEL` environment variable, and separates timeout and HTTP failures from successful responses 
+[30, 31]. A small retry policy executes up to three attempts only for timeout-like failures with a six-second delay; 
+HTTP validation and unavailable-model errors remain explicit so that model configuration is diagnosable rather than 
+hidden behind generated text.
 
-5. WORKFLOW INTEGRATION
-   ✓ Seamlessly integrated into Archi UI (native jArchi)
-   ✓ Output automatically saved to project folder
-   ✓ Can chain with other BizDiag components
-   ✓ Results exportable for further processing
+Persistence is implemented with Java NIO.2 rather than ad hoc relative-file writes [32]. Each output is stored beneath 
+`DocMaker/documentation/<sanitized-view-name>/` as `ai_documentation.json`, with entries keyed by the ArchiMate element 
+ID and carrying element name, element type, ISO-8601 timestamp, content, view name, and version metadata. Replacement 
+removes the previous entry for that element ID, append mode preserves prior entries, and the result is sorted 
+chronologically and written through a FileChannel with create/truncate/write options and forced disk synchronization.
 
-```
-================================================================================
-                       TYPICAL INTERACTION SEQUENCE
-================================================================================
-```
-```
-User in Archi
-│
-├─ Right-click on Business Service "Customer Portal"
-│
-├─ Select "AI_Element_DocMaker_EN" from Scripts menu
-│
-├─→ ElementDocMaker extracts: { name, type, description, relationships }
-│
-├─→ ElementDocMaker calls AI_REST_JSON with (prompt, element, isReplacement)
-│
-├─→ AI_REST_JSON serializes to JSON
-│
-├─→ AI_REST_JSON posts to http://localhost:11434/api/generate
-│
-├─→ Ollama LLM processes: "Describe this ArchiMate Business Service..."
-│
-├─→ Ollama returns: JSON with generated documentation text
-│
-├─→ AI_REST_JSON receives response and deserializes JSON
-│
-├─→ AI_REST_JSON saves to: documentation/business-service-customer-portal/ai_documentation.json
-│
-├─→ AI_REST_JSON tracks: { elementId, elementName, elementType, timestamp, content, viewName }
-│
-├─→ Mark_it_Down formats as Markdown with headers/metadata (optional post-processing)
-│
-└─ User sees success message in Archi console
-```
-Result: documentation/business-service-customer-portal.md
-- Professional Markdown documentation
-- AI-generated content
-- Ready for sharing / publication
+DocMaker therefore functions as an auditable drafting pipeline, not an autonomous architecture-authority mechanism. 
+`Ollama_Olalla.ajs` exports the persisted JSON as Markdown, while `Mark_it_Down.ajs` can generate a view-oriented export 
+grouped by ArchiMate layers and enriched with visible relationships and diagram notes [26]. Because generated narratives 
+may contain reasonable architectural assumptions, unsupported inferences, or model-context gaps, they are intended for 
+architect review and correction before becoming approved EA documentation or decision evidence [26].
 
+_**Why Ollama?**_
 
-_Why Ollama?_
-
-Ollama was chosen as the local AI runtime instead of requiring a cloud-based AI service and an external API key. As a 
+Ollama was chosen as the local AI runtime instead of requiring a cloud-based AI service and an external API key. As a
 Digital Business Practitioner, I wanted AI-infused documentation to provide greater control over potentially sensitive
 Enterprise Architecture information and reduce dependency on external services.
 
-Other considerations, including operational cost, performance, local execution, and the ability to work without an 
-Internet connection, also motivated the development of an offline documentation generator. The project builds upon the 
+Other considerations, including operational cost, performance, local execution, and the ability to work without an
+Internet connection, also motivated the development of an offline documentation generator. The project builds upon the
 broader concept of AI-infused ArchiMate documentation generation, while providing a distinct local-AI implementation
 based on Ollama.
 
@@ -873,20 +851,16 @@ Usage notes & caveats
 - The current implementation parses the textual output of `ollama list`. If your Ollama supports JSON output (for example `ollama list --json`), we can switch to JSON parsing for more robust model enumeration.
 - Backwards compatibility: if no model is selected or none are found, the scripts continue to use the previous default model and behave the same as before.
 
-This allows organizations to select an AI deployment approach appropriate to their technical and information-security 
+This allows organizations to select an AI deployment approach appropriate to their technical and information-security
 requirements.
 
-
-
-
-<a id="capability-based-planning"></a>
-### 3.5 Capability-Based Planning
+## 3.5 Capability-Based Planning
 
 <p align="center"><img src="logo/img/Capability_Based_Planning.png" alt="Capability-Based Planning module" width="100%"></p>
 
 > **Detailed documentation:** [Capability-Based Planning (CBP) Suite](Capability_Based_Planning/CBP_SUITE_DOCUMENTATION.md)
 
-```text
+```
 Capability_Based_Planning/
 ├── CBP_Move_1_Setup.ajs
 ├── CBP_Continue_Moves_2_to_7.ajs
@@ -922,7 +896,7 @@ between Strategy and Enterprise Architecture" and "Capability-based Planning in 
 Move 1 creates the Capability Map, input worklists, and durable model-local run record. For production planning, the
 architect enters and validates evidence-based values in model Properties, saves, and runs the continuation. The planning
 scripts do not infer maturity ratings, strategic impact, targets, actions, or priorities from element names or counts.
-The seven-move planning method and capability-map practices inform the workflow's modeled stages and inputs [27–31].
+The seven-move planning method and capability-map practices inform the workflow's modeled stages and inputs [33-37].
 
 <a id="cbp-data-entry-properties-and-values"></a>
 #### 3.5.1 CBP Data-Entry Properties and Values
@@ -1005,11 +979,10 @@ strategy/resource/goal/outcome/driver labels, and existing Capability names. Oll
 provisional Capabilities with grounded source-label or BMC-content evidence. The request also includes bounded text
 from native `canvas-model` or `archimate-diagram-model` views. A view qualifies when at least six of the nine
 standard Business Model Canvas block headings are recognized among its Canvas blocks or ArchiMate elements, or its
-name identifies it as a Business Model Canvas. Folder names do not affect selection. Included text can contain Canvas block/sticky labels and text, ArchiMate element
-labels/documentation, and diagram-note text inside qualifying views. At most three qualifying content-bearing views,
+name identifies it as a Business Model Canvas. Folder names do not affect selection. Included text can contain Canvas block/sticky labels and text, ArchiMate element labels/documentation, and diagram-note text inside qualifying views. At most three qualifying content-bearing views,
 12 items per view, 24 items total, 180 characters per item, and 2,400 BMC text characters total are included.
 View and item names are limited to 60 characters. These labels and excerpts are limited evidence, so architects must
-review proposals and determine coverage, granularity, hierarchy, and strategic relevance [28–31].
+review proposals and determine coverage, granularity, hierarchy, and strategic relevance [34-37].
 
 1. **Identify and model capabilities:** show a structured, Capability-only map from existing Capability concepts,
 their modeled hierarchy, and any provisional discovery candidates for architect review, plus separate input worklists.
@@ -1029,7 +1002,7 @@ declared priority.
 
 The article's moves are an architecture-and-planning method. The script operationalizes the parts that can be represented
 as explicit model inputs and repeatable checks. It cannot replace the human analysis that creates and governs those
-inputs [27–29].
+inputs [33-35].
 
 | Move | EA purpose in the paper | What the script does | What remains a human responsibility                                                                                                                                                                                                        |
 |---|---|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1039,14 +1012,14 @@ inputs [27–29].
 | **4. Analyze the capability landscape** | Combine maturity and importance in an ML-SI matrix; interpret gaps, comfort, and an acceptance band. | Plots fully assessed concepts in rounded matrix cells, classifies using exact score difference and tolerance, and records `CBP.Result.Zone` and `CBP.Result.Gap`. | Interpreting strategic risk, deciding what constitutes acceptable capability risk, and validating that the threshold suits the enterprise.                                                                                                 |
 | **5. Set improvement goals** | Define target maturity and staged increments, informed by strategy, resources, timelines, and management judgment. | Validates supplied overall and dimension targets, progression, weighted consistency, and the final target relative to strategic importance; creates a Goal per valid increment. | Choosing targets, timelines, resource feasibility, and which capabilities should be improved. The article explicitly treats goal setting as contextual, not a rigid algorithm.                                                             |
 | **6. Define actions** | Translate each planned dimension-level maturity transition into concrete People, Process, and Technology actions. | For every dimension whose target rises, requires an action description, project name, and priority. Validated records become traceable Work Package concepts and links. | Defining actions that are sufficient, feasible, sequenced, owned, resourced, and appropriate to the actual capability. Text is supplied by the architect; the script does not invent it.                                                   |
-| **7. Design the change portfolio** | Consolidate actions into coordinated projects/programs using capability-based, dimension-based, or hybrid grouping and organizational context. | Groups actions by increment and entered project name, requires a consistent priority within a project/year, sorts lower priorities first, creates project Work Packages, and displays containment links. | Selecting a grouping strategy, resolving dependencies, capacity and budget trade-offs, including build-versus-buy choices [32], preparing charters, and governing implementation. |
+| **7. Design the change portfolio** | Consolidate actions into coordinated projects/programs using capability-based, dimension-based, or hybrid grouping and organizational context. | Groups actions by increment and entered project name, requires a consistent priority within a project/year, sorts lower priorities first, creates project Work Packages, and displays containment links. | Selecting a grouping strategy, resolving dependencies, capacity and budget trade-offs, including build-versus-buy choices [38], preparing charters, and governing implementation. |
 
 Move 1 optionally uses local Ollama to propose provisional Capabilities from a single compact request containing
 bounded strategic element names/types, directly composed Value Stream stage names, and capped content from
 identified Business Model Canvas views. Proposals must cite supplied source references and quote an
 exact source/stage name or BMC excerpt; the script validates that evidence and rejects duplicates before creating
 any candidates. Review, edit, or remove each proposal before continuing. Ollama does not provide maturity ratings,
-strategic impacts, weights, targets, actions, projects, or priorities; those remain user-entered.
+strategic impacts, weights, targets, actions, or priorities; those remain user-entered.
 
 Move 1 creates the Capability-only Map, Capability Profiles and Inputs, and Strategy Inputs views; it does not create
 analytical assessment views. The continuation creates the maturity and strategic-importance heatmaps, ML-SI matrix,
@@ -1062,12 +1035,11 @@ Ollama is optional and is called only when the user enables Capability discovery
 model. The single request contains bounded strategic element names/types, directly composed Value Stream stage names,
 existing Capability names, and text from `canvas-model` or `archimate-diagram-model` views whose Canvas block or
 ArchiMate element headings match at least six standard BMC categories, or the view name identifies it as a Business
-Model Canvas. Folder names do not affect selection. Included text is limited to Canvas block/sticky labels and text, ArchiMate element labels/documentation, and
-diagram-note text inside qualifying views. Content is capped at three qualifying views, 12 items per view,
-24 items total, 180 characters per item, and 2,400 BMC text characters total; view and item names are limited to
-60 characters. The worker communicates with the local endpoint at
-`http://localhost:11434`; discovery is limited to one request and up to three provisional candidates. All candidates
-require architect review.
+Model Canvas. Folder names do not affect selection. Included text is limited to Canvas block/sticky labels and text, 
+ArchiMate element labels/documentation, and diagram-note text inside qualifying views. Content is capped at three 
+qualifying views, 12 items per view, 24 items total, 180 characters per item, and 2,400 BMC text characters total. The 
+worker communicates with the local endpoint at`http://localhost:11434`; discovery is limited to one request and up to 
+three provisional candidates. All candidates require architect review.
 
 
 <a id="bizmodelcanvas"></a>
@@ -1076,6 +1048,48 @@ require architect review.
 <p align="center"><img src="logo/img/BizModelCanvas.png" alt="BizModelCanvas module" width="100%"></p>
 
 > **Detailed documentation:** [BizModelCanvas Module](BizModelCanvas/BIZMODELCANVAS_DOCUMENTATION.md)
+
+```
+BizModelCanvas/
+├── BizModelCanvas-GUI-EN.ajs
+├── BIZMODELCANVAS_DOCUMENTATION.md
+├── gui/
+│   └── BizModelCanvasUI.js
+├── img/
+│   └── labelPic_EN.png
+├── lib/
+│   ├── bmcDetector.ajs
+│   └── bmcGenerator.ajs
+└── scripts/
+    ├── Analyze Model for Value Proposition.ajs
+    ├── Cleanup Value Propositions.ajs
+    ├── convertBMCtoArchiMate.ajs
+    ├── Create Enhanced Value View.ajs
+    ├── Debug View and Model.ajs
+    ├── Deep Model Intelligence.ajs
+    ├── Detect Duplicate Value Propositions.ajs
+    ├── Diagnose Value Proposition Structure.ajs
+    ├── Draw BMC Graphic.ajs
+    ├── Generate BMC from Model.ajs
+    └── Test Relationship Types.ajs
+```
+
+| Script | Description |
+|---|---|
+| `BizModelCanvas-GUI-EN.ajs` | Provides the graphical launcher for the BizModelCanvas analysis, view-creation, testing, and generation tools. |
+| `Analyze Model for Value Proposition.ajs` | Analyzes the model and its relationships for value-proposition evidence. |
+| `Cleanup Value Propositions.ajs` | Removes or cleans duplicated or structurally weak value-proposition content. |
+| `convertBMCtoArchiMate.ajs` | Extracts the nine BMC building blocks and creates a corresponding ArchiMate view. |
+| `Create Enhanced Value View.ajs` | Creates an enhanced value-proposition view using ArchiMate notation. |
+| `Debug View and Model.ajs` | Displays diagnostic information for the BMC view and underlying model. |
+| `Deep Model Intelligence.ajs` | Performs deeper model-level analysis and business-model metrics. |
+| `Detect Duplicate Value Propositions.ajs` | Finds duplicate or highly similar value-proposition concepts. |
+| `Diagnose Value Proposition Structure.ajs` | Checks the structure and completeness of value-proposition definitions. |
+| `Draw BMC Graphic.ajs` | Draws a high-resolution Business Model Canvas graphic outside the ArchiMate model. |
+| `Generate BMC from Model.ajs` | Generates or updates Business Model Canvas elements from existing model content. |
+| `Test Relationship Types.ajs` | Tests supported relationship types and their behavior in the BMC workflow. |
+| `bmcDetector.ajs` | Detects and extracts the existing BMC structure from the ArchiMate model. |
+| `bmcGenerator.ajs` | Generates the converted ArchiMate representation and related view content. |
 
 <a id="business-model-canvas-generation--analysis"></a>
 #### 3.6.1 A Business Model Canvas Generation & Analysis
@@ -1114,7 +1128,7 @@ utilizing Business Model Canvas Detector (`lib/bmcDetector.ajs`), and Business M
 
 3. The third tab, 'Testing', provides tools for debugging the view and model, providing deep model intelligence, as well
 as testing relationship types. When available, the Business Model Canvas (BMC) is commonly located within the  
-Architecture Vision (TOGAF Phase A) section of an EA repository, although many models may not contain a BMC artifact [33].
+Architecture Vision (TOGAF Phase A) section of an EA repository, although many models may not contain a BMC artifact [39].
 BMC can be used as an input for analytical and transformation workflows, for the BizModelCanvas script-suite.
 
 4. The fourth tab, called BMC Generation, does only one thing through the scripts/Draw BMC Graphic.ajs, which is to draw
@@ -1128,21 +1142,6 @@ business artifact whose importance could be far beyond than anything else in the
 auto-generated once could not be trusted without human supervision. Therefore, as the author of this script, I strongly 
 believe that the auto-generated BMC should only be used as a draft, or a hint, for drawing the final BMC.
 
-In the `scripts` folder, the following 11 key jArchi scripts live: 
-
-```text
-        1├── Analyze Model for Value Proposition.ajs
-        2├── Cleanup Value Propositions.ajs
-        3├── convertBMCtoArchiMate.ajs
-        4├── Create Enhanced Value View.ajs
-        5├── Debug View and Model.ajs
-        6├── Deep Model Intelligence.ajs
-        7├── Detect Duplicate Value Propositions.ajs
-        8├── Diagnose Value Proposition Structure.ajs
-     	9├── Test Relationship Types.ajs
-       10├── Draw BMC Graphic.ajs
-       11├── Generate BMC from Model.ajs    	
-```
 Save for the 'Draw BMC Graphic.ajs', which draws Business Model Canvas Graphic, the other ten scripts are each
 accessible either directly, or through the four tabs of 'BizModelCanvas-GUI-EN.ajs'.
 
@@ -1156,7 +1155,7 @@ process the BMC in the ArchiMate view, and hence relating to the model as a whol
 architectural view representation can help organizations to analyze the business model in the context of the overall 
 architecture, and hence to identify potential gaps, misalignments, or opportunities for improvement. Moreover, a wide 
 variety of new views, e.g., 'Core Capability View', 'Customer Interaction View', and 'Value Proposition View', in 
-ArchiMate notation, will be derived from the BMC input [21–22].
+ArchiMate notation, will be derived from the BMC input [21-22].
 
 There are three omnipresent traits, constructing business model foundation, on almost each and every definition of
 business model:
@@ -1168,7 +1167,7 @@ business model:
 | **Value Proposition** | How the business converts the delivered value into revenue or other economic returns. |
 
 <p><small>Therefore, I decided to factor in the aforementioned attributes to BizModelCanvas scripts, and these concepts should be
-reflected in the future developments of BizModelCanvas script-suite [21–23]. Occasionally, you also have to tend your
+reflected in the future developments of BizModelCanvas script-suite [21-23]. Occasionally, you also have to tend your
 ArchiMate model and its evolutions over time, and be mindful of the very fact that business model is not a static entity,
 and it changes throughout your organization lifetime. As a result, you have to mend your business model canvas,
 periodically, and run this script suite against your model to see if the model changes lead to a different BMC. After
@@ -1179,7 +1178,7 @@ all, if you take care of your business model, your business model will take care
 ## 4. Why ArchiMate & jArchi?
 
 BizDiag is built around the ArchiMate modeling language and the Archi modeling tool, with jArchi providing scripting 
-capabilities [1, 25, 34]. This combination provides a practical foundation for architecture automation:
+capabilities [1, 25, 27]. This combination provides a practical foundation for architecture automation:
 
 - ArchiMate provides a structured architecture language.
 - Archi provides a practical modeling environment.
@@ -1217,7 +1216,7 @@ The result is an architecture environment where models can become more than stat
 
 A typical BizDiag workflow can be represented as:
 
-```text
+```
                  +----------------------+
                  |   ArchiMate Model    |
                  +----------+-----------+
@@ -1298,7 +1297,7 @@ extend the implementation according to the terms of the license.
 
 ---
 
-## 9. Client / Server Capabilities
+## 9. Deployment Capabilities
 
 BizDiag components can be used in different deployment scenarios, including:
 
@@ -1343,9 +1342,10 @@ BizDiag can support use cases such as:
 - Architecture Reporting
 - AI-Infused Documentation
 - Architecture Data Analysis
+- Digital Strategy Formulation
 - Custom Architecture Automation
-- Business Model to Architecture
 - Enterprise Architecture Assessment
+- Business Model to Architecture & vice versa
 
 ---
 
@@ -1354,7 +1354,7 @@ An existing ArchiMate model can be examined through BizDiag's analysis modules t
 warrant further architectural investigation. This assessment approach is informed by Design Science Research (DSR):
 the relevance cycle connects the analysis with practical Enterprise Architecture concerns, the design cycle guides the
 development and application of research-informed analysis artifacts and rules, and the rigor cycle grounds findings in
-established academic and domain knowledge [3–4]. Evaluation can then examine whether the implemented rules and generated
+established academic and domain knowledge [3-4]. Evaluation can then examine whether the implemented rules and generated
 views provide useful, credible, and repeatable insights when applied to a model. BizDiag does not treat detected
 conditions as definitive judgments; its structured findings serve as evidence for architect and stakeholder evaluation.
 
@@ -1410,7 +1410,7 @@ BizDiag consists of multiple components, and installation depends on the specifi
 
 Typical requirements may include:
 
-- Archi (5.8 or later)
+- Archi (5.10 or later)
 - jArchi plugin (1.11 or later)
 - An ArchiMate or compatible XML EA model
 - GraalVM (25 or later) for standalone Java applications
@@ -1418,22 +1418,22 @@ Typical requirements may include:
 - Ollama and any Optional locally-installed AI model
 
 Detailed installation instructions for individual components are provided in their respective documentation. For 
-command-line tools, a running.txt file is included in the repository to provide the commands for running the 
-applications. Alternatively, `BizDiag-GUI.ajs` is the all-in-one graphical user interface entry point to BizDiag. Each 
-tab of this GUI points to the functional script/application of the correponding script/application. The five modules of 
-`ClientServer_DB` have their running instructions embedded in their respective tabs. By using `BizDiag-GUI.ajs`, users 
-do not need to browse into BizDiag's directories and subdirectories, and hence they are provided with access to the 
-GUI-based applications/scripts, and also the clear-cut instruction of the CLI modules, all in one GUI.
-
-> **NOTE** For an all-in-one pre-packaged version of __`{Archi + jArchi + coArchi2 + custom splash screen + other custom plugins + BizDiag + custom BizDiag Industry Intelligence modules}`__,
-> please [contact me](mailto:ebrahimpak@mailfence.com), and I will provide you with the terms and conditions for obtaining the downloadable custom package.
+command-line tools, a `running.txt` file is included in the repository to provide the commands for running the 
+applications. Alternatively, `BizDiag-GUI.ajs` is the all-in-one graphical user interface entry point to BizDiag.
+Its five runnable-module tabs provide access to their scripts, while one `ClientServer_DB` tab contains a visually
+distinct nested tab for each of the five client/server modules and its setup and command-line instructions. Users can
+access the GUI-based applications and client/server guidance without browsing through BizDiag's directories and 
+subdirectories.
 
 ### Central module launcher
 
-Run `BizDiag-GUI.ajs` from Archi's jArchi Scripts Manager to open the ten-tab BizDiag launcher. Its first five tabs
-launch the existing BizDiag entry scripts. Open an ArchiMate model before running module actions. The remaining second 
-five tabs cover the `ClientServer_DB` submodules and show their terminal/Archi execution steps. External servers and 
-command-line applications must still be started separately as described in their tabs.
+Run `BizDiag-GUI.ajs` from Archi's jArchi Scripts Manager to open the six-tab BizDiag launcher. Five tabs launch
+existing BizDiag entry scripts; the `ClientServer_DB` tab contains a distinct nested tab for each of its five
+submodules. Open an ArchiMate model before running module actions. External servers and command-line applications
+must still be started separately as described in the relevant sub-tab.
+
+> **NOTE** For an all-in-one pre-packaged version of __`{Archi + jArchi + coArchi2 + custom splash screen + other custom plugins + BizDiag + custom BizDiag Industry Intelligence modules}`__,
+> please [contact me](mailto:ebrahimpak@mailfence.com), and I will provide you with the terms and conditions for obtaining the downloadable custom package.
 
 ---
 
@@ -1448,7 +1448,7 @@ BizDiag architecture-analysis workflows operate on ArchiMate models created or m
 The repository is organized into module folders at the repository root. Build outputs and IDE metadata are omitted from
 this overview.
 
-```text
+```
 BizDiag/
 ├── README.md
 ├── LICENSE
@@ -1471,12 +1471,15 @@ BizDiag/
 │   ├── BusinessITAlignment_EN.ajs
 │   ├── BUSINESS-IT_ALIGNMENT_DOCUMENTATION.md
 │   └── img/
+│       ├── labelPic.png
+│       └── sellIcon.png
 ├── DocMaker/
 │   ├── AI_Element_DocMaker_EN.ajs
 │   ├── AI_View_DocMaker_EN.ajs
 │   ├── AI_REST_JSON.js
 │   ├── Ollama_Olalla.ajs
-│   └── Mark_it_Down.ajs
+│   ├── Mark_it_Down.ajs
+│   └── DOCMAKER_DOCUMENTATION.md
 ├── UML/
 │   ├── Application_View_to_UML.ajs
 │   ├── sendToAI.js
@@ -1784,6 +1787,7 @@ Detailed documentation for the major analysis modules:
 - [Capability-Based Planning (CBP) Suite](Capability_Based_Planning/CBP_SUITE_DOCUMENTATION.md)
 - [UML-Inspired View Module](UML/UML_MODULE_DOCUMENTATION.md)
 - [BizModelCanvas Module](BizModelCanvas/BIZMODELCANVAS_DOCUMENTATION.md)
+- [DocMaker Module](DocMaker/DOCMAKER_DOCUMENTATION.md)
 
 ---
 
@@ -1843,4 +1847,30 @@ BizDiag does not replace professional Enterprise Architecture judgment or organi
     Information Technology for Transforming Organizations,” *IBM Systems
     Journal*, vol. 32, no. 1, pp. 4–16, 1993.
 
-[9] G. Carvalho and P. Sousa, “Business and Inform
+[9] G. Carvalho and P. Sousa, “Business and Information Systems MisAlignment
+    Model (BISMAM): An Holistic Model Leveraged on Misalignment and Medical
+    Sciences Approaches,” in *Proc. 3rd Int. Workshop on Business/IT Alignment
+    and Interoperability (BUSITAL ’08)*, CEUR Workshop Proceedings, vol. 336,
+    pp. 104–119, 2008.
+
+[10] C. M. Pereira and P. Sousa, “Enterprise Architecture: Business and IT
+    Alignment,” in *Proc. 2005 ACM Symp. Applied Computing*, pp. 1344–1345,
+    2005.
+
+[11] P. Sousa, C. M. Pereira, and J. A. Marques, “Enterprise Architecture
+    Alignment Heuristics,” *Microsoft Architects Journal*, vol. 4,
+    pp. 34–39, 2005.
+
+[12] J. Luftman, “Assessing Business-IT Alignment Maturity,” *Communications
+     of the Association for Information Systems*, vol. 4, Art. no. 14, 2000,
+     doi: 10.17705/1CAIS.00414.
+
+[13] F. Kitsios, G. Kyriakopoulou, and M. Kamariotou, “Exploring Business
+     Strategy Modelling with ArchiMate: A Case Study Approach,” *Information*,
+     vol. 13, no. 1, Art. no. 31, 2022, doi: 10.3390/info13010031.
+
+[14] P. André, A. Benjilany, H. Bruneliere, and D. Tamzalit, “Assessing
+     Operational Business-IT Alignment for Architecture Improvement,” in
+     *Advances in Information Systems Development: Exploring New Horizons and
+     Opportunities*, Lecture Notes in Information Systems and Organisation,
+     vol. 77, pp. 231–253. Springer, 2025, doi: 10.1007/978-

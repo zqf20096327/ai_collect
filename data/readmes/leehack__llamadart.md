@@ -28,7 +28,10 @@ also supports `typicalP`, `topNSigma`, XTC (`xtcProbability`,
 `xtcThreshold`), dynamic temperature (`dynatempRange`, `dynatempExponent`)
 and Mirostat (`mirostat`, `mirostatTau`, `mirostatEta`), plus DRY repetition
 penalties (`dryMultiplier`, `dryBase`, `dryAllowedLength`, `dryPenaltyLastN`,
-`drySequenceBreakers`).
+`drySequenceBreakers`). DRY settings that can exhaust the candidates left by
+token bans or runtime suppression throw `LlamaArgumentException`. To disable
+XTC, dynamic temperature or Mirostat, set `xtcProbability`, `dynatempRange`
+or `mirostat` to zero and reset its tuning fields to their defaults.
 
 Native llama.cpp can report the log-probability of every generated token, with
 the most probable alternatives, on streamed chat completions and raw generation:
@@ -176,6 +179,8 @@ instead of silently degrading.
 
 llama.cpp uses Metal on Apple platforms, Vulkan on Linux and Windows, and
 WebGPU in the browser. Android Vulkan is experimental and opt-in.
+llama.cpp refuses GPU loads when Android registers a Qualcomm proprietary
+Vulkan device. Automatic selection falls back to CPU with a warning.
 
 A llama.cpp runtime older than ggml `0.28.0` (llamadart-native `v0.8.0`)
 limits native Qwen3.5 on Android Vulkan to ordinary text on some GPUs; the
@@ -211,9 +216,9 @@ Current default runtime pins:
 
 | Runtime | Pin |
 | --- | --- |
-| Native llama.cpp / GGUF | `leehack/llamadart-native@v1.0.0-4` |
+| Native llama.cpp / GGUF | `leehack/llamadart-native@v1.1.0` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.20.0` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.95` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.96` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.20.0` |
 
 The Web backend reuses cached HTTP(S) projectors through the pinned bridge.
@@ -252,7 +257,7 @@ overrides select backend modules; use `llamadart_native_path` to replace the
 complete runtime. The full override rules are in [Native runtime configuration](https://llamadart.leehack.com/docs/platforms/native-build-hooks#override-the-llamacpp-release).
 
 Await engine disposal before host shutdown. Forced worker cleanup during
-native creation uses owner API v1 in the pinned `v1.0.0` runtime. Raw
+native creation uses owner API v1 in the pinned `v1.1.0` runtime. Raw
 allocation-to-registration gaps remain; see the
 [shutdown contract](https://github.com/leehack/llamadart/blob/main/doc/llama_cpp_exit_teardown.md#creation-time-owner-preparation).
 

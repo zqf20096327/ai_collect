@@ -8,6 +8,8 @@
 
 <h3 align="center">Sentinel-2 at 2 m, with every pixel accounted for</h3>
 
+<p align="center">By <a href="https://sharadh.blog/projects/#synapse-sr">Sharadh A Naidu</a></p>
+
 <p align="center">
   <a href="https://pypi.org/project/synapse-sr/"><img src="https://img.shields.io/pypi/v/synapse-sr?color=black" alt="PyPI"></a>
   <a href="https://pepy.tech/projects/synapse-sr"><img src="https://static.pepy.tech/personalized-badge/synapse-sr?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads" alt="PyPI Downloads"></a>

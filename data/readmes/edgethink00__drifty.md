@@ -4,49 +4,53 @@ AI time tracker for Mac and Windows.
 
 **[Download](https://drifty.so/download/)** · [Website](https://drifty.so/) · [Docs](https://docs.drifty.so/) · [Releases](https://github.com/edgethink00/drifty/releases) · [Changelog](https://drifty.so/changelog/) · [Discord](https://discord.gg/UGCtQAaDGN) · [X](https://x.com/driftyso)
 
-Drifty records the app, window and supported browser tab
-in front of you, and AI sorts each stretch into focus, drift or neutral. You
-never start a timer or tag anything. The official app asks you to sign in with
-a Drifty account; a build from source runs without one.
-
-## Release history
-
-[GitHub Releases](https://github.com/edgethink00/drifty/releases) lists desktop
-release notes starting with 1.23.0. For the original stable installers, see
-[Legacy releases](https://github.com/edgethink00/drifty_releases/releases)
-(Mac 1.6.0–1.23.0, Windows 1.11.26–1.19.2). Get the current installer from
-[drifty.so/download](https://drifty.so/download/).
-
 ## What it does
 
-- **Records on its own.** Drifty builds the timeline from the app, window and
-  browser tab in front of you, and notices when you step away.
-- **Reads the context.** The same browser or editor can be focus for one task
-  and drift for another, so Drifty classifies from what was on screen, not only
-  from the app name.
-- **Bring your own AI.** A local model Drifty downloads for you, a self-hosted
-  endpoint, your own OpenAI, Anthropic or OpenRouter key, Codex CLI or Claude
-  Code, or Drifty Cloud.
-- **Projects without bookkeeping.** Describe a project once and Drifty sorts
-  matching work into it.
+<table>
+<tr>
+<td width="40%" valign="middle">
+<h3>Your day, tracked automatically</h3>
+Drifty records your apps and tabs. AI names each block of work and marks it focus or drift.
+</td>
+<td width="60%" align="center"><img src=".github/assets/readme/day.png" alt="A day in Drifty: blocks of work named by AI, such as Dashboard page refactor and Reddit and YouTube break, colored as focus, drift or neutral" width="100%"></td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Project time without bookkeeping</h3>
+Describe a project once. Drifty fills in the time.
+</td>
+<td width="60%" align="center"><img src=".github/assets/readme/projects.png" alt="Project time over the latest seven days, stacked by project" width="100%"></td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>A way back when you drift</h3>
+Companion offers a way back when you drift. The cat keeps you company.
+</td>
+<td width="60%" align="center"><img src=".github/assets/readme/way-back.png" alt="Companion card offering Return to focus, Take a break or Not a drift, next to Drifty's desk cat" width="100%"></td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Bring your own AI</h3>
+Run it on your own computer, with your own key or in Drifty Cloud.
+</td>
+<td width="60%" align="center"><img src=".github/assets/readme/bring-your-own-ai.png" alt="Ways to run Drifty AI: Local AI, a custom endpoint, Claude Code, Codex CLI, your own OpenAI, Anthropic or OpenRouter key, or Drifty Cloud" width="100%"></td>
+</tr>
+</table>
+
 - **Ask about your day.** Chat answers questions about your records, and agents
-  such as Claude Code can read them through the Drifty connector or the
-  read-only skill in [`integrations/skills`](integrations/skills/drifty/SKILL.md).
-- **Mac and Windows.** With your Drifty account you can sync your computers,
-  check your day on iPhone and join the leaderboard.
-- **A desk cat, if you want one.** Pet Mode puts Drifty's cat on your desktop.
+  such as Claude Code can read them too.
+- **One timeline across devices.** Sign in to sync your Mac and Windows
+  computers and see your day on iPhone.
 
 ## Privacy
 
 Your activity history stays on your computer unless you use a feature that
-needs it. AI classification sends minimized activity fields to the AI connection
-you picked, device sync copies your records to your own account, and the
-leaderboard publishes aggregate focus totals only. In the official app, the
-Usage statistics setting in Settings › Privacy is on by default: it sends
-product usage events and, while you are signed in, keeps minimized activity
-records with your account to improve Drifty. Sharing your Chat conversations is
-a separate setting that stays off unless you turn it on. The
-[privacy policy](https://drifty.so/privacy/) lists every case.
+needs it. AI classification sends minimized activity fields to the AI you
+picked, sync copies your records to your own account, and the leaderboard shows
+focus totals only. In the official app, Usage statistics (Settings › Privacy) is
+on by default: it sends usage events and, while you are signed in, keeps
+minimized activity records to improve Drifty. Chat sharing stays off unless you
+turn it on. The [privacy policy](https://drifty.so/privacy/) lists every case.
 
 ## What is in this repository
 
@@ -59,10 +63,9 @@ a separate setting that stays off unless you turn it on. The
 | `services/tracker-python` | Activity capture and local storage |
 | `integrations/skills` | Agent skill for reading Drifty records |
 
-Drifty Cloud's server (accounts, billing, cloud AI, sync and leaderboard) and
-the iPhone app are not part of this repository. The automatic memory beta
-downloads a separate engine that is not published here either. A build from source runs
-fully on your computer; signing in needs Drifty's hosted service.
+Drifty Cloud's server (accounts, billing, cloud AI, sync and leaderboard), the
+iPhone app and the engine behind the automatic memory beta are not in this
+repository.
 
 ## Build from source
 
@@ -80,8 +83,9 @@ npm run tauri:dev     # run the app
 npm run dev:web       # interface only, in a browser at http://127.0.0.1:1420
 ```
 
-Without Supabase settings the app runs signed out: tracking, local history
-and your own AI connections all work.
+Without Supabase settings a source build runs signed out: tracking, local
+history and your own AI connections all work. Signing in, which the official app
+asks for, needs Drifty's hosted service.
 
 Checks:
 
@@ -94,6 +98,13 @@ npm test              # web, Python and Rust tests
 A source build uses the same app identifier as the official app, so quit the
 official Drifty before running one. Windows source builds work but are not
 documented here yet.
+
+## Release history
+
+Release notes from 1.23.0 are on
+[GitHub Releases](https://github.com/edgethink00/drifty/releases). Earlier
+installers are in [Legacy releases](https://github.com/edgethink00/drifty_releases/releases)
+(Mac 1.6.0–1.23.0, Windows 1.11.26–1.19.2).
 
 ## Roadmap
 

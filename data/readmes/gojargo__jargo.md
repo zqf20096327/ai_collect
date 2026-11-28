@@ -104,7 +104,7 @@ Pick any per category; each is a small `Config` + constructor.
   Deepgram, ElevenLabs, Fish, Google Cloud, Gradium, Groq, HeyGen, Inworld,
   Kokoro (local), Kyutai (incl. Pocket TTS), MiniMax, Mistral, Neuphonic, NVIDIA,
   OpenAI, Piper (local), Resemble AI, Rime, Sarvam, Smallest, Soniox, Speechify,
-  Speechmatics, Together, xAI, XTTS (self-hosted), Zoom AI.
+  Speechmatics, Together, xAI, Zoom AI.
 - **Speech-to-speech**: OpenAI Realtime (direct + Azure), Gemini Live (direct + Vertex), AWS Nova Sonic, xAI Realtime, Rime Prism.
 - **Memory**: mem0.
 
@@ -221,9 +221,12 @@ the **[Quickstart](docs/getting-started/quickstart.md)** for the full setup.
 
 ## Status
 
-jargo is pre-1.0. The public API may still change in a minor release; every
-breaking change is called out in the [changelog](CHANGELOG.md) and carries a `!`
-in its commit type. Only the latest release receives security fixes (see
+jargo follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Within
+a major version the public API only grows: a change that would break code
+written against it waits for the next major release, and what it replaces is
+deprecated first. A package whose doc comment marks it *Experimental* may still
+change in a minor release, and the [changelog](CHANGELOG.md) says so when it
+does. Only the latest release receives security fixes (see
 [`SECURITY.md`](SECURITY.md)).
 
 ## Contributing

@@ -119,6 +119,8 @@ The [portable Agent Plugin](plugins/graph-it-live/) bundles the MCP server and f
 | Windsurf, Antigravity, other MCP clients | MCP server entry running `npx -y @magic5644/graph-it-live@latest serve` |
 | Any agent (skill only) | `npx skills add magic5644/skills/graph-it-live` |
 
+In Claude Code v2.1.331 or later, the MCP server also serves the five skills ([Skills over MCP](docs/ai-integrations.md#skills-over-mcp)).
+
 MCP tools and the native Copilot tools answer in compact TOON by default; `graph-it stats` shows the tokens used against the same answers in JSON.
 
 Full setup, the 25 MCP tools, the native Copilot tools, and ready-to-copy configurations: [AI integrations](docs/ai-integrations.md).
@@ -144,7 +146,7 @@ Settings live under `graph-it-live.*` (performance profile, MCP server, traversa
 
 ## CI review gate
 
-`graph-it review-pr --base <ref>` reviews a Git diff before CI: breaking signatures, consumers still importing a removed export, cycles, test candidates, and architecture rules. A reusable GitHub Action posts the report and can gate a pull request with `fail-on-risk`. See the [`review-pr` reference](docs/CLI.md#review-pr) and the [example workflow](docs/examples/graph-it-review-gate.yml).
+`graph-it review-pr --base <ref>` reviews a Git diff before CI: breaking signatures, consumers still importing a removed export, cycles, test candidates, architecture rules, and the before/after structure (units, folders, moves) and an optional before/after SVG (`--deltaSvg`, `diagram --delta`). A reusable GitHub Action posts the report and can gate a pull request with `fail-on-risk`. See the [`review-pr` reference](docs/CLI.md#review-pr) and the [example workflow](docs/examples/graph-it-review-gate.yml).
 
 ## Documentation
 

@@ -1,8 +1,8 @@
 # The Best Private AI Apps in 2026
 
-Every app we could find that runs AI on your own phone or computer, the APIs for open models that don't keep your prompts, and what the paid alternatives cost. 25 lists, each with its full comparison: platforms, prices, limits and what it's best for. Every fact links to its source in the full list.
+Every app we could find that runs AI on your own phone or computer, the APIs for open models that don't keep your prompts, and what the paid alternatives cost. 26 lists, each with its full comparison: platforms, prices, limits and what it's best for. Every fact links to its source in the full list.
 
-Use it, share it, copy the tables. If something's wrong or missing, [open an issue](https://github.com/off-grid-ai/private-ai-apps/issues) with a link and we'll fix it.
+Use it, share it, copy the tables. If something's wrong or missing, [open an issue](https://github.com/off-grid-ai/awesome-private-ai-apps/issues) with a link and we'll fix it.
 
 ## Contents
 
@@ -39,9 +39,10 @@ Use it, share it, copy the tables. If something's wrong or missing, [open an iss
 23. [Which AI subscriptions one app can replace](#23-which-ai-subscriptions-one-app-can-replace)
 24. [What popular AI subscriptions cost a year](#24-what-popular-ai-subscriptions-cost-a-year)
 
-**By country**
+**By country and language**
 
 25. [ChatGPT alternatives by country, with local prices](#25-chatgpt-alternatives-by-country-with-local-prices)
+26. [Private AI in your language](#26-private-ai-in-your-language)
 
 
 ## Apps that run on your phone and computer
@@ -399,7 +400,7 @@ Use it, share it, copy the tables. If something's wrong or missing, [open an iss
 
 [Full list with sources](lists/how-much-do-ai-subscriptions-cost-in-2026-yearly-totals-for-popular-ai-tools-and-what-paying-once-saves.md) · [Read on dev.to](https://dev.to/alichherawalla/how-much-do-ai-subscriptions-cost-in-2026-yearly-totals-for-popular-ai-tools-and-what-paying-once-3f9)
 
-## By country
+## By country and language
 
 ### 25. ChatGPT alternatives by country, with local prices
 
@@ -419,6 +420,25 @@ Use it, share it, copy the tables. If something's wrong or missing, [open an iss
 | Egypt | EGP 249.99 a month | EGP 249.99 a month | Free. Pro $20 once |
 
 [Full list with guides in each language](lists/best-chatgpt-alternatives-by-country-in-2026-free-offline-ai-and-pro-for-20-once.md)
+
+### 26. Private AI in your language
+
+Off Grid AI's whole interface and its voice typing work in these 12 languages, on your phone and with no internet. Each language has its own guides, written in it.
+
+| Language | Use a private AI app in it | Voice typing, offline | Every guide |
+|---|---|---|---|
+| Spanish (Español) | [Cómo usar una app de IA privada en español en tu celular](https://getoffgridai.co/es/articles/how-to-use-a-private-ai-app-in-spanish-on-your-phone-in-2026-no-internet/) | [Voz a texto sin internet](https://getoffgridai.co/es/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Español](https://getoffgridai.co/es/articles/) |
+| Portuguese (Português) | [Como usar um app de IA privado em português no celular](https://getoffgridai.co/pt/articles/how-to-use-a-private-ai-app-in-portuguese-on-your-phone-in-2026-no-internet/) | [Voz em texto sem internet](https://getoffgridai.co/pt/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Português](https://getoffgridai.co/pt/articles/) |
+| French (Français) | [Utiliser une appli d'IA privée en français sur ton téléphone](https://getoffgridai.co/fr/articles/how-to-use-a-private-ai-app-in-french-on-your-phone-in-2026-no-internet/) | [Ta voix en texte sans internet](https://getoffgridai.co/fr/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Français](https://getoffgridai.co/fr/articles/) |
+| German (Deutsch) | [Eine private KI-App auf Deutsch auf dem Handy nutzen](https://getoffgridai.co/de/articles/how-to-use-a-private-ai-app-in-german-on-your-phone-in-2026-no-internet/) | [Sprache in Text ohne Internet](https://getoffgridai.co/de/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Deutsch](https://getoffgridai.co/de/articles/) |
+| Italian (Italiano) | [Usare un'app di IA privata in italiano sul telefono](https://getoffgridai.co/it/articles/how-to-use-a-private-ai-app-in-italian-on-your-phone-in-2026-no-internet/) | [La voce in testo senza internet](https://getoffgridai.co/it/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Italiano](https://getoffgridai.co/it/articles/) |
+| Dutch (Nederlands) | [Een privé AI-app in het Nederlands op je telefoon](https://getoffgridai.co/nl/articles/how-to-use-a-private-ai-app-in-dutch-on-your-phone-in-2026-no-internet/) | [Stem naar tekst zonder internet](https://getoffgridai.co/nl/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Nederlands](https://getoffgridai.co/nl/articles/) |
+| Polish (Polski) | [Prywatna aplikacja AI po polsku na telefonie](https://getoffgridai.co/pl/articles/how-to-use-a-private-ai-app-in-polish-on-your-phone-in-2026-no-internet/) | [Głos na tekst bez internetu](https://getoffgridai.co/pl/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Polski](https://getoffgridai.co/pl/articles/) |
+| Russian (Русский) | [Приватное ИИ-приложение на русском на телефоне](https://getoffgridai.co/ru/articles/how-to-use-a-private-ai-app-in-russian-on-your-phone-in-2026-no-internet/) | [Голос в текст без интернета](https://getoffgridai.co/ru/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Русский](https://getoffgridai.co/ru/articles/) |
+| Turkish (Türkçe) | [Telefonunda Türkçe, gizli bir yapay zekâ uygulaması](https://getoffgridai.co/tr/articles/how-to-use-a-private-ai-app-in-turkish-on-your-phone-in-2026-no-internet/) | [İnternetsiz sesi yazıya çevirme](https://getoffgridai.co/tr/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Türkçe](https://getoffgridai.co/tr/articles/) |
+| Indonesian (Bahasa Indonesia) | [Aplikasi AI privat berbahasa Indonesia di HP](https://getoffgridai.co/id/articles/how-to-use-a-private-ai-app-in-indonesian-on-your-phone-in-2026-no-internet/) | [Suara jadi teks tanpa internet](https://getoffgridai.co/id/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [Bahasa Indonesia](https://getoffgridai.co/id/articles/) |
+| Japanese (日本語) | [スマホで日本語のプライベート AI アプリを使う](https://getoffgridai.co/ja/articles/how-to-use-a-private-ai-app-in-japanese-on-your-phone-in-2026-no-internet/) | [インターネット不要の音声入力](https://getoffgridai.co/ja/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [日本語](https://getoffgridai.co/ja/articles/) |
+| Chinese (中文) | [在手机上使用中文界面的私密 AI 应用](https://getoffgridai.co/zh/articles/how-to-use-a-private-ai-app-in-chinese-on-your-phone-in-2026-no-internet/) | [不联网的语音转文字](https://getoffgridai.co/zh/articles/how-to-turn-your-voice-into-text-on-your-phone-in-2026-no-internet/) | [中文](https://getoffgridai.co/zh/articles/) |
 
 ## How these lists are made
 

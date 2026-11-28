@@ -21,6 +21,9 @@
   - [Smart Routing, Hedging & RPM Spillover](#smart-routing-hedging--rpm-spillover)
   - [Multi-User Gateway Authentication](#multi-user-gateway-authentication)
 - [Extending OM](#extending-om)
+  - [1. Drop-in JavaScript Tools (`./skills/*.js`)](#1-drop-in-javascript-tools-skillsjs)
+  - [2. Markdown Workflows (`./skills/<name>/SKILL.md`)](#2-markdown-workflows-skillsnameskillmd)
+  - [3. Programmatic API](#3-programmatic-api)
 - [CLI Slash Commands](#cli-slash-commands)
 - [Testing](#testing)
 - [License](#license)
@@ -57,7 +60,7 @@ node bin/om.js service install               # Install 24/7 native OS service (s
 
 ## Core Capabilities
 
-- **Multi-Model Routing, Hedging & Local System 1**: `ModelRouter` (`src/providers/router.ts`) provides EWMA TTFT/latency-aware routing (`priority` / `latency` / `round_robin`), proactive `rpmGuard` concurrency & 60s RPM spillover, opt-in cloud speculative hedging, `adaptiveEffort` for fast TTFT, half-open circuit breakers with exponential backoff, RFC 9110 / `x-ratelimit-reset-*` header parsing, hardened SSE streams (`AbortSignal` + idle-timeout reader cancellation + Gateway `TCP_NODELAY` & keep-alive heartbeats), and automatic failover across Gemini, OpenAI, Anthropic, DeepSeek, Kimi, Qwen, GLM, Ollama, LM Studio, vLLM, and `om`. `OMSystemOne` (`src/systemOne.ts`) provides hardware-adaptive complexity routing, risk gating, tool shortlisting, and self-heal triage.
+- **Multi-Model Routing, Hedging & Local System 1**: `ModelRouter` (`src/providers/router.ts`) provides EWMA TTFT/latency-aware routing (`priority` / `latency` / `round_robin`), proactive `rpmGuard` concurrency & 60s RPM spillover, opt-in cloud speculative hedging, `adaptiveEffort` for fast TTFT, half-open circuit breakers with exponential backoff, RFC 9110 / `x-ratelimit-reset-*` header parsing, hardened SSE streams (`AbortSignal` + idle-timeout reader cancellation + Gateway `TCP_NODELAY` & keep-alive heartbeats), and automatic failover across Gemini, OpenAI, Anthropic, DeepSeek, Kimi, Qwen, GLM, LM Studio, vLLM, and `om`. `OMSystemOne` (`src/systemOne.ts`) provides hardware-adaptive complexity routing, risk gating, tool shortlisting, and self-heal triage.
 - **Autonomous Daemons & Automations UI**: `OMDaemon` runs cron, interval, file-watch, and webhook triggers with deterministic-first checks (0 LLM tokens when passing), isolated git worktrees, step/token guardrails, persistent run logs, Quick Templates, and 1-click diff/merge/discard in the Gateway UI. Install as a native 24/7 OS service via `om service install`.
 - **Unified `ExecutionBackend` Seam**: Swap between `LocalExecutionBackend`, `DockerExecutionBackend`, and `SSHExecutionBackend` (`execution` in `om.config.json`) to route filesystem tools, shell commands, persistent terminals, `OMGitManager`, `WorkspaceSnapshotManager`, and TypeScript LSP diagnostics uniformly.
 - **Coding-Agent Toolset**: Sandboxed `exec_command`, persistent interactive terminals (`terminal_start`, `terminal_write`, `terminal_read`, `terminal_list`, `terminal_close`), file tools (`read_file`, `write_file`, `patch_file`, `move_file`, `delete_file`, `list_dir`, `search_files`), Git tools, TypeScript AST/LSP tools (`file_outline`, `go_to_definition`, `find_references`, `get_diagnostics`, `get_workspace_diagnostics`), web search/fetch, and Streamable HTTP MCP servers.
@@ -75,7 +78,7 @@ node bin/om.js service install               # Install 24/7 native OS service (s
 Copy `.env.example` to `.env` to configure provider keys or local endpoints:
 
 ```ini
-# auto | gemini | openai | anthropic | deepseek | kimi | qwen | glm | ollama | lmstudio | vllm | om
+# auto | gemini | openai | anthropic | deepseek | kimi | qwen | glm | lmstudio | vllm | om
 OM_PROVIDER=auto
 # OM_MODEL=gemini-3.8-flash
 
@@ -83,7 +86,7 @@ GEMINI_API_KEY=...
 OPENAI_API_KEY=...
 ANTHROPIC_API_KEY=...
 DEEPSEEK_API_KEY=...
-OLLAMA_BASE_URL=http://127.0.0.1:11434
+LMSTUDIO_BASE_URL=http://127.0.0.1:1234/v1
 OM_GATEWAY_PORT=3000
 # OM_WORKSPACE_DIR=.
 # OM_MEMORY_DIR=./memory

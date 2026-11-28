@@ -19,18 +19,23 @@ Frontier tokens cost far more than small-model tokens, and the expensive part of
 - **The worker** does the execution at small-model prices.
 - **Waiting costs nothing.** The frontier is only active at checkpoints.
 
-## How it works
+## Two modes
+
+- **`/hstack` (solo):** the model you're already using gets the guides directly: understand, explore, plan, verify, debug and the rest, plus the UI, motion and research skills. No second model, no orchestration. Works on any model, and makes the most difference on smaller ones.
+- **`/hstack-team` (orchestration):** a frontier model directs a cheaper worker that uses the same guides. Same results for less money on real implementation work (53% cheaper on benchmark 2). The rest of this section describes this mode.
+
+## How it works (`/hstack-team`)
 
 ![hstack workflow: the frontier writes the brief, the worker plans and builds, optionally with parallel workers and an independent reviewer, and the frontier approves at the plan and done checkpoints](docs/hstack-flow.png)
 
 <sub>Source: [`docs/hstack-flow.excalidraw`](docs/hstack-flow.excalidraw), editable at excalidraw.com.</sub>
 
-1. **`/hstack`:** the session's model becomes the frontier and asks which smaller model should do the work. It keeps asking until you name a valid one; loose names like "haiku 5.5" are fine. If you're already on the smallest model, it stays off.
+1. **`/hstack-team`:** the session's model becomes the frontier and asks which smaller model should do the work. It keeps asking until you name a valid one; loose names like "haiku 5.5" are fine. If you're already on the smallest model, it stays off.
 2. **Brief:** the frontier writes about 15 lines: why, acceptance criteria, constraints, the risks it will review, and the done commands.
 3. **Plan:** an `hstack-worker` sub-agent on the worker model explores and returns a short plan. The frontier replies `APPROVE` or `REVISE` in a few lines.
 4. **Build:** the same worker keeps its context. It writes tests first, implements, runs the checks until they pass, and returns a compact done report.
 5. **Review:** the frontier runs the checks itself, spot-checks only its risk areas, and sends at most one correction round.
-6. **`/hstack-swarm`** (optional): the worker plans a split, several workers build independent parts in parallel, and an `hstack-reviewer` tries to break the result.
+6. **`/hstack-team-swarm`** (optional): the worker plans a split, several workers build independent parts in parallel, and an `hstack-reviewer` tries to break the result.
 
 ## Risks and how hstack handles them
 
@@ -45,13 +50,19 @@ Frontier tokens cost far more than small-model tokens, and the expensive part of
 
 | | Type | Role |
 |---|---|---|
-| [`hstack`](skills/hstack/SKILL.md) | skill, `/hstack` (frontier) | Turns hstack on (asks for a valid, smaller worker model), then runs the senior-engineer loop: size gate, brief, plan review, build review, one correction round, token discipline |
-| [`hstack-swarm`](skills/hstack-swarm/SKILL.md) | skill, `/hstack-swarm` | Parallel workers on independent parts, then an independent reviewer |
+| [`hstack`](skills/hstack/SKILL.md) | skill, `/hstack` | Solo mode, the root: gives the running model the guides and routes to the domain skills, with no orchestration |
+| [`hstack-team`](skills/hstack-team/SKILL.md) | skill, `/hstack-team` (frontier) | Orchestration: asks for a valid, smaller worker model, then runs the senior-engineer loop: task size, brief, plan review, build review, one correction round, token discipline |
+| [`hstack-swarm`](skills/hstack-swarm/SKILL.md) | skill, `/hstack-swarm` | Solo parallel: the running model splits the work and builds independent parts with parallel copies of itself, then an independent reviewer |
+| [`hstack-team-swarm`](skills/hstack-team-swarm/SKILL.md) | skill, `/hstack-team-swarm` | Team parallel: the frontier directs several smaller workers on independent parts, then an independent reviewer |
 | [`hstack-ui`](skills/hstack-ui/SKILL.md) | skill, `/hstack-ui` | UI work from real references: a design system first, then pages built only from it, reviewed by screenshot |
 | [`hstack-motion`](skills/hstack-motion/SKILL.md) | skill, `/hstack-motion` | Motion-graphics videos from a prompt or a codebase: storyboard first, scenes built in Remotion from a starter kit, voice and sound timed to words, reviewed as stills |
+| [`hstack-learn`](skills/hstack-learn/SKILL.md) | skill, `/hstack-learn` | Compiles a library or tool's codebase into a ready-to-use skill, pinned to the version in use: how it works inside, proved usage examples, where to fix what and how to fix it upstream. Installs for this project (`.hstack/plugins/`) or globally |
 | [`hstack-update`](skills/hstack-update/SKILL.md) | skill, `/hstack-update` | Updates hstack to the latest skills and sub-agents in every harness it is installed in, and lists the skill versions that changed |
 | [`hstack-research`](skills/hstack-research/SKILL.md) | skill, `/hstack-research` | Market and technical research: workers read the web and write sourced notes, the frontier writes one report with a recommendation |
-| [`hstack` guides](skills/hstack/ROUTES.md) | worker guides | How the worker thinks, read one at a time from a routing table: understand, explore, plan, sources, focus, verify, escalate, plus practice, debug and refactor |
+| [`hstack` guides](skills/hstack/ROUTES.md) | guides | How the model thinks (solo, or as the worker), read one at a time from a routing table: understand, explore, plan, sources, focus, verify, escalate, plus practice, debug and refactor |
+| [Go guide](skills/hstack/languages/go/SKILL.md) | language guide | Routed from `ROUTES.md` on any Go task, solo or team: always-on Go rules plus 17 topics (errors, concurrency, testing, security, database, performance, …), compiled from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang) (MIT) |
+| [TypeScript guide](skills/hstack/languages/typescript/SKILL.md) | language guide | Routed from `ROUTES.md` on any TypeScript task: conventions observed in vscode, TypeScript, angular and next.js (commit format, strictness scoping, avoiding `any`, typecheck before claiming), each traced to real commits and configs |
+| [Evals](evals/README.md) | hardening loop | Small tasks with hidden tests, run with and without hstack; failures become guide rules |
 | [`hstack-worker`](agents/hstack-worker.md) | sub-agent | Plans, then builds and reports, in two phases |
 | [`hstack-researcher`](agents/hstack-researcher.md) | sub-agent | Answers one research question from the web, with sourced notes |
 | [`hstack-reviewer`](agents/hstack-reviewer.md) | sub-agent | Tries to break the work and reports defects without fixing them |
@@ -67,7 +78,7 @@ The installer downloads the `hstack` CLI and sets everything up for the harness 
 - **Muse Code:** it links the skills into `~/.agents/skills`, which Muse reads
 - **Codex:** it links the skills into `~/.agents/skills`, which Codex reads, and writes the sub-agents as TOML files into `~/.codex/agents` (or `$CODEX_HOME/agents`)
 - **Hermes Agent:** it links the skills into `$HERMES_HOME/skills` (default `~/.hermes/skills`; set `HERMES_HOME` or use `hermes -p <profile>` to target a profile). The worker is a separate `hermes chat` process, so there are no sub-agent files to write
-- nothing else: you choose the worker model inside a session, with `/hstack`
+- nothing else: in a session, `/hstack` turns the guides on, and `/hstack-team` asks for the worker model
 
 Other ways to install:
 - **From source:** `go install github.com/shellhaki/hstack/cmd/hstack@latest && hstack`
@@ -85,13 +96,16 @@ Other ways to install:
 
 ## Use
 
+**Solo:** run **`/hstack`** on any model and give it a task. That's all.
+
+**Team:**
 1. Start your harness on its frontier model: `claude --model opus`, `muse --model muse-wonder-1.0`, or Hermes Agent on your frontier model.
-2. Run **`/hstack`** and name the worker: e.g. `haiku` in Claude Code, `ember` or `spark-1.3` in Muse Code, `luna` in Codex, `spark-1.2` in Hermes Agent.
+2. Run **`/hstack-team`** and name the worker: e.g. `haiku` in Claude Code, `ember` or `spark-1.3` in Muse Code, `luna` in Codex, `spark-1.2` in Hermes Agent.
 3. Give it a real task:
 
    > Build the waitlist API from SPEC.md, with tests.
 
-   For tasks that split into independent parts, run **`/hstack-swarm`** first.
+   For tasks that split into independent parts, run **`/hstack-team-swarm`** first (or **`/hstack-swarm`** in solo mode).
 
 Small tasks are done directly, without delegation, because delegating them costs more than it saves.
 

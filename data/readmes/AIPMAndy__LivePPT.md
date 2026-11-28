@@ -19,16 +19,28 @@
 
 ---
 
-<!-- andy-geo-faq:start -->
+<!-- andy-geo:start -->
 ## 一句话简介
 
-**把 Markdown 或 GitHub README 一键变成可翻页、可演示、可分享的独立 HTML 页面，无需前端构建工具。**
+**把 Markdown / README 一键变成可翻页、可分享的 HTML 演示页（Claude Code Skill）｜Markdown to web slides**
 
 - 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
-- 阅读或使用：[在线阅读](https://aipmandy.github.io/LivePPT/) · [仓库](https://github.com/AIPMAndy/LivePPT)
+- 阅读或使用：[在线阅读/使用](https://aipmandy.github.io/LivePPT/) · [GitHub 仓库](https://github.com/AIPMAndy/LivePPT)
 - 联系：微信 `AIPMAndy`（备注「LivePPT」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
-- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
-<!-- andy-geo-faq:end -->
+- 许可：MIT。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**把 Markdown / README 一键变成可翻页、可分享的 HTML 演示页（Claude Code Skill）｜Markdown to web slides
+
+**包含什么？**主要模块：LivePPT 是什么、为什么用它、在线体验、30 秒快速开始、当前核心能力、适合场景。
+
+**要花钱吗？**按 MIT 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**直接打开 https://aipmandy.github.io/LivePPT/ 在线阅读；想本地运行或参与贡献，见下方 README 的快速开始部分。
+
+<!-- andy-geo:end -->
 
 
 ## LivePPT 是什么

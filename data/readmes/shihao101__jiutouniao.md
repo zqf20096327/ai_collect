@@ -11,7 +11,7 @@ and evidence-chain reporting.
 [![CI](https://img.shields.io/github/actions/workflow/status/shihao101/jiutouniao/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/shihao101/jiutouniao/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/shihao101/jiutouniao?style=flat-square)](https://github.com/shihao101/jiutouniao/releases)
 [![License](https://img.shields.io/github/license/shihao101/jiutouniao?style=flat-square)](LICENSE)
-**当前版本 v7.4.1** · [完整更新记录](CHANGELOG.md)
+**当前版本 v7.7.3** · [完整更新记录](CHANGELOG.md)
 ![Go](https://img.shields.io/badge/Go-1.23%2B-00ADD8?style=flat-square&logo=go)
 ![Vue](https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vue)
 
@@ -124,10 +124,10 @@ make run      # 启动，默认 http://localhost:8787
 | 文档 | 内容 |
 |---|---|
 | [docs/FEATURES.md](docs/FEATURES.md) | 完整功能详解：移植模块表 / Docker 部署细节 / 代理接入 / 部署包 Quickstart / API 一览 / 流程图映射 / 二次开发指引 |
+| [docs/方法论文档映射.md](docs/方法论文档映射.md) | 《AI 渗透测试全流程图》→ 模块映射 |
 | [CHANGELOG.md](CHANGELOG.md) | 完整版本历史（与 Web「更新记录」同源） |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 开发环境 / 提交规范 / 安全边界 |
 | [SECURITY.md](SECURITY.md) | 漏洞私密披露通道 + 部署安全基线 |
-| [docs/case-study/](docs/case-study/) | 脱敏实战案例记录 |
 
 ## 🤝 贡献
 

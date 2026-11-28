@@ -1,6 +1,6 @@
 # AI SDK CPP
 
-The AI SDK CPP is a modern C++ toolkit designed to help you build AI-powered applications with popular model providers like OpenAI and Anthropic. It provides a unified, easy-to-use API that abstracts away the complexity of different provider implementations.
+The AI SDK CPP is a modern C++ toolkit designed to help you build AI-powered applications with popular model providers like OpenAI, Anthropic, and Google Gemini. It provides a unified, easy-to-use API that abstracts away the complexity of different provider implementations.
 
 ## Motivation
 
@@ -18,7 +18,7 @@ You will need a C++20 compatible compiler and CMake 3.16+ installed on your deve
 
 ### Core API
 
-The AI SDK CPP Core module provides a unified API to interact with model providers like OpenAI and Anthropic.
+The AI SDK CPP Core module provides a unified API to interact with model providers like OpenAI, Anthropic, and Google Gemini.
 
 #### OpenAI Integration
 
@@ -54,7 +54,7 @@ int main() {
 int main() {
     // Ensure ANTHROPIC_API_KEY environment variable is set
     auto client = ai::anthropic::create_client();
-    ai::GenerateOptions options(ai::anthropic::models::kClaudeSonnet5,
+    ai::GenerateOptions options(ai::anthropic::models::kClaudeSonnet55,
                                 "Explain quantum computing in simple terms.");
     options.system = "You are a helpful assistant.";
     auto result = client.generate_text(options);
@@ -66,6 +66,45 @@ int main() {
     return 0;
 }
 ```
+
+#### Google Gemini Integration
+
+The Google provider speaks the native Gemini API (`generateContent` and
+`streamGenerateContent`), not the OpenAI-compatibility endpoint.
+
+```cpp
+#include <ai/google.h>
+#include <ai/core.h>
+#include <iostream>
+
+int main() {
+    // Ensure GEMINI_API_KEY (or GOOGLE_API_KEY) environment variable is set
+    auto client = ai::google::create_client();
+    ai::GenerateOptions options(ai::google::models::kGemini4Hydrogen,
+                                "Explain quantum computing in simple terms.");
+    options.system = "You are a helpful assistant.";
+    auto result = client.generate_text(options);
+
+    if (result) {
+        std::cout << result.text << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Tool calling, multi-step tool loops, structured output (`response_format`),
+and streaming work as with the other providers. Gemini 4 and Gemini 3 models
+attach thought signatures to their function calls and reject a follow-up
+request that does not send them back; the client keeps them in
+`response_messages` (as `ai::ProviderContentPart`), so the multi-step loop and
+conversations continued from `response_messages` replay them automatically.
+Thinking tokens count against `max_tokens`, so the client asks for the least
+thinking each model accepts (`thinkingLevel` `low` or `minimal`, or the
+smallest `thinkingBudget` on Gemini 2.5), like the lowest reasoning effort of
+the OpenAI client; streams request thought summaries and emit them as
+reasoning events (`StreamEvent::is_reasoning_delta`). Gemini 4 and Gemini 3.6+ models ignore `temperature` and
+`top_p`, and the client does not send them for those models. Embeddings are not supported by this provider yet.
 
 #### Streaming Responses
 
@@ -175,6 +214,53 @@ int main() {
 }
 ```
 
+#### OpenAI Responses API
+
+`ai::openai::create_client` speaks Chat Completions, which OpenAI-compatible
+providers implement too. The GPT-6 models (`kGpt62Astra`, `kGpt62Sol`,
+`kGpt61Terra`, `kGpt6Luna`) call tools through the Responses API
+(`POST /v1/responses`) only, so use `ai::openai::create_responses_client` for
+them. It takes the same arguments as `create_client` and the same
+`GenerateOptions`; neither client falls back to the other API.
+
+```cpp
+#include <ai/openai.h>
+#include <ai/tools.h>
+#include <iostream>
+
+// get_weather as in the Tool Calling example above
+
+int main() {
+    auto client = ai::openai::create_responses_client();
+
+    ai::GenerateOptions options(ai::openai::models::kGpt62Sol,
+                                "What's the weather like in San Francisco?");
+    options.tools = {
+        {"weather", ai::create_simple_tool(
+            "weather", "Get current weather for a location",
+            {{"location", "string"}}, get_weather)}};
+    options.max_steps = 3;
+
+    auto result = client.generate_text(options);
+    if (result) {
+        std::cout << result.text << std::endl;
+    }
+    return 0;
+}
+```
+
+Requests are stateless (`store: false`), and the whole conversation is sent
+with every request. When a reasoning model calls tools, the API requires its
+`reasoning` items to be sent back with the tool results. They are returned in
+`GenerateResult::response_messages` as `ai::ProviderContentPart`s, which the
+multi-step loop (`max_steps > 1`) replays automatically, as do the next
+requests when you append `response_messages` to your conversation. Other
+providers ignore these parts. `system` becomes the `instructions` of the
+request, `max_tokens` becomes `max_output_tokens` (it counts reasoning tokens
+too), and `response_format` becomes `text.format`. The Responses API has no
+`frequency_penalty`, `presence_penalty`, or `seed`; they are ignored with a
+warning. See the [Responses API example](examples/openai_responses.cpp).
+
 #### Async Tool Calling
 
 For long-running operations, you can define asynchronous tools:
@@ -252,7 +338,8 @@ int main() {
 ```
 
 The same retry-config overload is available from
-`ai::anthropic::create_client` for Anthropic requests.
+`ai::anthropic::create_client` for Anthropic requests and from
+`ai::google::create_client` for Gemini requests.
 
 #### Using OpenAI-Compatible APIs (OpenRouter, etc.)
 
@@ -299,25 +386,187 @@ This approach works with any OpenAI-compatible API provider. Simply provide:
 
 See the [OpenRouter example](examples/openrouter_example.cpp) for a complete demonstration.
 
+#### Amazon Bedrock Integration
+
+Amazon Bedrock provides access to foundation models from Anthropic, Amazon, Meta, and others through AWS infrastructure. The Bedrock provider uses the [Converse API](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html), including streaming and tool calling (with multi-step tool execution via `max_steps`), and uses AWS credentials and IAM for authentication. Assumed-role and web identity credentials are refreshed automatically.
+
+```cpp
+#include <ai/bedrock.h>
+#include <iostream>
+
+int main() {
+    // Uses AWS_REGION env var and default credential chain
+    auto client = ai::bedrock::create_client();
+    
+    ai::GenerateOptions options(ai::bedrock::models::kClaudeSonnet,
+                                "Explain cloud computing in simple terms.");
+    options.system = "You are a helpful assistant.";
+    auto result = client.generate_text(options);
+
+    if (result) {
+        std::cout << result.text << std::endl;
+    } else {
+        std::cerr << result.error_message() << std::endl;
+    }
+
+    return 0;
+}
+```
+
+##### Bedrock Configuration Options
+
+```cpp
+#include <ai/bedrock.h>
+
+int main() {
+    ai::bedrock::BedrockConfig config;
+    
+    // AWS region (required - or set AWS_REGION env var)
+    config.region = "us-east-1";
+    
+    // Optional: Use a specific AWS profile
+    config.profile = "my-profile";
+    
+    // Optional: Custom endpoint for VPC endpoints or local testing
+    config.endpoint_override = "https://vpce-xxx.bedrock-runtime.us-east-1.vpce.amazonaws.com";
+    
+    // Optional: Cross-account access via STS AssumeRole
+    config.role_arn = "arn:aws:iam::123456789012:role/BedrockAccessRole";
+    config.external_id = "my-external-id";  // Optional security enhancement
+    
+    // Optional: EKS/OIDC web identity federation
+    config.web_identity_token_file = "/var/run/secrets/eks.amazonaws.com/serviceaccount/token";
+    
+    auto client = ai::bedrock::create_client(config);
+    
+    return 0;
+}
+```
+
+##### Bedrock Security Configuration
+
+```cpp
+ai::bedrock::SecurityConfig security;
+
+// Concurrency control
+security.max_concurrent_requests = 10;
+
+// Timeouts
+security.connection_timeout = std::chrono::seconds(5);
+security.request_timeout = std::chrono::seconds(120);
+
+// Input validation limits
+security.max_prompt_length = 200000;
+security.max_message_length = 200000;
+
+ai::bedrock::BedrockConfig config;
+config.security = security;
+auto client = ai::bedrock::create_client(config);
+```
+
+##### Available Bedrock Models
+
+```cpp
+// Claude models (current generation), as global inference profile IDs:
+// current Claude models need an inference profile for on-demand invocation
+ai::bedrock::models::kClaudeFable    // global.anthropic.claude-fable-5-2
+ai::bedrock::models::kClaudeOpus     // global.anthropic.claude-opus-5-5
+ai::bedrock::models::kClaudeSonnet   // global.anthropic.claude-sonnet-5-5
+ai::bedrock::models::kClaudeHaiku    // global.anthropic.claude-haiku-5-5
+
+// Geographic inference profiles are passed as plain strings,
+// e.g. "us.anthropic.claude-sonnet-5-5" or "eu.anthropic.claude-opus-5-5"
+
+// Amazon Titan models
+ai::bedrock::models::kTitanTextExpress  // amazon.titan-text-express-v1
+ai::bedrock::models::kTitanTextLite     // amazon.titan-text-lite-v1
+ai::bedrock::models::kTitanTextPremier  // amazon.titan-text-premier-v1:0
+
+// Meta Llama models
+ai::bedrock::models::kLlama3_8B   // meta.llama3-8b-instruct-v1:0
+ai::bedrock::models::kLlama3_70B  // meta.llama3-70b-instruct-v1:0
+```
+
+##### Bedrock Streaming
+
+```cpp
+#include <ai/bedrock.h>
+#include <iostream>
+
+int main() {
+    auto client = ai::bedrock::create_client();
+    
+    ai::GenerateOptions options(ai::bedrock::models::kClaudeSonnet,
+                                "Write a haiku about programming.");
+    options.system = "You are a helpful assistant.";
+    auto stream = client.stream_text(ai::StreamOptions(options));
+
+    for (const auto& event : stream) {
+        if (event.is_text_delta()) {
+            std::cout << event.text_delta << std::flush;
+        } else if (event.is_error()) {
+            std::cerr << event.error.value_or("unknown error") << std::endl;
+        }
+    }
+    
+    return 0;
+}
+```
+
+##### Building with Bedrock Support
+
+Bedrock support requires the AWS SDK for C++. Enable it with the CMake option:
+
+```bash
+cmake -B build -DAI_SDK_ENABLE_BEDROCK=ON
+cmake --build build
+```
+
+On macOS with Homebrew:
+```bash
+brew install aws-sdk-cpp
+cmake -B build -DAI_SDK_ENABLE_BEDROCK=ON
+cmake --build build
+```
+
+### Models
+
+Model names are passed to the provider as is, so any model the provider serves works without an SDK update; the `ai::openai::models::k*` and `ai::anthropic::models::k*` constants are just well-known names. To see which models your API key can use, ask the provider:
+
+```cpp
+auto client = ai::anthropic::create_client();
+auto listed = client.list_models();  // GET /v1/models
+if (listed) {
+    for (const auto& model : listed.models) {
+        std::cout << model << "\n";
+    }
+} else {
+    std::cerr << listed.error_message() << "\n";
+}
+```
+
 ## Features
 
 ### Currently Supported
 
-- ✅ **Text Generation**: Generate text completions with OpenAI and Anthropic models
+- ✅ **Text Generation**: Generate text completions with OpenAI, Anthropic, Bedrock, and Google Gemini models
 - ✅ **Streaming**: Real-time streaming of generated content
 - ✅ **Multi-turn Conversations**: Support for conversation history
 - ✅ **Error Handling**: Comprehensive error handling with optional types
 - ✅ **Embeddings**: OpenAI text embedding support
+- ✅ **Amazon Bedrock**: AWS-native access to Claude, Titan, and Llama models
 
 ### Recently Added
 
 - ✅ **Tool Calling**: Function calling and tool integration with multi-step support
 - ✅ **Async Tools**: Asynchronous tool execution with parallel processing
 - ✅ **Configurable Retries**: Customizable retry behavior with exponential backoff
+- ✅ **Bedrock Provider**: Amazon Bedrock integration via the Converse API (optional, requires the AWS SDK for C++)
 
 ### Coming Soon
 
-- 🚧 **Additional Providers**: Google, Cohere, and other providers
+- 🚧 **Additional Providers**: Cohere and other providers
+- 🚧 **Bedrock Embeddings**: Text embedding support for Bedrock
 - 🚧 **Image Generation**: Support for image generation models
 
 ## Examples
@@ -331,7 +580,10 @@ Check out our [examples directory](examples/) for more comprehensive usage examp
 - [Retry Configuration](examples/retry_config_example.cpp)
 - [Basic Tool Calling](examples/tool_calling_basic.cpp)
 - [Multi-Step Tool Workflows](examples/tool_calling_multistep.cpp)
+- [OpenAI Responses API](examples/openai_responses.cpp) - Tool calling with the GPT-6 models
+- [Google Gemini](examples/google_gemini.cpp) - Native Gemini API: tools, structured output, streaming
 - [Async Tool Execution](examples/tool_calling_async.cpp)
+- [Search Team Documents with Loom](examples/loom_document_search.md)
 - [OpenRouter Integration](examples/openrouter_example.cpp) - Using OpenAI-compatible APIs
 
 

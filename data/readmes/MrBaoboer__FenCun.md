@@ -23,8 +23,8 @@
 
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/today-day-v13.png" width="240" alt="明韵主题下的今日推荐页：推荐卡、分寸建议与情境栏"/><br/><sub><b>今日之选 · 明韵</b></sub></td>
-    <td align="center"><img src="docs/screenshots/today-night-v13.png" width="240" alt="暗香主题下的今夜推荐页：同一套推荐卡的深色版本"/><br/><sub><b>今夜之选 · 暗香</b></sub></td>
+    <td align="center"><img src="docs/screenshots/today-day-v14.png" width="240" alt="明韵主题下的今日推荐页：推荐卡、分寸建议与情境栏"/><br/><sub><b>今日之选 · 明韵</b></sub></td>
+    <td align="center"><img src="docs/screenshots/today-night-v14.png" width="240" alt="暗香主题下的今夜推荐页：同一套推荐卡的深色版本"/><br/><sub><b>今夜之选 · 暗香</b></sub></td>
   </tr>
 </table>
 
@@ -62,9 +62,9 @@
 <div align="center">
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/library-v13.png" width="200" alt="香柜页：香水列表与搜索添加入口"/><br/><sub><b>香柜 · 搜名秒加 / 吃灰标记</b></sub></td>
-    <td align="center"><img src="docs/screenshots/journal-v13.png" width="200" alt="香历页：月历色点与当日快照"/><br/><sub><b>香历 · 穿香日历 / 一句话手记</b></sub></td>
-    <td align="center"><img src="docs/screenshots/profile-v13.png" width="200" alt="我的分寸页：偏好画像与用香记录"/><br/><sub><b>我的分寸 · 偏好画像 / 用香记录</b></sub></td>
+    <td align="center"><img src="docs/screenshots/library-v14.png" width="200" alt="香柜页：香水列表与搜索添加入口"/><br/><sub><b>香柜 · 搜名秒加 / 吃灰标记</b></sub></td>
+    <td align="center"><img src="docs/screenshots/journal-v14.png" width="200" alt="香历页：月历色点与当日快照"/><br/><sub><b>香历 · 穿香日历 / 一句话手记</b></sub></td>
+    <td align="center"><img src="docs/screenshots/profile-v14.png" width="200" alt="我的分寸页：偏好画像与用香记录"/><br/><sub><b>我的分寸 · 偏好画像 / 用香记录</b></sub></td>
   </tr>
 </table>
 </div>
@@ -129,7 +129,7 @@ rank  =  score × 轮换新鲜度 F(d) × 换瓶隐式差评                ← 
 
 | 层 | 选型 | 说明 |
 |---|---|---|
-| 框架 | **Next.js 16.3**（App Router）+ **React 19.2** + **TypeScript 6** | 一仓库承载前端与轻后端 |
+| 框架 | **Next.js 16.4**（App Router）+ **React 19.3** + **TypeScript 6** | 一仓库承载前端与轻后端 |
 | 后端 | **Route Handlers** | 代理和风 / DeepSeek，保护 key + 缓存 + 限流 + 降级 |
 | 样式 | **Tailwind v4**（CSS-first `@theme` token，无 UI 库） | 昼夜双主题、自持字体 |
 | 决策 | **确定性规则引擎**（纯 TS） | 前端本地打分，可解释可单测 |
@@ -153,7 +153,7 @@ rank  =  score × 轮换新鲜度 F(d) × 换瓶隐式差评                ← 
 
 ## 本地运行
 
-需要 Node 24。
+需要 Node 26。
 
 ```bash
 npm install
@@ -183,7 +183,7 @@ SHOT_BASE=http://localhost:3100 npm run shot   # README 截图 → .scratch/shot
 SHOT_BASE=http://localhost:3100 npm run og     # 分享卡片与 PWA 图标 → public/
 ```
 
-两个脚本用无头浏览器拍站点自己的页面，目前只从 Windows 的固定路径找 Chrome 或 Edge（`scripts/shot.mjs` 的 `CHROME_CANDIDATES`），换平台要先改这份清单。
+两个脚本用无头浏览器拍站点自己的页面，通过 `scripts/find-chrome.mjs` 自动查找 Windows / macOS / Linux 上的 Chrome、Chromium 或 Edge，也支持 `CHROME_PATH` 环境变量覆盖。
 
 ---
 

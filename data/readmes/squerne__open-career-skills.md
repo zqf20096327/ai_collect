@@ -28,7 +28,7 @@ Run them locally in Claude Code or Claude Desktop, on your own subscription, wit
 
 ## The /apply pipeline
 
-The skills also compose into one end-to-end flow per job:
+The skills also compose into one end-to-end flow per job. Before it, `/rank` pre-scores a whole search with the same eligibility gate plus your deal-breakers, one read-only scorer per posting. After it, `/outcome` records what came back and drafts follow-ups and thank-you notes into `output/outbox/` for you to send.
 
 <picture>
   <img src="assets/terminal-apply.svg" alt="An /apply run: fit evaluation with an honest verdict, a hard stop for your call, drafting from your facts only, the reviewer restoring a mutated number, tracker entry" width="100%">
@@ -38,9 +38,11 @@ The reviewer is a separate subagent that audits every claim in the drafts agains
 
 ## Install
 
-### Option A: use this workspace (recommended)
+In Claude Code, fork the workspace (A) or install the plugin (B). In the Claude app, upload the plugin to Cowork (C). In another coding agent, open the fork (D).
 
-The repo is a ready-to-run Claude Code career workspace with file-based memory: your profile in `profile/`, your STAR stories in `story-bank/`, your content calendar in `content/`.
+### Option A: fork the workspace (recommended)
+
+The whole repo, as your own copy: the docs, the paste-able prompts, and a folder you can version. The repo is a ready-to-run Claude Code career workspace with file-based memory: your profile in `profile/`, your STAR stories in `story-bank/`, your content calendar in `content/`.
 
 ```bash
 # fork on GitHub first (keep your fork private if you plan to push), then:
@@ -55,7 +57,10 @@ claude
 
 ```
 /find-jobs        # real postings matching your profile, fit-triaged
+                  # (with tracker/companies.md, `node tools/scan.mjs` reads those boards for no tokens)
+/rank             # pre-score every new posting from a search, pick one for /apply
 /apply <url>      # the full pipeline: evaluate, draft, review, track
+/outcome          # record replies, archive what you sent, follow-up drafts in output/outbox/
 /optimize-cv      # paste a JD, get a tailored CV in output/
 /extract-story    # braindump a win, get a STAR story in story-bank/
 /mine-evidence    # harvest achievements from your git history
@@ -63,23 +68,66 @@ claude
 /cover-letter     # tailored letter in output/
 /mock-interview   # one question at a time, debrief at the end
 /upskill          # learning plan from gaps recurring across applications
+/voice            # once: learn your writing style from 2-3 things you wrote
 ```
 
-Your personal data (`profile/profile.md`, your stories, your calendar, everything in `output/`) is **git-ignored by design**: even if you push your fork publicly, your CV and metrics stay local.
+Your personal data (`profile/profile.md`, `profile/voice.md`, your stories, your calendar, everything in `output/` including drafts in `output/outbox/`) is **git-ignored by design**: even if you push your fork publicly, your CV and metrics stay local.
 
-### Option B: install individual skills
+### Option B: Claude Code plugin
 
-Copy any skill folder into your own project or user skills directory:
+The skills install as a plugin; your data lives in a folder of your own. A plugin update replaces the skills and never touches that folder.
 
 ```bash
-cp -r .claude/skills/ruthless-cv-optimizer ~/.claude/skills/
+claude plugin marketplace add squerne/open-career-skills
+claude plugin install career-skills@open-career-skills
+mkdir -p ~/career && cd ~/career && claude
+# then, inside Claude Code:
+/career-skills:start
 ```
 
-Works in Claude Code and Claude Desktop (any agent that reads `SKILL.md` skills). Without the workspace, skills ask you to paste your CV instead of reading `profile/`.
+`/career-skills:start` copies the templates, the workspace rules (`CLAUDE.md`) and the privacy `.gitignore` into the folder, then runs setup. Every command carries the plugin prefix: `/career-skills:apply`, `/career-skills:find-jobs`, and so on. Always start Claude in that folder for career work. To get new versions: `claude plugin update career-skills@open-career-skills` (each commit to this repo is a new version).
 
-### Option C: plain chat (ChatGPT, claude.ai, Gemini)
+Install from GitHub as above, not by adding a local clone as a marketplace: a local install copies the whole folder into the plugin cache, personal files included.
 
-The five writing skills have self-contained paste-able versions in [`prompts/`](prompts/). Paste one as your first message and follow along. You lose the file-based memory; the prompts tell you what to paste each time. (`/apply`, `/find-jobs`, `/upskill`, and `/mine-evidence` need file and web tools, so they are Claude Code only.)
+### Option C: Claude Cowork (zip upload)
+
+Build the zip (needs Node 18+ and git, nothing to install):
+
+```bash
+git clone https://github.com/squerne/open-career-skills.git
+cd open-career-skills
+node packaging/build-plugin-zip.mjs   # writes dist/career-skills.zip
+```
+
+Then in the Claude app: **Customize > Plugins > Add > Upload plugin**, and pick the zip. Start a Cowork task on the folder where you want your career files and run `/career-skills:start`. Use Cowork rather than chat: chat has no folder to keep your profile in, and it skips the `/apply` reviewer.
+
+### Option D: Codex, Cursor, Gemini CLI, Antigravity
+
+Clone or fork the repo as in Option A and open the folder in your tool. [`AGENTS.md`](AGENTS.md) points the agent at the same rules and files Claude uses, and the skills are also in `.agents/skills/` in the [Agent Skills](https://agentskills.io) format:
+
+| Tool | Rules | Skills |
+|---|---|---|
+| Codex | reads `AGENTS.md` | `.agents/skills/`, pick one with `$` or `/skills` |
+| Cursor | reads `AGENTS.md` | `.agents/skills/` and `.claude/skills/` (each skill may show twice: same file), pick one with `/` |
+| Gemini CLI | reads `AGENTS.md` through the repo's `.gemini/settings.json` | `.agents/skills/`, check with `/skills list` |
+| Antigravity | reads `AGENTS.md` | `.agents/skills/`, pick one with `/` |
+
+For a workflow, type it as you would in Claude Code (`/setup`, `/apply <url>`): the agent reads `.claude/commands/<name>.md` and follows it. The `/apply` reviewer needs a separate pass; tools without subagents ask you to run it in a fresh session. These tools are supported through their documented formats; the skills are tested end-to-end in Claude Code only.
+
+### Option E: install individual skills
+
+Copy any skill folder into your user skills directory:
+
+```bash
+cp -r .claude/skills/ruthless-cv-optimizer ~/.claude/skills/   # Claude Code
+cp -r .claude/skills/ruthless-cv-optimizer ~/.agents/skills/   # Codex, Gemini CLI, Cursor
+```
+
+Without the workspace, skills ask you to paste your CV instead of reading `profile/`.
+
+### Option F: plain chat (ChatGPT, claude.ai, Gemini)
+
+The five writing skills have self-contained paste-able versions in [`prompts/`](prompts/). Paste one as your first message and follow along. You lose the file-based memory; the prompts tell you what to paste each time. (`/apply`, `/rank`, `/outcome`, `/voice`, `/find-jobs`, `/upskill`, and `/mine-evidence` need file and web tools, so they need one of the options above.)
 
 ## Why we open-sourced this
 
@@ -103,7 +151,7 @@ If the flat files start feeling like the bottleneck, that's the moment we built 
 ## FAQ
 
 **Do these work with models other than Claude?**
-The `prompts/` versions work with any capable chat model. The `SKILL.md` versions target Claude Code / Claude Desktop.
+The `SKILL.md` versions also run in Codex, Cursor, Gemini CLI and Antigravity (Option D). The `prompts/` versions work with any capable chat model.
 
 **Why do the skills refuse to add metrics to my CV?**
 Because invented numbers are the fastest way to fail an interview. The skills ask you for the real figure; if you don't have one, an unquantified true bullet beats a quantified fake one.
@@ -114,14 +162,18 @@ LinkedIn's decoder-only ranking foundation model (published on arXiv, January 20
 **Is my data sent anywhere?**
 Only to the model provider you already use (Anthropic, OpenAI, ...). The workspace stores everything in local files, and the `.gitignore` keeps personal files out of your commits.
 
+**Can a job posting take over the agent?**
+It can try: a posting can hide text meant for the AI. Every posting goes through a local check before a skill reads it, and permission rules block the obvious ways to send data out. Neither is a guarantee. [SECURITY.md](SECURITY.md) says what is covered and what is not.
+
 **Can I contribute a skill?**
 Yes. See [CONTRIBUTING.md](CONTRIBUTING.md). The quality bar: no skill may fabricate user facts, ever.
 
 ## Acknowledgments / Credits
 
-This repo stands on ideas from two MIT-licensed projects, reimplemented (not copied) for this workspace:
+This repo stands on ideas from three MIT-licensed projects, reimplemented (not copied) for this workspace:
 
-- **[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)**: the fork-and-run workspace pattern, and the concepts behind our `/apply` drafter-reviewer pipeline, the application tracker, and `/upskill` gap analysis. If you want LaTeX/PDF CV output or Danish job-board CLIs, use his repo; it does both better than we ever will in Markdown.
+- **[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)**: the fork-and-run workspace pattern, and the concepts behind our `/apply` drafter-reviewer pipeline, the application tracker, and `/upskill` gap analysis. Its posting guard and permission lists (v1.7.3) are the model for our `tools/posting-check.mjs`, the `ask` and `deny` rules in `.claude/settings.json`, and the no-hooks rule in [SECURITY.md](SECURITY.md). If you want LaTeX/PDF CV output or Danish job-board CLIs, use his repo; it does both better than we ever will in Markdown.
+- **[career-ops-hq/career-ops](https://github.com/career-ops-hq/career-ops)**: the zero-token board scanner, a script that reads employers' boards and hands the agent only the new matches. Our `tools/scan.mjs`, its companies file and its seen file follow that design.
 - **[Play-New/apply-new](https://github.com/Play-New/apply-new)**: the principle that career evidence should come from work artifacts and that every prose claim should trace to underlying data. Our `evidence-miner` skill and the reviewer's groundedness audit are descendants of that idea.
 
 ## License

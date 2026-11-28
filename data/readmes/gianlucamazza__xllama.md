@@ -56,7 +56,7 @@ Series S, Developer Mode; not a speed claim. Provenance: [`xllama-demo-v1.5.6.mp
 ## What you can do
 
 - **Chat** — multi-turn pad UI with the default LFM2.5-350M model, plus other catalogue models you download.
-- **LAN API** — OpenAI-compatible completions on your local network; **off by default and has no authentication**.
+- **LAN API** — OpenAI-compatible and native Ollama chat (`/api/chat`, `/api/generate`, `/api/ps`) on your local network, a downloadable-model list (`/api/catalog`) and per-request reasoning control; **off by default and has no authentication**. See [docs/api-endpoint.md](docs/api-endpoint.md).
 - **Image generation** — SD-Turbo on the console. **Powered by Stability AI.**
 - **Benchmarks** — headless tok/s and platform probes on the console. See [bench/README.md](bench/README.md).
 - **Experimental fine-tuning** — on-device last-block fine-tune, host PEFT on a workstation, and serving a merged GGUF. The in-app _Train on my feedback_ flow is not yet walked end to end on a console.
@@ -84,6 +84,38 @@ curl -s http://<console-ip>:11434/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{"model":"lfm25-350m","messages":[{"role":"user","content":"hi"}]}'
 ```
+
+Each chat model carries its own sampling defaults, so a request sets only what it wants to change. Read a model's values from `/v1/models`:
+
+```bash
+curl -s http://<console-ip>:11434/v1/models |
+  python3 -c 'import json,sys; m={x["id"]:x for x in json.load(sys.stdin)["data"]}; print(json.dumps(m["lfm25-1.2b-instruct"]["sampling"], indent=2))'
+```
+
+```json
+{
+  "temperature": 0.1,
+  "top_p": 0.9,
+  "top_k": 50,
+  "repetition_penalty": 1.05,
+  "source": {
+    "temperature": "model",
+    "top_p": "default",
+    "top_k": "model",
+    "repetition_penalty": "model"
+  }
+}
+```
+
+`model` values come from the model's card in the catalogue ([measured](bench/results/2026-11-27-lfm25-card-sampling/)); `default` is the global default. This request changes only the temperature, and keeps the model's other three values:
+
+```bash
+curl -s http://<console-ip>:11434/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"lfm25-1.2b-instruct","temperature":0.7,"messages":[{"role":"user","content":"hi"}]}'
+```
+
+A field the request sets applies to that request only. The order of the layers is in [Discovery](docs/api-endpoint.md#discovery-health-and-v1models).
 
 ## How it works
 

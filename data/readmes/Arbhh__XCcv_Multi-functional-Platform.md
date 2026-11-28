@@ -9,7 +9,7 @@ XCcv 是一个面向工业视觉场景的**离线桌面端**多功能深度学�
 （结构化剪枝 / TensorRT 加速）、**流程图编排**（57 个内置算子）与 **缺陷样本合成** 工具。
 零基础用户通过桌面 UI 即可完成一个视觉模型从数据到权重再到产线服务的完整落地，
 全程本地运行、数据不出内网。
-界面支持**中文 / English 一键切换**（主界面「设置」中切换，全平台同步生效）。
+界面支持**中文 / English 一键切换**，主界面「设置」中切换后全平台生效。
 
 ![XCcv 主界面（AI 平台）](docs/images/main.png)
 
@@ -43,59 +43,74 @@ XCcv 是一个面向工业视觉场景的**离线桌面端**多功能深度学�
 
 ## 安装
 
+**一键安装（推荐）**：双击根目录 `install.bat`——自动探测 GPU 与驱动、
+选择 torch 安装源、创建 `venv` 虚拟环境、安装依赖并写入 `python_path.txt`，
+最后运行环境体检给出双语结论；失败分支（无 GPU / 无网 / 代理 / 权限）有中文指引。
+
+**手动安装**（等价步骤）：
+
 ```bat
 :: 1) 创建并激活虚拟环境（Python 3.11）
 python -m venv venv
 venv\Scripts\activate
 
-:: 2) 安装 PyTorch（按官方源选择 CUDA / CPU 版本，示例为 CUDA 12.8）
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+:: 2) 安装 PyTorch（版本矩阵：torch==2.9.1 + torchvision==0.24.1，与 CI 一致；
+::    本地按显卡选源，示例为 CUDA 12.8；ultralytics 8.4.7 约束 torch<2.10，
+::    请勿安装 torch 2.10 及以上）
+pip install torch==2.9.1 torchvision==0.24.1 --index-url https://download.pytorch.org/whl/cu128
 
 :: 3) 安装其余依赖
 pip install -r requirements.txt
 ```
 
+> **torch 源与版本矩阵口径**：版本固定为 torch==2.9.1 + torchvision==0.24.1。
+> 本地按显卡选源——较新的 NVIDIA 驱动/RTX 50 系用 `cu128`，较旧驱动可退
+> `cu126`；**CI 用 CPU 源**（`--index-url https://download.pytorch.org/whl/cpu`），
+> 无 NVIDIA 显卡的机器同样用 CPU 源。三方口径（README / requirements.txt 注释 /
+> ci.yml）由 `tools/doc_reconcile.py` 依赖对账保障一致。
+
 ## 快速开始
 
 > **启动环境（重要）**：主界面、流程画布、缺陷样本合成都依赖 PyQtWebEngine。
-> `run_*.bat` 为纯 ASCII 脚本，**不要求本目录存在 venv**，按下列优先级逐个实测
-> （唯一的判据是能否 `import PyQt5.QtWebEngineWidgets`）：
+> 根目录 `run_main.bat` 与 `install.bat` 为纯 ASCII 脚本，**不要求本目录存在 venv**，
+> 按下列优先级逐个实测；
+> 其余平台入口在 `scripts\`（自动回溯仓库根，从任何位置双击均可用）：
 >
 > 1. `XCCV_PY` 环境变量；
 > 2. 本目录 `python_path.txt`（一行：指向 python.exe 的完整路径）；
 > 3. PATH 中的 `python`；
-> 4. `py` 启动器（`py -3`）；
-> 5. 本目录 `venv` / `.venv`（可选兜底）。
+> 4. `py` 启动器；
+> 5. 本目录 `venv` / `.venv`。
 >
 > 全部不可用时输出英文指引，并调用 `tools\env_check.py` 打印中文诊断（列出每个候选
 > 是否可用及失败原因）。推荐在目标机器上写一行 `python_path.txt`，例如：
-> `<项目目录>\venv\Scripts\python.exe`（该文件已加入 .gitignore，每台机器可不同）。
+> `<项目目录>\venv\Scripts\python.exe`（已加入 .gitignore）。
 
-双击 `run_main.bat`（或 `python -m xccv.app`）打开主界面，按卡片进入各平台：
+双击根目录 `run_main.bat`（或 `python -m xccv.app`）打开主界面，按卡片进入各平台：
 
 1. **标注**：新建项目 → 导入图片 → 绘制矩形 / 多边形（可选按 S 使用 AI 智能多边形）；
 2. **训练**：选择项目与模型（分类 / 检测 / 分割 / 异常检测 / OCR）→ 快速配置或专家模式 → 开始训练，实时查看曲线与逐类指标；
 3. **测试**：加载项目最新模型（best.pt）→ 单图 / 批量推理 → 标准页看结果，或切「项目复盘」页：
    先「已评估」按 正确 / 漏检 / 过检 调阈值，再切「未评估」看生产图 OK / NG；支持复判回流与 A/B 比对；
-4. **部署平台**（左侧导航同级模块）：启动 HTTP 推理服务 → 加载模型/流程为常驻 API →
+4. **部署平台**：启动 HTTP 推理服务 → 加载模型/流程为常驻 API →
    单帧 / 批量 / WebSocket 推理；C# 测试卡片一键编译运行 WinForms Demo；
-5. **流程图**（左侧导航同级模块）：选择数据路径与流程 JSON →「运行流程」看单图结果，
+5. **流程图**：选择数据路径与流程 JSON →「运行流程」看单图结果，
    或「编辑流程」在画布中拖拽 AI / 传统算子编排，支持打包为 `.xvap` 与批量运行；
 6. **模型工具**：训练前/后剪枝生成轻量模型；把 best.pt 导出为 TensorRT 引擎（.engine）提速产线推理；
 7. **缺陷样本合成**（可选）：主界面卡片进入，合成缺陷样本扩充训练集；
 8. **界面语言**：主界面「设置」→「界面语言」选 English，保存后全平台窗口自动切换。
 
-命令行入口（等价于主界面卡片）：
+命令行入口（等价于主界面卡片，均在 `scripts\`）：
 
 ```bat
-run_annotation.bat   :: 标注平台
-run_training.bat     :: 训练平台
-run_testing.bat      :: 测试平台
-run_flow.bat         :: 流程图（独立窗口；主界面左侧导航亦可进入）
-run_modeltools.bat   :: 模型工具（剪枝 / TensorRT 加速）
-run_deploy.bat       :: 部署平台（推理服务 / 模型加载 / C# 测试）
-run_service.bat      :: 推理服务（无界面服务进程）
-run_defectgen.bat    :: 缺陷样本合成
+scripts\run_annotation.bat   :: 标注平台
+scripts\run_training.bat     :: 训练平台
+scripts\run_testing.bat      :: 测试平台
+scripts\run_flow.bat         :: 流程图（独立窗口；主界面左侧导航亦可进入）
+scripts\run_modeltools.bat   :: 模型工具（剪枝 / TensorRT 加速）
+scripts\run_deploy.bat       :: 部署平台（推理服务 / 模型加载 / C# 测试）
+scripts\run_service.bat      :: 推理服务（无界面服务进程）
+scripts\run_defectgen.bat    :: 缺陷样本合成
 ```
 
 推理服务也可直接以命令行启动：`python -m xccv.service.main --host 127.0.0.1 --port 8600`
@@ -107,44 +122,38 @@ run_defectgen.bat    :: 缺陷样本合成
 
 **文档索引**：项目简介见 [docs/XCcv多功能视觉平台_项目简介.docx](docs/XCcv多功能视觉平台_项目简介.docx)
 （English: [docs/XCcv多功能视觉平台_项目简介_EN.docx](docs/XCcv多功能视觉平台_项目简介_EN.docx)）；
-安装环境、权重获取、标注、训练、部署与 0.7.x 迁移等问题见
+安装环境、权重获取、标注、训练、部署等问题见
 [docs/FAQ.md](docs/FAQ.md)（English: [docs/FAQ_EN.md](docs/FAQ_EN.md)）。
 
-### 可选：权重与示例数据（均不随仓库分发）
+### 可选：权重与示例数据
 
 > **本仓库不分发任何模型权重与示例数据**。权重按各自发布方许可由使用者自行获取；
 > 示例数据以独立数据包分发。仓库与源码包内只有代码、文档与界面图标。
 
 | 资源 | 获取方式 | 放置位置 |
 |---|---|---|
-| SAM 系列（AI 智能标注） | 官方渠道自取（如 `sam2.1_t.pt`、`mobile_sam.pt`），遵循发布方许可 | `weights/sam/` |
-| DINO ViT-B/8（CIF） | 官方渠道自取 | `weights/dino/`（或环境变量 `XCCV_DINO_CKPT`） |
-| DINOv2（SubspaceAD） | 官方渠道自取；国内网络可设 `HF_ENDPOINT=https://hf-mirror.com` | `weights/dinov2/`（或 `XCCV_DINOV2_CKPT`） |
-| YOLO COCO / torchvision 基准权重 | `python xccv/engine/weights/download_weights.py` 一键下载（仅本机） | `xccv/engine/weights/` |
+| SAM 系列（AI 智能标注） | `python tools/download_weights.py --family sam` 一键下载（许可声明随输出） | `xccv/engine/weights/sam/` |
+| DINO ViT-B/8 + DINOv2（CIF / SubspaceAD） | `python tools/download_weights.py --family dino` 一键下载；国内网络可设 `HF_ENDPOINT=https://hf-mirror.com` | `xccv/engine/weights/dino/`、`xccv/engine/weights/dinov2/`（或环境变量 `XCCV_DINO_CKPT` / `XCCV_DINOV2_CKPT`） |
+| YOLO COCO / torchvision 基准权重 | `python tools/download_weights.py --family yolo`（复用训练链路的多源下载与校验） | `xccv/engine/weights/` 各族子目录（`--list` 查看落点） |
 | 缺陷合成示例数据（约 33 MB） | 下载 `XCcv-Platform-testdata-0.8.0.zip` | 解压到 `xccv/defectgen/`（得到 `testdata/`） |
-| maskrcnn18 slim 初始权重 | `python tools/build_maskrcnn18_init.py` 自建；或 `tools/convert_mmdet_r18.py` 转换 mmdet 权重 | `weights/` |
+| maskrcnn18 slim 初始权重 | `python tools/build_maskrcnn18_init.py` 自建；或 `tools/convert_mmdet_r18.py` 转换 mmdet 权重 | `xccv/engine/weights/` |
 
-缺失时相关功能给出明确指引，其余功能不受影响。`.gitignore` 已排除
-`weights/`、`xccv/engine/weights/`、`xccv/defectgen/testdata/` 与
+缺失时相关功能给出明确指引，其余功能不受影响。全部模型权重统一存放于引擎
+权重目录 `xccv/engine/weights/`（安装态为 `<安装根>/weights/`）；
+`.gitignore` 已排除该目录运行时产物、`xccv/defectgen/testdata/` 与
 `*.pt / *.pth / *.onnx / *.engine / *.xva / *.xcs`。
-
-### 从 0.7.x 迁移
-
-0.8.0 起模型权重为**明文** `best.pt` / `.engine`（训练产物不再封装加密容器）；
-旧版的加密权重容器（`.xva` / `.xcs`）不再支持加载——加载时会得到明确提示，
-请用 0.8.0 重新训练或重新导出。
 
 ## 目录结构
 
 ```
-XCcv-Multi-functional platform/
+XCcv-Multi-functional-Platform/
 ├── xccv/                  # 主包
 │   ├── annotation/        #   标注平台（labelme 宿主 + AI 智能标注）
 │   ├── training/          #   训练平台
 │   ├── testing/           #   测试平台（标准页 + 项目复盘页）
 │   ├── deploy_platform.py #   部署平台（推理服务窗口 / 模型加载 / C# 测试）
 │   ├── service/           #   HTTP 推理服务（FastAPI + C# SDK 与 Demo）
-│   ├── modeltools/        #   模型工具窗口（剪枝 / TensorRT 加速）+ 流程画布宿主
+│   ├── modeltools/        #   模型工具窗口（剪枝 / TensorRT / 百宝箱）+ 流程画布宿主
 │   ├── defectgen/         #   缺陷样本合成（FastAPI + 内嵌 Web）
 │   ├── flow_platform.py   #   流程图页（与 AI 平台同级）
 │   ├── workbench.py       #   传统算子工作台
@@ -152,19 +161,20 @@ XCcv-Multi-functional platform/
 │   │   ├── models/        #     14 种内置模型（含剪枝 / 导出支持）
 │   │   └── flow/          #     流程图引擎（类型化端口 IR / 执行器 / 57 算子）
 │   └── assets/            #   图标资源
-├── labelme/               # vendored labelme 5.8.1（GPLv3，含本地修改，
-│                          #   清单见 labelme/MODIFICATIONS.md）
-├── tests/                 # 单元测试（含 tests/modules 模块行为锁）
-├── tools/                 # 环境体检 / 文档对账 / 逐模块测试运行器
-├── docs/                  # 快速上手 / 配图
-├── licenses/              # 许可证文本（AGPL-3.0 / labelme GPLv3 / CIF MIT /
-│                          #   SubspaceAD Apache-2.0 / BSD-3 / MIT）
+├── labelme/               # vendored labelme 5.8.1（GPLv3，修改清单见 MODIFICATIONS.md）
+├── tests/                 # 39 个领域测试模块 + tests/modules 行为锁
+├── scripts/               # 各平台启动脚本（自动回溯仓库根）+ run_tools.py
+├── tools/                 # 安装器 / 权重下载 / 环境体检 / 文档对账 / 测试运行器
+├── docs/                  # 快速上手 / FAQ / 使用文档 / 配图
+├── licenses/              # 许可证文本（AGPL-3.0 / GPLv3 / MIT / Apache-2.0 / BSD-3）
 ├── requirements.txt
-└── run_*.bat              # 各平台启动脚本
+├── run_main.bat           # 主界面启动脚本（根目录唯一启动入口）
+└── install.bat            # 一键环境安装器入口
 ```
 
 运行期数据（项目、日志、运行配置）生成于 `platform_data/`，不随仓库分发；
-引擎权重放 `weights/` 或 `xccv/engine/weights/`（均已 gitignore）。
+引擎权重（含运行时下载的 sam/ dino/ dinov2/ 等族子目录）统一放
+`xccv/engine/weights/`（安装态为 `<安装根>/weights/`，已 gitignore）。
 
 ## 许可
 

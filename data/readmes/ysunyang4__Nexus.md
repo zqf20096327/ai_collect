@@ -7,8 +7,8 @@
 <h1 align="center">Nexus</h1>
 
 <p align="center">
-  <strong>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</strong><br>
-  <i>Powered by the LocalBridge 332 Canonical MCP Tool Architecture & Durable Action Ledger</i>
+  <strong>Turn Web AI into a Codex-Grade Local Agent — and Supercharge Native Clients (Cursor, Antigravity, Claude Code)</strong><br>
+  <i>3 Meta-Tools · 332 Canonical Capabilities · Built-in Token Guardrail · Action Ledger WAL</i>
 </p>
 
 <p align="center">
@@ -20,20 +20,26 @@
   <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="332 MCP Tools">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-2563EB?labelColor=1E40AF&amp;style=flat-square" height="20" alt="License AGPL-3.0"></a>
 </p>
-<!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
-
-Nexus is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP with Bearer tokens). Ask your assistant to inspect repositories, edit code, run builds, debug, or orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
-
 <p align="center">
   <a href="https://trendshift.io/repositories/358532?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-358532" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/358532/daily?language=TypeScript" alt="ysunyang4%2FNexus | Trendshift" width="250" height="55"/></a>
 </p>
+<!-- M8ven Publisher Verification: [![M8ven Verified](https://m8ven.ai/badge/mcp/ysunyang4-nexus-9j6zw4?variant=verified&v=1e0eb455a089a7be305d42fcbb972652)](https://m8ven.ai/mcp/ysunyang4-nexus-9j6zw4?s=readme) -->
+
+**Nexus** is a local MCP execution gateway with two ways to run—giving browser-based AI chats Codex-style workstation autonomy at zero API cost, and giving native AI coding clients desktop/3D control without blowing up their context window.
+
+### Two Ways to Power Your AI
+
+| Mode | What It Unlocks | Why It Matters |
+| :--- | :--- | :--- |
+| **🌐 Web AI → Codex-Grade Local Agent**<br>*(Paired with [WebAgent](https://github.com/ysunyang4/webagent))* | Bridge **ChatGPT, DeepSeek, Claude, Gemini, or Kimi** web tabs directly to local repositories, terminals, LSP, Git worktrees, and builds. | **Zero API key cost.** Turn your existing web AI subscription into a local coder and test-fix operator inside strict path sandboxes. |
+| **⚡ Native Clients → Token-Lean & Supercharged**<br>*(Cursor, Antigravity, Claude Code, Codex CLI, Windsurf)* | Connect via one Streamable HTTP MCP endpoint (`http://127.0.0.1:18080/mcp`) to unlock **Blender, Unity, Playwright, Windows Computer Use, and Action Ledger WAL**. | **Built-in Token Guardrail (`token-guardrail`):**<br>• **On-demand discovery (`nexus_discover_tools`)**: Search tools instead of dumping 332 schemas into context.<br>• **Single-turn batching (`nexus_run_script`)**: Run multi-step Python/Node workflows locally with zero intermediate round-trip tokens.<br>• **Payload stripping & handles**: Offload Base64 screenshots to disk paths, middle-truncate giant logs, and paginate large lists via `HandleManager`. |
 
 ---
 
 ## 1. Overview
 
 ```text
- ChatGPT / DeepSeek / Web AI Assistants
+ Web AI (via WebAgent)  |  Native MCP Clients (Cursor / Antigravity / Claude Code / Codex)
                │
                │ Secure MCP Tunnel (Streamable HTTP, Bearer lb_xxx)
                ▼
@@ -364,7 +370,7 @@ cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 
 ## 12. License, Anti-Rebranding & Security Disclaimer
 
-- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.4 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
+- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.4.1 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
   - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.
   - **Attribution and accurate origin**: Preserve copyright, license and other legal notices as the AGPL requires, indicate relevant changes, and do not falsely represent modified builds as official releases. The AGPL's termination and reinstatement provisions are governed by Section 8; this README does not add an automatic-termination rule.
   - **Branding**: The software license does not automatically grant trademark rights or permission to imply official endorsement. See [Brand Guidelines](BRAND_GUIDELINES.md). These guidelines do not override AGPL-granted software freedoms.

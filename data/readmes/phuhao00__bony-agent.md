@@ -78,7 +78,6 @@
 | 🔍 内容安全审核         | 内置风险词检测 + AI 二次审核                                                                     |
 | 🤝 多 Agent 协作        | LangGraph Supervisor 编排，**27+** 专业 Agent 协同工作                                           |
 | 🌐 Computer Use         | Playwright 浏览器 GUI 自动化，LLM 规划执行网页操作                                              |
-| 🦞 OpenClaw             | 分布式多 Agent 协作网络，支持节点发现与群聊                                                      |
 | 🧑‍💻 AI 伙伴 + 桌面宠物 | 可交互数字人 companion + 5 款桌面宠物角色（Kitty/熊二/GG Bond/3D Peppa 等），支持语音对话         |
 | 🏭 爆款流水线           | 一键式内容生产流水线，从选题到发布全流程                                                         |
 | 🧠 My context           | 后端拼装的知识图谱可视化 + 上下文记忆（Memory）检索与管理                                       |
@@ -286,7 +285,6 @@ docker compose up -d --build
 | `reviewer_agent` | 内容审查 | 合规、趋势洞察、文案润色 |
 | `system_assistant` | 系统维护 | 软件安装/卸载、网络修复、环境配置 |
 | `desktop_operator_agent` | 桌面操作 | 本机软件 CLI/GUI 自动化 |
-| `programmer_agent` | 编程助手 | Git/SSH、中间件运维、测试与代码工具 |
 | `product_manager_agent` | 产品经理 | 市场洞察、产品创意、PM 方法论 |
 | `legal_agent` | 法律顾问 | 合同审查、合规体检、法规政策分析 |
 | `ad_campaign_agent` | 广告投放 | 投放策略、创意文案、受众定向 |
@@ -294,9 +292,6 @@ docker compose up -d --build
 | `procurement_agent` | 采购助手 | 供应商评估、RFQ 起草、成本优化 |
 | `game_art_agent` | 游戏美术 | 视觉风格、角色场景 Brief、UI 规范 |
 | `game_design_agent` | 游戏策划 | 概念案、核心循环、系统设计、关卡规划 |
-| `code_analyst_agent` | 代码分析 | 符号搜索、调用关系、架构建议 |
-| `architect_agent` | 项目架构师 | 目录结构、命名规范、代码质量 |
-| `lobster_agent` | OpenClaw 分布式 | 热点收集 → AI 克隆内容 → 多平台发布 |
 | `image_hd_agent` | 高清图片 | 高清放大与图像细节增强 |
 
 ---
@@ -307,7 +302,8 @@ docker compose up -d --build
 | ------------ | ------------------------------------------------------------------------------------- |
 | 前端         | Next.js 16 (App Router)，Tailwind CSS 4，**40+ 页面**；明暗主题统一走 CSS 变量       |
 | 后端         | FastAPI, Python 3.10+                                                                 |
-| AI 编排      | LangChain, LangGraph（Supervisor 多 Agent + Plan-Execute）                            |
+| AI Runtime   | **DeepSeek Harness**（默认）；`AI_RUNTIME=legacy` 回退 LangGraph ReAct                 |
+| AI 编排      | DSH Agent Loop + LangChain 工具（经 MCP 桥接）；Orchestrator 仍可用 LangGraph 图编排   |
 | 向量检索     | LlamaIndex（ChromaDB / 本地 JSON fallback）                                           |
 | 定时调度     | APScheduler                                                                           |
 | 浏览器自动化 | Microsoft Playwright                                                                  |
@@ -337,7 +333,6 @@ ai-media-agent/
 │   │   ├── long_video_agent.py     # 📽️ 长视频工坊 Agent
 │   │   ├── image_edit_agent.py     # 🖼️ 图片编辑 Agent（11 种模式）
 │   │   ├── image_hd_agent.py       # 🔍 高清放大 Agent
-│   │   ├── lobster_bot.py          # 🦞 OpenClaw 分布式 Agent
 │   │   ├── copywriter_agent.py     # ✍️ 文案创作 Agent
 │   │   ├── script_writer_agent.py  # 📋 脚本生成 Agent
 │   │   └── registry.py             # Agent 注册中心
@@ -364,12 +359,11 @@ ai-media-agent/
 │   │   ├── opencut_tools.py        # OpenCut 剪辑工具
 │   │   ├── material_tools.py       # 素材管理工具
 │   │   ├── psd_element_extract.py  # PSD 元素提取
-│   │   ├── code_analysis_tools.py  # 代码分析工具
 │   │   └── connectors/             # 平台连接器（14+ 平台）
 │   ├── services/
 │   │   ├── scheduler.py            # APScheduler 定时发布
 │   │   └── computer_use_service.py # Computer Use 浏览器自动化
-│   └── core/                       # LLM 供应商路由 & 能力注册
+│   └── core/                       # DSH runtime / DshChatModel / LLM 供应商映射 & 能力注册
 ├── web/                            # Next.js 前端（40+ 页面）
 │   ├── app/
 │   │   ├── page.tsx                # AI 对话主页
@@ -398,13 +392,11 @@ ai-media-agent/
 │   │   ├── tasks/                  # 📋 任务管理中心
 │   │   ├── creative-apps/          # 🎨 创意应用入口
 │   │   ├── computer-use/           # 🌐 Computer Use
-│   │   ├── hermes-agent/           # Hermes Agent
 │   │   ├── lark-cli/               # Lark CLI 助手
 │   │   ├── platforms/              # 平台管理
 │   │   ├── knowledge/              # RAG 知识库管理
 │   │   ├── history/                # 历史记录
 │   │   ├── moderation/             # 内容审核
-│   │   ├── openclaw/               # 🦞 OpenClaw
 │   │   ├── ai-news/                # 📰 AI 资讯日报
 │   │   ├── financial-news/         # 💹 金融资讯
 │   │   ├── workflows/              # 可视化工作流

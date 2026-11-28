@@ -18,9 +18,9 @@
 ---
 
 <p align="center">
-  <img src="docs/screenshot-1.png" alt="AI Chat Interface" width="75%">
+  <img src="docs/screenshot-1.png" alt="Morning Brief" width="75%">
   <br>
-  <em>AI 对话界面 — 自动调用 web_search / read_file / database 工具</em>
+  <em>早安简报 — 实时汇率、大宗商品行情与市场新闻，由 AI 联网检索后生成</em>
 </p>
 
 ---
@@ -67,10 +67,25 @@ irm https://raw.githubusercontent.com/chefroger/smart-trade-ai/main/scripts/inst
 ---
 
 <p align="center">
-  <img src="docs/screenshot-2.png" alt="Customer & Cron Panel" width="75%">
+  <img src="docs/screenshot-2.png" alt="Customer Management" width="75%">
   <br>
-  <em>客户管理 + 定时任务面板</em>
+  <em>客户管理 — 分级 / 标签 / 商机阶段 / 逾期提醒；右侧常驻今日简报、待办与定时任务</em>
 </p>
+
+---
+
+## 界面一览
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="docs/screenshot-3.png" alt="客户画像"><br><sub>客户画像 — 联系人、喜好与禁忌、互动时间线，可从聊天/邮件一键提取</sub></td>
+    <td align="center" width="50%"><img src="docs/screenshot-4.png" alt="定时任务"><br><sub>定时任务 — 早安简报、邮件处理、LinkedIn 内容、B2B 平台检查</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="docs/screenshot-5.png" alt="验厂计划"><br><sub>验厂计划 — 行程、分工、检查清单、内部风险与对外说明，可一键打印</sub></td>
+    <td align="center" width="50%"><img src="docs/screenshot-6.png" alt="询盘回复"><br><sub>询盘回复 — AI 结合客户档案与订单记录生成回复草稿</sub></td>
+  </tr>
+</table>
 
 ---
 

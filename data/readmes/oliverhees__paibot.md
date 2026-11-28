@@ -107,7 +107,7 @@ Die neuesten KI-Agenten kommen oft gar nicht oder nur eingeschränkt nach Europa
 | **Deine Daten**  | zuschaltbare Datenschleuse: Namen, E-Mails, IBANs werden vor dem Modell maskiert und in der Antwort zurückgetauscht                                                                                               |
 | **Rechte**       | jede Aktion läuft durch ein Tor mit festen Regeln ohne KI und bekommt einen Beleg; Werkzeuge mit eigenen Rechten je Bot sind geplant                                                                              |
 | **Kontrolle**    | Belege zu jeder Aktion, im Browser prüfbar; eine Freigabe vor Aktionen, die etwas nach außen schicken, ist geplant                                                                                                |
-| **Transparenz**  | Code öffentlich einsehbar, jede Folge als nachbaubarer Stand                                                                                                                                                      |
+| **Transparenz**  | Code öffentlich einsehbar, jeder Ausbaustand als nachbaubare Grundlage                                                                                                                                            |
 
 ## Funktionen
 
@@ -326,9 +326,9 @@ PaiBot und die Datenschleuse sind technische Schutzmaßnahmen, keine Rechtsberat
 </details>
 
 <details>
-<summary><b>Wie oft kommen neue Folgen?</b></summary>
+<summary><b>Wie oft gibt es neue Fortschritte?</b></summary>
 
-Regelmäßig, mehrmals pro Woche. Abonniere den Kanal und gib dem Repo einen Stern ⭐, dann siehst du sofort, wenn es weitergeht.
+Regelmäßig. Gib dem Repo einen Stern ⭐ und schau gelegentlich nach neuen Änderungen, dann bleibst du auf dem Laufenden.
 
 </details>
 
@@ -336,7 +336,7 @@ Regelmäßig, mehrmals pro Woche. Abonniere den Kanal und gib dem Repo einen Ste
 
 - ⭐ **Gib dem Repo einen Stern**, wenn dir das Projekt gefällt – das hilft enorm.
 - 🗳️ **Entscheide mit:** auf [paibot.de/mitentscheiden](https://paibot.de/mitentscheiden) schlägst du Funktionen vor und stimmst für Vorschläge anderer (bestätigte E-Mail-Adresse nötig). Den Stand siehst du im [Bauplan](https://paibot.de/bauplan), die Anleitungen in der [Doku](docs/README.md).
-- 💬 **Community auf [aiianer.de](https://aiianer.de):** Deep Dives zu jeder Folge, gemeinsame Coding-Sessions zum Mitbauen und Hilfe, wenn es hakt.
+- 💬 **Community auf [aiianer.de](https://aiianer.de):** Deep Dives zu einzelnen Themen, gemeinsame Coding-Sessions zum Mitbauen und Hilfe, wenn es hakt.
 - 🐛 **Fehler oder Ideen?** Eröffne ein [Issue](https://github.com/oliverhees/paibot/issues/new/choose).
 - 🛠️ **Selbst beitragen?** Lies zuerst [`CONTRIBUTING.md`](CONTRIBUTING.md) (Beitragsvereinbarung nötig).
 - 🔒 **Sicherheitslücke gefunden?** Bitte nicht öffentlich melden, sondern wie in [`SECURITY.md`](SECURITY.md) beschrieben.

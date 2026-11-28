@@ -7,12 +7,12 @@ PRAXO-CORE is a dependency-free TypeScript framework for building tool-using AI 
 | Field | Value |
 | --- | --- |
 | Package | `@axisvela/praxo-core` |
-| Registry | [npm](https://www.npmjs.com/package/@axisvela/praxo-core/v/0.10.0) |
-| Install | `npm install @axisvela/praxo-core@0.10.0` |
-| Source version | `0.10.0` |
-| Published version | `0.10.0` |
+| Registry | [npm](https://www.npmjs.com/package/@axisvela/praxo-core/v/0.10.1) |
+| Install | `npm install @axisvela/praxo-core@0.10.1` |
+| Source version | `0.10.1` |
+| Published version | `0.10.1` |
 | Publication status | published |
-| Canonical source tag | [`typescript/v0.10.0`](https://github.com/axisvela/praxo-core/tree/typescript/v0.10.0) |
+| Canonical source tag | [`typescript/v0.10.1`](https://github.com/axisvela/praxo-core/tree/typescript/v0.10.1) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/typescript/ |
@@ -31,7 +31,7 @@ PRAXO-CORE is a dependency-free TypeScript framework for building tool-using AI 
 Install the published package:
 
 ```bash
-npm install @axisvela/praxo-core@0.10.0
+npm install @axisvela/praxo-core@0.10.1
 ```
 
 ```ts
@@ -81,7 +81,7 @@ Runnable examples live under [`language/typescript/examples`](language/typescrip
 | --- | --- |
 | [advanced-delegation](language/typescript/examples/advanced-delegation) | This example shows an application-level parent/child agent pattern. The parent agent may call a `delegate` tool but not the child's `record` tool. The delegate tool runs a child... |
 | [checkpoint](language/typescript/examples/checkpoint) | This example uses published npm `@axisvela/praxo-core@0.9.0` to keep checkpoint storage application-owned while using the SDK allowlist for payload encoding. |
-| [consumer](language/typescript/examples/consumer) | This starter installs the published `@axisvela/praxo-core@0.10.0` package from npm in a separate application. It does not import the repository's TypeScript source. Node.js 20 o... |
+| [consumer](language/typescript/examples/consumer) | This starter installs the published `@axisvela/praxo-core@0.10.1` package from npm in a separate application. It does not import the repository's TypeScript source. Node.js 20 o... |
 | [event-sink](language/typescript/examples/event-sink) | This example uses published npm `@axisvela/praxo-core@0.9.0` to observe agent lifecycle and tool events without coupling the agent to a logging or telemetry backend. |
 | [hitl](language/typescript/examples/hitl) | This example demonstrates a write tool that requires human approval: |
 | [identity-policy](language/typescript/examples/identity-policy) | This example uses published npm `@axisvela/praxo-core@0.9.0` to bind a trusted principal to Core policy authorization. The application owns authentication and principal storage;... |

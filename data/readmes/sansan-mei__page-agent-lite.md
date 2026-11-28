@@ -30,7 +30,7 @@
 | 结果核对 | 等待网页反馈，核对字段、区域、URL 条件；结果不明时不重放操作 |
 | 记忆 | IndexedDB 网站/全局长期笔记，可查看、编辑、导出 |
 | 长任务 | 按上下文预算压缩旧过程，原始结果可按需读取 |
-| 模型 | 非流式 OpenAI Chat Completions 兼容接口，支持本机服务 |
+| 模型 | 非流式 OpenAI Chat Completions 兼容接口或 Claude（Anthropic Messages）接口，支持本机服务 |
 
 ## 快速开始
 
@@ -44,7 +44,7 @@
 逐页查看这些条目，找出符合条件的内容。
 ```
 
-需要 Chrome / Edge 120+，模型需支持 OpenAI 兼容工具调用（tools），或能稳定输出 JSON。源码安装更新后重新加载扩展并刷新网页。完整说明见 [使用指南](docs/usage.md)。
+需要 Chrome / Edge 120+，模型需支持工具调用（OpenAI tools 或 Claude tool use），或能稳定输出 JSON。源码安装更新后重新加载扩展并刷新网页。完整说明见 [使用指南](docs/usage.md)。
 
 ## 你的数据去哪了
 

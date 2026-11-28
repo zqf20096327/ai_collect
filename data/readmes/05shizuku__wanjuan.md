@@ -96,17 +96,18 @@ flowchart TB
 
 | 模块 | 现状 | 计划 |
 |---|---|---|
-| `fingerprint` | ✅ 已全线接线（v0.6.19 观察 + **v0.7.1 精确驱逐**） | `turn/end` 限流对账：seq < 表面最小值的零误驱逐（宿主压缩必从最老处收缩），其余保留观察 |
-| `gate` | 有测试（2 项）、未接线 | L2 决策层；阈值与 dsh 内联值（0.80/0.95）对齐后接入 |
+| `fingerprint` 类 | ❌ **v0.9.0-m5.3 类已删除**（M5.1 内联探针为维护版：readOk/drift 护栏 + 驱逐明细审计） | 采样对账算法在 git 历史 |收缩），其余保留观察 |
+| `gate` | ✅ **v0.9.0-m5.3 已拆分接线**（`classifyWaterMark` 纯函数，0.80/0.95 阈值单点化；旧增速门语义由 M5.2 降频生命周期取代） | L2 决策层如需增长门可基于此扩展 |
 | `nudge`（NudgeManager 类） | ✅ **v0.6.29 已接线**（M5.2 探针实证送达路径） | 80% 水位产出 → pre-step 注入模型 → `wj_compress` 命中即 accept / 未消费即 reject 降频；验收指标「主动压缩率 30%」观察中 |
 | `report.buildReport` | ✅ v0.6.19 已接线 | `wj_report` 现附完整月报段（命中率/责任归属/块统计；归因数值 M5 充实） |
-| `Observer` | 有测试（7 项）、未接线 | 与 Diagnoser 两套遥测待合并 |
-| `snapshot.json` | 接口预留 | M4.3 摊销压缩已以更简方式覆盖 |
+| `Observer` | ❌ **v0.9.0-m5.3 已删除**（薄壳被生产内联超越：k̂ 校准直连 estimator + baseline/degraded/持久化） | — |
 | **v0.7 模型自适应**（进行中） | 复审推演沉淀 + 模块审计 | ✅ **baseline 附加量模型已交付** · ✅ **M5.1 指纹精确驱逐已交付**（v0.7.4 判据升级：不在表面且宿主已推进到其后——覆盖最老收缩与中部空洞两种压缩形态，零误驱逐）· ✅ **启动回溯入账已交付**（挂载时从宿主表面反向重建历史，幂等；账本从此覆盖全会话）·（estFinal = estRaw × k̂ × 1.05 + baseline，结构性开销加法吸收，k̂ 回归纯估算误差）· 启动回溯入账（surface 反向重建历史）· 超窗口桥接降级 skip · 切窗主动预警 · 分批折叠（每批 ≤100K）· host-bootstrap 归因类别 · **工程卫生**：Math.min(...spread) 改 reduce（6 万条防栈溢出）· orphan-mut degrade · compress at=0 时间锚修正 · fsync 权衡评估 |
 
 `classifyMiss` 归因分类当前只产出 `new / unattributed`（`overrideMissKind` 注入口已预留），完整归因 **M5 交付**。
 
 ## ⚠️ 已知局限（如实披露）
+
+- **压缩流格式（v0.9.0）**：压缩流不再携带折叠消息元数据（fold/evict 的 `ids` 数组在重放时物化消息存根，等价承载 wj_unfold 计数/再折叠保护）。旧版本万卷读取新压缩流会静默缺失折叠消息记录——归档卷仍持全量历史、原文可达；跨版本混用请以最新版本为准。
 
 - **消息入账 tok 为启发式估算**：字符串与 ContentBlock 数组同口径（CJK 1.2 / 其他 0.25，v0.6.22 起数组分支已对齐）——非精确 tokenizer，残余偏差由 k̂ 校准吸收；入账走 estimator 的口径统一计划于 **v0.7**。
 - **归因分类未完成**：`missKind` 当前只产出 `new / unattributed`，完整归因 M5 交付。
@@ -133,7 +134,6 @@ flowchart TB
 
 \* 首会话被收编到根目录时，其 calib.json 落在数据根而非 sessions/<sid>/——owner 采纳路径的副作用，行为正确但排查时容易看漏（第三轮复审提示）。
 | `wanjuan.log.jsonl` | 审计日志 | 256KB 轮转留尾 100 行 |
-| `snapshot.json` | 预留快照接口 | 未启用（M4.3 摊销压缩已以更简方式覆盖该需求） |
 
 ## 🧭 快速开始（Quick Start）
 

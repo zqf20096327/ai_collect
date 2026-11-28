@@ -91,7 +91,8 @@ cargo run -p ulei-core --bin ulei -- contracts
 
 Release build and budgets: `ci/budgets.sh` measures the static musl binaries `ulei`,
 `ulei-inbox`, `ulei-engine`, `ulei-web` (and its `web-loopback-http` test build), `ulei-tg`,
-`ulei-garden`, `ulei-memory` and `ulei-connectors`, and the glibc helper `ulei-garden-embed`. The builds and the call are the last
+`ulei-garden`, `ulei-memory`, `ulei-connectors` and the garden's helper `ulei-garden-embed`, and that
+helper's glibc build with `onnx`, which is not released. The builds and the call are the last
 lines of [AGENTS.md, Commands](AGENTS.md#commands-all-must-pass-before-you-push).
 
 ## `ulei status`
@@ -109,7 +110,7 @@ sockets than the file names.
 
 ```text
 inbox: up /run/ulei/inbox.sock (ulei-inbox 0.0.1)
-queue: pending 0, leased 0, processing 0, deferred 0, uncertain 0
+queue: pending 0, leased 0, processing 0, deferred 0, uncertain 0, reconciled 0
 engine: up /run/ulei/engine.sock
 channel: up
 session: owner-session idle since 2026-01-01T09:00:00Z, queue 0, route main
@@ -129,6 +130,30 @@ Connection refused` or `engine: down <socket>: no answer within 5 s`; the other 
 reported. Every line, its down forms and reasons are in ADR-0040 section 5. Exit 0 when `inbox`,
 `engine`, `channel` and `qb` read `up`; 1 when one of them reads `down` or `unknown`; 2 for a
 usage error or a config without one of the four keys, with nothing probed.
+
+## `ulei inbox reconcile`
+
+```sh
+ulei inbox reconcile ID --outcome reconciled-delivered --note TEXT [--config PATH]
+```
+
+The owner closes an owner-inbox event that is `uncertain` although a later turn delivered its
+message (ADR-0099). It reads `inbox.socket` from `ulei.toml` (found as for `ulei status`) and asks
+the running `ulei-inbox serve` through C1 `reconcile`; it opens no database. Only an `uncertain`
+row closes: it becomes `done` with outcome `reconciled-delivered`, and the daemon stores one audit
+line (event, outcome, former reason, note, the caller's uid and pid, time) in the same
+transaction. The note is 1 to 500 characters, not blank, on one line; it is visible in the
+process list, so it never holds a secret. The `uncertain` count of `ulei status` drops by the
+closed event and its `queue` line counts the audit lines as `reconciled <n>`.
+
+```text
+reconciled hive:card-1:done: done, reconciled-delivered (was expired-processing), by uid 1000 pid 4242 at 2026-01-01T09:00:00Z
+```
+
+Exit 0 with that line; 1 with one stderr line when the inbox refused (`404 not_found: event not
+found`, `409 conflict: event is pending, not uncertain`, a row already reconciled reads `done
+(reconciled-delivered)`) or could not be reached; 2 with one stderr line, nothing sent, for
+another outcome, a missing, blank, multi-line or longer note, or an unusable config.
 
 ## `ulei-connectors`
 
@@ -229,12 +254,13 @@ code `exec_failed`, and the run takes it only as the line right after the Landlo
 
 The `release` job of every CI run builds the static `x86_64-unknown-linux-musl` binaries `ulei`,
 `ulei-inbox`, `ulei-engine`, `ulei-web`, `ulei-tg`, `ulei-connectors`, `ulei-memory`, `ulei-hive-mcp`,
-`ulei-priv` and `ulei-garden`, the garden's one glibc binary `ulei-garden-embed` (the embedder
-helper, dynamic because it opens ONNX Runtime with `dlopen`, ADR-0075), and the test connector
+`ulei-priv`, `ulei-garden` and the garden's embedder helper `ulei-garden-embed` with the encoder
+engine (ADR-0075, ADR-0104), and the test connector
 `connectors/test/` (its binary `ulei-connector-test` and its `connector.json`, kept in
 `deploy/connectors/test/`), twice, the second time from a clean target directory at another path,
 and fails unless both builds give the same `SHA256SUMS`, which lists every file by its relative
-path (ADR-0042 section 10, ADR-0056 section 6, ADR-0070, ADR-0075). Where to find a release of commit `<commit>`:
+path, and `deploy/install.sh --verify` accepts the release, so it holds and lists every binary
+the installer expects (ADR-0042 section 10, ADR-0056 section 6, ADR-0070, ADR-0075, ADR-0104). Where to find a release of commit `<commit>`:
 
 - the artifact `ulei-x86_64-unknown-linux-musl` on the run's summary page (Actions, the `CI` run
   of `<commit>`, Artifacts; the download needs a GitHub login): the eleven binaries, the
@@ -277,7 +303,9 @@ runner's `ulei-connectors serve` (ADR-0056), `ulei-memory.service`, the archive'
 `ulei-memory serve` (ADR-0070), `ulei-hive-mcp.service` (ADR-0071) and `ulei-garden.service`, the
 garden's `ulei-garden serve` with its embedder helper (ADR-0075), and the oneshot
 `ulei-night.service` with its timer `ulei-night.timer`, the night gardener `ulei-engine night`
-(ADR-0078). They run as the account that owns the deployment,
+(ADR-0078), the oneshot `ulei-uncertain.service` with its timer `ulei-uncertain.timer`, the
+uncertain alerter `ulei-tg uncertain` (ADR-0097), and the oneshot `ulei-hive-watchdog.service` with
+its timer `ulei-hive-watchdog.timer`, the hive's stall watchdog `hive.py watchdog` (ADR-0101). They run as the account that owns the deployment,
 start `ulei-engine` before the inbox and the channel, restart a daemon that exits non-zero, and
 allow writes only to these directories, in the layout of ADR-0042 section 3:
 
@@ -337,6 +365,21 @@ the garden and the archive) and has no `[Install]`; `ulei-night.timer` starts it
 `ulei.toml` has `[night]`, after a dry run: `systemctl --user enable --now ulei-night.timer`.
 [docs/runbooks/night-gardener.md](docs/runbooks/night-gardener.md).
 
+`ulei-uncertain.service` runs `ulei-tg uncertain` once: it asks the owner inbox over C1 for its
+`uncertain` events and tells the owner through the bot when one is new, every 24 h while any stay,
+and when the inbox cannot be read; it keeps what it told in `<state>/ulei/uncertain`. It has no
+`[Install]`; `ulei-uncertain.timer` starts it every 10 minutes and is enabled with the inbox and
+the channel.
+
+`ulei-hive-watchdog.service` runs the hive's `hive.py watchdog` once: it sends the hive's overdue
+stall alerts through `ulei-tg notify`, checks the stall conditions of the hive config's
+`[watchdog]` and publishes an alert for each new one to the owner inbox. The interpreter, `hive.py`
+and the hive's config come from `$XDG_CONFIG_HOME/ulei/hive-watchdog.env` (`HIVE_CLI`,
+`HIVE_CONFIG`), and a drop-in names the directory of the hive's store in `ReadWritePaths=`. It
+allows `AF_UNIX`, `AF_INET` and `AF_INET6` and has no `[Install]`; `ulei-hive-watchdog.timer`
+starts it every 5 minutes: [docs/runbooks/mvp-pilot-cutover.md](docs/runbooks/mvp-pilot-cutover.md)
+part 7.
+
 ## Budgets
 
 | | Limit |
@@ -348,8 +391,8 @@ the garden and the archive) and has no `[Install]`; `ulei-night.timer` starts it
 | `ulei-engine` (static) | ≤ 4 MiB binary, ≤ 4 MiB peak RSS and 0 wake-ups while `run` waits for the gateway and while `serve` is idle, `session_search` p50 ≤ 20 ms over 100 sessions of 100 messages |
 | `ulei-web` helper (static) | ≤ 2 MiB binary, ≤ 80 MiB peak RSS for a `web_extract` reply near the 16 MiB cap |
 | `ulei-tg` channel (static) | ≤ 2.5 MiB binary, ≤ 4 MiB peak RSS and 0 wake-ups while blocked in `getUpdates` |
-| `ulei-garden` daemon (static) | ≤ 2.5 MiB binary, ≤ 4 MiB peak RSS, ready ≤ 10 ms, 0 wake-ups when idle, `pointers` p50 ≤ 10 ms and `search` p50 ≤ 20 ms on 2,000 facts, ≤ 128 KiB written per seedbed write and per processed record |
-| `ulei-garden-embed` helper (glibc) | ≤ 2 MiB binary, linked only to glibc's own libraries |
+| `ulei-garden` daemon (static) | ≤ 2.5 MiB binary, ≤ 4.25 MiB peak RSS, ready ≤ 10 ms, 0 wake-ups when idle, `pointers` p50 ≤ 10 ms and `search` p50 ≤ 20 ms on 2,000 facts, ≤ 128 KiB written per seedbed write and per processed record |
+| `ulei-garden-embed` helper (static, released; its glibc build with `onnx` is not released) | ≤ 2 MiB binary; the glibc build linked only to glibc's own libraries |
 | `ulei-memory` daemon (static) | ≤ 2.5 MiB binary, ≤ 4 MiB peak RSS, ready ≤ 10 ms, 0 wake-ups when idle, `put` p50 ≤ 10 ms and `search` p50 ≤ 20 ms on 10,000 items, ≤ 128 KiB written per stored `put` |
 | `ulei-connectors` daemon (static) | ≤ 2.5 MiB binary, ready ≤ 10 ms, 0 wake-ups with nothing due, ≤ 4 MiB peak RSS after 100 runs and after one MCP page of ten items of about 1 MB and one of 2 MiB over the cap, ≤ 16 KiB written per run |
 | each future daemon | ≤ 2.5 MiB binary, ≤ 4 MiB RSS, 0 wake-ups when idle |

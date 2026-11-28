@@ -201,9 +201,17 @@ opt_adamw = pop.optimizer(torch.optim.AdamW, lr = 1e-2, name = 'adamw')
 fast = pop.population_parameters
 for step_opt in (opt_sgd, opt_rms, opt_adamw):
     inner_loss = (pop(x_tr, params = fast) - meta_target).pow(2).mean()
-    fast = step_opt.functional_step(inner_loss, fast, create_graph = True)
+    fast = step_opt.functional_step(inner_loss, fast, create_graph = True, max_grad_norm = 1.0)
 
 pop(x_val, params = fast).pow(2).mean().backward()      # meta-gradients flow through all 3 optimizers
+
+# single-model differentiable inner-loop & per-sample vectorized fast weights via expand()
+single = Population(net)
+inner_opt = single.optimizer(torch.optim.SGD, lr = 1e-2)
+fast = inner_opt.functional_step(single(x_tr).pow(2).mean(), create_graph = True)  # noop functional_step
+fast_batch = single.expand(batch_size)                                             # differentiable (B, D) copies
+fast_batch = inner_opt.functional_step(single(x_b1, params = fast_batch, per_individual = True), fast_batch)
+single(x_b2, params = fast_batch, per_individual = True).mean().backward()         # grads sum into single model
 
 # consolidate fast weights into a long-term memory version of an individual (or whole population)
 

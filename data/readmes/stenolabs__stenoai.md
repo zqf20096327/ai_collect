@@ -43,10 +43,10 @@ If you're looking for a hosted desktop recording API, consider checking out [Rec
 
 ## 📢 What's New
 
+- **2026-11-26** ✅ Approve an app once: Choose Always allow on an action card and that app's follow-ups run without asking. Turn it off in Settings → Connectors.
 - **2026-11-24** 🔌 Connect your AI apps: Claude, Cursor, Claude Code and Codex can read your meetings through Steno's read-only MCP server. Set it up on the new Connect page.
 - **2026-11-24** ⚡ Actions: Connect Linear, Notion, Jira or any MCP server, and Steno suggests follow-ups after each note that run only when you approve them.
 - **2026-11-24** ⏱️ Instant transcripts: With Parakeet, your transcript and a first summary are ready the moment you press Stop, then refine in the background.
-- **2026-11-24** 🧑‍🍳 Cookbooks and recipes: Templates are now Cookbooks, and recipes are saved chat prompts you run by typing `/` in Chat.
 
 ## Features
 
@@ -72,7 +72,7 @@ If you're looking for a hosted desktop recording API, consider checking out [Rec
 - **Markdown ownership** — Summaries and transcripts save as clean Markdown you can edit, search, or sync to an Obsidian vault from Connect.
 - **Cookbooks and recipes** — Cookbooks (formerly report templates) set the format of a note; a note can hold several reports, and flat YAML frontmatter appears in a collapsible Properties panel. Recipes are saved chat prompts you run by typing `/` in Chat. Both have built-in options and your own, in the Cookbooks sidebar page.
 - **Share and export** — Use a saved note's Share menu to copy or export notes and transcripts. On macOS, send a note through the system share sheet.
-- **Bring your own cloud model** — Optional OpenRouter, OpenAI, Anthropic, AWS Bedrock (Claude — including application inference profile ARNs for governed AWS environments), or custom API endpoint for users who prefer a hosted LLM. Setup guides you through getting an OpenRouter, OpenAI or Anthropic key and tests it before saving.
+- **Bring your own cloud model** — Optional OpenRouter, OpenAI, Anthropic, AWS Bedrock (Claude — including application inference profile ARNs for governed AWS environments), or any OpenAI-compatible endpoint — including a [LiteLLM](docs/getting-started/litellm.mdx) proxy or vLLM server your organisation runs — for users who prefer a hosted LLM. Setup guides you through getting an OpenRouter, OpenAI or Anthropic key and tests it before saving.
 - **Optional cloud transcription** — Choose an OpenAI-compatible transcription endpoint in Settings → AI. Enabling it requires confirmation because recording audio is sent to that provider.
 - **Organisation AI** — On managed deployments, sign in to your org's Steno adapter and AI routes through it automatically — no local API key, no per-user setup.
 

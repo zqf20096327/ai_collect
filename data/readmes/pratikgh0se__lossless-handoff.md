@@ -8,9 +8,11 @@ This documentation uses ASD-STE100 Simplified Technical English.
 
 Current versions: product 0.23.0 (`install.sh`), hooks 1.25.0 (`HOOK_VERSION` in `hooks/precompact-handoff.py`, `hooks/postcompact-inject.py`, `hooks/auto-recall.py`, `hooks/recall-mcp.py`, `hooks/reanchor.py`, `hooks/claim-guard.py`, `hooks/history-guard.py` and `hooks/action-guard.py`).
 
-![plain Claude Code that can search its own transcripts, at 10 compactions: 82%](https://img.shields.io/badge/plain%20Claude%20Code%20(can%20search%20transcripts)%20at%2010%20compactions-82%25-c0392b) ![Lossless Handoff at 10 compactions: 100%](https://img.shields.io/badge/Lossless%20Handoff%20at%2010%20compactions-100%25-0b7a75) ![2 seeds, small benchmark](https://img.shields.io/badge/fair%20re--test-2%20seeds-8197a0)
+![fair test, 6 seeds, no hint: 100% vs 73%](https://img.shields.io/badge/no%20hint-100%25%20vs%2073%25%20(6%20seeds)-8197a0) ![fair test, 6 seeds, with a hint: no gain](https://img.shields.io/badge/hint-no%20gain-8197a0)
 
-Note on the badges: this is the fair re-test. Plain Claude Code was allowed to search its own chat files. It scored 41 of 50 (82%) on the questions with a hint. Lossless Handoff scored 50 of 50 (100%). Two seeds show a direction, not a proof. Earlier run with a blocked baseline: 58% vs 100%.
+With no hint in the question, Lossless Handoff kept 100% and plain Claude Code 73% (6 seeds, secondary result). With a hint, or when told to search, both score about 100%.
+
+Note on the badges: this is the fair test (2026-11-28, 6 new seeds 4001 to 4006): Sonnet, 400k window, 10 compactions. Plain Claude Code was allowed to search its own chat files. With a hint, plain Claude Code scored 145 of 150 (97%) and Lossless Handoff 150 of 150. The gain is +3.3 points, and the registered rule needs +15 points. We claim no gain with a hint. With no hint, plain Claude Code scored 88 of 120 (73%) and Lossless Handoff 120 of 120 (100%). The registered verdict is INVALID, and secondary results never change it. The earlier numbers (82% vs 100%, and 58% vs 100% with a blocked baseline) overstate the gap with a hint.
 
 [![CI](https://github.com/pratikgh0se/lossless-handoff/actions/workflows/ci.yml/badge.svg)](https://github.com/pratikgh0se/lossless-handoff/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Release](https://img.shields.io/github/v/release/pratikgh0se/lossless-handoff)](https://github.com/pratikgh0se/lossless-handoff/releases/latest)
 
@@ -118,14 +120,19 @@ The parts, the events and the files are in [docs/architecture.md](docs/architect
 
 ![Accuracy after 1, 3 and 10 compactions](docs/img/accuracy.svg)
 
-Fair re-test (2026-11-26): plain Claude Code was allowed to search its own chat files. 2 seeds (3001, 3002), Sonnet, 400k window, 10 compactions, Claude Code 2.1.326.
+Fair test (2026-11-28): 6 new seeds (4001 to 4006), Sonnet, 400k window, 10 compactions. Plain Claude Code was allowed to search its own chat files. Both arms ran on all 6 seeds.
 
-| Questions | Plain Claude Code (can search its chat files) | Lossless Handoff | Gain | Seeds with Lossless Handoff ahead |
-|---|---|---|---|---|
-| With a hint | 41 of 50 (82%) | 50 of 50 (100%) | +18 points | 2 of 2 |
-| Neutral (no hint) | 29 of 40 (72%) | 40 of 40 (100%) | +27.5 points | 2 of 2 |
+| Questions (6 seeds) | Plain Claude Code (can search its chat files) | Lossless Handoff |
+|---|---|---|
+| With a hint (registered primary) | 145 of 150 (97%) | 150 of 150 (100%) |
+| No hint (registered secondary) | 88 of 120 (73%); it searched in only 8 of 30 question groups | 120 of 120 (100%) |
+| Prompt tells it to search | 150 of 150 (100%) | 150 of 150 (100%) |
 
-The pass rule was set in `bench/continuity/thresholds.json` (block `fair`) before the data. All validity gates passed: controls, parse rate, 10 real compactions and isolation. A harness capture bug replaced 4 plain-arm answers with a background-task message, so those 4 questions were asked again once. The rule was set before any Lossless Handoff data. The old result was 0 of 4 and the new result is 4 of 4. The total cost was about $70. Two seeds show a direction, not a proof.
+With a hint, the gain is +3.3 points. Lossless Handoff was ahead or equal in 6 of 6 seeds (exact sign-flip p = 0.25). The registered primary rule needs +15 points: FAIL. We claim no gain with a hint. With no hint, the gain is +26.7 points, in 6 of 6 seeds (exact sign-flip p = 1/64, 0.016). For facts that live only in the chat history (types S and E), plain Claude Code scored 29 of 48 (60%) and Lossless Handoff 48 of 48. When the prompt tells plain Claude Code to search, both score 150 of 150. So the gain is that no instruction to search is necessary.
+
+Pooled over 8 seeds (3001, 3002 and the 6 new seeds; not confirmatory): with a hint, plain Claude Code scored 186 of 200 (93%) and Lossless Handoff 200 of 200. With no hint, plain Claude Code scored 117 of 160 (73%) and Lossless Handoff 160 of 160.
+
+The registered verdict is INVALID. There are 2 gate failures. First, 20 shell commands on the own chat file of plain Claude Code were blocked, in 19 question groups. Each group also had successful reads, and all its answers were correct. Second, the API safety filter refused the first Lossless Handoff session of seed 4003 (a false positive on synthetic data). It was rerun, so 1 of 7 Lossless Handoff sessions counts as short. Secondary results never change the verdict. The 6-seed run cost $220 ($120.73 and $99.40, plus a $0.10 preflight). The rule was registered before the data (`bench/continuity/SPEC.md` FR.8, `bench/continuity/thresholds.json` block `fair6`).
 
 Earlier run with a blocked baseline: 58% vs 100%. The chart and the table below show that run (4 seeds). In it, plain Claude Code could not read its own chat files. The gain was +42 points (95% interval +27 to +51). It measured 1, 3 and 10 compactions only.
 
@@ -138,9 +145,10 @@ Full report: [docs/proof/benchmarks/2026-11-23-proof-test.md](docs/proof/benchma
 
 Limits:
 
-- The fair re-test used 2 seeds. Two seeds show a direction, not a proof.
-- The earlier run (58% vs 100%, 4 seeds) blocked plain Claude Code from its own chat files, so it overstates the gap. The runner denied `~/.claude/projects/**` for every arm (`deny_rules` in `bench/continuity/runner.py`). Use the fair re-test numbers for the gap.
-- Both are small benchmarks: 4 seeds (2001 to 2004) and 2 seeds (3001, 3002).
+- The 6-seed run has the registered verdict INVALID (2 gate failures: 20 blocked shell commands on the own chat file, and 1 of 7 Lossless Handoff sessions short after a safety-filter refusal). The no-hint result is a secondary result. It does not change the verdict.
+- The earlier numbers (82% vs 100%, and 58% vs 100% with a blocked baseline) overstate the gap with a hint.
+- The earlier run (58% vs 100%, 4 seeds) blocked plain Claude Code from its own chat files, so it overstates the gap. The runner denied `~/.claude/projects/**` for every arm (`deny_rules` in `bench/continuity/runner.py`). Use the fair test numbers (2026-11-28) for the gap.
+- Both are small benchmarks: 4 seeds (2001 to 2004) for the blocked run, and 6 seeds (4001 to 4006) for the fair test.
 - It is our own synthetic benchmark. Code grades it, but we wrote it.
 - It used Sonnet only, at most 10 compactions, and one Claude Code version.
 
@@ -214,7 +222,7 @@ Limits of the proof test: it is a small benchmark with 4 seeds (2001 to 2004), a
 
 Shown:
 
-- In the fair re-test (2 seeds), plain Claude Code that can search its own chat files scored 82% with a hint and 72% without at 10 compactions. Lossless Handoff scored 100% on both. Two seeds show a direction, not a proof.
+- In the fair test (6 seeds, 10 compactions), plain Claude Code that can search its own chat files scored 97% with a hint (145 of 150) and 73% without (88 of 120). Lossless Handoff scored 100% on both. We claim no gain with a hint. The no-hint result is a secondary result (exact sign-flip p = 0.016), and the registered verdict is INVALID.
 - In the earlier run with a blocked baseline, plain Claude Code lost facts as compactions added up (100%, 80%, 58% at 1, 3 and 10 compactions).
 - On the questions with a hint, Lossless Handoff stopped that loss up to 10 compactions (100%, 100%, 100%), with 0 items where it was wrong and plain Claude Code was right. Without a hint it scored 93% at 3 compactions and 95% at 10, and at 3 compactions there were 2 such items.
 

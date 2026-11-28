@@ -73,7 +73,7 @@ docker run -d \
   --cap-drop=ALL \
   --security-opt=no-new-privileges \
   --tmpfs /tmp \
-  ghcr.io/r3drun3/reconai:v0.1.0
+  ghcr.io/r3drun3/reconai:v0.2.0
 
 sleep 3
 docker logs reconai 
@@ -94,17 +94,22 @@ Now go to [API Examples](#api-examples).
 | `GET` | `/tools`, `/health` | enabled tools, liveness |
 
 ### API Examples  
+
+Export API Key and endpoint:  
+
 ```bash
 export API=http://localhost:9889
 export KEY=$(grep ^reconai_API_KEY .env | cut -d= -f2)
 ```  
+
+Submit a scan:  
 
 ```bash
 ID=$(curl -s -X POST $API/scans \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{
     "targets": ["exampletarget.com"],
-    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx", "testssl", "curl"],
+    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx", "testssl", "curl", "arjun", "katana"],
     "objective": "Light perimeter check: open ports, web technology, exposed files or directories, obvious misconfigurations and vulnerabilities",
     "max_steps": 30,
     "metadata": {"note": "first PoC test"}

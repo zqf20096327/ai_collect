@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE.md)
 [![Version](https://img.shields.io/badge/Version-v1.7.0-blue)]()
 [![Python](https://img.shields.io/badge/Python-3.8%20%7C%203.12-blue)](docs/decisions/2026_10_13_python_environment.md)
-[![Tests](https://img.shields.io/badge/Tests-2671%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/Tests-2918%20passing-brightgreen)]()
 
 [![Project Website](https://img.shields.io/badge/Project-Website-181717?logo=googlechrome&logoColor=white)](https://theconsciousness.ai/)
 [![Architecture](https://img.shields.io/badge/Architecture-Technical-0052CC?logo=read-the-docs&logoColor=white)](https://theconsciousness.ai/architecture/)
@@ -143,6 +143,10 @@ The folder `models/thermodynamic/` holds an experimental substrate package. It e
 
 ## Scientific Approach
 
+[![Watch the video: Would alien life be conscious?](docs/assets/video-alien-thumbnail.jpg)](https://youtu.be/l85YmBjwz1M)
+
+**Video:** [Watch "Would alien life be conscious?" on YouTube](https://youtu.be/l85YmBjwz1M). It goes from three separate origins of awareness on Earth to the crow, the octopus, Assembly Theory and the limits of any test for another mind. It ends on how this project measures itself, with the indicator rubric of item 6 and the [instrument inventory](docs/instrument_inventory.md), and on why we publish what fails.
+
 The development validates emergent properties through:
 
 1.  **Emotional Bootstrapping:** Train agents using intrinsic motivation. The agent explores to reduce prediction error (anxiety), not to accumulate external reward.
@@ -216,7 +220,7 @@ Stage 2 of the emotion appraisal does not run. `map_state` needs a goal vector a
 pytest tests/ -v
 ```
 
-2671 tests pass on Python 3.12.10 (the last full run on Python 3.8.3, on 2026-11-02, passed 2262), covering oscillatory binding, capsule routing, reentrant processing, inverse effectiveness fusion, topographic loss, affective modulation, ethics compliance, effective information, causal emergence (CE 2.0 SVD heuristic), perturbational complexity (PCI), phase coupling measures, near-threshold stimulus rendering, IIT phi for the reproduction of runs before 2026-11-03, Brian2 biological validation, the experimental substrate package (p-bit emulation against exact Boltzmann statistics, free energy relaxation against closed-form posteriors, rate, latency and phase spike coding, a stand-in driver, NIR export of spiking layers, an optional THRML sampler checked against exact statistics, and an import guard that keeps it out of production), cochlear auditory pipeline (gammatone, hair cell, tonotopic, spatial, affect extraction), environment audio synthesis, DMTS/WCST consciousness demanding environments, DQN baseline, memory consolidation, semantic pathway, the RSSM reconstruction and value-equivalent world-model objectives, and full pipeline integration.
+2918 tests pass on Python 3.12.10 (the last full run on Python 3.8.3, on 2026-11-02, passed 2262), covering oscillatory binding, capsule routing, reentrant processing, inverse effectiveness fusion, topographic loss, affective modulation, ethics compliance, effective information, causal emergence (CE 2.0 SVD heuristic), perturbational complexity (PCI), phase coupling measures, near-threshold stimulus rendering, IIT phi for the reproduction of runs before 2026-11-03, Brian2 biological validation, the experimental substrate package (p-bit emulation against exact Boltzmann statistics, free energy relaxation against closed-form posteriors, rate, latency and phase spike coding, a stand-in driver, NIR export of spiking layers, an optional THRML sampler checked against exact statistics, and an import guard that keeps it out of production), cochlear auditory pipeline (gammatone, hair cell, tonotopic, spatial, affect extraction), environment audio synthesis, DMTS/WCST consciousness demanding environments, DQN baseline, memory consolidation, semantic pathway, the RSSM reconstruction and value-equivalent world-model objectives, and full pipeline integration.
 
 ### 4. AKOrN Binding Demo
 
@@ -262,7 +266,7 @@ the_consciousness_ai/
 │   ├── analysis/           # Analysis and comparison scripts
 │   └── demos/              # AKOrN binding visualization
 ├── configs/                # YAML and Python configuration files
-├── tests/                  # 2671 passing tests
+├── tests/                  # 2918 passing tests
 ├── unity_scripts/          # C# scripts for Unity ML-Agents integration
 ├── docs/                   # Research docs, theory review, architecture deep dives
 └── requirements.txt

@@ -150,6 +150,19 @@ Use `"model": "coding"`, `"speed"` or any other [strategy](#pick-a-strategy) in 
 | Memory ceiling | requests, provider answers and the response cache are each capped at 16 MB |
 | Prebuilt for | `linux/arm` v6 (Pi Zero, Pi 1), v7 (32-bit Pi OS, LicheePi), `linux/riscv64` (LicheeRV Nano), `linux/arm64`, `amd64`, as archives and `.deb`/`.rpm`/`.apk` |
 
+### What failover costs you
+
+How long a client waits for its first token when the first provider fails. Two local upstreams, the first one failing, 400 streaming requests per row, 16 concurrent clients, upstream first token after 25 ms, first-provider timeout 2 s (8-core Apple Silicon Mac, 27 Nov 2026):
+
+| First provider | Completed | p50 TTFT | p95 TTFT | p99 TTFT |
+|---|---|---|---|---|
+| no proxy (direct to upstream) | 100% | 26.2 ms | 26.6 ms | 26.7 ms |
+| healthy | 100% | 26.7 ms | 28.1 ms | 29.9 ms |
+| returns 429 | 100% | 27.1 ms | 28.0 ms | 31.1 ms |
+| stalls before its first token | 100% | 2028 ms | 2032 ms | 2036 ms |
+
+Each request starts with no health history here, so every one of them pays the fallback. In a running proxy the first failures put the provider on cooldown: after a 429, 11 of 400 requests still reached it; after a stall, 16 did (one per client in flight), and p95 fell back to 33 ms. A 429 costs about half a millisecond. A stall costs the provider's `timeout`, because the proxy cannot tell a slow first token from none. Keep `timeout` short on providers you route latency-sensitive work to. Reproduce with `make bench-failover` (knobs: `FAILOVER_BENCH_N`, `_CONC`, `_TIMEOUT`, `_UPSTREAM_TTFT`).
+
 The [install script](#install) picks the right archive on the board itself. For `mipsle`, `loong64` or other targets, cross-compile from any machine with Go and copy the result over:
 
 ```bash
@@ -170,7 +183,7 @@ Put a strategy name in the `model` field, or set the default in `config.yaml`:
 | `speed` | fastest providers first (Cerebras, Groq) | chat, autocomplete |
 | `volume` | highest daily request limits | batch jobs |
 | `coding` | models with code capability | coding agents |
-| `long_context` | largest context window first | long documents |
+| `long_context` | largest context window first (small prompts can rank quality-first, off by default) | long documents |
 | `balanced` | 14–79B models | quality per token |
 | `small` / `tiny` | 3–13B / under 3B models | low latency |
 | `reliable` | highest measured success rate | unattended scripts |
@@ -281,7 +294,7 @@ proxy:
   auth_token: ""         # when set, clients must send it as their API key
 ```
 
-**It spends your quotas, so it listens on `127.0.0.1` by default.** To reach it from other machines, use `--host 0.0.0.0` *and* set a token. The proxy logs a warning if you expose it without one. `PROXY_AUTH_TOKEN` in the environment or `.env` overrides `proxy.auth_token`, so the token never has to sit in a config file you might commit (`docker run -e PROXY_AUTH_TOKEN=…` works the same way). The Docker image listens on all interfaces inside the container, so publish its port to `127.0.0.1` as shown above.
+**It spends your quotas, so it listens on `127.0.0.1` by default.** To reach it from other machines, use `--host 0.0.0.0` *and* set a token. Without one it refuses to start on a non-loopback host; pass `--allow-no-auth` (or set `proxy.allow_no_auth: true`) only if access is already restricted, e.g. by a firewall or VPN. `PROXY_AUTH_TOKEN` in the environment or `.env` overrides `proxy.auth_token`, so the token never has to sit in a config file you might commit (`docker run -e PROXY_AUTH_TOKEN=…` works the same way). The Docker image listens on all interfaces inside the container, so publish its port to `127.0.0.1` as shown above.
 
 ### Keep the catalog fresh
 
@@ -348,8 +361,9 @@ configs/            bundled config and the free-model catalog
 ## Honest limits
 
 - **Free tiers are small, and they change.** The proxy makes the most of them. It does not create capacity, and it is not a fit for production traffic with an SLA.
-- **A stream that breaks after its first token cannot fall back.** The client already has part of the answer, so the stream ends with an SSE error event (`stream_interrupted`), never with a clean end that would look like a complete answer. Gemini is still buffered (its thought blocks are stripped from the full answer) and re-emitted as SSE.
+- **A stream that breaks after its first token cannot fall back.** The client already has part of the answer, so the stream ends with an SSE error event (`stream_interrupted`), never with a clean end that would look like a complete answer. That includes a provider that closes its connection cleanly before sending `[DONE]` or a `finish_reason`. Gemini is still buffered (its thought blocks are stripped from the full answer) and re-emitted as SSE.
 - **The catalog can lag a provider's change by up to a week.** Models that vanish are cooled down on the first 404 and skipped.
+- **A provider that stalls before its first token costs its full `timeout`** before the fallback starts (15–30 s in the example config). After that the provider is cooled down and skipped. See [What failover costs you](#what-failover-costs-you).
 - **Local quota tracking is best-effort.** The proxy honours the providers' rate-limit headers, but under heavy concurrency a provider may still send the occasional 429, which simply triggers the fallback.
 
 ## Development

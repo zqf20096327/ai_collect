@@ -5,32 +5,54 @@
 </p>
 
 DictDeck is a self-hosted AI dictionary, translator, and vocabulary flashcard app.
-It supports multiple dictionary sources, LLM-powered explanations, saved words,
-review cards, Telegram bot workflows, and Cloudflare Workers deployment.
+It brings together built-in dictionaries, streaming LLM explanations (OpenAI, Gemini, Vertex AI, Anthropic, Workers AI, and OpenAI Codex OAuth), a Master-Detail vocabulary notebook, tactile review flashcards, a cross-browser extension, a Streamable HTTP MCP server, a Telegram bot, and Cloudflare Workers deployment.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Asutorufa/hujiang_dictionary)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Asutorufa/dictdeck)
 
-- cloudflare api token need `d1` and `workers ai` permission.
+- Cloudflare API token requires `D1` and `Workers AI` permissions.
 - Either `d1 database id` or `d1 database name` must be provided.
 
-## build and run
+## Web App
+
+- **Dictionary Desk**: Look up words and sentences across built-in dictionaries (Weblio, コトバンク, Hujiang, Google Translate) or custom LLM providers with live streaming, collapsible thinking notes, language swap, and `⌘K` / `⌘↵` / `⌘S` shortcuts.
+- **Vocabulary Workbench**: Master-Detail lexicon browser with a compact index on the left, spacious reading pane on the right, optional **Quiz veil** self-test mode, and keyboard navigation (`↑`/`↓`, `Space`, `R`, `E`).
+- **Daily Review Deck**: Multi-card physical flashcard stack with drag gestures, directional stamps, keyboard shortcuts (`Space`, `←`, `→`, `Backspace`), and review progress tracking.
+- **Themes & Settings**: Built-in Light / Auto / Dark theme switching, LLM provider management, Telegram integration, and MCP access token management.
+
+![DictDeck Web Demo](./assets/images/editorial/demo.gif)
+
+| Dictionary Desk | Vocabulary Workbench |
+| :---: | :---: |
+| ![Dictionary Lookup](./assets/images/editorial/home-light-result.png) | ![Vocabulary Master-Detail](./assets/images/editorial/vocabulary-light.png) |
+
+| Daily Review Deck | Dark Mode |
+| :---: | :---: |
+| ![Daily Review](./assets/images/editorial/flashcard-light.png) | ![Dark Mode](./assets/images/editorial/home-dark.png) |
+
+Local development (includes MSW mock handlers):
 
 ```bash
-cargo build --release
-./target/release/hj jc こんにちは
+cd web
+npm install
+npm run dev
 ```
 
-## web
+## Browser Extension
 
-see [telegram bot](#telegram-bot)
+DictDeck includes a browser extension (Chrome, Firefox, and Safari) for translating selected text on any webpage:
 
-https://github.com/user-attachments/assets/19575332-0906-4654-a173-b8c390e0baf4
+- **In-Page Selection Panel**: Floating Shadow DOM lookup card with streaming responses, collapsible thinking notes, quick source/language/prompt-mode switching, one-click save to Words or Grammar, and automatic Light/Dark theme matching.
+- **Popup & Options**: Quick connection status, recent lookup history, server authentication with locally encrypted credentials, and default translation settings.
 
-![screenshot](https://raw.githubusercontent.com/Asutorufa/hujiang_dictionary/refs/heads/rust/assets/images/web.png)
+![DictDeck Extension Demo](./assets/images/editorial/ext-demo.gif)
 
-## browser extension
+| Selection Panel (Light) | Selection Panel (Dark) |
+| :---: | :---: |
+| ![Extension Panel Light](./assets/images/editorial/ext-panel-light.png) | ![Extension Panel Dark](./assets/images/editorial/ext-panel-dark.png) |
 
-The repository also includes a browser extension for translating selected text from any page.
+| Popup (Light) | Popup (Dark) | Options |
+| :---: | :---: | :---: |
+| ![Popup Light](./assets/images/editorial/ext-popup-light.png) | ![Popup Dark](./assets/images/editorial/ext-popup-dark.png) | ![Options](./assets/images/editorial/ext-options-light.png) |
 
 Local build:
 
@@ -42,21 +64,19 @@ npm run build:extension
 
 Build outputs:
 
-- `web/extension-dist/chrome` - unpacked Chrome extension
-- `web/extension-dist/firefox` - unpacked Firefox extension
-- `web/extension-dist/safari` - generated Safari project
-- `web/extension-dist/safari-app` - built Safari macOS app
+- `web/extension-dist/chrome` — unpacked Chrome extension
+- `web/extension-dist/firefox` — unpacked Firefox extension
+- `web/extension-dist/safari` — generated Safari project
+- `web/extension-dist/safari-app` — built Safari macOS app
 
 Notes:
 
 - Safari packaging is built on macOS and requires Xcode / Command Line Tools.
 - The Safari app is generated so the extension can be enabled through Safari on macOS.
 
-## ci artifacts
+### CI Artifacts
 
-The GitHub Actions workflow at [`.github/workflows/rust.yaml`](./.github/workflows/rust.yaml) builds and uploads extension artifacts on macOS.
-
-Uploaded artifacts:
+The GitHub Actions workflow at [`.github/workflows/rust.yaml`](./.github/workflows/rust.yaml) builds and uploads extension artifacts on macOS:
 
 - `dictdeck-extension-chrome.zip`
 - `dictdeck-extension-firefox.zip`
@@ -65,16 +85,26 @@ Uploaded artifacts:
 
 These files are uploaded as workflow artifacts in CI, and the release workflow also includes them in release assets.
 
-## cli
+## CLI
 
-- `jc <word>` - Japanese to Chinese
-- `cj <word>` - Chinese to Japanese
-- `en <word>` - English to Japanese
-- `weblio <word>` - weblio
-- `ktbk <word>` - コトバンク
-- `google <target> <words>` - Google Translate, eg: google en こんにちは
+Build and run:
 
-Example:
+```bash
+cargo build --release
+./target/release/hj jc こんにちは
+```
+
+Supported commands:
+
+- `jc <word>` — Japanese to Chinese
+- `cj <word>` — Chinese to Japanese
+- `kr <word>` — Korean <-> Chinese
+- `en <word>` — English <-> Chinese
+- `weblio <word>` — Weblio
+- `ktbk <word>` — コトバンク
+- `google <target> <words>` — Google Translate, e.g. `google en こんにちは`
+
+Examples:
 
 ```shell
 ./target/release/hj jc こんにちは
@@ -87,37 +117,45 @@ Example:
 ./target/release/hj google ja Hello world!
 ```
 
-![screenshot](https://raw.githubusercontent.com/Asutorufa/hujiang_dictionary/rust/assets/images/image.png)
+![CLI screenshot](./assets/images/image.png)
 
-## telegram bot
+## Telegram Bot
 
-Telegram bot, HTTP API, and scheduled jobs run on Cloudflare Workers.
+Telegram bot, HTTP API, and scheduled reminder jobs run on Cloudflare Workers.
 
-![screenshot](https://raw.githubusercontent.com/Asutorufa/hujiang_dictionary/rust/assets/images/telegram.png)
+![Telegram bot screenshot](./assets/images/telegram.png)
 
-## cloudflare workers
+## Cloudflare Workers
 
-set wrangler config
+Configure `wrangler.toml` and deploy:
 
 ```shell
 vim wrangler.toml
 # set the production JWT signing secret outside source control
 npx wrangler secret put AUTH_SECRET
-# build and deploy
+# build web frontend
+cd web && npm install && npm run build && cd ..
+# build and deploy worker
 cargo install worker-build --version 0.8.6
 npx wrangler deploy
 ```
 
-`wrangler.toml` config example
+`wrangler.toml` config example:
 
 ```toml
 WORKER_NAME="dictdeck" # cloudflare workers name
 SCHEDULE="*/20 0-15 * * *" # cron schedule
 ```
 
-### MCP dictionary server
+Register Telegram webhook:
 
-The Worker exposes a Streamable HTTP MCP endpoint at `/mcp`. In the web settings page, generate a token with `dictionary:read` and/or `dictionary:write` permission. The plaintext token is shown only once; send it as a Bearer token:
+```shell
+curl https://<workers-url>/tgbot/register
+```
+
+### MCP Dictionary Server
+
+The Worker exposes a Streamable HTTP MCP endpoint at `/mcp`. In the web **Settings** page, generate a token with `dictionary:read` and/or `dictionary:write` permission. The plaintext token is shown only once; send it as a Bearer token:
 
 ```shell
 curl https://<workers-url>/mcp \
@@ -129,27 +167,21 @@ curl https://<workers-url>/mcp \
 
 Read access provides `dictionary.search` and `dictionary.get`. Write access adds save, rename, delete, priority, and preview/apply batch-change tools. Set `MCP_ALLOWED_ORIGINS` to a comma-separated origin allowlist when browser-based MCP clients are used.
 
-register webhook
+### Workers CI/CD
+
+If using Cloudflare Workers Git integration, configure the following commands:
+
+Build Command:
 
 ```shell
-curl https://<workers-url>/tgbot/register
-```
-
-If use workers CI/CD, you can add following script in  `Build Command` and `Deploy Command`
-
-Build Command
-
-```shell
-git clone -b react https://github.com/Asutorufa/hujiang_dictionary.git react
-cd react && npm install && npm run build && cd ..
-cp -r react/out web/out
+cd web && npm install && npm run build && cd ..
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh
 sh rustup.sh -y
 export PATH="$HOME/.cargo/bin:$PATH"
 cargo install worker-build --version 0.8.6
 ```
 
-Deploy Command
+Deploy Command:
 
 ```shell
 export PATH="$HOME/.cargo/bin:$PATH"

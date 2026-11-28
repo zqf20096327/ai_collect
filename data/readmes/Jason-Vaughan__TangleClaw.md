@@ -18,7 +18,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License"></a>
 </p>
 
-**Latest release:** `v6.6.2` — “adds an audited interactive-choice module and per-engine health indicators, improves V6 chat filtering and stability, and hardens scratch-server logging and cleanup” ([release status](docs/releases/v6.6.2.md) · [📊 **Autonomous Sprint Reports Hub**](https://jason-vaughan.github.io/TangleClaw/reports/) · [`v6.6.2` Sprint Report](https://jason-vaughan.github.io/TangleClaw/reports/v6.6.2/) · [`v5.68.0–v5.71.0` 4-Sprint Kaizen Retrospective](https://jason-vaughan.github.io/TangleClaw/reports/v5.68.0-v5.71.0-retrospective/)).
+**Latest release:** `v6.6.7` — “adds a full-screen Global Settings workspace, scheduled memory backups, and connection stability” ([release status](docs/releases/v6.6.7.md) · [📊 **Autonomous Sprint Reports Hub**](https://jason-vaughan.github.io/TangleClaw/reports/) · [`v6.6.7` Sprint Report](https://jason-vaughan.github.io/TangleClaw/reports/v6.6.7/) · [`v5.68.0–v5.71.0` 4-Sprint Kaizen Retrospective](https://jason-vaughan.github.io/TangleClaw/reports/v5.68.0-v5.71.0-retrospective/)).
 
 One AI coding agent is easy. Five are not. They forget what the last session decided, edit the same files, fight over the same ports, and wait silently for an answer you did not know they needed. You end up watching terminals.
 
@@ -52,11 +52,29 @@ TangleClaw is developed with TangleClaw. Its own Builder, Project Manager and re
 
 ```bash
 # macOS. What the installer does, and what you need first: Quick Start, below
-git clone --branch v6.6.2 https://github.com/Jason-Vaughan/TangleClaw.git
+git clone --branch v6.6.7 https://github.com/Jason-Vaughan/TangleClaw.git
 cd TangleClaw && ./deploy/install.sh
 ```
 
 Then open the dashboard, finish the short first-run setup, and launch a session on any project folder. More at **[tangleclaw.com](https://tangleclaw.com)**.
+
+## Who Uses TangleClaw & Why
+
+- **Solo technical founders & high-output engineers** — turn one Mac into a 24/7 engineering organization that plans, codes, reviews, tests and ships multi-version release trains across several parallel agents, without babysitting terminals.
+- **Multi-engine AI power users** — stop being locked into one subscription or rate-limit wall. Combine Claude, Codex and Antigravity in one fleet, each seat running the model suited to its role, with failover when a quota resets.
+- **Engineering leads & security-conscious teams** — keep source, credentials and session state on your own hardware, with mechanical merge-gate enforcement, an auditable switchboard log, and published sprint reports for every release.
+- **Multi-disciplinary AI studio operators** — use portable Fleet Packs to stand up specialized agent teams beyond software engineering: media and animation studios, research and compliance cells, product operations.
+
+## V6 Feature Matrix
+
+| Category | What it means |
+| --- | --- |
+| **Multi-agent fleet architecture** | Versioned, portable Fleet Packs (`FleetPack v1alpha1`) define a fleet once — PM coordinator, Architect, parallel Builders, dual reviewers, Integrator, Observer — reusable for SDLC fleets and non-SDLC fleets (creative studios, research cells, solo workspaces) alike. |
+| **Conversation-first workspace** | A unified chat surface with rich link previews, a collapsible raw-CLI/interactive terminal view, a Sprints & Cars board, a Charter & Roadmap drawer, an interactive Sprint Reports hub, and a project/fleet creation wizard. |
+| **Autonomous release trains** | File-disjoint parallel waves across lanes, idle-builder look-ahead onto the next version while the current one is in review, and a 4-gate merge broker (Architect, Observer, Reviewer, CI) pinned to the exact commit SHA before anything merges. |
+| **Cross-engine orchestration** | Claude Code, Codex, Antigravity and Aider run side by side over the Medusa switchboard, with live per-provider quota probing, reset countdowns, and delegate failover. |
+| **Governed continuity** | Generation-bound continuity capsules, managed coordinator rotations, and structured session wraps that survive context clears, engine switches, and machine restarts. |
+| **Local-first security** | Ephemeral launch-secret scrubbing, shared-document locking and attestation, PortHub collision prevention, and Tailscale/MagicDNS remote and mobile control — all on your own hardware. |
 
 ## Core Features
 
@@ -186,7 +204,7 @@ Most importantly, TangleClaw enforces strict safety boundaries, ensuring that wh
 ## Quick Start
 
 ```bash
-git clone --branch v6.6.2 https://github.com/Jason-Vaughan/TangleClaw.git
+git clone --branch v6.6.7 https://github.com/Jason-Vaughan/TangleClaw.git
 cd TangleClaw
 ./deploy/install.sh
 ```

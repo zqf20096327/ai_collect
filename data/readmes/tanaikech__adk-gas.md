@@ -51,9 +51,9 @@ At the core of GASADK is the **LlmAgent**, powered by the **Planner-Executor-Syn
 
 ---
 
-## ⚙️ GASADK Workflow Architecture (v2.1.0)
+## ⚙️ GASADK Workflow Architecture (v2.1.1)
 
-The execution lifecycle of `LlmAgent` is rigorously compartmentalized to survive Google Apps Script's 6-minute limit and 9KB `PropertiesService` cap. The diagram below reflects **GASADK v2.1.0**, including the Hooks lifecycle, **Hybrid Direct Mode**, **Official Google Workspace MCP** integration with handshake caching, **HITL `suspend`/`resume`** with compressed chunked state persistence, and cumulative token quota safeguards.
+The execution lifecycle of `LlmAgent` is rigorously compartmentalized to survive Google Apps Script's 6-minute limit and 9KB `PropertiesService` cap. The diagram below reflects **GASADK v2.1.1**, including **Gemini Decisions API (`gemini-decision-1`) Dynamic Model & Thinking Routing** across all LLM phases (Planner, Direct Mode, Task/SubAgent/MCP/A2A, Synthesis), the Hooks lifecycle, **Hybrid Direct Mode**, **Official Google Workspace MCP** integration with handshake caching, **HITL `suspend`/`resume`** with compressed chunked state persistence, and cumulative token quota safeguards.
 
 ```mermaid
 flowchart TD
@@ -368,6 +368,88 @@ const agent = new LlmAgent({
   Human-in-the-Loop (HITL) persistence and resumption methods. In v2.1.0+, states exceeding 8KB UTF-8 are automatically gzip-compressed and chunked across `PropertiesService`, and `deleteState()` removes all chunks cleanly.
 - `LlmAgent.createWorkspaceMcpServers(services, options)` *(Static, v2.1.0+)*  
   Builds official Google Workspace MCP Server configurations (`["drive", "gmail", "docs", "sheets", "slides", "calendar", "chat"]`) with `{ mode: "v1" | "v1self", token }`.
+- `getModelRoutingConfig()` / `LlmAgent.getModelRoutingPresets(customConfig?)` *(v2.1.1+)*  
+  Exports the current model catalog, pool, routing matrix, and a side-by-side comparison of `fixed`, `efficient`, and `quality` modes as pure, secret-free JSON (**0 API calls**).
+- `previewModelRouting(prompt, options?)` *(v2.1.1+)*  
+  Dry-run preview: calls the Decisions API once for `prompt` and returns a JSON comparison of which model & `thinkingLevel` `fixed`, `efficient`, and `quality` modes would select—without executing `generateContent`.
+- `getRoutingHistory()` *(v2.1.1+)*  
+  Returns structured routing decision logs (`model`, `thinkingLevel`, `mode`, `reason`, `decisionsLatencyMs`, `decisionsInputTokens`) recorded during execution.
+- `LlmAgent.configureModelRouting(customConfig)` / `LlmAgent.registerModels(modelsMap)` / `LlmAgent.resetModelRoutingDefaults()` *(Static, v2.1.1+)*  
+  Globally customizes or registers future Gemini models (`supportedThinkingLevels`, `defaultThinkingLevel`, `paidOnly`, `modelPool`, `routingMatrix`) across all GASADK modules.
+
+---
+
+## 🧠 Dynamic Model & Thinking Routing via Gemini Decisions API (v2.1.1+)
+
+GASADK v2.1.1 integrates a zero-dependency, data-driven **`GeminiDecisionsRouter`** powered by the **Gemini Decisions API (`gemini-decision-1`, $0.10 / 1M input tokens, $0.00 / 0 output tokens)** across all Gemini API call sites (`LlmAgent`, `SubAgent`, `MCPApp`, `A2AApp`, `MCPA2Aserver`, `FileSearchApp`, and `GeminiWithFiles`).
+
+### Routing Modes (`modelRouting`)
+
+| Mode | Behavior | Recommended Use |
+| :--- | :--- | :--- |
+| **`"efficient"`** *(Default)* | Uses `gemini-decision-1` to pick the lowest-cost fast model & `thinkingLevel` (`gemini-3.5-flash-lite` / `gemini-3.8-flash` / `gemini-4-hydrogen`), and **automatically escalates** to frontier models (`gemini-4-argon` / `gemini-4-carbon`) when complex reasoning or an explicit maximum-capability directive (e.g., *"use maximum capability"*, *"最大の能力で実行して"*) is detected. | Everyday production workloads (slashes cost & latency while preserving frontier capability on demand). |
+| **`"quality"`** | Uses `gemini-decision-1` to prioritize maximum accuracy and deeper thinking (`gemini-4-hydrogen` / `gemini-4-neon` / `gemini-4-argon` / `gemini-4-carbon`) with GAS 6-minute timeout guardrails. | High-stakes analysis, architecture design, auditing, and synthesis. |
+| **`"fixed"`** | Bypasses the Decisions API completely (**0 routing calls**) and uses only your configured `model` and `generateContentConfig`. | Strict model pinning and deterministic benchmarks. |
+
+### Default 6-Model Pool & Built-in Safeguards
+
+| Tier Key | Default Model | Supported `thinkingLevel` | Free Tier |
+| :--- | :--- | :--- | :---: |
+| `lite` | `models/gemini-3.5-flash-lite` | `MINIMAL`, `LOW`, `MEDIUM`, `HIGH` | Yes |
+| `fast` | `models/gemini-3.8-flash` | `LOW`, `MEDIUM`, `HIGH` | Yes |
+| `workhorse` | `models/gemini-4-hydrogen` | `LOW`, `MEDIUM`, `HIGH`, `XHIGH` | Yes |
+| `premium` | `models/gemini-4-neon` | `LOW`, `MEDIUM`, `HIGH`, `XHIGH` | Paid only |
+| `frontierFast` | `models/gemini-4-argon` | `LOW`, `MEDIUM`, `HIGH` *(no `XHIGH`)* | Paid only |
+| `frontierMax` | `models/gemini-4-carbon` | `LOW`, `MEDIUM`, `HIGH` *(no `XHIGH`)* | Paid only |
+
+- **Automatic Free-Tier Fallback (`billingTier: "auto"`)**: If a Paid-only model (`neon`/`argon`/`carbon`) returns HTTP 403/429, GASADK automatically falls back to `models/gemini-4-hydrogen (HIGH)` and caches the fallback for the run.
+- **GAS 6-Minute Timeout Guard**: Automatically steps down heavy frontier models/thinking levels when remaining `timeoutMs` drops below 90s / 45s, and defaults `allowXHighInGas: false` to prevent synchronous timeouts.
+- **Implicit Prefix Caching Protection**: Routing runs once per request before any tool-calling loop—never mid-loop—preserving Gemini 4/3 implicit prefix caching and `thoughtSignature` integrity.
+- **Per-Generation Logging**: Every generation step emits `[ModelRouting] role=... | mode=... | model=... | thinking=... | reason=... (decisions=...ms)` to `logCallback`, `agent.logs`, and `agent.getRoutingHistory()`.
+
+### Usage: Modes, JSON Comparison & Future-Model Customization
+
+```javascript
+function demoDynamicModelRouting() {
+  const { LlmAgent } = GASADK;
+  const properties = PropertiesService.getScriptProperties();
+  const apiKey = properties.getProperty("GEMINI_API_KEY");
+
+  // 1. Inspect & compare fixed / efficient / quality settings as JSON (0 API calls)
+  const agent = new LlmAgent({
+    apiKey,
+    name: "AdaptiveAgent",
+    modelRouting: "efficient", // "efficient" (default) | "quality" | "fixed"
+  }).setServices({ lock: LockService.getScriptLock(), properties });
+
+  console.log(JSON.stringify(agent.getModelRoutingConfig(), null, 2));
+
+  // 2. Dry-run preview for a specific prompt without generating content
+  const preview = agent.previewModelRouting("Use maximum capability to audit this architecture.");
+  console.log(JSON.stringify(preview, null, 2));
+
+  // 3. Register a future Gemini model externally without waiting for a library release
+  LlmAgent.configureModelRouting({
+    modelCatalog: {
+      "models/gemini-5-alpha": {
+        tier: "frontierMax",
+        supportedThinkingLevels: ["LOW", "MEDIUM", "HIGH", "XHIGH"],
+        defaultThinkingLevel: "HIGH",
+        supportsThinkingBudget: false,
+        paidOnly: true,
+      },
+    },
+    modelPool: { frontierMax: "models/gemini-5-alpha" },
+  });
+
+  // 4. Execute with live [ModelRouting] logs showing exact model & thinkingLevel used
+  const answer = agent.run("Summarize the 3 key benefits of Apps Script.", (logEntry) => {
+    console.log(`[Log ${logEntry.timestamp}] ${logEntry.message}`);
+  });
+  console.log(answer);
+  console.log("Routing History:", JSON.stringify(agent.getRoutingHistory(), null, 2));
+}
+```
 
 ---
 
@@ -858,6 +940,68 @@ function listRecentDriveFilesWithWorkspaceMcp() {
 }
 ```
 
+### 9. Testing Dynamic Model & Thinking Routing (v2.1.1+)
+
+The concise single-function script below lets you verify all **GASADK v2.1.1** routing features—JSON mode comparison (`getModelRoutingConfig()`), 1-call dry-run preview (`previewModelRouting()`), `efficient` vs `fixed` live execution, explicit maximum-capability auto-escalation, live `[ModelRouting]` logs, and external future-model customization—directly in the Apps Script editor:
+
+```javascript
+/**
+ * Simple one-shot verification script for GASADK v2.1.1 Dynamic Model & Thinking Routing.
+ * Requires Script Property "GEMINI_API_KEY".
+ */
+function testDynamicModelRoutingV211() {
+  const { LlmAgent } = GASADK;
+  const properties = PropertiesService.getScriptProperties();
+  const apiKey = properties.getProperty("GEMINI_API_KEY");
+  const lock = LockService.getScriptLock();
+  if (!apiKey) throw new Error("Set 'GEMINI_API_KEY' in Script Properties.");
+
+  const agent = new LlmAgent({
+    apiKey,
+    name: "RoutingDemoAgent",
+    modelRouting: "efficient", // "efficient" (default) | "quality" | "fixed"
+  }).setServices({ lock, properties });
+
+  // 1. Export & compare fixed / efficient / quality settings as JSON (0 API calls)
+  console.log("=== 1. Config Comparison JSON ===");
+  console.log(JSON.stringify(agent.getModelRoutingConfig().modeComparison, null, 2));
+
+  // 2. Dry-run preview for a prompt (1 Decisions API call, 0 content generation)
+  console.log("=== 2. Dry-Run Preview ===");
+  console.log(
+    JSON.stringify(
+      agent.previewModelRouting("Use maximum capability to design a distributed cache."),
+      null,
+      2,
+    ),
+  );
+
+  // 3. Live run: simple prompt (auto-routed to fast/lite model with [ModelRouting] log)
+  console.log("=== 3. Live Efficient Run (Trivial) ===");
+  const fastAnswer = agent.run("What is 17 * 23? Reply with the number only.", (logEntry) => {
+    if (logEntry.message.includes("[ModelRouting]")) console.log(logEntry.message);
+  });
+  console.log("Answer:", fastAnswer);
+
+  // 4. Live run: explicit max-capability prompt (auto-escalates to frontier model)
+  console.log("=== 4. Live Efficient Run (Max Capability Escalation) ===");
+  const deepAnswer = agent.run(
+    "Use maximum capability to list 3 design rules for avoiding GAS 6-minute timeouts.",
+    (logEntry) => {
+      if (logEntry.message.includes("[ModelRouting]")) console.log(logEntry.message);
+    },
+  );
+  console.log("Answer:", deepAnswer);
+
+  // 5. Inspect structured routing history
+  console.log("=== 5. Routing History ===");
+  console.log(JSON.stringify(agent.getRoutingHistory(), null, 2));
+}
+```
+
+> [!TIP]
+> For a full 8-case automated live benchmark (including `fixed` vs `efficient` speedup measurement, `quality` mode with Native Tools, `SubAgent` inheritance, and future-model registration round-trip), see [tests/Test_GASADK_v2_1_1_DecisionsRouter_E2E.js](tests/Test_GASADK_v2_1_1_DecisionsRouter_E2E.js) (`runAllGasadkV211RoutingTests()`).
+
 ---
 
 ## 🛡 Hooks System & Workspace Safety Guardrails (v1.3.5+)
@@ -1181,5 +1325,17 @@ function exampleWorkspaceMcpDirectMode() {
     - Upgraded `saveState()` / `loadState()` with UTF-8 byte-length detection, `Utilities.gzip` compression, 8KB chunking, and `deleteState()` cleanup to prevent GAS 9KB `PropertiesService` crashes.
     - Added inline `type: "function"` hook support and empty-hooks fast-path in `GasHookManager.js`, narrowed `A2AApp.js` `ScriptLock` to sheet writes only, added `resources/read`/`prompts/get`/`ping`/`SendMessage`/`GetTask` routes to `MCPA2Aserver.js`, and fixed `FileSearchApp.js` `convMimeType_` and `_pollOperation` bounds.
   - **Single-Function E2E Test Suite**: Added `tests/Test_GASADK_vNext_E2E.js` (`runAllGasadkVNextTests()`) with 270s soft time-budget protection and guaranteed `finally` cleanup of temporary Google Drive folders/files, Properties, and Cache entries (verified 10/10 PASS on live GAS runtime).
+
+- v2.1.1 (November 27, 2026)
+  - **Gemini Decisions API (`gemini-decision-1`) Dynamic Model & Thinking Router (`src/lib/GeminiDecisionsRouter.js`)**:
+    - Added zero-dependency, 100% data-driven dynamic routing across all 6 models (`gemini-3.5-flash-lite`, `gemini-3.8-flash`, `gemini-4-hydrogen`, `gemini-4-neon`, `gemini-4-argon`, `gemini-4-carbon`) with `modelRouting: "efficient"` (default), `"quality"`, and `"fixed"` modes.
+    - Automatically detects explicit maximum-capability directives in any language (`max_capability_override`) and escalates safely using the GAS-safe frontier split (`gemini-4-argon MEDIUM` for intermediate turns + `gemini-4-carbon HIGH` for final synthesis).
+    - Enforces exact per-model `thinkingLevel` clamping (preventing HTTP 400 on `carbon`/`argon`/`3.8-flash`), `billingTier: "auto"` Paid-only HTTP 403/429 auto-fallback to `gemini-4-hydrogen`, GAS remaining-time guardrails (`<90s`/`<45s`), bounded 3,000-char routing input, and pre-loop single routing to preserve Gemini Implicit Prefix Caching.
+  - **JSON Comparison Export, Dry-Run Preview & Future-Model Customization**:
+    - Added `agent.getModelRoutingConfig()`, `LlmAgent.getModelRoutingPresets()`, and `agent.previewModelRouting(prompt)` to inspect and compare `fixed` / `efficient` / `quality` selections as pure, secret-free JSON.
+    - Added `LlmAgent.configureModelRouting()`, `LlmAgent.registerModels()`, and `LlmAgent.resetModelRoutingDefaults()` for external customization of future Gemini models (`modelCatalog`, `modelPool`, `routingMatrix`).
+  - **Per-Generation Routing Logs & Cross-Library Propagation**:
+    - Emits `[ModelRouting] role=... | mode=... | model=... | thinking=... | reason=...` logs on every generation call and exposes `agent.getRoutingHistory()`.
+    - Propagated routing across `LlmAgent`, `SubAgent`, `MCPApp`, `A2AApp`, `MCPA2Aserver` (with `allowClientRoutingHints: false` security boundary), `FileSearchApp`, and `GeminiWithFiles`, fixed `generationConfig` forwarding on Native/Skill/Built-in tasks, and synchronized code + READMEs across all 5 standalone repositories.
 
 [TOP](#gasadk-agent-development-kit-for-google-apps-script)

@@ -56,7 +56,7 @@ Optional variables: `MORPHEUS_BIN_DIR` (install directory), `MORPHEUS_VERSION` (
 
 ### Voice output
 
-`slim-speak` is the complete voice build: local speech through Kokoro with the `speak-phonemize` frontend enabled, so Portuguese (Brazil) and the other languages without a bundled lexicon work — not just English and Chinese.
+`slim-speak` is the complete voice build: local speech through Kokoro with the `speak-phonemize` frontend enabled, so Portuguese (Brazil) and the other languages without a bundled lexicon work - not just English and Chinese.
 
 ```sh
 export MORPHEUS_VARIANT=slim-speak
@@ -65,7 +65,7 @@ curl -fsSL https://raw.githubusercontent.com/aidreamy/morpheus/main/download.sh 
 
 The archive ships an extra `morpheus-ttsd` binary, which the app spawns as a sibling; keep it in the same directory as `morpheus`. On Linux, playback needs one of `paplay`, `pw-play`, `aplay`, `play` or `ffplay`; macOS uses the built-in `afplay`.
 
-The speech model is not bundled: download a Kokoro bundle from the [sherpa-onnx model releases](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) and extract it under `~/.cache/morpheus/models/` (or point `MORPHEUS_KOKORO_MODEL_DIR` at the extracted directory) — v1.1 for the default voices, v1.0 for the Brazilian Portuguese voice.
+The speech model is not bundled: download a Kokoro bundle from the [sherpa-onnx model releases](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) and extract it under `~/.cache/morpheus/models/` (or point `MORPHEUS_KOKORO_MODEL_DIR` at the extracted directory) - v1.1 for the default voices, v1.0 for the Brazilian Portuguese voice.
 
 > **Windows:** voice output is not supported yet. The voice daemon communicates over a Unix domain socket and uses Unix process APIs, so `slim-speak` is published for Linux x64 and macOS (x64 and arm64) only. Windows ships `slim` and `slim-embed`.
 
@@ -75,6 +75,7 @@ After installing, run `morpheus` in your terminal. If the install directory is n
 
 | Crate                                                       | Description                                                                                     |
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [`morpheus-agents`](./crates/morpheus-agents/README.md)     | Sub-agent integration: ACP client harnesses, session state and typed event streams              |
 | [`morpheus-tools`](./crates/morpheus-tools/README.md)       | Development tools and computer tools                                                            |
 | [`morpheus-tui`](./crates/morpheus-tui/README.md)           | TUI widget library: markdown/diff rendering and layout, the components behind the terminal UI   |
 | [`morpheus-sdk`](./crates/morpheus-sdk/README.md)           | Reusable agent primitives: patch engine, tool-call parsing, LSP client and AST intelligence     |

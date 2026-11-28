@@ -4,15 +4,16 @@
 
 # apcore — AI-Perceivable Core
 
-> **Define a governed capability once. Expose it through any supported surface.**
+> **Define once. Govern every call.**
+>
+> An embeddable microframework for application capabilities that agents and code can call.
 
 **[📖 Documentation](https://apcore.aiperceivable.com/)** · [Getting Started](https://apcore.aiperceivable.com/getting-started/) · [Protocol Specification](./docs/spec/protocol-spec.md)
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/12294/badge)](https://www.bestpractices.dev/projects/12294)
-apcore is a **governed, protocol-neutral runtime and module standard** for application capabilities that agents or code can call.
 
-You define a capability once — a description, an input schema, an output schema and behavioral annotations. The runtime then applies identity, access control, approval, validation, middleware, execution, structured errors and trace context on every call. Surface adapters project the same capability to MCP, A2A, CLI, HTTP or direct code.
+Define a capability with a description, input and output schemas, and behavioral annotations. The protocol-neutral runtime applies identity, access control, approval, validation, middleware, execution, structured errors, and trace context when a call goes through apcore. Call the same capability directly from code or expose it through MCP, A2A, CLI, or HTTP adapters.
 
 MCP tells an agent what it *can* call. apcore decides whether *this* call — with these arguments, by this identity — should run at all, and leaves evidence that it did.
 
@@ -52,7 +53,7 @@ import { APCore } from 'apcore-js';
 
 const client = new APCore();
 
-client.module({
+const addition = client.module({
   id: 'math.add',
   description: 'Add two numbers',
   inputSchema: Type.Object({ a: Type.Number(), b: Type.Number() }),
@@ -60,6 +61,7 @@ client.module({
   execute: (inputs) => ({ sum: (inputs.a as number) + (inputs.b as number) }),
 });
 
+await addition.registration;
 console.log(await client.call('math.add', { a: 10, b: 5 })); // { sum: 15 }
 ```
 
@@ -112,9 +114,11 @@ The [Getting Started guide](https://apcore.aiperceivable.com/getting-started/) c
 
 ## What the Runtime Enforces
 
+ACL checks require an attached ACL and an active `acl_check` step. The default client attaches no ACL when the ACL file is absent. Without an `ApprovalHandler`, the active approval gate warns and allows an approval-required call to continue by default. A strict execution policy makes that gate reject the call. See the [security setup guide](./docs/spec/security-considerations.md#2-detailed-threats-and-mitigations).
+
 | Concern | Mechanism | Reference |
 |---|---|---|
-| **Contract** | Every module declares `description`, `input_schema` and `output_schema` (JSON Schema Draft 2020-12); inputs and outputs are validated on every call | [Schema System](./docs/features/schema-system.md) |
+| **Contract** | Every module declares `description`, `input_schema` and `output_schema` (JSON Schema Draft 2020-12). The standard pipeline validates inputs and module output. | [Schema System](./docs/features/schema-system.md) |
 | **Behavior** | Annotations such as `readonly`, `destructive`, `idempotent`, `requires_approval`, `open_world`, `streaming`, `cacheable`, `paginated` | [Module Interface](./docs/features/module-interface.md) |
 | **Access** | Pattern-based ACL rules evaluated first-match-wins, with identity, role and call-depth conditions; `default_effect: deny` | [ACL System](./docs/features/acl-system.md) |
 | **Approval** | A human-in-the-loop gate for modules that require approval, through a pluggable `ApprovalHandler` | [Approval System](./docs/features/approval-system.md) |
@@ -123,7 +127,7 @@ The [Getting Started guide](https://apcore.aiperceivable.com/getting-started/) c
 | **Evidence** | W3C trace context, tracing, metrics, usage, redaction of `x-sensitive` fields, events and audit | [Observability](./docs/features/observability.md) |
 | **Recovery** | Structured errors with `retryable`, `ai_guidance`, `user_fixable` and `suggestion` | [Error System](./docs/features/error-system.md) |
 
-Every call runs the same eleven-step pipeline:
+The standard call uses this eleven-step pipeline:
 
 ```text
  1. context_creation    trace_id, caller_id, call_chain, identity

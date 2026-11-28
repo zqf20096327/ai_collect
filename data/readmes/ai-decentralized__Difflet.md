@@ -60,7 +60,7 @@ Three entry points share one engine:
 
 | Backend | `DIFFLET_BACKEND` | Status | Models | Parallelism | Details |
 |---|---|---|---|---|---|
-| NVIDIA GPUs | `cuda` | ✅ Supported (subset) | FLUX.1-dev, Qwen-Image, Wan 2.2; HunyuanVideo and LTX-2 experimental | DP, CFG-parallel (Wan) | [GPU features](#nvidia-gpus) |
+| NVIDIA GPUs | `cuda` | ✅ Supported (subset) | FLUX.1-dev, Qwen-Image, Wan 2.1/2.2; HunyuanVideo and LTX-2 experimental | DP, CFG-parallel (Wan) | [GPU features](#nvidia-gpus) |
 | AWS Trainium2 (AOT) | `trainium` | ✅ Supported | All [supported models](#supported-models) | TP, CP, SP, CFG-parallel, DP | [Trainium features](#trainium) |
 | AWS Trainium2 / Trainium3 (native PyTorch) | `neuron` | ✅ Supported | FLUX.1-dev, Qwen-Image, Wan 2.1/2.2, HunyuanVideo 1.0/1.5, LTX-2 | TP, CP, SP, CFG-parallel, DP; FP8 (`--quant mxfp8`) on Trainium3 | [Native backend results](docs/verification/neuron-backend-results.md) |
 | Cloud TPU | `tpu` | 🧪 Experimental | FLUX.1-dev, Qwen-Image, Wan, HunyuanVideo, LTX-2 (`difflet serve` and the benchmark runners) | TP | [v5e benchmarks](benchmark/v5e/RESULTS.md) |
@@ -100,7 +100,7 @@ Which features each model supports today. ✅ = supported · ⚠️ = supported 
 
 - **TP** — tensor parallelism (`--tp-degree`). Splits each layer across devices (NeuronCores on Trainium).
 - **CP — all-gather** — context parallelism with gather-KV attention (`--cp-degree N --cp-mode gather_kv`, the default). Splits the sequence across ranks.
-- **CP — ring** — context parallelism with ring attention (`--cp-degree N --cp-mode ring`). Lower memory than all-gather for long sequences.
+- **CP — ring** — context parallelism with ring attention (`--cp-degree N --cp-mode ring`). Lower memory than all-gather for long sequences. Within one instance at CP ≤ 4, gather-KV with const-max attention measured faster for Qwen-Image and HunyuanVideo 1.5 (by ~9% on Trn3); ring was within 2% for Wan 2.2.
 - **CP — ulysses** — context parallelism with head-sharded attention (`--cp-mode ulysses`). Needs the model's head count divisible by `tp_degree × cp_degree`.
 - **SP** — Megatron-style sequence parallelism (`--sp`). Shards the norm/modulation/residual regions along the sequence axis across the existing tensor-parallel group; `world_size` is unchanged. Mutually exclusive with `--cp-degree > 1`.
 - **CFG-parallel** — splits the conditional/unconditional CFG passes across 2 data-parallel ranks (`--cfg-parallel`). Only meaningful for true two-pass classifier-free guidance, not working for distilled guidance.
@@ -123,6 +123,7 @@ see the per-model limits below.
 | FLUX.1-dev | ✅ image | ✅ image | ✅ | ❌ | ✅ ² | — ¹ | ❌ | ❌ |
 | Qwen-Image | ✅ image | ⚠️ image ³ | ✅ | ✅ | ✅ | — ⁴ | ❌ | ❌ |
 | Wan 2.2 | ✅ video | ✅ video | ✅ | ❌ | ⚠️ ⁵ | ✅ ⁶ | ❌ | ❌ |
+| Wan 2.1 ¹¹ | ✅ video | ✅ video | ✅ | ❌ | ⚠️ ⁵ | ✅ ⁶ | ❌ | ❌ |
 | HunyuanVideo (original) | ⚠️ experimental ⁷ | ⚠️ experimental ⁷ | ⚠️ execution observed ⁷ | ❌ | Not measured | — ¹ | ❌ | ❌ |
 | LTX-2 | ⚠️ video, CPU checks ⁸ | ⚠️ video, CPU checks ⁸ | ⚠️ Python qualified ⁸ | ❌ | Not measured | ❌ | ❌ | ❌ |
 | HunyuanVideo 1.5 | ⚠️ experimental ⁹ | ⚠️ experimental ⁹ | ✅ ⁹ | ❌ | Not measured | ❌ | ❌ | ❌ |
@@ -139,8 +140,7 @@ TeaCache (adaptive), TAEF1, and `--host-vae` are refused on GPUs for these model
    after the 30 s queue timeout. Use `serve --dp-degree N` for concurrency.
 4. Qwen-Image runs one transformer pass per step, so there is no CFG branch to split.
 5. `--dp N --requests` works, with output bit-identical to one GPU. `serve --dp-degree` does
-   not apply, because the video service runs one job at a time. Wan 2.1 is routed to the GPU
-   flow but has not been run on a GPU.
+   not apply, because the video service runs one job at a time.
 6. Two GPUs under `torchrun`, `difflet run` only. Output is bit-identical to one GPU.
 7. Experimental single-GPU BF16 support for `hunyuanvideo-community/HunyuanVideo`.
    Eager and compiled Python, CLI and HTTP generation were verified at 320×512×61,
@@ -162,6 +162,10 @@ TeaCache (adaptive), TAEF1, and `--host-vae` are refused on GPUs for these model
    guidance-distilled: one transformer pass per step, so there is no CFG branch to split. On
    one B200, I2VA passes vLLM-Omni's own acceptance test, eager and compiled, at vLLM-Omni's
    warm speed; see the [MiniMax-H3 CUDA guide](docs/verification/minimax-h3-cuda.md).
+11. `Wan-AI/Wan2.1-T2V-14B-Diffusers`, single-GPU BF16 text-to-video on the same runtime as
+   Wan 2.2 with its one transformer. The defaults are Wan 2.2's (40 steps, guidance 4.0); Wan
+   2.1's model card uses `--steps 50 --guidance-scale 5.0`. It has no second denoising stage,
+   so `--guidance-scale-2` and a served `guidance_scale_2` are refused.
 
 Measured timings against stock diffusers, and the full pass/limit matrix, are in
 [docs/verification/gpu-backend-results.md](docs/verification/gpu-backend-results.md).
@@ -175,8 +179,8 @@ Measured timings against stock diffusers, and the full pass/limit matrix, are in
 | FLUX.1-dev | ✅ | ✅ | ✅ | ✅ | ✅ | — ⁹ | ✅ |
 | Qwen-Image | ✅ | ✅ | ✅ | ✅ | ✅ | — ⁹ | ✅ |
 | Wan 2.2 / 2.1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| HunyuanVideo | ✅ | ⚠️ ¹⁰ | — ¹⁴ | ✅ | ✅ | — ⁹ | ⚠️ ¹¹ |
-| HunyuanVideo 1.5 | ✅ | ✅ | — ¹⁴ | ✅ | ⚠️ ¹⁵ | ✅ | ✅ |
+| HunyuanVideo | ✅ | ⚠️ ¹⁰ | ⚠️ ¹⁴ | ✅ | ✅ | — ⁹ | ⚠️ ¹¹ |
+| HunyuanVideo 1.5 | ✅ | ✅ | ⚠️ ¹⁴ | ✅ | ⚠️ ¹⁵ | ✅ | ✅ |
 | LTX-2 | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
 | MiniMax-H3 | ✅ TP4 | ❌ | ❌ | ❌ | ❌ | — ⁹ | ❌ |
 
@@ -224,9 +228,9 @@ Wan 2.2 4.0 / 3.0 at 40) both run 0.98× (9.96 s against 10.14–10.15 s per ste
 0.93× / 0.89×; Wan 2.1's clip is 15.1 dB from bf16 against 22.7 dB between two bf16 runs at
 different TP degrees, failing the device screen (Wan 2.2: 14.3 against 14.8 dB, passing). Their
 faster compile and cold start under `--quant` (0.63–0.75×) come from the NKI trace cache the flag
-turns on, not from MXFP8: bf16 Wan 2.1 with `DIFFLET_NKI_TRACE_CACHE=1` compiles in 541 s instead
-of 958 and starts cold in 653 s instead of 997, against which MXFP8 is 1.21× compile and 1.01× cold
-(Wan 2.2 shows the same warmup split; evidence section 12).
+turned on (now the default), not from MXFP8: bf16 Wan 2.1 with `DIFFLET_NKI_TRACE_CACHE=1`
+compiles in 541 s instead of 958 and starts cold in 653 s instead of 997, against which MXFP8 is
+1.21× compile and 1.01× cold (Wan 2.2 shows the same warmup split; evidence section 12).
 Quantizing the self-attention q/k/v as well (a `DIFFLET_QUANT_TARGETS` override; their q/k are
 then reordered per head at load so that the rotary turns contiguous halves: 8.05 ms per tp4
 block against 10.67 in bf16) makes the step 0.76–0.77× at 9 frames and 0.93–0.94× at 81, but
@@ -288,7 +292,7 @@ reference for all seven models).
 11. DP works, but on a 4-core `trn2.3xlarge` each 2-core replica runs out of HBM loading the compiled VAE at the default 320×512×61 shape. Use a smaller shape or a host with more cores per replica.
 12. Wan 2.1 is the qualified serving checkpoint. Wan 2.2 can be started for experiments but its dual-transformer path has not passed resident-serving acceptance.
 13. MiniMax-H3 supports the Trainium four-stage CLI at TP4 and CP1: text and DiT use four cores, and each VAE uses one core. The verified end-to-end shape is **256×448×124**; pass `--height 256 --width 448 --num-frames 124`. The registry default **768×1344×124** is not qualified on `trn2.3xlarge`: the standard DiT graph exceeds device memory, and compilation with precomputed AdaLN exceeded host memory. The 640×1152×124 DiT compiled successfully but has not been verified end to end. Python API generation, resident serving, DP, JSONL batching, multi-shape compilation, and TeaCache are not supported for H3. See the [verification](docs/design/minimax_h3/01_e2e_reverification_2026-09-30.md) and [bring-up handoff](docs/design/minimax_h3/00_trainium_bringup_handoff.md).
-14. Not applicable: the model always carries a padded-text attention mask, and the Trainium ring-attention kernel has no text-mask path. `--cp-mode ring` is refused (for HunyuanVideo 1.5 before any stage launches); use `--cp-mode ulysses` (or `gather_kv` for HunyuanVideo 1.5).
+14. Native backend (`--backend neuron`) only. The model always carries a padded-text attention mask, which the joint const-max ring kernel applies at run time; the Trainium (AoT) backend's ring kernel has no text-mask path, so it refuses `--cp-mode ring` (for HunyuanVideo 1.5 before any stage launches). Layers whose const-max calibration exceeds its gap limit run the running-max ring instead of the const-max kernel.
 15. `--tp-degree 4 --sp` needs the image token count divisible by 4. It works at 320×512×61; at the default 480×848×121 it is refused before compile, so use the default `--tp-degree 2 --cfg-parallel` there.
 16. The DiT runs on the NeuronCores; the VAE decodes on the host by default (diffusers' tiled decoder in fp32), because the compiled decoder does not build on neuronx-cc 2.26 (`--device-vae` opts into it). The host decode takes about 7 minutes at 320×512×61 and about 45 minutes at 480×848×121. Verified on device: TP2, TP2 × CFG2, TP4, TP4 + SP, TP2 × CP2 (ulysses and gather_kv), DP, JSONL batches and the default shape; see [docs/verification/hv15-aot-evidence.md](docs/verification/hv15-aot-evidence.md).
 17. Available but not recommended for HunyuanVideo 1.5: the calibration signal is weak and the output is visibly degraded, and the probe loads a second copy of the DiT weights, so it does not fit at the default shape. Use `--teacache-cadence 2` (20 of 50 steps skipped, about 40% less denoise time).

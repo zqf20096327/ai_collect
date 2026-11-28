@@ -91,6 +91,7 @@ Other open source projects that use Argo:
 * [deployKF](https://github.com/deployKF/deployKF) effortlessly integrates Kubeflow, and leading MLOps tools on Kubernetes into open ML platforms (uses Argo CD and Argo Workflows).
 * [Devtron](https://github.com/devtron-labs/devtron) is a Web-Based CI/CD Platform for Kubernetes, powered by Argo.
 * [Flowify](https://equinor.github.io/flowify-documentation/) Collaborative no code UI for Argo Workflows.
+* [gitlab-environment-argocd-generator](https://gitlab.com/tholcman/gitlab-environment-argocd-generator) is an ApplicationSet plugin generator that provides the commit SHA, ref and an optional JSON job artifact of a GitLab environment's last deployment.
 * [Juno](https://github.com/lumindigital/juno) is an Argo Workflows Generator written in Typescript. Juno helps take the pain out of writing workflows in YAML
 * [k8s-bootstrapper](https://github.com/hivenetes/k8s-bootstrapper) is a framework to set up production ready Kubernetes clusters using Terraform and Argo CD.
 * [Kargo](https://github.com/akuity/kargo) helps GitOps practitioners streamline continuous delivery for Kubernetes by automating the progression of changes from one environment to the next.
@@ -102,6 +103,7 @@ Other open source projects that use Argo:
 * [KubeStellar Console](https://github.com/kubestellar/console) is an AI-powered multi-cluster Kubernetes management dashboard (CNCF Sandbox) that integrates with Argo CD for GitOps-driven workload placement and monitoring across edge and cloud clusters.
 * [Meshery](https://github.com/meshery/meshery) is the open source, cloud native manager that enables the design and management of all Kubernetes-based infrastructure and applications (multi-cloud). 
 * [Metaflow](https://github.com/Netflix/metaflow) is a Python library for building and managing real-life data science projects.
+* [myks](https://github.com/mykso/myks) is a tool to apply the rendered manifest pattern to many clusters: it renders Helm charts, Git sources and plain YAML per environment into reviewable manifests in Git, and generates the Argo CD Applications that deploy them.
 * [Nixidy](https://github.com/arnarg/nixidy) is a tool to apply the rendered manifest pattern using NixOS-like modules to define Argo CD applications.
 * [Onepanel](https://github.com/onepanelio/onepanel) is the open source, end-to-end computer vision platform.
 * [Orchest](https://github.com/orchest/orchest) is a tool for building data pipelines/workflows. It supports Jupyter notebooks and scripts in multiple languages and provides a user friendly UI/browser based editor.

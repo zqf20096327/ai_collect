@@ -2,7 +2,7 @@
 
 > 🏃‍♀️ Run AI agents on a schedule or webhook, from markdown files in your repo. On your Mac or Linux machine, with the plan you already pay for.
 
-[Live demo](https://kombinat.tech/) · [80-second video](https://www.youtube.com/watch?v=P6f0QCEyr68) · [Quickstart](#-quickstart) · ⭐ [Star on GitHub](https://github.com/Danilqa/kombinat)
+[Live demo](https://kombinat.tech/) · [80-second video](https://www.youtube.com/watch?v=P6f0QCEyr68) · [Quickstart](#-quickstart) · [Design system](https://kombinat.tech/design-system/) · ⭐ [Star on GitHub](https://github.com/Danilqa/kombinat)
 
 ## ✨ Features
 
@@ -17,6 +17,7 @@
 - **Retries errors.** A run that stops with an error can try again a few minutes later, right where it stopped.
 - **Skips idle runs.** A check command skips a scheduled run when there is nothing to do, so you spend no tokens.
 - **Several runs.** Start a routine several times in one go, such as once per issue, in a row or in parallel.
+- **Chains.** Start a routine when another one finishes, with its result.
 - **Memory.** A routine can carry notes from one run to the next. Off by default.
 - **Inbox.** Unread runs, with failures and findings first, and a notification for the ones you pick.
 - **Full transcripts.** Search them, and chat to continue any run.
@@ -124,6 +125,13 @@ timeoutMinutes: 55
 
 To start from a ready routine instead, click New routine on the dashboard's Routines page, pick a template, set its name, folder and schedule, choose the agent and model, and change its prompt to fit your project. It writes the file for you. Commit it to keep it in git.
 
+To have Claude Code write routines for you, add the Kombinat plugin. Its skills write routines and webhook gates, find out why a run failed, review your routines and move your cron jobs over:
+
+```
+/plugin marketplace add Danilqa/kombinat
+/plugin install kombinat@kombinat
+```
+
 - `name` must match the file name.
 - `schedule` is a 5-field cron in local time, or `manual` to run only on demand.
 - `cwd` is where the agent starts.
@@ -137,19 +145,20 @@ To start from a ready routine instead, click New routine on the dashboard's Rout
 - `check` is an optional shell command that runs before each scheduled run and skips it when there is nothing to do, so the agent spends no tokens then. Exit 0 starts the run and exit 78 skips it, see [docs/hooks.md](docs/hooks.md#check).
 - `before` is an optional shell command that runs first. If it fails or takes more than 3 minutes, the run fails.
 - `after` is an optional shell command that runs last, whatever the outcome, for example to post failures to Slack. It gets the finished run on stdin and cannot change it, see [docs/hooks.md](docs/hooks.md).
+- `startsAfter` is another routine whose runs start this one, with their result, see [Chains](#chains).
 - `enabled: false` keeps the file but stops the schedule.
 - `webhook: true` lets other apps start the routine with a request, see [docs/webhook.md](docs/webhook.md).
 - `memory: true` keeps notes that carry over between runs, see below. Off by default.
 
-`kombinat validate` checks every routine file. It reports settings it does not know, such as `scheduel`, settings set twice and the first wrong value in each file. The daemon doesn't warn about unknown or repeated settings. Run `validate` after you edit a routine.
+`kombinat validate` checks every routine file. It reports settings it does not know, such as `scheduel`, settings set twice, the first wrong value in each file, and a `startsAfter` that names a missing routine or makes a loop. The daemon doesn't warn about unknown or repeated settings. Run `validate` after you edit a routine.
 
-Changes apply on the next check, no restart needed. Write the prompt so the agent never has to ask a question: nobody will answer. When there is nothing to do, have it start its answer with "No" or "Nothing", such as "No open incidents.", so the dashboard's Inbox files the run under Nothing to report.
+Changes apply on the next check, no restart needed. Write the prompt so the agent never has to ask a question: nobody will answer. When there is nothing to do, have it start its answer with "No" or "Nothing", such as "No open incidents.", so the dashboard's Inbox files the run under Nothing to report. When the agent may have to stop on an error, add [`onAgentGiveUp: fail`](#agents), so such a run fails instead of succeeding.
 
 ### Retries
 
 With `retries: 2`, a run that stops with an error, such as a stream idle timeout or a hang that hits `timeoutMinutes`, shows Retrying and tries again 5 minutes later, up to 2 more times. The next attempt continues the agent's session where it stopped. Without a session, such as for `command` or after a failed `before`, it starts over with `before`. Each attempt gets the whole `timeoutMinutes`.
 
-The run's page shows the error and when the next attempt starts, with Retry now and Stop retrying. Its transcript marks where each attempt stopped. A run that hits its `maxBudgetUsd`, its `maxBudgetTokens` or a usage limit is not retried, and neither is one whose `cwd` or agent is missing. The `after` hook and the Inbox see only how the last attempt ended.
+The run's page shows the error and when the next attempt starts, with Retry now and Stop retrying. Its transcript marks where each attempt stopped. A run that hits its `maxBudgetUsd`, its `maxBudgetTokens` or a usage limit is not retried, and neither is one whose `cwd` or agent is missing or whose agent gave up with [`onAgentGiveUp: fail`](#agents). The `after` hook and the Inbox see only how the last attempt ended.
 
 ### Several runs
 
@@ -158,6 +167,26 @@ With `runs: 3`, each scheduled time, Run now and one-time run starts 3 runs. By 
 The runs that wait show under Queued on the routine's page, with Cancel. They also wait while the Claude plan of their account is at its usage limit, and start after the reset. A scheduled time is skipped while runs of the last start still wait. Webhooks start one run each.
 
 To start a routine several times just once, open the menu next to Run now and pick Run several times.
+
+### Chains
+
+To run work in steps, such as fix issues, then review the pull requests, then draft the release notes, start each routine when the one before it finishes:
+
+```markdown
+---
+name: pr-review-sweep
+cwd: ~/projects/app
+startsAfter: night-agent-tasks
+startsWhen: succeeds
+---
+```
+
+`startsWhen` is `succeeds` (default), `fails`, which also covers a run that timed out or was aborted, `finishes`, which is either, or `has-findings`: the run succeeded, nothing was blocked and its result does not start with "No" or "Nothing", as the Inbox files it. The next run starts within 30 seconds and gets the result of the run before it below its prompt. A routine can keep its own `schedule` too.
+
+- A run that ends while the next routine still runs makes it start once it is idle. Several such runs start it once, after the newest.
+- A disabled routine does not start. Only runs that end after you add `startsAfter` start the routine.
+- Routines that start after each other in a loop, such as A after B and B after A, never start this way. `kombinat validate` reports the loop.
+- The routine's page shows Starts after, Then runs and a Chain card with every routine of the chain in order and its last run.
 
 ### Accounts
 
@@ -189,12 +218,14 @@ The routine's Memory tab in the dashboard shows the notes and the run that chang
 | `maxBudgetUsd`    | optional                                                                          | -                                                              | -         |
 | `maxBudgetTokens` | optional, such as `500k`, `2M` or `3000000`                                       | -                                                              | -         |
 | `onUsageLimit`    | `wait` (default), `fail`                                                          | -                                                              | -         |
+| `onAgentGiveUp`   | `succeed` (default), `fail`                                                       | -                                                              | -         |
 | `command`         | -                                                                                 | -                                                              | required  |
 
 - `claude` runs `claude -p`. Anything that needs approval is denied, and the run still succeeds. The dashboard marks such a run with how many actions were blocked, files it under Needs a look and lists each action with a rule that allows it, such as `Bash(git push *)`. Allow and continue resumes the session with those rules, for that reply only. To allow them in every run, add the rules to `permissions.allow` in `.claude/settings.json` in the routine's folder.
 - `fallbackModel` is the model Claude switches to when `model` is not available, overloaded or fails, such as `claude-sonnet-5-5`. A comma-separated list is tried in order. The run's transcript says when it switched.
 - `maxBudgetTokens` caps the tokens a run uses, counted as the dashboard counts them: input, output and cache. Kombinat stops the run after the model call that reaches it. A run can end over the budget by up to one call, since each call reads the whole conversation again. The run fails with the budget it reached and is not retried. Its next attempts and its turns after a usage limit share the budget, and each reply gets the whole budget. With `maxBudgetUsd` too, the run stops at whichever it reaches first.
 - `onUsageLimit` says what a run does when it hits the 5-hour or weekly limit of the Claude plan. With `wait`, the run shows Waiting for limit, and a minute after the reset, once a run slot is free, Kombinat continues its session where it stopped. The run's page has Continue now and Stop waiting, and its transcript marks the pause. With `fail`, the run fails at the limit.
+- `onAgentGiveUp` says what a run does when Claude gives up because it could not do the job, for example when a query or a login failed and it stopped. With `succeed`, the default, the run succeeds with Claude's answer, as any run whose agent exits normally. With `fail`, Claude ends with a status next to its answer, through `claude -p --json-schema`, and when it gave up, the run fails with the answer as its error: the Inbox files it under Needs a look, the `after` hook gets `failed` and routines with `startsWhen: fails` start. It is not retried, since another attempt would meet the same problem.
 - `codex` runs `codex exec`. `permissionMode` sets its sandbox.
 - `command` runs any other CLI, for example `command: gemini --yolo`. It gets the prompt on stdin, and its output is the result.
 

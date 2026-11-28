@@ -83,7 +83,7 @@ _Imitation learning, diffusion policies, grasping, bimanual and dexterous manipu
 - ⭐ **[Play2Perfect: What Matters in Dexterous Play Pretraining for Precise Assembly?](https://arxiv.org/abs/2606.26428)** (2026) — CoRL 2026 Oral. Asks what dexterous play pretraining actually needs before precise assembly, a contact-rich, sparse-reward task that is hard for both imitation and direct RL. · [code](https://github.com/kushal2000/play2perfect) · [project](https://play2perfect.github.io)
 - ⭐ **[World In-Context Learning for Agentic Robot Manipulation](https://arxiv.org/abs/2611.12885)** (2026) — RoboScript: a frozen model rehearses a task in sim from one demo and writes feedback into a task memory, not weights. 83.4% on all 50 RoboTwin 2.0 tasks, 20+ points over the best trained policy; real dual-arm too. · [code](https://github.com/ArcheOne-AI/RoboScript) · [project](https://archeone-ai.github.io/RoboScript/)
 
-**[All 223 entries →](lists/manipulation.md)**
+**[All 224 entries →](lists/manipulation.md)**
 
 <a id="tactile"></a>
 ### Tactile & Visuotactile Sensing
@@ -136,14 +136,14 @@ _Learned dynamics, video world models, world action models (WAM) and model-based
 - ⭐⭐ **[OpenWAM: An Open, Modular Exploration Towards Systematic World-Action Model Pretraining](https://arxiv.org/abs/2609.07398)** (2026) — An open research stack that splits world-action models into composable modules, then runs controlled studies on what to inherit from video priors and how world and action learning interact. · [code](https://github.com/OpenWAM-Official/OpenWAM) · [project](https://openwam-official.github.io/)
 - ⭐⭐ **[RoboJEPA: Scaling Robotic Latent World Models](https://arxiv.org/abs/2610.10515)** (2026) — A JEPA world model trained across 12 robot embodiments; its imagination error follows a power law in compute, so model quality can be predicted beyond the fitted scale. · [code](https://github.com/facebookresearch/robo_jepa) · [project](https://robojepa.github.io/)
 - ⭐⭐ **[World Action Models: A Survey](https://arxiv.org/abs/2606.20781)** (2026) — Separates WAMs from world models, video generators and VLAs, then sorts work by what is generated (rendered, latent or none) and how it is built; concludes the field is moving toward generating less of the future. · [project](https://world-action-models.github.io/)
+- ⭐ **[Beyond the Happy Path: Generalizing Robot World Models from Simulated Failures](https://arxiv.org/abs/2611.33925)** (2026) — Pretrained action-conditioned world models barely beat a copy-first-frame baseline off the happy path; 62k simulated failure trajectories plus interaction alignment cut object error 28.2% (35.0% unseen). · [code](https://github.com/aim-uofa/WorldReforge) · [project](https://aim-uofa.github.io/WorldReforge/)
 - ⭐ **[Causal World Modeling for Robot Control](https://arxiv.org/abs/2601.21998)** (2026) — LingBot-VA: an autoregressive diffusion framework that learns frame prediction and policy together, with shared video-action latents, closed-loop rollout and asynchronous inference. · [code](https://github.com/Robbyant/lingbot-va) · [project](https://technology.robbyant.com/lingbot-va)
 - ⭐ **[Chunk-wise Model-based Policy Optimization](https://arxiv.org/abs/2610.14564)** (2026) — CoRL 2026 Spotlight. Model-based RL that uses a chunk world model as a differentiable training-time evaluator, targeting compounding error, inference latency and BPTT instability. · [code](https://github.com/song-wx/CMPO) · [project](https://song-wx.github.io/cmpo.github.io/)
 - ⭐ **[DreamX: Video Diffusion Model is a Universal Latent Action Learner](https://arxiv.org/abs/2611.05377)** (2026) — Reuses a pretrained video diffusion model to extract compact latent actions (1,200 to 4 tokens per frame) that act as a shared interface across humans, robots and environments, including zero-shot action transfer. · [code](https://github.com/cvlab-kaist/DreamX) · [project](https://cvlab-kaist.github.io/DreamX/)
+- ⭐ **[Entangle: Scaling Human-Video In-Context World-Action Models across Unseen Tasks and Contexts](https://arxiv.org/abs/2611.28732)** (2026) — In-context WAM mapping one human video plus observations to future states and actions; video-to-video generation turns robot videos into matched human contexts, with anti-shortcut losses. · [project](https://entangle-robotics.github.io/)
 - ⭐ **[Fast-WAM: Do World Action Models Need Test-time Future Imagination?](https://arxiv.org/abs/2603.16666)** (2026) — Asks whether WAMs need future imagination at test time: keeps video co-training during training but skips video generation at inference, separating the two effects in a controlled comparison. · [code](https://github.com/yuantianyuan01/FastWAM) · [project](https://yuantianyuan01.github.io/FastWAM/)
-- ⭐ **[GigaWorld-Policy: An Efficient Action-Centered World--Action Model](https://arxiv.org/abs/2603.17240)** (2026) — An action-centered WAM that predicts actions from the observation and makes video generation optional, so motion accuracy depends less on forecast quality and inference is cheaper. · [code](https://github.com/open-gigaai/giga-world-policy) · [project](https://gigaai-research.github.io/GigaWorld-Policy/)
-- ⭐ **[GreenWAM: A World Foundation Model for Robotics](https://arxiv.org/abs/2610.18774)** (2026) — One world model that is also the policy, across 20 robot families mapped to a shared joint-space action format; reports strong WorldArena, RoboTwin 2.0 and LIBERO-plus results and a one-step distilled humanoid policy. · [code](https://github.com/greenvla/GreenWAM) · [project](https://greenvla.github.io/GreenWAM)
 
-**[All 179 entries →](lists/world-models.md)**
+**[All 182 entries →](lists/world-models.md)**
 
 <a id="navigation"></a>
 ### Navigation & Embodied Agents
@@ -183,7 +183,7 @@ _Visual / LiDAR SLAM and odometry, 3D reconstruction, object pose, depth and ope
 - ⭐ **[BundleSDF: Neural 6-DoF Tracking and 3D Reconstruction of Unknown Objects](https://arxiv.org/abs/2303.14158)** (2023) — Tracks the 6-DoF pose of a never-seen object in RGB-D video while building its neural 3D model online, with no CAD model needed; useful for manipulating novel objects. · [code](https://github.com/NVlabs/BundleSDF)
 - ⭐ **[CoTracker: It is Better to Track Together](https://arxiv.org/abs/2307.07635)** (2023) — Transformer that tracks many video points jointly rather than one at a time, staying robust through occlusions; widely used to extract motion tracks from human or robot videos for policy learning. · [code](https://github.com/facebookresearch/co-tracker)
 
-**[All 64 entries →](lists/perception.md)**
+**[All 65 entries →](lists/perception.md)**
 
 <a id="control"></a>
 ### Planning, Control & Safety
@@ -233,6 +233,7 @@ _Physics simulators, GPU-parallel training and transfer to real robots._ [Browse
 - ⭐⭐⭐ **[MuJoCo](https://mujoco.org/)** (2012) — Fast, accurate contact physics; the default simulator for robot learning research, open-sourced by DeepMind. · [code](https://github.com/google-deepmind/mujoco)
 - ⭐⭐ **[When the Simulator Fails, Not the Policy: Auditing Contact Artifacts in Simulated Robot Benchmarks](https://arxiv.org/abs/2610.41857)** (2026) — Many benchmark 'policy failures' are physics-engine ejections. SimuGuard traced RoboTwin artifacts to one collision constant; changing it cut artifact episodes from 12/100 to none and lifted five tasks 89% → 98%. · [code](https://github.com/ALEXander22568/simuguard)
 - ⭐ **[Genie Sim 3.0 : A High-Fidelity Comprehensive Simulation Platform for Humanoid Robot](https://arxiv.org/abs/2601.02078)** (2026) — Genie Sim 3.0: a manipulation simulation platform whose LLM tool builds scenes from natural language, with an LLM- and VLM-based automated benchmark. · [code](https://github.com/AgibotTech/genie_sim)
+- ⭐ **[Real2SimLab: A Unified Platform for Real-to-Simulation Transfer](https://arxiv.org/abs/2611.34849)** (2026) — Runs any real-to-sim method's written program and scores it with each benchmark's own scorer, removing N x M integrations: 47 coding agents and 5 non-agent methods on 6 benchmarks, plus a data pipeline. · [project](https://real2simhub.github.io/)
 - ⭐ **[Isaac Lab: A GPU-Accelerated Simulation Framework for Multi-Modal Robot Learning](https://arxiv.org/abs/2511.04831)** (2025) — The reference paper for Isaac Lab, Orbit's successor — GPU-parallel physics, rendering and sensor simulation with ready-made robots and tasks for RL and imitation. · [code](https://github.com/isaac-sim/IsaacLab)
 - ⭐ **[MuJoCo Playground](https://arxiv.org/abs/2502.08844)** (2025) — GPU-accelerated MJX environments for locomotion and manipulation that train in minutes and transfer to real robots. · [code](https://github.com/google-deepmind/mujoco_playground)
 - ⭐ **[Newton](https://github.com/newton-physics/newton)** (2025) — Open, GPU-accelerated physics engine built on NVIDIA Warp and OpenUSD with multiple solvers for contact-rich robot learning; co-developed by Disney Research, Google DeepMind and NVIDIA, hosted by the Linux Foundation.
@@ -241,9 +242,8 @@ _Physics simulators, GPU-parallel training and transfer to real robots._ [Browse
 - ⭐ **[Genesis](https://github.com/Genesis-Embodied-AI/Genesis)** (2024) — An open-source, Python-native physics platform covering rigid bodies, soft bodies, fluids and fast GPU simulation.
 - ⭐ **[Humanoid-Gym: Reinforcement Learning for Humanoid Robot with Zero-Shot Sim2Real Transfer](https://arxiv.org/abs/2404.05695)** (2024) — Isaac Gym–based RL framework for humanoid locomotion with a sim-to-sim check in MuJoCo before deploying zero-shot to real humanoids; a common starting point for humanoid RL. · [code](https://github.com/roboterax/humanoid-gym)
 - ⭐ **[ManiSkill3: GPU Parallelized Robotics Simulation and Rendering for Generalizable Embodied AI](https://arxiv.org/abs/2410.00425)** (2024) — GPU-parallel simulation and rendering with many manipulation tasks; fast visual RL and data generation. · [code](https://github.com/haosulab/ManiSkill)
-- ⭐ **[RoboCasa: Large-Scale Simulation of Everyday Tasks for Generalist Robots](https://arxiv.org/abs/2406.02523)** (2024) — 120 kitchen scenes, 2,500+ objects and 100 tasks with generated demonstrations for training generalist policies. · [code](https://github.com/robocasa/robocasa)
 
-**[All 71 entries →](lists/sim.md)**
+**[All 72 entries →](lists/sim.md)**
 
 <a id="datasets"></a>
 ### Datasets & Benchmarks
@@ -253,6 +253,7 @@ _Large robot datasets, egocentric data and evaluation suites._ [Browse with the 
 - ⭐⭐⭐ **[Open X-Embodiment: Robotic Learning Datasets and RT-X Models](https://arxiv.org/abs/2310.08864)** (2023) — 1M+ trajectories from 22 robot types pooled by 30+ labs; RT-X models trained on it beat single-robot baselines. · [code](https://github.com/google-deepmind/open_x_embodiment)
 - ⭐⭐ **[LeRobot](https://github.com/huggingface/lerobot)** (2024) — PyTorch library with datasets, pretrained policies (ACT, Diffusion, SmolVLA) and drivers for low-cost arms.
 - ⭐⭐ **[LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning](https://arxiv.org/abs/2306.03310)** (2023) — 130 language-conditioned tasks in four suites; now the most common simulation benchmark for VLA papers. · [code](https://github.com/Lifelong-Robot-Learning/LIBERO)
+- ⭐ **[AIRIS: Benchmarking Social Embodied Intelligence in Egocentric Streaming Videos](https://arxiv.org/abs/2611.34347)** (2026) — Causal streaming benchmark: 8,000 expert questions over 357 egocentric clips, time-anchored as Attention-Intention-Reaction-Interaction, with decision-aware metrics. 45 models: fragmented, miscalibrated. · [code](https://github.com/AIRIS-bench/AIRIS) · [project](https://airis-bench.github.io/)
 - ⭐ **[BEAKER: An Expert-Curated Benchmark for Embodied Brains in Self-Driving Chemical Laboratories](https://arxiv.org/abs/2611.06911)** (2026) — 1,000 expert-curated questions over 11 image and video task types test multimodal LLMs as the brain of a self-driving chemistry lab: affordances, trajectories, apparatus setup, safety and step reasoning.
 - ⭐ **[Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation](https://arxiv.org/abs/2611.26444)** (2026) — 30 tasks x 3 difficulties x 2 settings (180 configs) split into Mind, Act and Mind2Act views plus failure diagnosis. Strongest agent: 52.7% Mind, 39.0% Act, 12.0% Mind2Act - composition is the open problem. · [code](https://github.com/Mind2Act/Mind2Act_World) · [project](https://mind2act-world.com/)
 - ⭐ **[What Are We Actually Benchmarking in Robot Manipulation?](https://arxiv.org/abs/2606.04233)** (2026) — CoRL 2026 Oral. Audits LIBERO, CALVIN, SimplerEnv, RoboCasa and RoboTwin 2.0 against four failure modes, from shortcut solvability to creeping overfitting. LIBERO and CALVIN fail several diagnostics. · [code](https://github.com/ripl/ManipulationBenchmarkAudit) · [project](https://ripl.github.io/manipulation_benchmark_audit/)
@@ -261,9 +262,8 @@ _Large robot datasets, egocentric data and evaluation suites._ [Browse with the 
 - ⭐ **[RoboVerse: Towards a Unified Platform, Dataset and Benchmark for Scalable and Generalizable Robot Learning](https://arxiv.org/abs/2504.18904)** (2025) — MetaSim puts many simulators (Isaac Sim/Gym, MuJoCo, Genesis, SAPIEN…) behind one interface; adds a large synthetic dataset migrated from public benchmarks and unified IL/RL benchmarks. · [code](https://github.com/RoboVerseOrg/RoboVerse) · [project](https://roboverseorg.github.io/)
 - ⭐ **[Evaluating Real-World Robot Manipulation Policies in Simulation](https://arxiv.org/abs/2405.05941)** (2024) — SimplerEnv — real-to-sim environments whose scores correlate with real-robot results for RT-1/Octo-style policies. · [code](https://github.com/simpler-env/SimplerEnv)
 - ⭐ **[CALVIN: A Benchmark for Language-Conditioned Policy Learning for Long-Horizon Robot Manipulation Tasks](https://arxiv.org/abs/2112.03227)** (2021) — Chains of five language instructions in a row test long-horizon, language-conditioned control. · [code](https://github.com/mees/calvin)
-- ⭐ **[Habitat: A Platform for Embodied AI Research](https://arxiv.org/abs/1904.01201)** (2019) — A very fast photorealistic 3D simulator and task suite that standardized embodied navigation research. · [code](https://github.com/facebookresearch/habitat-sim)
 
-**[All 137 entries →](lists/datasets.md)**
+**[All 140 entries →](lists/datasets.md)**
 
 <a id="hardware"></a>
 ### Hardware & Open-Source Robots

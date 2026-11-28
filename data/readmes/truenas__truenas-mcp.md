@@ -8,7 +8,7 @@ An [MCP](https://modelcontextprotocol.io) server for TrueNAS. It runs on your co
 ## Features
 
 - **Monitoring:** system info and health, disks and disk health, services, alerts, jobs, CPU, memory, disk, network, ARC and UPS metrics.
-- **Storage:** pools, datasets, snapshots, and SMB and NFS shares (create, change and delete shares, set an SMB share ACL, and replace the filesystem ACL of a path).
+- **Storage:** pools, datasets, snapshots, and SMB and NFS shares (create, change and delete shares, set an SMB share ACL, and replace the filesystem ACL of a path), and uploading a file such as an installer ISO to a dataset from an https URL, or from a local file in a directory the operator allows with `--upload-source-dirs` (off by default).
 - **Data protection:** replication and periodic snapshot task status, running either task now, on-demand snapshots, cloning a snapshot to a new dataset, snapshot holds, and rolling back to or deleting a snapshot.
 - **Apps:** catalog search, install, start, stop, upgrade, update and delete.
 - **Maintenance:** system updates, boot environments, pool scrubs, taking a pool disk offline or online and replacing a disk, and starting, stopping and restarting services.
@@ -16,7 +16,7 @@ An [MCP](https://modelcontextprotocol.io) server for TrueNAS. It runs on your co
 - **Directory services:** Active Directory, LDAP and FreeIPA status and setup.
 - **Accounts:** local users and groups: listing, creating, changing and deleting them, never granting sudo, roles or administrative group membership, and never deleting home directories or primary groups.
 - **Capacity planning:** usage analysis and growth trends.
-- **Virtual machines:** VM status.
+- **Virtual machines:** VM status, creating a VM with its devices (DISK, CDROM, NIC, DISPLAY), and VM power control (`start_vm`, `stop_vm`, `poweroff_vm`, `restart_vm`, and `reset_vm` on TrueNAS 28.0+).
 
 Safety: `--read-only` hides every tool that changes the system. Destructive actions need your explicit confirmation, and secrets are redacted from everything sent back to the assistant.
 

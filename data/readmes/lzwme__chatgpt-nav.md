@@ -173,7 +173,7 @@
 1. [[⭐] https://www.adobe.com/au/sensei/generative-ai/firefly.html](https://www.adobe.com/au/sensei/generative-ai/firefly.html) **Adobe Firefly。** Adobe Firefly 是由 Adobe 推出的基于生成式人工智能的创作工具。它可以通过简单的文字提示生成精美的图像、转换文字、玩转色彩等。Firefly 可以帮助创意人士释放想象力，创造出无尽的艺术作品。Firefly 目前处于测试阶段，预计在未来提供多种不同用途的 Firefly 模型。
 1. [[⭐] https://www.adobe.com/express/create/logo](https://www.adobe.com/express/create/logo) **Adobe Express Logo Creator。** Adobe Express Logo Creator是一款免费的Logo制作工具，用户可以通过输入品牌或商业名称、选择喜欢的风格、图标和字体等，快速生成高质量的Logo。该工具还提供了丰富的动画效果和字体推荐功能，用户可以在在线编辑器中进一步定制Logo，并将其下载为高质量的PNG和JPG文件，方便在各种平台上使用。
 1. [[⭐] https://www.ai.zitijia.com](https://www.ai.zitijia.com) **字体家AI神笔。** 造字神器！ 仅需8个汉字即可生成一套6K+中文字库
-1. [[⭐] https://www.aiyou.art](https://www.aiyou.art) **艾绘。** 艾绘是一个结合了人工智能技术的绘本创作平台，它允许用户通过简单的输入来创作个性化的绘本故事。这个平台特别适合需要快速生成教育内容、品牌故事或个人创意作品的用户。艾绘通过其AI故事生成、AI绘画、图文编辑和仿真配音等功能，简化了绘本的创作流程，使得即使是没有专业设计或写作背景的用户也能轻松制作出高质量的绘本。产品背景信息显示，艾绘由湖南艾游互动科技有限公司开发，旨在通过技术降低创作门槛，激发创意。目前平台在公测期间，新用户注册赠送积分，可用于平台内的消费。
+1. [[⭐] https://www.aiyou.art](https://www.aiyou.art) **艾绘。** 艾绘是一个结合了人工智能技术的绘本创作平台，它允许用户通过简单的输入来创作个性化的绘本故事。这个平台特别适合需要快速生成教育内容、品牌故事或个人创意作品的用户。艾绘通过其AI故事生成、AI绘画、图文编辑和仿真配音等功能，简化了绘本的创作流程，使得即使是没有专业设计或写作背景的用户也能轻松制作出高质量的绘本。产品背景信息显示，艾绘由湖南艾游互动科技有限公司开发，旨在通过技术降低创作门槛，激发创意。目前平台在公测期间，新用户注册赠送积分，可用于平台内的消费。 `[error][-1]aborted`
 1. [[⭐] https://www.beautiful.ai](https://www.beautiful.ai) **Beautiful.ai。** Beautiful.ai是一个演示软件，为团队提供最佳设计、保持品牌一致性以及全球协作的功能。它应用先进的AI技术，使演示制作变得简单而美观。用户只需添加内容，Beautiful.ai会自动适应并应用出色的设计规则。不再需要在深夜调整文本和图片大小。每一个选择都能节省时间并带来出色的设计。
 1. [[⭐] https://www.canva.cn](https://www.canva.cn) **Canva 可画。** Canva 可画是一款在线设计协作平台，提供海量的设计模板和素材，支持创建海报、简历、名片、Logo、PPT 等多种平面设计作图。用户可以个人使用或与团队共同合作，通过协同设计功能实时评论和协作设计，轻松创建并分享专业设计。
 1. [[⭐] https://www.creati.studio](https://www.creati.studio) **AI Backdrop。** Viral AI Video Generator For Url, Image Or Text To Video
@@ -431,7 +431,7 @@
 ### AI 提示词 (19)
 
 1. [[⭐⭐] https://image-prompt-generator.com](https://image-prompt-generator.com) **Image Prompt Generator。** 免费的 AI 图像提示词生成器与提示词库，支持按 GPT Image、Seedream、Seedance、Grok Imagine、Gemini、Nano Banana Pro 等模型筛选，生成可直接复制使用的图片提示词，并提供热门提示词示例与一键复制。
-1. [[⭐] https://contentatscale.ai/ai-prompt-library](https://contentatscale.ai/ai-prompt-library) **Content at scale。** 收录最佳的ChatGPT prompt提示词 `[error][202]<html><head><link rel="icon" href="data:;"><meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/?r=%2Fai-prompt-library&y=ipr:3.42.157.124:1795660371.488"></meta></head></html>`
+1. [[⭐] https://contentatscale.ai/ai-prompt-library](https://contentatscale.ai/ai-prompt-library) **Content at scale。** 收录最佳的ChatGPT prompt提示词 `[error][202]<html><head><link rel="icon" href="data:;"><meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/?r=%2Fai-prompt-library&y=ipr:20.83.228.235:1795746772.199"></meta></head></html>`
 1. [[⭐] https://learningprompt.wiki](https://learningprompt.wiki) **Learning Prompt。** 提供免费的Prompt Engineering教程，包含ChatGPT和Midjourney的教程。
 1. [[⭐] https://midlibrary.io](https://midlibrary.io) **Midlibrary。** 风格多样！实用超2000+MJ提示词资源
 1. [[⭐] https://moonvy.com/apps/ops/](https://moonvy.com/apps/ops/) **OPS 提示词工作室。** OPS 提示词工作室是一款可视化编辑工具，支持一键翻译 AIGC 提示词，提供 Midjourney 提示词库，让用户轻松管理和使用提示词，助力提升生产力。该工具还提供简洁清晰的界面，方便用户快速复制、导出和翻译提示词。
@@ -464,7 +464,7 @@
 1. [[⭐] https://metaso.cn](https://metaso.cn) **秘塔AI搜索。** 秘塔科技旗下的一款AI搜索产品，能够大幅提升搜索效率，解决日常生活、工作学习等场景中遇到的各类搜索需求
 1. [[⭐] https://microsoftedge.microsoft.com/addons/detail/hpkbpmbgkhngdlopdpnfjelemchlmdko](https://microsoftedge.microsoft.com/addons/detail/hpkbpmbgkhngdlopdpnfjelemchlmdko) **AI课代表。** “AI课代表” 是您在B站最专业的人工智能助手 🤖 基于GPT4的“知识提问+“视频总结”+“字幕搜索” 每日刷新免费额度 解决问题，快速定位关键点，筛选视频，帮你成为人见人爱的“课代表” 无情吸赞，学霸人设，专栏大佬，最重要的是：您的声音至关重要，我们将以“3天1更”的速度持续改进！
 1. [[⭐] https://so.360.com](https://so.360.com) **360AI搜索。** 360AI搜索是由360集团推出的一款基于大模型的新一代答案引擎应用。该产品旨在为用户提供更直接、更直观的问题答案，不再只是一个普通的搜索工具，而是能够理解和处理复杂搜索查询的智能AI助手。
-1. [[⭐] https://suppr.wilddata.cn](https://suppr.wilddata.cn) **超能文献·文档翻译。** Suppr 超能文献是一个利用人工智能技术驱动的医学文献搜索引擎，旨在帮助医学研究人员快速检索和获取相关医学领域的最新研究进展和临床试验信息。它通过限定时间、类型、影响因子、作者、期刊等多重条件，提供精准的文献检索服务，极大地提高了医学研究的效率和质量。
+1. [[⭐] https://suppr.wilddata.cn](https://suppr.wilddata.cn) **超能文献·文档翻译。** Suppr 超能文献是一个利用人工智能技术驱动的医学文献搜索引擎，旨在帮助医学研究人员快速检索和获取相关医学领域的最新研究进展和临床试验信息。它通过限定时间、类型、影响因子、作者、期刊等多重条件，提供精准的文献检索服务，极大地提高了医学研究的效率和质量。 `[error][567]Unknown Status`
 1. [[⭐] https://undermind.ai](https://undermind.ai) **Undermind.ai。** Undermind是一个由人工智能驱动的科研助手，旨在通过先进的语言模型，帮助研究人员快速准确地找到所需的学术论文。它由两位来自MIT的量子物理博士创立，拥有深厚的研究背景。Undermind的搜索算法模仿人类系统化的发现过程，通过阶段性地检查结果并使用语言模型做出关键决策，如识别重要信息和调整搜索策略，从而实现前所未有的准确性和全面性。
 1. [[⭐] https://www.chatplayground.ai](https://www.chatplayground.ai) **ChatPlayground AI。** ChatPlayground AI是一个集成了16+ AI应用和功能的聊天机器人平台，它允许用户通过一个订阅来访问多种AI模型。该平台的主要优点包括行业领先的AI模型、实时网络搜索、图像生成器、历史记录回顾、多语言支持以及导入自定义内容的能力。ChatPlayground AI旨在为开发者、数据科学家、学生、研究人员、内容创作者、作家和AI爱好者提供服务，帮助他们提高工作效率和创造力。
 1. [[⭐] https://www.frase.io](https://www.frase.io) **Frase。** Frase是一款内容优化工具，通过使用人工智能技术，提供智能化的SEO优化建议。它可以帮助用户分析网站内容，并提供针对关键词优化的建议，以提高网站在搜索引擎中的排名。Frase还提供语义搜索功能，可以帮助用户找到与其网站相关的问题，从而为他们提供创作内容的灵感和指导。Frase还可以分析竞争对手的网站，并提供比较和改进建议。该产品定价灵活，并根据用户的需求提供不同的套餐选择。
@@ -571,7 +571,7 @@
 1. [[⭐] https://audionotes.ai](https://audionotes.ai) **AudioNotes.ai。** AudioNotes.ai是一款利用智能AI将您的口述文字转化为有序文本摘要的应用程序，使得记笔记、头脑风暴和内容创作等活动变得更加轻松！您只需通过语音输入，即可获得清晰、有序的文字记录。此外，AudioNotes.ai还具有智能分类和标签功能，帮助您快速组织和检索笔记。该应用程序适用于各种场景，包括会议记录、学习笔记、写作草稿等。通过AudioNotes.ai，您可以更高效地记录和整理您的想法，提升工作和学习效率。
 1. [[⭐] https://bearly.ai](https://bearly.ai) **Bearly。** 英文阅读写作效率提高10倍
 1. [[⭐] https://chuangyi.taobao.com/pages/aiCopy](https://chuangyi.taobao.com/pages/aiCopy) **悉语。** 悉语智能是阿里妈妈创意中心出品的一款一键生成商品营销文案的工具。
-1. [[⭐] https://contentatscale.ai/ai-prompt-library](https://contentatscale.ai/ai-prompt-library) **Content at scale。** 收录最佳的ChatGPT prompt提示词 `[error][202]<html><head><link rel="icon" href="data:;"><meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/?r=%2Fai-prompt-library&y=ipr:3.42.157.124:1795660371.488"></meta></head></html>`
+1. [[⭐] https://contentatscale.ai/ai-prompt-library](https://contentatscale.ai/ai-prompt-library) **Content at scale。** 收录最佳的ChatGPT prompt提示词 `[error][202]<html><head><link rel="icon" href="data:;"><meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/?r=%2Fai-prompt-library&y=ipr:20.83.228.235:1795746772.199"></meta></head></html>`
 1. [[⭐] https://cp.baidu.com](https://cp.baidu.com) **橙篇。** 百度旗下写作助手，长文生成神器
 1. [[⭐] https://effidit.qq.com](https://effidit.qq.com) **Effidit写作助手。** Effidit是由腾讯AI Lab 开发的一个智能创作助手，探索用AI技术提升写作者的写作效率和创作体验。
 1. [[⭐] https://elevenlabs.io](https://elevenlabs.io) **Eleven Labs。** ElevenLabs 带来了最逼真、丰富和生动的声音，为寻求叙事的终极工具的创作者和发布者提供了最具吸引力的文本转语音和语音克隆软件。
@@ -608,7 +608,7 @@
 1. [[⭐] https://scalenut.com](https://scalenut.com) **Scalenut。** Scalenut是一个AI驱动的SEO和内容营销平台，帮助您从识别关键词集群、创建内容简介到优化内容以提高搜索排名，管理您的整个内容生命周期。
 1. [[⭐] https://smodin.io/zh-cn](https://smodin.io/zh-cn) **Smodin。** 全球数百万学生、作家和互联网工作者使用的日常应用程序。我们最受欢迎的应用程序包括文本重写器、抄袭检查器、自动引文机和多语言翻译器。
 1. [[⭐] https://studycorgi.com/free-writing-tools/chat-gpt-detector/](https://studycorgi.com/free-writing-tools/chat-gpt-detector/) **Chat GPT Detector for Essays。** ChatGPT 检测器是一个用于检查论文是否由 AI 生成的工具。它通过分析文本中每个词的可预测性来判断文本的真实性，帮助用户识别人工写作与机器生成的文本。该工具的主要优点在于免费、准确、适合学生使用，提供详细的文本分析。
-1. [[⭐] https://suppr.wilddata.cn](https://suppr.wilddata.cn) **超能文献·文档翻译。** Suppr 超能文献是一个利用人工智能技术驱动的医学文献搜索引擎，旨在帮助医学研究人员快速检索和获取相关医学领域的最新研究进展和临床试验信息。它通过限定时间、类型、影响因子、作者、期刊等多重条件，提供精准的文献检索服务，极大地提高了医学研究的效率和质量。
+1. [[⭐] https://suppr.wilddata.cn](https://suppr.wilddata.cn) **超能文献·文档翻译。** Suppr 超能文献是一个利用人工智能技术驱动的医学文献搜索引擎，旨在帮助医学研究人员快速检索和获取相关医学领域的最新研究进展和临床试验信息。它通过限定时间、类型、影响因子、作者、期刊等多重条件，提供精准的文献检索服务，极大地提高了医学研究的效率和质量。 `[error][567]Unknown Status`
 1. [[⭐] https://tingwu.aliyun.com](https://tingwu.aliyun.com) **通义听悟。** 阿里推出的会议转录工具
 1. [[⭐] https://tldrthis.com](https://tldrthis.com) **TLDR this。** TLDR This是一款免费的在线文本摘要工具，利用先进的人工智能技术将长篇文章、文档、论文等压缩成关键摘要段落。它能帮助用户从信息过载中解放出来。
 1. [[⭐] https://undetectable.ai](https://undetectable.ai) **Undetectable.ai。** 逍遥AI是一款AI写作工具，旨在将被AI检测器标记的内容转化为与人类写作无法区分的优质文本。我们的基于AI的解决方案保证了不可区分的结果，让您拥有与品牌声音一致、流畅的文本，与您的受众产生共鸣。立即信任我们，提升您的内容水平！
@@ -619,7 +619,7 @@
 1. [[⭐] https://wordvice.ai/cn](https://wordvice.ai/cn) **Wordvice AI。** Wordvice AI是一款在线英语语法检查工具，提供实时高效的英语语法和拼写检查，突破基本功能，提供语气风格修改，提供有效反馈建议，适用于各类英文文件。Wordvice AI还提供人工编辑服务和其他英文写作工具。
 1. [[⭐] https://write.thisonegpt.com](https://write.thisonegpt.com) **神笔AI写作。** 神笔AI写作平台提供了一个简化的四步写作流程，帮助用户从输入论文题目到生成全文。它支持多种学科领域的论文写作，包括哲学、经济学、法学等，旨在帮助大学生高效完成论文。
 1. [[⭐] https://writebot.io](https://writebot.io) **WriteBot。** WriteBot是一个AI辅助写作工具，旨在帮助用户快速生成独特、符合SEO标准的内容。不需要月费订阅，采用按需付费的定价模式。这个工具特别适合生产博客文章、Facebook广告、产品描述等，带有关键词和SEO优化功能，提高内容创作的效率和质量。
-1. [[⭐] https://wukong.com/tool](https://wukong.com/tool) **小悟空AI。** 小悟空是一个集成了多种智能工具的网站，旨在提高个人和团队的创作效率和运营效果。它通过提供诸如文章生成、视频脚本创作、笔记创作等多样化功能，满足不同用户在内容创作、个人表达、学习教育等方面的需求。产品背景基于人工智能技术，结合大数据分析，为用户提供个性化、高质量的服务。价格定位为免费试用，部分功能付费，以适应不同用户的需求。
+1. [[⭐] https://wukong.com/tool](https://wukong.com/tool) **小悟空AI。** 小悟空是一个集成了多种智能工具的网站，旨在提高个人和团队的创作效率和运营效果。它通过提供诸如文章生成、视频脚本创作、笔记创作等多样化功能，满足不同用户在内容创作、个人表达、学习教育等方面的需求。产品背景基于人工智能技术，结合大数据分析，为用户提供个性化、高质量的服务。价格定位为免费试用，部分功能付费，以适应不同用户的需求。 `[error][502]Bad Gateway`
 1. [[⭐] https://www.5118.com/ai/articlegenius](https://www.5118.com/ai/articlegenius) **5118 SEO优化精灵。** 一键式生成高质量SEO文章
 1. [[⭐] https://www.aiprm.com](https://www.aiprm.com) **AIPRM。** AIPRM 是一个 AI Prompt 市场和社区驱动的 Prompt 库。使用它可以在几分钟内完成营销、销售、运营、生产力和客户支持等任务。提供了 ChatGPT、Bard、Midjourney 和 DALL-E 2 的即用型 Prompts。可以轻松创建博客标题、完整的原创文章、服务页面的文案等。AIPRM 可以帮助您以您的声音快速、有创意地创建内容。
 1. [[⭐] https://www.creatifyone.com](https://www.creatifyone.com) **创一AI。** 创一AI是一款专业的AI短视频脚本创作工具，旨在通过人工智能技术帮助用户快速生成高质量的短视频脚本。该产品利用先进的自然语言处理技术，结合用户需求，能够自动分析并创作出符合主题的脚本内容，大大提高了视频创作者的工作效率。创一深入理解以及对用户需求的精准把握，价格定位为免费体验，以吸引更多用户使用。
@@ -643,4 +643,4 @@
 1. [[⭐] https://www.squibler.io](https://www.squibler.io) **Squibler。** Squibler是一个人工智能辅助写作的在线软件平台。它可以为用户生成故事思路、增强人物塑造、写出通顺的句子、帮助克服写作障碍,还能以前所未有的速度写出书稿和剧本。主要功能包括AI辅助写作、AI元素生成、AI图像生成、AI视频生成、目标跟踪、项目管理、协作等。适用于小说、书籍、剧本、故事等创作。
 1. [[⭐] https://www.storynest.ai](https://www.storynest.ai) **Storynest.ai。** StoryNest.ai是一款AI驱动的互动故事平台，可以帮助用户创作吸引人的故事、深入的文章和全面的教育内容。通过与角色对话和超级故事书等功能，深入互动学习。加入StoryNest.ai，创造力、教育和技术完美结合。
 1. [[⭐] https://www.sudowrite.com](https://www.sudowrite.com) **Sudowrite。** Sudowrite是一款革命性的AI写作辅助工具,旨在成为你永不评判、永远在一旁支持创作、永不枯竭创意的写作伙伴。它集成了GPT-3和GPT-4等大型语言模型,可为你提供各种创作支持,从生成描写、情节发展到角色塑造、修改润色等,全方位提高你的写作效率和质量。主要功能包括:自动续写、情节扩展、重写修改、反馈建议、构思助手、视觉呈现等。无论你是在写小说、剧本还是其他作品,Sudowrite都能给你源源不断的灵感和指导,让创作变得轻松有趣。Sudowrite提供付费订阅服务,定价合理,同时也有免费试用版本。它致力于让写作爱好者重拾对创作的热爱,帮助专业作家提高工作效率。
-1. [[⭐] https://www.surferseo.com](https://www.surferseo.com) **Surfer。** Surfer是一款提供SEO工作流程的产品，可以帮助用户提升有机流量，增加可见度和改善排名。它利用下一代AI技术进行研究、写作和优化，可以在20分钟内生成高质量、优化良好的文章。Surfer还提供生成吸引人的标题的简报功能，支持多语言写作和优化，可以实时监测结构、字数、NLP关键词和图片等指标，帮助用户在全球范围内获得高排名。此外，Surfer还提供文章真实性验证和集成多种常用工具的功能。Surfer适用于各种场景，包括个人博客、企
+1. [[⭐] https://www.surferseo.com](https://www.surferseo.com) **Surfer。** Surfer是一款提供SEO工作流程的产品，可以帮助用户提升有机流量，增加可见度和改善排名。它利用下一代AI技术进行研究、写作和优化，可以在20分钟内生成高质量、优化良好的文章。Surfer还提供生成吸引人的标题的简报功能

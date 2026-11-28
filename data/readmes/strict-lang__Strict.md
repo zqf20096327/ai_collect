@@ -55,7 +55,7 @@ if Parent is None
 The base types are the documentation: every method starts with tests showing how to use it. Tests are `is` comparisons (`==` elsewhere, `=` assigns), every expression must be true or execution stops with an Error.
 
 [!IMPORTANT]
-Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds a temporary compiler from the seed, which then builds a release `strict` (no binaries are in this repo). A long garbage collection only warns, so the first compiler still finishes on a tight machine. After changing the compiler rebuild it with `strict build Strict.strict`; building twice gives identical output. `strict` also rebuilds itself before a command when its sources or the git history are newer (a failed rebuild keeps the current one until the sources change); an `obj/Strict.hold` file in the Strict folder holds that off while compiler sources are half done.
+Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds a temporary compiler from the seed, which then builds a release `strict` (no binaries are in this repo). A long garbage collection only warns, so the first compiler still finishes on a tight machine. After changing the compiler rebuild it with `strict build Strict.strict`; building twice gives identical output. The `strict` command itself is `Compiler/Strict.strict` (with `Compiler/Command.strict`, so the base types in the Strict folder depend on nothing above them); in the Strict folder `strict build`, `strict build strict` and `strict build Strict.strict` all build it into `strict.exe` there. `strict` also rebuilds itself before a command when its sources or the git history are newer (a failed rebuild keeps the current one until the sources change); an `obj/Strict.hold` file in the Strict folder holds that off while compiler sources are half done.
 
 ## Command line
 `strict` (`strict.exe` on Windows) is in this folder next to the base types, put it on the PATH. No .NET or other runtime is needed (the C# implementation that bootstrapped Strict is commit [4e4fc3da](https://github.com/strict-lang/Strict/tree/4e4fc3da6da3075da38dc3bd2f683ef27e34b26c) in the history).
@@ -72,6 +72,7 @@ strict build FractalZoomer web            build FractalZoomer.strict for a platf
 strict build Examples/Sum.strict windows  also the executable in Release/Windows (Release/<Platform> on other systems)
 strict build Examples/Sum.strict linux    also the Linux executable in Release/Linux (on Windows through WSL)
 strict build Examples/Sum.strict web      .html, .js and .wasm for the browser in Release/Web (Emscripten, installed when missing)
+strict build Examples/Sum.strict web edit faster web build to try an edit (no wasm-opt, no Closure, also for games), publish with web
 strict build Examples/Sum.strict android  arm64-v8a shared library and assets in Release/Android (Android NDK)
 strict build Examples/Sum.strict ios      arm64 iOS static archive and assets in Release/iOS (native packages need Xcode)
 strict build Examples/Sum.strict ios simulator  the same for the iOS Simulator of this Mac
@@ -84,6 +85,9 @@ strict format Examples/Sum.strict         print the file in its canonical form
 strict test Examples/Sum.strict native    build and run the tests natively
 strict test . native --no-recursive       build and run only the root types' tests
 strict test Examples/Sum.strict shown     run every test, including Slow, and print each one, without mutation
+strict test A.strict candidates:B.txt     test candidate bodies: A.strict holds the members and tests, B.txt the
+                                          rest of each candidate (body, helpers, constants) separated by --- lines,
+                                          each prints Candidate N and its results, exits with the failed count
 strict test Examples/Sum.strict lines     run the tests natively, then show how often and how long each line ran
 strict test Examples/Sum.strict values    run the tests on the Strict VM, then show the values each line produced
 strict test Examples/Sum.strict profile   run all its tests on the Strict VM, sample the running line every ms, show the slowest lines and methods

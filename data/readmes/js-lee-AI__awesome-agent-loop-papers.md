@@ -1,12 +1,12 @@
 <h1 align="center">🔁 Awesome Agent Loop Papers</h1>
 
 <p align="center">
-<b>565 papers and 100 open-source artifacts on the agent loop</b>: the reading list for<br>
+<b>569 papers and 100 open-source artifacts on the agent loop</b>: the reading list for<br>
 how LLM agents are controlled, trained, skilled, harnessed, evaluated, and broken.
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/papers-565-0F4C5C?style=flat-square&labelColor=2b2b2b" alt="papers indexed">
+<img src="https://img.shields.io/badge/papers-569-0F4C5C?style=flat-square&labelColor=2b2b2b" alt="papers indexed">
 <img src="https://img.shields.io/badge/artifacts-100-0F4C5C?style=flat-square&labelColor=2b2b2b" alt="open-source artifacts catalogued">
 <a href="https://ssrn.com/abstract=7186738"><img src="https://img.shields.io/badge/DOI-10.2139%2Fssrn.7186738-0F4C5C?style=flat-square&labelColor=2b2b2b" alt="DOI: 10.2139/ssrn.7186738"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC--BY--4.0-0F4C5C?style=flat-square&labelColor=2b2b2b" alt="License: CC BY 4.0"></a>
@@ -32,7 +32,7 @@ Curated, section-organized reading list and artifact catalog for the survey
 
 > The survey treats the **agent loop**, not the model in isolation, as the unit of analysis: the loop *paradigms* that shape reasoning/action/search, the *trained* loops that absorb control into weights, the *mechanics* (termination, verification, context, recovery) that govern any loop, the *skills* that externalize competence into portable procedure, the *harnesses* that instantiate it, and the *evaluation* and *safety* problems it creates. This repo mirrors that structure.
 
-Currently indexing **565 papers** (385 cited in the survey text plus 180 additional curated 2026 papers, each verified against its arXiv record) across the survey's sections, plus **100 real-world open-source artifacts** (frameworks, coding harnesses, memory, context, sandbox, ingestion, tool-server and observability infrastructure, skill libraries and registries, and training and evaluation tools). The survey itself is a fixed record; this list keeps moving after it, and is maintained independently.
+Currently indexing **569 papers** (385 cited in the survey text plus 184 additional curated 2026 papers, each verified against its arXiv or DOI record) across the survey's sections, plus **100 real-world open-source artifacts** (frameworks, coding harnesses, memory, context, sandbox, ingestion, tool-server and observability infrastructure, skill libraries and registries, and training and evaluation tools). The survey itself is a fixed record; this list keeps moving after it, and is maintained independently.
 
 <a id="contents"></a>
 ## Contents
@@ -40,10 +40,10 @@ Currently indexing **565 papers** (385 cited in the survey text plus 180 additio
 - [Introduction](#introduction) (30)
 - [Background and Definitions](#background-and-definitions) (19)
 - [Loop Paradigms](#loop-paradigms) (36)
-- [Loop Mechanics](#loop-mechanics) (81)
-- [Trained Loops](#trained-loops) (68)
+- [Loop Mechanics](#loop-mechanics) (83)
+- [Trained Loops](#trained-loops) (69)
 - [Skills](#skills) (77)
-- [Harnesses and Orchestration](#harnesses-and-orchestration) (94)
+- [Harnesses and Orchestration](#harnesses-and-orchestration) (95)
 - [Evaluation](#evaluation) (65)
 - [Safety of the Loop](#safety-of-the-loop) (89)
 - [Open Challenges and Future Directions](#open-challenges-and-future-directions) (6)
@@ -309,7 +309,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 ## Loop Mechanics
 
 <details>
-<summary><b>Show 81 papers</b></summary>
+<summary><b>Show 83 papers</b></summary>
 
 - [s1: Simple Test-Time Scaling](https://arxiv.org/abs/2501.19393) — Muennighoff et al. 2025
 - [Efficiently Scaling LLM Reasoning with Certaindex](https://arxiv.org/abs/2412.20993) — Fu et al. 2024
@@ -364,7 +364,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [FineVerify: Scaling Test-Time Compute with Fine-Grained Self-Verification for Agentic Search](https://arxiv.org/abs/2606.00660) — Zhao et al. 2026
 - [Budgeted Act-or-Defer Multi-Agent LLM Deliberation with Local Reliability Bounds](https://arxiv.org/abs/2606.29654) — Wang et al. 2026
 
-*Additional 2026 reading (29), curated alongside the survey (not yet cited in the paper text):*
+*Additional 2026 reading (31), curated alongside the survey (not yet cited in the paper text):*
 
 - [Self-Healing Agentic Orchestrators for Reliable Tool-Augmented Large Language Model Systems](https://arxiv.org/abs/2606.01416) — Babu et al. 2026 · Orchestration-level failure recovery for tool-augmented agents beyond model-level errors.
 - [Exploring Cross-Scenario Generality of Agentic Memory Systems: Diagnostics and a Strong Baseline](https://arxiv.org/abs/2606.04315) — Chen et al. 2026 · Diagnoses poor cross-scenario generalization of memory systems and proposes a strong baseline.
@@ -395,6 +395,8 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [Addressable Recall Compaction for Long Context-Window Control in AI Agents](https://arxiv.org/abs/2607.25066) — Dang et al. 2026 · Replaces old tool observations with addressable citations the agent can re-request, avoiding both discarding and similarity-based retrieval.
 - [Reason Less, Verify More: Deterministic Gates Recover a Silent Policy-Violation Failure Mode in Tool-Using LLM Agents](https://arxiv.org/abs/2607.07405) — Reddy et al. 2026 · Catches silent policy-violating writes with deterministic pre-execution gates, since neither the tool nor the agent's self-report exposes them.
 - [TRAJDEBUG: Tracing Error Lifecycle to Identify Critical Failures in Long-Horizon Agent Trajectories](https://arxiv.org/abs/2608.06346) — Qi et al. 2026 · Locates the earliest step actually responsible for a failure rather than any local error, using multi-granularity history compression to keep evidence scattered across a long trajectory reachable.
+- [AgonAlpha: Autonomous Alpha Discovery via Prompt Economy and Scalable Agentic Search](https://arxiv.org/abs/2608.11250) — Ye et al. 2026 · Runs alpha mining as a propose-and-review loop: the proposer freezes each candidate as a report with its hypothesis, expression and platform evidence, a reviewer in a fresh context can rerun the evaluation and zero the score, and a scheduler that counts jobs still running splits the budget across lineages. On five authors' accounts with six model backends, 17 of 60 submissions got WorldQuant BRAIN's top grade and the reviewer zeroed 2 of the 24 reports it audited. Every figure is BRAIN's score on the same 2019 to 2023 window the formulas were selected on, with no out-of-sample result, baseline or ablation, and the repository holds the prompts and the scheduler but not the run records.
+- [AutoSR: Automatic Symbolic Regression by Searching Research States](https://arxiv.org/abs/2608.16876) — Zhang et al. 2026 · Searches over research states rather than bare equations: each node keeps a candidate equation with its motivation, numerical probes, failed attempts and an independent review, and proposer and reviewer agents grow the tree under Monte Carlo tree search with progressive widening, next to a loop that runs PySR, SISSO and FEX. On nine problems picked for difficulty it recovers an equation equivalent to the ground truth each time, including three cp3-bench problems that none of 12 published systems solved. Each case is one successful run with no repeats or ablations, the reported time counts only the session that found the answer, the paper does not name the model behind the agents, and the repository has the prompts and the scheduler but not the nine runs.
 
 </details>
 
@@ -403,7 +405,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 ## Trained Loops
 
 <details>
-<summary><b>Show 68 papers</b></summary>
+<summary><b>Show 69 papers</b></summary>
 
 - [ToRL: Scaling Tool-Integrated RL](https://arxiv.org/abs/2503.23383) — Li et al. 2025
 - [DeepResearcher: Scaling Deep Research via Reinforcement Learning in Real-World Environments](https://arxiv.org/abs/2504.03160) — Zheng et al. 2025
@@ -453,7 +455,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [ToolAnchor: Anchoring Counterfactual Context to Boost Agentic Tool-use Capability](https://arxiv.org/abs/2607.14145) — Liu et al. 2026
 - [Compiling Agentic Workflows into LLM Weights: Near-Frontier Quality at Two Orders of Magnitude Less Cost](https://arxiv.org/abs/2605.22502) — Dennis et al. 2026
 
-*Additional 2026 reading (21), curated alongside the survey (not yet cited in the paper text):*
+*Additional 2026 reading (22), curated alongside the survey (not yet cited in the paper text):*
 
 - [EnvRL: Learn from Environment Dynamics in Agentic Reinforcement Learning](https://arxiv.org/abs/2606.17680) — Wang et al. 2026 · RL method exploiting environment dynamics signals to address sparse rewards in agentic training.
 - [Open-SWE-Traces: Advancing Dual-Mode Multilingual Distillation for Software Engineering Agents](https://arxiv.org/abs/2606.16038) — Ahmad et al. 2026 · Large multilingual trajectory dataset for distilling software-engineering agent behavior.
@@ -476,6 +478,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [Agentic-DPO: From Imitation to Agentic Policy Optimization on Expert Trajectories](https://arxiv.org/abs/2607.10601) — Chen et al. 2026 · Converts expert trajectories into state-level action preferences, matching online GRPO on tau-bench without online rollouts or a reward model.
 - [TCPO: Turn-Level Credit Policy Optimization](https://arxiv.org/abs/2608.01667) — Liao et al. 2026 · Separates a verifier score from credit in multi-turn RL: a score rates the current output, while credit should say how the turn changed the refinement trajectory, built from retrospective, hindsight and counterfactual comparisons.
 - [Teaching LLMs to Learn Tool Trialing and Execution through Environment Interaction](https://arxiv.org/abs/2601.12762) — Gao et al. 2026 · Trains a trial-then-execute tool loop into the weights: SFT on DeepSeek-V3.1 trajectories, built from 1,500 ToolBench queries, that try each tool and self-correct, then GRPO on 800 more. On StableToolBench, Qwen2.5-7B goes from 43.4 to 66.4 in solvable pass rate, ahead of the best RL baseline at 58.4 and of GPT-4o zero-shot at 60.2, but on the out-of-domain ToolHop it still trails GPT-4o, 37.4 against 45.3. The pass rates are graded by GPT-4o, and the released pipeline trains against MirrorAPI-Cache, a model that simulates the APIs.
+- [MultiAgent-OPD: End-to-End Training of Hierarchical Multi-Agent Systems with On-Policy Distillation](https://arxiv.org/abs/2610.23234) — Sun et al. 2026 · Trains the delegation loop of a Leader-Searcher-Answerer team into one shared Qwen3-4B-Instruct policy: the Leader decides when to send another wave of sub-questions and when to hand over to the Answerer and learns from whether the final answer is right, while the Searchers' own query-and-read loops learn token by token from a frozen teacher trained first in a plain Searcher-Answerer pipeline. Over seven open-domain QA sets it averages 38.68% exact match against 34.62% with a prompted judge of Searcher reports and 37.37% for Tree-GRPO, and Searchers trained on the final-answer reward stop searching altogether and fall to 17.78%. The intervals cover four attempts of fixed checkpoints, not repeated training, each system runs at its own step limit, MultiAgent-OPD with about twice the searches and input tokens of the teacher's pipeline, and no code is released.
 
 </details>
 
@@ -574,7 +577,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 ## Harnesses and Orchestration
 
 <details>
-<summary><b>Show 94 papers</b></summary>
+<summary><b>Show 95 papers</b></summary>
 
 - [The Devil Is in the Interface: Evaluating How Tool Architecture Shapes Coding Agent Behavior](https://arxiv.org/abs/2608.11386) — Xu et al. 2026
 - [OpenHands: An Open Platform for AI Software Developers as Generalist Agents](https://arxiv.org/abs/2407.16741) — Wang et al. 2024
@@ -634,7 +637,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) — VoltAgent 2025
 - [microsoft/skills](https://github.com/microsoft/skills) — Microsoft 2025
 
-*Additional 2026 reading (37), curated alongside the survey (not yet cited in the paper text):*
+*Additional 2026 reading (38), curated alongside the survey (not yet cited in the paper text):*
 
 - [LEMON: Learning Executable Multi-Agent Orchestration via Counterfactual Reinforcement Learning](https://arxiv.org/abs/2605.14483) — Chen et al. 2026 · Counterfactual RL learns role/capacity/dependency assignment for multi-agent orchestration.
 - [AnovaX: A Local, Multi-Agent Voice Assistant with LLM Planning, Typed Executors, and Adaptive Recovery](https://arxiv.org/abs/2607.15367) — Sinha 2026 · Local multi-agent voice assistant combining LLM planning, typed executors, and adaptive recovery.
@@ -673,6 +676,7 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [Ouroboros: A Self-Developing Frontier Coding Agent with Reviewed Core Evolution](https://arxiv.org/abs/2608.08311) — Razzhigaev et al. 2026 · A harness whose tools, prompts, context assembly and core implementation improve through reviewed commits that become the runtime for later work; 86.74% on Terminal-Bench 2.1 and 90.69% on OSWorld-Verified from frozen snapshots, with a separate 161-day deployment left evolving live.
 - [Training Agents to Evolve with Their Harness: TaoLive Digital Avatar Agent Technical Report](https://arxiv.org/abs/2608.15763) — TaoLive AIGC LLM Team 2026 · Takes the harness as the thing that keeps moving and trains the model for that, perturbing skill identifiers and content, tool schemas, prompt structure and hook functions throughout supervised finetuning, on-policy distillation and reinforcement learning, so a compact model never learns one configuration. Harness-variant questions go from 75.4 to 94.6, and where fixed-harness supervised finetuning drops instruction following 7.7 points below the base model the augmented recipe gives none of it back, at P50 and P95 latencies of 3.4 and 8.1 seconds on one H20 in Taobao Live's digital-avatar service.
 - [Agon: An Autonomous Large-Scale Omnidisciplinary Research System Built on Prompt Economy](https://arxiv.org/abs/2606.24177) — Sun et al. 2026 · Runs each research stage, from idea and proposal to experiment and paper, as a producer and critic loop with 18 roles and 230.6 KiB of prompts, against 78 to about 110 roles and 302.4 to 1,297.5 KiB in AI Scientist v2, ARIS and AutoResearchClaw. It reports 444 loop iterations across more than ten fields with no hand-written experimental code, but no systematic evaluation of the research it produced; the main result is a taxonomy of the failures the loop cannot see or fix, by severity, fixability, visibility and capability, worked through a robotics and a biology case study.
+- [Harness Engineering for Language Agents: The Harness Layer as Control, Agency, and Runtime](https://doi.org/10.20944/preprints202603.1756.v2) — He et al. 2026 · Position paper that splits the layer around the model into control (instructions, repository maps, tests, permissions), agency (the tools, interfaces and roles the model acts through) and runtime (memory, checkpoints, retries, budgets), and proposes HarnessCard for reporting an agent's harness next to its model. In its audit of 63 works, papers and benchmarks most often foreground observability, interfaces and feedback, while engineering notes, protocols and articles foreground runtime, control and governance. The authors call the audit a visibility check over a selected set with interpretive tags, and no experiment separates model effects from harness effects.
 
 </details>
 
@@ -737,17 +741,4 @@ Libraries that train the model inside an agent loop, and the harnesses and bench
 - [MCP-Persona: Benchmarking LLM Agents on Real-World Personal Applications via Environment Simulation](https://arxiv.org/abs/2606.02470) — Wang et al. 2026 · Benchmarks LLM agents on real personal MCP applications via simulated environments.
 - [Reasoning effort, not tool access, buys first-try reliability in agentic code generation: an observational study](https://arxiv.org/abs/2607.02436) — Mehta 2026 · Observational study isolating reasoning effort vs tool access as drivers of first-try coding agent reliability.
 - [Counsel: A Meta-Evaluation Dataset for Agentic Tasks](https://arxiv.org/abs/2606.21627) — Pisupati et al. 2026 · Meta-evaluation dataset targeting the bottleneck of scaling human trajectory annotation for agentic benchmarks.
-- [BackendForge: Benchmarking Agentic End-to-End Code Generation with Backend Services](https://arxiv.org/abs/2607.11042) — Guo et al. 2026 · Benchmarks agentic coding loops on end-to-end backend service generation with iterative test-driven revision.
-- [An Experimental Design Approach to Evaluating Agentic AI's Autonomous Model Discovery](https://arxiv.org/abs/2607.06413) — He et al. 2026 · Proposes experimental-design framework to characterize stochastic, adaptive coding-agent behavior across runs.
-- [Uncertainty Quantification for Computer-Use Agents: A Benchmark across Vision-Language Models and GUI Grounding Datasets](https://arxiv.org/abs/2606.25760) — Kumar et al. 2026 · Benchmarks uncertainty quantification for computer-use agents translating VLM predictions to GUI actions.
-- [MacAgentBench: Benchmarking AI Agents on Real-World macOS Desktop](https://arxiv.org/abs/2606.22557) — Fu et al. 2026 · macOS desktop benchmark for computer-use agents with framework-aware, non-binary evaluation.
-- [StaminaBench: Stress-Testing Coding Agents over 100 Interaction Turns](https://arxiv.org/abs/2606.19613) — Sobal et al. 2026 · Stress-tests coding agents over 100+ turns to measure long-horizon degradation, not task-solve rate.
-- [Agent trajectories as programs: fingerprinting and programming coding-agent behavior](https://arxiv.org/abs/2606.16988) — Oderinwale 2026 · Fingerprints coding agents' behavioral trajectories to compare procedural, not just outcome, differences.
-- [Evaluating Plan Compliance in Autonomous Programming Agents](https://arxiv.org/abs/2604.12147) — Liu et al. 2026 · Measures how faithfully autonomous programming agents follow prescribed task-specific plans across navigation/patch/validation phases.
-- [ClawBench: Can AI Agents Complete Everyday Online Tasks?](https://arxiv.org/abs/2604.08523) — Zhang et al. 2026 · 153 everyday online tasks on 144 real platforms, with the final submission intercepted so nothing is actually bought or booked.
-- [Do Agent Benchmarks Measure Capability? Protocol Validity in the Age of Agentic AI](https://arxiv.org/abs/2607.22368) — Shao et al. 2026 · Audits 2,385 traces across 15 agent benchmarks to separate genuine capability from exploited scoring shortcuts.
-- [AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities](https://arxiv.org/abs/2607.13705) — Chen et al. 2026 · Splits agent evaluation into benchmark, harness, and environment components so configurations vary without reimplementing execution logic.
-- [The Hidden Footprint: Making Storage a First-Class Metric for LLM Agent Evaluation](https://arxiv.org/abs/2607.11149) — Yu et al. 2026 · Measures the bytes an agent run leaves on disk, finding 15.7x retention spread among equally accurate configurations.
-- [SkillTV-Bench: Benchmarking How Well Judges Perform on Skill-Augmented Agentic Execution](https://arxiv.org/abs/2608.05573) — Han et al. 2026 · 681 real agent trajectories from 50 tasks across eleven domains for judging skill-augmented executions, on the premise that a verifier needs the task-time skill to know what evidence to inspect and which failures are task-critical.
-- [OrchestraBench: Evaluating Multi-Agent Orchestration Failure Modes, Recovery, and Decomposition Quality](https://arxiv.org/abs/2608.05263) — Chen et al. 2026 · Injects failures into templated enterprise workflows to measure cascade radius and per-mode recovery; a keyword router scores 0% on adversarial cases with misleading surface flags where an intent-reasoning router matches the oracle.
-- [SciΠvot: Benchmarking Principal-Investigator Judgment at Pivotal Moments of Scientific AutoResearch Agents](https://arxiv.org/abs/2610.21082) — Sun et al. 2
+- [BackendForge: Benchmarking Agentic End-to-End Code Generation with Backend Services](https://arxiv.org/a

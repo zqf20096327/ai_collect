@@ -513,6 +513,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is Contrastive Learning, and how is it used to train embedding models?
   - Answer: [What is Contrastive Learning?](https://outcomeschool.com/blog/contrastive-learning)
 - What is the difference between sparse and dense embeddings?
+  - Answer: [How do sparse and dense embeddings differ?](https://outcomeschool.com/blog/sparse-vs-dense-embeddings)
 - Explain cosine similarity, dot product, and Euclidean distance for vector search.
   - Answer: [How does a Vector Database work?](https://outcomeschool.com/blog/how-does-a-vector-database-work) and [How does Cosine Similarity work?](https://outcomeschool.com/blog/cosine-similarity)
 - What is a vector database, and how does it differ from a traditional database?
@@ -595,6 +596,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What are the key considerations for multi-region deployment of AI systems?
 - Design an AI-powered search engine for an e-commerce platform.
 - Design an AI gateway/proxy for managing LLM access across an organization.
+  - Answer: [How does an LLM Gateway work?](https://outcomeschool.com/blog/llm-gateway)
 - How do you design a RAG system that handles conflicting information across sources?
 - How do you approach capacity planning for an AI system?
 - Design a multi-tenant AI chatbot platform where each business gets a custom chatbot.
@@ -654,6 +656,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [AI Agent Observability](https://outcomeschool.com/blog/ai-agent-observability)
 - How do you handle PII and sensitive data in LLM inputs and outputs?
 - What is a gateway pattern for LLM API management?
+  - Answer: [How does an LLM Gateway work?](https://outcomeschool.com/blog/llm-gateway)
 - How does Token Streaming work?
   - Answer: [How does Token Streaming work?](https://outcomeschool.com/blog/how-does-token-streaming-work)
 - How do you implement streaming responses for real-time AI applications?
@@ -854,6 +857,10 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How does keyword boosting help ASR recognize domain words?](https://outcomeschool.com/blog/keyword-boosting-in-asr)
 - How do you make a voice agent work well with different accents and noisy environments?
   - Answer: [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
+- How do you handle a user who switches languages in the middle of a call in a voice agent?
+  - Answer: [How does a voice agent detect and switch the user's language mid-call?](https://outcomeschool.com/blog/language-switching-in-voice-agents)
+- How do you detect the user's emotion and make a voice agent respond with the right tone?
+  - Answer: [How does a voice agent match its tone and emotion to the user?](https://outcomeschool.com/blog/emotion-matching-in-voice-agents)
 - How do you handle speech recognition (ASR) errors in a voice agent?
   - Answer: [How does a voice agent confirm and correct misheard information?](https://outcomeschool.com/blog/confirm-and-correct-in-voice-agents)
 - How do you handle barge-in (user interruptions) in a voice agent?

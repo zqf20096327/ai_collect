@@ -21,9 +21,7 @@ Start with a product recipe or your own model. Shape the scene. Compare real ren
 
 [Quick start](#quick-start) · [See the workbench](#see-the-workbench) · [Documentation](deepblend/docs/README.md) · [Latest release](https://github.com/pearjelly/deep-blend/releases/latest) · [Contribute](CONTRIBUTING.md)
 
-**0.27.0 is published on GitHub and npm.** Set or change the walnut trivet's 52–92 mm cross-slat spacing while keeping it centered. Full acceptance, fresh installation and all three public installation routes have been verified. See the [release record](deepblend/docs/releases/0.27.0.md); community review and catalog propagation are tracked separately.
-
-The [0.28.0 candidate](deepblend/docs/releases/0.28.0.md) adds adjustable timber edge finishing and preserves historical recipe locks. It is awaiting complete release acceptance and is not yet published.
+**0.30.0 is published on GitHub and npm.** Apply one photo to both groups in a timber half lap with one save, then open the editable trivet example in Blender. Open the startup link printed by DSH to sign in. See the [release record](deepblend/docs/releases/0.30.0.md).
 
 The [independent-creation candidate](deepblend/docs/first-product-creation.md) adds motion preview, direct image/video delivery and explicit review inputs. Those candidate changes are not a public release or a claim of independent artistic acceptance.
 
@@ -40,8 +38,9 @@ dsh web
 
 The two environment options apply only to the install command: they allow pnpm to add the plugin at the profile workspace root and use peers supplied by DSH. They do not change global pnpm settings.
 
-Restart an already running `dsh web` after installation. In a new session, choose the **DeepBlend Studio**
-preset and open **Blender** in the sidebar. Both the workbench and agent presets are included.
+Restart an already running `dsh web` after installation. Open the launch link that DSH prints in your browser
+to sign in. In a new session, choose the **DeepBlend Studio** preset and open **Blender** in the sidebar.
+Both the workbench and agent presets are included.
 
 **First time setting up Blender or DSH?** Follow the [English / Chinese quick-start guide](deepblend/docs/quick-start.md).
 FFmpeg and ffprobe are needed when encoding an MP4. Install them with `brew install ffmpeg` on macOS,
@@ -268,7 +267,7 @@ npm run dev:test
 Full native acceptance remains a separate entry:
 
 ```sh
-bash deepblend/tests/run-all.sh      # 58 suites; README.zh.md carries the measured snapshot
+bash deepblend/tests/run-all.sh      # 60 suites; README.zh.md carries the measured snapshot
 ```
 
 [Development setup](deepblend/development/README.md) · [CI scope and artifacts](deepblend/docs/ci.md) · [Architecture decisions](deepblend/docs/architecture-decisions.md)

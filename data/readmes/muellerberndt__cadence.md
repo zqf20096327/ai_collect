@@ -4,7 +4,7 @@
 
 # Cadence
 
-[**Live demos**](https://cadence.floatingpragma.ai/) · [Pragma Research](https://floatingpragma.ai/) · [Documentation](https://github.com/muellerberndt/cadence/blob/main/docs/README.md) · [Application demos](https://github.com/muellerberndt/cadence-demos) · [Paper](https://philpapers.org/rec/MUECAP-2) · [PyPI](https://pypi.org/project/cadence-net/)
+[**Live demos**](https://cadence.floatingpragma.ai/) · [Pragma Research](https://floatingpragma.ai/) · [Documentation](https://github.com/muellerberndt/cadence/blob/main/docs/README.md) · [Application demos](https://github.com/muellerberndt/cadence-demos) · [Paper](https://philpapers.org/rec/MUECAP-2) · [PyPI](https://pypi.org/project/cadence-net/) · [Contact](mailto:info@floatingpragma.ai)
 
 [![CI](https://github.com/muellerberndt/cadence/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/muellerberndt/cadence/actions/workflows/ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/muellerberndt/cadence/blob/main/LICENSE)
@@ -18,10 +18,10 @@ way: its connections change locally while the brain keeps running.
 ## Install
 
 ```sh
-python -m pip install cadence-net==0.104.0
+python -m pip install cadence-net==0.104.2
 ```
 
-Python 3.11 or later and NumPy. `"cadence-net[fast]==0.104.0"` adds Numba and SciPy for speed
+Python 3.11 or later and NumPy. `"cadence-net[fast]==0.104.2"` adds Numba and SciPy for speed
 (recommended); `[apple]` adds MLX for Apple silicon GPUs and `[accel]` PyTorch for NVIDIA GPUs.
 
 ## A first brain
@@ -56,7 +56,7 @@ is no backward pass and no switch between training and use.
 More guides: [a continuing life](https://github.com/muellerberndt/cadence/blob/main/docs/life.md), [train a brain](https://github.com/muellerberndt/cadence/blob/main/docs/teach.md), [learning from reward](https://github.com/muellerberndt/cadence/blob/main/docs/reward.md),
 [memory](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md), [tune and read a living brain](https://github.com/muellerberndt/cadence/blob/main/docs/tune.md),
 [backends](https://github.com/muellerberndt/cadence/blob/main/docs/backends.md); the [documentation index](https://github.com/muellerberndt/cadence/blob/main/docs/README.md) lists them all. The
-[released documentation](https://github.com/muellerberndt/cadence/blob/v0.104.0/docs/README.md)
+[released documentation](https://github.com/muellerberndt/cadence/blob/v0.104.2/docs/README.md)
 describes the installed package. Integrated learned world prediction, repair localized to what
 failed and cheap stable operation are work in progress; Cadence is alpha research software.
 
@@ -366,3 +366,7 @@ to build interesting projects that integrate it. Any other token using the
 Cadence name is unrelated to this project. Nothing here is financial advice.
 
 </details>
+
+## Contact
+
+Questions, collaboration and press: [info@floatingpragma.ai](mailto:info@floatingpragma.ai).

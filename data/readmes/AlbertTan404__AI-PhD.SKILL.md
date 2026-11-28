@@ -31,6 +31,7 @@ Recommend: [Reward Shapes Policy](SKILLS/judgment/3-Reward-Policy-EN.md)
 - **开始一个研究课题 / Starting a project**：[如何选题](SKILLS/research/0-Topic-Selection.md) → [科研 Pipeline](SKILLS/research/1-Research-Pipeline.md) → [Research Paradigms](SKILLS/research/9-Research-Paradigms.md)。
 - **改进论文与表达 / Improving a paper**：[Storytelling](SKILLS/communication/0.1-Story-Telling.md) → [换位思考](SKILLS/communication/5-Perspective-Taking.md) → [Rebuttal](SKILLS/communication/0.2-Should-I-Rebuttal.md)。
 - **系统理解 LLM RL / Understanding LLM RL**：[RL 101 总览](SKILLS/reinforcement-learning/7-RL101.md)，再读 [Reward → GAE](SKILLS/reinforcement-learning/7.1-RL101-Reward-to-GAE.md) 和 [GAE → GRPO Family](SKILLS/reinforcement-learning/7.2-RL101-GAE-to-GRPO.md)。
+- **进入新的团队 / Joining a new team**：[Onboarding](SKILLS/judgment/10-Onboarding.md)：理清协作关系，接通 AI 与资源，对齐团队和个人目标。
 
 English versions are linked alongside each article below and from the top of every Chinese article.
 
@@ -66,6 +67,7 @@ English versions are linked alongside each article below and from the top of eve
 | ---- | ------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | 3    | [Reward 决定 Policy](SKILLS/judgment/3-Reward-Policy.md) | [Reward Shapes Policy](SKILLS/judgment/3-Reward-Policy-EN.md) | 规则、代理指标与长期目标 / Rules, proxies, and long-term goals          |
 | 6    | [Taste](SKILLS/judgment/6-Taste.md)                      | [Taste](SKILLS/judgment/6-Taste-EN.md)                        | Agent 时代的判断与验证 / Judgment and verification in the age of agents |
+| 10   | [Onboarding](SKILLS/judgment/10-Onboarding.md)           | [Onboarding](SKILLS/judgment/10-Onboarding-EN.md)             | 团队协作、AI 与资源、目标对齐 / Collaboration, AI and resources, and goal alignment |
 
 ### 强化学习 / Reinforcement Learning
 

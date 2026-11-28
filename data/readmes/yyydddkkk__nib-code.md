@@ -54,6 +54,14 @@ curl -fsSL https://raw.githubusercontent.com/yyydddkkk/nib-code/main/install.sh 
 
 Installs to `~/.local/bin`. `nib update` upgrades in place. `NIB_VERSION` pins a release, `NIB_INSTALL_DIR` changes the directory.
 
+Windows x64 preview (run in PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/yyydddkkk/nib-code/main/install.ps1 | iex
+```
+
+Installs to `%LOCALAPPDATA%\nib\bin`. Add that directory to your user `PATH`, or run `nib.exe` by its full path. See the [Windows preview](docs/windows-cli-preview.md) for platform limitations.
+
 From source (Zig 0.17): `zig build -Doptimize=ReleaseFast --prefix ~/.local`
 
 For daily development without replacing stable `nib`, [install `nib-dev` from local `dev`](docs/developing.md).
@@ -85,7 +93,7 @@ Project conventions go in `AGENTS.md`; personal ones in `~/.nib/AGENTS.md`.
   Run · edit 2 files · bash
     src/grep.zig +38 −9 · src/tools.zig +2 −1
     read src/grep.zig · read src/tools.zig · grep src
-    └─ b1 bash zig build test · 1s · completed ✓ exit 0
+    └─ b1 zig build test · 1s · completed ✓ exit 0
 
   1 Run · 2 steps · 41s · 6.6k tokens
 ```

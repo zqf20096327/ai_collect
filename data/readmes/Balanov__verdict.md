@@ -146,6 +146,7 @@ site/                multilingual research page and browser demo
 - [latch](https://github.com/Balanov/latch) — one tiny HTTPS contract between any agent and any service.
 - [mcp-attest](https://github.com/Balanov/mcp-attest) — an authorization conformance harness for MCP servers.
 - [equal](https://github.com/Balanov/equal) — turns real API traffic into a local sandbox and an OpenAPI spec.
+- [pact](https://github.com/Balanov/pact) — a tiny contract for agent-initiated payments: quote, consent, commit, receipt, chained by digests. Verified offline by [attest](https://github.com/Balanov/attest).
 
 
 ## License

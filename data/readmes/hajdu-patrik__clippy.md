@@ -82,7 +82,8 @@ forgets every paired device.
 
 Tab completion works in PowerShell and in cmd through [Clink](https://chrisant996.github.io/clink/)
 (`winget install chrisant996.Clink`, then `clippy install` again). The first run downloads the Whisper model
-(≈ 3 GB) and the YuNet face model (~230 KB, checked against a pinned SHA-256).
+(≈ 3 GB), the YuNet face model (~230 KB) and the YAMNet sound event model (~16 MB), both checked against a pinned
+SHA-256.
 
 ## How it works
 
@@ -276,7 +277,9 @@ against your subscription's limits.
 | `CLIPPY_LLM_BACKEND` | `ollama` | `ollama` (local), `openrouter`, `claude`, `codex`, `openai` (any OpenAI-compatible API: Groq, Gemini) or `none` (heuristic) |
 | `CLIPPY_LLM_MODEL` | `clippy-qwen3:14b-q6k` | the model name for that backend |
 | `CLIPPY_LLM_BASE_URL`, `CLIPPY_LLM_API_KEY` | - | for hosted backends |
-| `CLIPPY_LLM_THINK` | `1` | reasoning mode when picking clips (better choices, slower) |
+| `CLIPPY_LLM_THINK` | `rerank` | where the model reasons when picking clips: `all`, `windows` (reading the transcript), `rerank` (comparing the candidates and their post texts) or `off` (`1` and `0` still mean all and off) |
+| `CLIPPY_LLM_THINK_BUDGET` | `0` | about how many tokens one reasoning answer may think before it answers from what it has (0: no cap) |
+| `CLIPPY_LLM_PARALLEL` | `2` | transcript windows the local model reads at once (2 or more needs `OLLAMA_NUM_PARALLEL` of 2 or more on the server, which `clippy start` sets) |
 | `CLIPPY_LLM_CTX`, `CLIPPY_LLM_KEEP_ALIVE` | `16384`, `30m` | context size and how long the model stays in VRAM |
 | `CLIPPY_LIBRARY` | `~/Videos/Clippy` | where finished clips are copied |
 | `CLIPPY_PORT` | `7860` | web app port |

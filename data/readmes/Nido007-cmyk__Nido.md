@@ -10,16 +10,16 @@
 A private AI assistant that runs entirely on your Android phone.</p>
 
 <p align="center">
-  <a href="https://github.com/Nido007-cmyk/Nido/releases/tag/v0.1.112-alpha"><img alt="Version: 0.1.112-alpha" src="https://img.shields.io/badge/version-0.1.112--alpha-3A563F"></a>
+  <a href="https://github.com/Nido007-cmyk/Nido/releases/tag/v0.1.117-alpha"><img alt="Version: 0.1.117-alpha" src="https://img.shields.io/badge/version-0.1.117--alpha-3A563F"></a>
   <a href="https://github.com/Nido007-cmyk/Nido/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Nido007-cmyk/Nido/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
   <img alt="Platform: Android" src="https://img.shields.io/badge/platform-Android-3A563F">
 </p>
 
 <p align="center">
-  <img src="docs/visual/ui-chat-design.png" alt="NIDO chat: first screen, a conversation, and dark theme" width="820">
+  <img src="docs/visual/ui-chat-design.png" alt="Design of NIDO 0.1.117: chat start, an answer with sources, dark theme, and the Emergency tab" width="820">
 </p>
-<p align="center"><sub>Design mockups of the chat in v0.1.1-alpha. The shipped screens can differ in details.</sub></p>
+<p align="center"><sub>Design of the 0.1.117 interface (not screenshots). Some elements in the design are not in the app yet, and the shipped screens can differ in details.</sub></p>
 
 ## What NIDO is
 
@@ -71,6 +71,13 @@ device, encrypted. There are no accounts, no cloud and no analytics.
   they come from, with a line that counts which sentences come from them and
   which come from the model with no source; when nothing in the base really
   matches, no source is shown.
+- **Emergency one tap away, answers you can hear and check** (0.1.117):
+  an SOS button at the top of the chat opens the Emergency tab, whose red
+  header puts the main emergency number first; every answer has a Listen
+  button that reads it aloud with the phone's own voice, offline; and when
+  every sentence of an answer is backed by its sources, a "Checked against
+  the sources" strip says so (amber when unsupported sentences were
+  removed). The sources show as a row of cards you can open.
 - **Adds signed packs from a file** (0.1.80): Settings → Knowledge base →
   "Add a pack from a file" adds a knowledge pack you have as a file, for
   example one published by SALVORA PACKS. Before anything is copied, the
@@ -295,7 +302,7 @@ The interface is available in English, Spanish and Portuguese.
 ## Install
 
 1. Download `app-release.apk` from the
-   [v0.1.109-alpha release](https://github.com/Nido007-cmyk/Nido/releases/tag/v0.1.109-alpha).
+   [v0.1.117-alpha release](https://github.com/Nido007-cmyk/Nido/releases/tag/v0.1.117-alpha).
 2. Check it against the `app-release.apk.sha256` file published next to it.
 3. Install it on an Android phone (arm64).
 4. On first launch NIDO downloads its language model, between about 0.4

@@ -57,9 +57,9 @@ cp .env.example .env
 `streamlit` aracını kurar. Sanal ortam aktifken `secdataforge` ve `streamlit`
 komutları doğrudan çalışır.
 
-## İlk çalıştırma (örnek veri ile)
+## İlk çalıştırma
 
-Gerçek API erişimi olmadan da tüm işlevleri doğrulayabilirsiniz:
+Aşağıdaki toplama komutları gerçek API'lere bağlanır. Ağsız doğrulama için testleri kullanın.
 
 ```bash
 # Veritabanını başlat ve kaynakları listele
@@ -69,8 +69,8 @@ secdataforge sources
 # aşağıdaki komut gerçek GitHub API'sine çağrı yapar (hız sınırı uygulanabilir).
 secdataforge collect github --limit 50
 
-# Tüm kaynaklar
-secdataforge collect --limit 100
+# OSV: kimlik veya paket/ekosistem filtresi zorunludur
+secdataforge collect osv --package django --ecosystem PyPI --limit 100
 
 # Kalite raporu
 secdataforge report
@@ -79,7 +79,7 @@ secdataforge report
 secdataforge export --format both --output data/exports --quality valid
 
 # Tüm durumdaki kayıtları dışa aktar
-secdataforge export --format jsonl --output data/exports/all.jsonl --quality all
+secdataforge export --format jsonl --output data/exports --prefix all --quality all
 ```
 
 Komutların `--help` çıktıları mevcuttur:
@@ -91,12 +91,39 @@ secdataforge collect --help
 
 ## Komut satırı komutları
 
+### Terminalden başlatma ve grafik arayüzüne geçiş
+
+`secdataforge` tek başına yazıldığında etkileşimli **terminal menüsü** açılır;
+grafik arayüzü veya tarayıcı kendiliğinden başlatılmaz. Menüden kaynakları ve
+raporu görebilir, komut çalıştırabilir veya **5 — Grafik arayüzüne geç** seçeneğiyle
+paneli açabilirsiniz. Panel açıkken `Ctrl+C` ile durdurup terminal menüsüne dönün.
+
+```bash
+secdataforge                  # terminal menüsü
+secdataforge gui              # yalnız istendiğinde grafik arayüzü
+secdataforge gui --port 8502   # farklı yerel port
+secdataforge collect github --limit 50  # doğrudan komutlar da çalışır
+```
+
+Etkileşimsiz çalıştırmada komutsuz çağrı menü yerine yardımı gösterir.
+Menüye açıkça girmek için `secdataforge menu` kullanılabilir. Panel yalnız
+`127.0.0.1` üzerinde dinler.
+
+Bu bilgisayarda `~/.local/bin/secdataforge` başlatıcısı `.venv-current` ortamını
+kullanır; dizin değiştirmeye veya ortamı elle etkinleştirmeye gerek yoktur.
+Fish için kullanıcı komut dizini `~/.config/fish/conf.d/secdataforge.fish` ile
+PATH'e eklenmiştir. Yeni terminal açın; mevcut Fish oturumunda bir kez
+`source ~/.config/fish/conf.d/secdataforge.fish` çalıştırın. Başka bilgisayarlarda
+paket kurulumunun ardından sanal ortamı etkinleştirin veya benzer bir başlatıcı ekleyin.
+
 | Komut | Açıklama |
 |-------|----------|
 | `secdataforge sources` | Yapılandırılan kaynakları ve son işlem durumlarını listeler |
-| `secdataforge collect [kaynak] [--limit N] [--resume] [--full-history] [--since YYYY-MM-DD]` | Veri toplama hattını çalıştırır (`github`, `osv` veya `all`); `--resume` (varsayılan) son işlemin kaydettiği sayfa imlecinden devam eder; `--full-history` imleci yok sayar, baştan çeker; `--since YYYY-MM-DD` bu tarihten eski kayıtları atlar |
+| `secdataforge collect [kaynak] [--limit N] [--resume] [--full-history] [--since YYYY-MM-DD]` | Varsayılan olarak en son güncellenen kayıtlardan başlar; `--resume` önceki toplamanın imlecinden geçmiş taramasını sürdürür; `--full-history` imleci yok sayar. Tüm modlar `--limit` ile sınırlıdır. |
 | `secdataforge validate` | Mevcut kayıtların kalitesini yeniden değerlendirir |
-| `secdataforge enrich [--llm]` | LLM ile isteğe bağlı zenginleştirme (Türkçe çeviri, önlem, QA) |
+| `secdataforge enrich [--llm] [--force]` | Reddedilmemiş ve henüz tamamlanmamış kayıtları zenginleştirir; `--force` tamamlananları da yeniden üretir (ek API maliyeti). |
+| `secdataforge review RECORD_ID --approve/--reject` | Kaynak içeriği için açık insan incelemesi kararı verir; lisans/kalite sorunu olan kaynak onaylanamaz. |
+| `secdataforge review-qa QA_ID --approve/--reject` | QA için açık insan incelemesi kararı verir; onay için tüm kaynakların uygun olması gerekir. |
 | `secdataforge export [--format jsonl\|csv\|both] [--quality valid\|all] [--output DIR] [--source X]` | Kayıtları dışa aktarır |
 | `secdataforge report` | Veri kalitesi raporunu gösterir |
 
@@ -117,25 +144,52 @@ kontrolsüz indirilmez; kayıt sınırı ve sayfalama ile sınırlandırılır.
 
 | Seçenek | Açıklama |
 |---------|----------|
-| `--resume` | (Varsayılan) Son işlemin kaydettiği sayfa imlecinden (`next_cursor`) devam eder. Sadece **yeni** kayıtları çeker. Kayıtlar dedupe edilerek eklenir. |
-| `--full-history` | İmleci **yok sayar**, en yeniden başlayarak geriye doğru **tüm geçmişi** çeker. Kayıtlar dedupe edilir; zaten DB'de olanlar atlanır. Büyük limitlerle (ör. `--limit 5000`) tüm GitHub Advisory Database'i çekebilirsiniz. `--resume` ile çelişir; bu seçeneğe basılırsa `--resume` yoksayılır. |
-| `--since YYYY-MM-DD` | Belirtilen tarihten (YYYY-MM-DD) **eski** kayıtları atlar (client-side filtre). `published_at` alanına göre filtreler. `--full-history` ile kombine edilebilir (ör. `--full-history --since 2024-01-01` → 2024'ten bugüne tüm geçmiş). |
+| `--resume` | Son işlemin kaydettiği sayfa imlecinden (`next_cursor`) devam eder. **Yeni kayıt kontrolü değildir**; geçmiş taramasını sürdürür. |
+| `--full-history` | İmleci yok sayarak en son güncellenenden başlar. `--limit` kadar kayıt işler; kalan geçmiş için sonraki çalıştırmalarda `--resume` kullanın. `--resume` ile birlikte verilirse bu seçenek önceliklidir. |
+| `--since YYYY-MM-DD` | Belirtilen tarihten eski kayıtları atlar (client-side filtre); `published_at` alanına bakar. Limit çekilen kayıt sayısıdır; filtreye uyan sonuç sayısı daha az olabilir. |
 
 **Örnekler:**
 
 ```bash
-# Varsayılan: sadece yenileri (haftalık/periyodik kullanım)
+# Periyodik kontrol: en son güncellenen 500 kaydı yeniden değerlendir
+secdataforge collect github --limit 500
+
+# Önceki toplamanın geriye doğru sayfalamasını sürdür
 secdataforge collect github --limit 500 --resume
 
-# Tüm geçmişi baştan çek (tek seferlik, büyük limit)
+# Geçmiş taramasını başlat (ilk 5000; kalanı --resume ile)
 secdataforge collect github --limit 5000 --full-history
 
-# 2024'ten bugüne tüm geçmiş
+# İlk 5000 kayıt içinde yayın tarihi 2024 ve sonrası olanlar
 secdataforge collect github --limit 5000 --full-history --since 2024-01-01
 
 # Sadece 2025'ten bugüne (imleç yok, sadece filtre)
 secdataforge collect github --limit 2000 --since 2025-01-01
 ```
+
+GitHub kayıtları `updated DESC` sırasıyla alınır. Aynı kaynak kimliğinin ham içeriği
+değiştiğinde kayıt güncellenir; eski ham sürümler `raw_record_versions` tablosunda
+korunur. Eski çeviri/önlem ve tamamlanma işaretleri temizlenir; ilgili QA onayları
+yeniden incelemeye alınır. Değişmeyen kayıtlar tekrar eklenmez. Toplama sonuçları
+eklenen ve güncellenen kayıt sayılarını ayrı gösterir.
+
+OSV örnekleri:
+
+```bash
+secdataforge collect osv --cve CVE-2024-0001 --ghsa GHSA-xxxx-yyyy-zzzz
+secdataforge collect osv --package django --ecosystem PyPI --version 4.2 --limit 100
+# İki kaynak birlikte çalıştırılacaksa OSV filtresi de verin
+secdataforge collect all --package django --ecosystem PyPI --limit 100
+```
+
+Kimlik sorguları `GET /v1/vulns/{id}`, paket sorguları `POST /v1/query` kullanır.
+OSV sayfa belirteçleri ve kayıt limiti nedeniyle yarım kalan sayfalar imleçte
+saklanır. OSV filtresi değişirse `--resume` kullanmadan yeni tarama başlatın.
+Boş filtre veya HTTP hatası sessiz başarı olarak gösterilmez.
+
+Varsayılan toplama yalnız verilen limit kapsamındaki güncellemeleri kontrol eder;
+tüm geçmişin güncel olduğunu garanti etmez. Yenileme ve geçmiş devamı aynı son
+işlem imlecini kullanır; uzun geçmiş taraması sırasında araya yenileme sokmayın.
 
 OWASP bağlayıcısı sonraki bir aşamada planlanmıştır; yalnızca erişim ve içerik
 kullanım koşulları doğrulanmış içerikler içe aktarılacaktır.
@@ -261,6 +315,41 @@ ayrı tutulur. LLM çıktıları varsayılan olarak inceleme kuyruğuna alır.
 
 ## Veri şeması
 
+### Zenginleştirme ve insan incelemesi
+
+`enrich`, yalnız `review` kayıtlarını değil, `valid` ve `pending` dahil tüm
+reddedilmemiş ve tamamlanmamış kayıtları seçer. Başarılı görevler ayrı ayrı
+kaydedilir; kısmi hatalarda sonraki çalıştırma yalnız başarısız görevleri tekrarlar.
+Kaynakla desteklenmeyen QA yanıtı da tamamlanmış bir denemedir. HTTP/JSON/şema
+hataları hata olarak raporlanır ve `processing_errors` tablosuna yazılır.
+
+LLM çıktısı bulunan kayıtlar `llm_review_required` ile korunur. `validate` bu
+işareti kaldırmaz; yalnız CLI'deki `review` komutu veya paneldeki açık karar
+butonları kaldırabilir. Reddedilmiş kayıtlar doğrulamayla otomatik onaylanmaz.
+
+```bash
+secdataforge enrich --llm --limit 10 --verbose
+# Kaynak metni, çeviri ve önlemi inceledikten sonra:
+secdataforge review gh:GHSA-xxxx-yyyy-zzzz --approve
+# Soru, cevap ve kaynaklarını inceledikten sonra:
+secdataforge review-qa 'qa:...' --approve
+secdataforge export --qa --output data/exports
+```
+
+Normal dışa aktarım yalnız `valid`, lisansı `allowed`, LLM incelemesi tamamlanmış
+kayıtları içerir. QA varsayılanı `approved` durumudur; insan inceleme bayrağı kapalı
+ve **tüm** kaynakları uygun olmalıdır. `--qa-status all` tek başına bu korumaları
+kaldırmaz. Yalnız yerel inceleme için `--unsafe-qa --qa-status all` kullanılabilir;
+bu çıktı eğitim/yeniden dağıtım için uygun kabul edilmemelidir. Benzer şekilde
+`--quality all` tanısal kullanım içindir.
+
+`--prefix` yalnız tek bir dosya adı öneki kabul eder; yol, `../` veya çıktı dizini
+dışına yönelen sembolik bağlantılar reddedilir. Panel aynı kontrolü kullanır.
+
+İlk açılışta eski veritabanına alanlar otomatik eklenir. Eski çeviri/önlem
+kayıtlarının insan onayı kanıtlanamadığından bunlar yeniden incelemeye alınır;
+metinler silinmez. Güncellemeden önce veritabanının yedeğini almanız önerilir.
+
 Ortak güvenlik duyurusu şeması (`src/secdataforge/schemas.py`):
 
 | Alan | Tür | Açıklama |
@@ -286,6 +375,9 @@ Ortak güvenlik duyurusu şeması (`src/secdataforge/schemas.py`):
 | `raw_hash` | string? | Ham veri SHA-256 özeti |
 | `quality_status` | enum | `pending` / `valid` / `review` / `rejected` |
 | `quality_issues` | [string]? | Tespit edilen kalite sorunları |
+| `llm_review_required` | bool | LLM içeriği için açık insan onayı bekleniyor mu? |
+| `enrichment_tasks` | [string] | Tamamlanan çeviri, önlem ve QA görevleri |
+| `enriched_at` | datetime? | Üç görev hatasız tamamlandığında işaretlenir |
 
 Ham yanıt `raw_records` tablosunda, normalize edilmiş veri
 `security_advisories` tablosunda ayrı ayrı tutulur. AI üretilen soru-cevap
@@ -318,15 +410,25 @@ koşullarını ayrıca değerlendirmeniz gerekir.
 
 Lisans kararları konektör yapılandırmasında (`license`, `license_status`)
 tutulur; `secdataforge validate` güncel politikayı mevcut kayıtlara da uygular
-(ör. sonradan verilen bir lisans kararı eski kayıtları incelemeden çıkarır).
+(ör. sonradan verilen bir lisans kararı lisans kaynaklı incelemeyi kaldırabilir;
+LLM insan incelemesi gereksinimini kaldırmaz).
 
 ## Testler
 
 ```bash
-pip install pytest ruff   # dev bağımlılıkları
-pytest                    # tüm birim testleri
-ruff check src/ tests/    # statik kontroller
-ruff format src/ tests/   # biçimlendirme denetimi
+pip install -e '.[dev]'        # dev bağımlılıkları
+python -m pytest              # tüm birim testleri
+ruff check src/ tests/ app/    # statik kontroller
+ruff format --check src/ tests/ app/  # dosyaları değiştirmeden biçim denetimi
+```
+
+Sistem Python sürümü yükseltilince eski `.venv` bağımlılıkları bulunamıyorsa,
+eski ortamı silmeden yeni ortam oluşturabilirsiniz:
+
+```bash
+python3 -m venv .venv-current
+source .venv-current/bin/activate
+python -m pip install -e '.[dev]'
 ```
 
 Testler gerçek HTTP/API çağrısı yapmaz; sentetik veri ve mock bağlayıcılar

@@ -1,8 +1,8 @@
-# MCP_CREO_MechDog 0.47.1
+# MCP_CREO_MechDog 0.48.3
 
-![version](https://img.shields.io/badge/version-0.47.1-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
+![version](https://img.shields.io/badge/version-0.48.3-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
 
-当前正式版 **0.47.1**（PATCH，公开工具 112）。修复默认主基准面偏移（如 XZ `axis="y"`）法线与 `capabilities.frames` 矛盾导致的草图静默反号问题，为 `datum_plane` 补齐 `plane_frame` 回执、为字典草图面反向法线补齐 `frame_warning` 告警与 `frames_note` 文档（[BUG-187](docs/work-items/BUG-187.md)），并合入开发入口统一与四批 P1/P2 台账复核（[DEV-104](docs/work-items/DEV-104.md)）。 [版本说明](docs/release-notes/RELEASE_NOTES_0.47.1.md) · [下载页](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.47.1)
+当前正式版 **0.48.3**（PATCH，公开工具 112）。交付 [DEV-108](docs/work-items/DEV-108.md)–[DEV-111](docs/work-items/DEV-111.md)（修复 Windows CI 同刻度启动重试 ID 偶发重复、补齐台账逐组计数校验、校正本机 MCP 联调目录指引、完成台账近期动态去重并将活跃非冻结文档链接/锚点检查接入 CI），并补齐 [BUG-131](docs/work-items/BUG-131.md) 在 Creo 10.0.0.0 上的 `revision == 0` 新装配收尾实机验收。 [版本说明](docs/release-notes/RELEASE_NOTES_0.48.3.md) · [GitHub Release](https://github.com/wudahua/MCP_CREO_MechDog/releases/tag/v0.48.3)
 
 > 让 AI 客户端通过 MCP，直接在 Creo Parametric 里创建**原生可编辑的参数化特征**——不是导出网格，也不是脚本模拟。
 

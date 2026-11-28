@@ -8,7 +8,7 @@
 
 A local-first LaTeX workspace for macOS, with your papers, your co-authors and an AI agent in the same window
 
-[Download](https://github.com/lattice-writer/lattice/releases/latest)&emsp;[Try it in your browser](https://lattice-writer.github.io/lattice/demo/)&emsp;[Website](https://lattice-writer.github.io/lattice/)&emsp;[Watch the film](https://lattice-writer.github.io/lattice/#film)&emsp;[Release notes](https://github.com/lattice-writer/lattice/releases)&emsp;[Developer docs](docs/README.md)&emsp;[Issues](https://github.com/lattice-writer/lattice/issues)&emsp;[中文](README.zh-CN.md)
+[Download](https://github.com/lattice-writer/lattice/releases/latest)&emsp;[Try it in your browser](https://lattice-writer.github.io/lattice/demo/)&emsp;[Website](https://lattice-writer.github.io/lattice/)&emsp;[Watch the film](https://lattice-writer.github.io/lattice/#film)&emsp;[Release notes](https://github.com/lattice-writer/lattice/releases)&emsp;[Developer docs](docs/README.md)&emsp;[Issues](https://github.com/lattice-writer/lattice/issues)&emsp;[中文](README.zh-CN.md)&emsp;[Türkçe](README.tr.md)
 
 [![Release](https://img.shields.io/github/v/release/lattice-writer/lattice?style=flat-square&label=release&color=556324)](https://github.com/lattice-writer/lattice/releases/latest)
 [![CI](https://img.shields.io/github/actions/workflow/status/lattice-writer/lattice/ci.yml?branch=main&style=flat-square&label=checks)](https://github.com/lattice-writer/lattice/actions/workflows/ci.yml)
@@ -48,7 +48,7 @@ Annotations and Overleaf comments also line up in a column beside the PDF, each 
 
 ### Bring your own agent
 
-The Agent panel runs [Claude Code](https://github.com/anthropics/claude-code) or [Codex](https://github.com/openai/codex), or another agent CLI on your Mac such as Cursor, OpenCode or Droid, signed in as you.
+The Agent panel runs [Claude Code](https://github.com/anthropics/claude-code) or [Codex](https://github.com/openai/codex), or another agent CLI on your Mac such as Cursor, Antigravity (`agy`), OpenCode or Droid, signed in as you.
 Or connect your own OpenAI- or Anthropic-compatible API in Settings › Agent › Model endpoint: an address, a key (kept in your Keychain) and model names, which the agent runs through Pi with no command-line tool to install.
 Lattice comes with no model and no AI subscription of its own.
 The agent reads your project and papers, fixes build errors and edits files; every change shows as a diff you can review or undo.

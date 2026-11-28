@@ -1,3 +1,5 @@
+![ai-life-performance-coach by PushBased: Set goals across your projects, areas, and habits. Break them into workstreams of deliverable tasks to plan your years, quarters, months, weeks, and days, then turn completed workstreams into Intermediate Packets to help create new ones. Bring books, articles, and papers, then synthesize them to learn deeply and achieve mastery.](docs/assets/banner.png)
+
 # ai-coach
 
 [![CI](https://github.com/push-based/ai-life-performance-coach/actions/workflows/ci.yml/badge.svg)](https://github.com/push-based/ai-life-performance-coach/actions/workflows/ci.yml)

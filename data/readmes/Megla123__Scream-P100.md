@@ -38,9 +38,15 @@ Inkling 2 Mini (`ink2`, exact): **~97 tok/s writing · ~100 tok/s Koda edits · 
 
 ---
 
-Scream P100 is a port of [Strata](https://github.com/Niko1221/Strata)'s all-cards split engine (`strata-split-2`, from
-[sFNX](https://github.com/johnfink8/sfnx)) to the **NVIDIA Tesla P100** (Pascal, sm_60), a card that engine was never
-built for. Both cards work on every layer at once, the experts that do not fit in VRAM stream in from RAM over PCIe,
+Scream P100 holds **two different engines**, and only the Flash-Next one comes from Strata:
+
+| Engine | Models | Where it comes from |
+|---|---|---|
+| **`ink2`** (branch [`inkling2`](https://github.com/Megla123/Scream-P100/tree/inkling2), `engine-inkling2/`) | Inkling 2 Mini | **Not a Strata fork.** Written from scratch for Inkling 2's looped MoE: its own CUDA engine and kernels, GGUF reader, DSpark drafter path and server. No Strata code; llama.cpp only as a library for the tokenizer and the picture encoder (mtmd, on the CPU). |
+| **`strata-split-2`** (`engine/`) | Qwen3.8-Flash-Next, Edge0-145B | A port of [Strata](https://github.com/Niko1221/Strata)'s all-cards split engine (from [sFNX](https://github.com/johnfink8/sfnx)) to the P100, served by Strata v0.2.9's server. What is ours and what is Strata's: [docs/PROVENANCE.md](docs/PROVENANCE.md). |
+
+The rest of this part is about the Flash-Next engine. `strata-split-2` runs on the **NVIDIA Tesla P100** (Pascal, sm_60),
+a card that engine was never built for. Both cards work on every layer at once, the experts that do not fit in VRAM stream in from RAM over PCIe,
 and two drafters (the model's own MTP layer and prompt lookup) let the cards check several tokens per step.
 
 On the same two cards, our previous setup (Strata 0.2.9's layer-split engine with our P100 kernels, where one card
@@ -338,6 +344,37 @@ settles. What has and has not been tested is in [Known limitations](docs/GUIDE.m
 Our scripts and docs refer to sections as *(README, "Section")*. Those sections are now in [docs/GUIDE.md](docs/GUIDE.md).
 
 ## 📰 News
+
+- **27 Nov 2026 (evening):** 🦑 **Inkling 2 Mini has a second drafter, DFlash 2: 8 % faster writing, 15 % in English** on
+  branch [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#dflash-2-a-second-drafter-8--faster-writing-p74-27-nov).
+  Inco AI's and z-lab's [DFlash 2](https://huggingface.co/incoai/Inkling-2-Mini-DFlash2) drafts a block of 8 tokens in one
+  pass, and every written token is still the model's own. On our 56 prompts (512k, 185 W a card) writing went from 91.7 to
+  **99.3 tok/s** against DSpark; English questions from 93.0 to **106.7**, code functions from 94.8 to 106.4. Nothing got slower,
+  and deep in a chat it is about as fast as DSpark. `run.sh` uses it by default; `INK2_DRAFTER=dspark` keeps DSpark. It also runs
+  on **one P100** (a choice there: faster fresh writing, slower edits) and with **several chats at once** (`INK2_MULTI=tpb`, the
+  default there: 94.9 tok/s alone, 137.4 with 4). Also new: a **budget for the reasoning** by effort, so a reasoning that runs
+  long is closed at a sentence end and the model answers. Under the budget the output is the same bit for bit.
+
+  [![Inkling 2 Mini with the DFlash 2 drafter: 91.7 to 99.3 tok/s on 56 prompts at 512k, English questions 93.0 to 106.7](docs/inkling2-dflash2.jpg)](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#dflash-2-a-second-drafter-8--faster-writing-p74-27-nov)
+  [![DFlash 2 on one P100 and with several chats at once: 94.9 tok/s one chat, 137.4 with four](docs/inkling2-dflash2-1c-tpb.jpg)](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#dflash-2-a-second-drafter-8--faster-writing-p74-27-nov)
+
+
+- **27 Nov 2026 (mid-morning):** 🦑 **Inkling 2 Mini writes up to 18 % faster deep in a chat, every token the same** on branch
+  [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#attention-at-depth-the-int8-rows-up-front-p70-p72-27-nov):
+  the full layers' attention now reads its int8 K and V rows up front, in 16-byte loads that arrive while it works
+  (`INK2_ATT_PV`). One visit at 240k went from 1,521 to 979 µs. At 240k tokens deep, writing went from 36.8 to **43.5 tok/s**
+  without drafts and from 38.4 to **42.2** with them; at 128k it went from 47.7 to 52.8 and from 50.8 to 53.3. Short prompts and
+  reading are unchanged. Longer drafts at depth were tried and left out (6-10 % slower).
+
+  [![Inkling 2 Mini, p70 + p72: writing at 240k 36.8 to 43.5 tok/s without drafts and 38.4 to 42.2 with them, every token the same, 185 W a card](docs/inkling2-p72.jpg)](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#attention-at-depth-the-int8-rows-up-front-p70-p72-27-nov)
+
+- **27 Nov 2026 (morning):** 🦑 **Inkling 2 Mini's agent no longer stops without a word on a looping tool call** on branches
+  [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#loops-in-the-reasoning-the-answer-or-a-tool-call)
+  and [`inkling2-m40`](https://github.com/Megla123/Scream-P100/blob/inkling2-m40/docs/INKLING2-M40.md#loops-26-nov): a call
+  whose JSON repeats itself is cut where it began, and the model writes on after a system message that says so
+  (`INK2_LOOP_CALL`); a reply that ends in a loop again says "[ink2_server] I stopped here" to the user. While a long prompt
+  is read, `/slots` now gives llama-server's `n_prompt_tokens_total`, `_cache` and `_processed` (the last estimated from the
+  reading cost by depth), so a chat app's progress line shows the real reading speed. Without a loop the replies are the same.
 
 - **26 Nov 2026 (late evening):** 🦑 **Inkling 2 Mini's loop guard holds at 125k of context** on branches [`inkling2`](https://github.com/Megla123/Scream-P100/blob/inkling2/docs/INKLING2.md#loops-in-the-reasoning-the-answer-or-a-tool-call)
   and [`inkling2-m40`](https://github.com/Megla123/Scream-P100/blob/inkling2-m40/docs/INKLING2-M40.md#loops-26-nov): a

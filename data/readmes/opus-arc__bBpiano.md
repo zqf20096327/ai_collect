@@ -204,6 +204,21 @@ Install via [Homebrew](https://brew.sh/):
 brew install opus-arc/tap/bBpiano-L
 ```
 
+**200c Tiny soft-pedal update · 2026-11-27**
+
+The current Tiny package includes Soft v1. MIDI CC67 controls continuous soft-pedal depth; in computer-keyboard mode (`bbpl -k`), press `-` to toggle it. At full depth, each new note uses `v_eff = 0.856 × v`; the same coefficient applies across the keyboard. Pedal movement after a note starts leaves its sounding tail unchanged.
+
+当前 Tiny 包已加入 Soft v1：MIDI CC67 控制连续柔音踏板深度，电脑键盘模式（`bbpl -k`）按 `-` 切换。全踩时，新音符的有效力度为 `v_eff = 0.856 × v`，全键盘使用同一系数；击键后改变柔音踏板不改写已经响起的尾音。
+
+Existing installations can upgrade to the replacement package with:
+
+已安装用户可通过以下命令更新：
+
+```bash
+brew update
+brew upgrade opus-arc/tap/bBpiano-L
+```
+
 ## 5. Evaluation Results
 
 To evaluate the acoustic realism and synthesis quality of bBpiano, we compare synthesized audio against reference recordings from the MAESTRO Yamaha Disklavier dataset. Baseline systems include Pianoteq 8 (physical modeling) and a conventional SF2 sampled piano. Current evaluations focus on model efficiency, representation-level similarity, and perceptual audio quality.
@@ -225,7 +240,7 @@ In addition to the MAESTRO Yamaha Disklavier dataset, selected evaluations also 
 | Category | MAESTRO Dataset | Pianoteq 8 | SF2 (Grand Piano) | bBpiano L0-100c | **bBpiano L1-Clavier** | **bBpiano L2-Horowitz** | **bBpiano L2-200c** |
 | :---------- | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
 | Type | Reference Recording | Physical Modeling | Sample-Based | Physical Modeling | **Physical Modeling** | Physical Modeling | Physical Modeling |
-| Size | 1–10 GB (test subset) | 380 KB | 36 MB | 1.1 MB | **281 KB** | 32.22 MB | 54.84 MB |
+| Size | 1–10 GB (test subset) | 380 KB | 36 MB | 1.1 MB | **281 KB** | 32.22 MB | 0.99 MB |
 | Real-Time Synthesis | ❌ | **✅** | ❌ | **✅** | **✅** | Partial; see `-t` below | ✅; see `-t` below |
 | Polyphony | N/A | **5 × 88** (M4) | N/A | 23.34 | **5.97 × 88** (M4, 2024) | 88 voices; 0.619× real-time at 88.2 kHz (M4) | 88 voices; 2.473× real-time at 88.2 kHz (M4) |
 
@@ -310,7 +325,7 @@ I believe the values provided by LAION-CLAP reflect more of an overall impressio
 
 | Category | Benchmark | bBpiano L0-alpha | bBpiano L0-beta | bBpiano L0-100c | **bBpiano L1-Clavier** | **bBpiano L2-Horowitz** | **bBpiano L2-200c** |
 | :--------- | :--------- | ---------: | ---------: | ---------: | ---------: | --: | --: |
-| Engine | Binary Size | 1.04 MB | 1.04 MB | 1.1 MB | **281 KB** | 32.22 MB | 54.84 MB |
+| Engine | Binary Size | 1.04 MB | 1.04 MB | 1.1 MB | **281 KB** | 32.22 MB | 0.99 MB |
 | Engine | Real-Time Synthesis | ✅ | ✅ | ✅ | **✅** | Partial; 88-key test FAIL | ✅; 88-key test 10/10 PASS |
 | Engine | Polyphony | 5.21 | 11.27 | 23.34 | **5.97 × 88** | 88 voices; 0.619× at 88.2 kHz | 88 voices; 2.473× at 88.2 kHz |
 | LAION-CLAP | Cosine Similarity (MAESTRO Reference) | - | 0.4628 | 0.3213 | **0.5833** | 0.6838 | 0.7215 |

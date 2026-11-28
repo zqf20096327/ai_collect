@@ -180,7 +180,52 @@ Highlights:
 - `gerar_voz` measures how you write from the messages you typed yourself (what the automation sent is left out) and returns a ready voice skill for your agent, split into work and personal.
 - `preparar_resposta` returns your recent style and what the client left open. Pass 2 or 3 `candidatos` to `responder` and the least out-of-character one is sent.
 
-Tool names are in Portuguese because the project started in Brazil. Descriptions are clear enough for any model.
+Tool names are in Portuguese because the project started in Brazil. Descriptions are clear enough for any model, but if you are writing English prompts, here is what each name means.
+
+<details>
+<summary><strong>All 37 tools, with the English meaning and when to use them</strong></summary>
+
+| Tool | English | When to use it |
+|---|---|---|
+| `listar_grupos` | list groups | Start here: lists every collected chat (groups and DMs) and the `slug` the other tools take. |
+| `ler_mensagens` | read messages | Read one chat's history, text plus transcripts already made; filter by date and limit. |
+| `buscar` | search | Find a term in messages and transcripts. |
+| `transcrever` | transcribe | Transcribe one audio/video by `mediaPath` or `id`, or a batch of up to 8 pending ones; reuses the cache. |
+| `resumo_do_dia` | summary of the day | Get every message of one chat on a given day so you can summarize it. |
+| `ver_imagem` | see image | Hand a real image (screenshot, sticker) to the model. |
+| `ver_video` | see video | Pull a few still frames out of a video or GIF, no audio and no cost. |
+| `assistir_video` | watch video | Have Gemini watch the whole video with audio and report what is shown and said, with timestamps. |
+| `ler_documento` | read document | Read the text content of a document a client sent (PDF, .docx, .txt, .csv). |
+| `listar_contatos` | list contacts | Find who is who: name, role (me/team/client), DM jid and the DM slug. Always pass `busca`. |
+| `preparar_resposta` | prepare reply | Step 1 of sending: call before writing anything; returns recent style and what the client left open. |
+| `revisar_texto` | review text | Step 2: reviews an already written draft without sending it. |
+| `responder` | reply | Send text to a group or a DM; returns a ticket and the message leaves at a human pace. |
+| `responder_midia` | reply with media | Send a file: image with caption, document/PDF, voice note or video. |
+| `cancelar_envio` | cancel send | Cancel a scheduled or in-flight delivery; balloons that already left stay. |
+| `status_envio` | send status | Check the state of a delivery, by chat or by ticket. |
+| `editar_mensagem` | edit message | Edit a message already sent by you or by the automation. |
+| `reagir` | react | React to a message with an emoji. |
+| `editar_perfil` | edit profile | Change the operator's WhatsApp profile: name, about/status and/or photo. |
+| `marcar_resolvido` | mark resolved | Take a chat out of the pending queue until a given moment; a later client message puts it back. |
+| `silenciar_grupo` | mute group | Mute or unmute a chat: messages are still collected, but it leaves the queue and stops alerting. |
+| `anotar` | annotate | Write the free-form mini-CRM note of a chat, replacing the whole previous note. |
+| `ler_notas` | read notes | Read the notes saved with `anotar`. |
+| `alertar_chat` | alert chat | Turn the Mac notification for the human on or off when a client writes in a chat. |
+| `definir_modo` | set mode | Set a chat to autonomous (the AI sends without asking) or confirm (default: waits for your OK). |
+| `novidades` | what's new | Pull new messages from the chats marked for alert since the last check, and mark them seen. |
+| `etiquetar` | tag | Set the tags of a chat (company/contract/personal). |
+| `definir_contrato` | set contract | Set the commercial state of a chat: state, start/end, monthly value and note. |
+| `registrar_feature` | register feature | Record a feature delivered to a client. |
+| `dashboard` | dashboard | Business view per client: activity, contract, deliveries and the warning signals. |
+| `caixa_de_entrada` | inbox | Who is waiting for a reply, and in which project, across every collected chat. |
+| `estado_triagem` | triage state | Full triage state: resolved, muted, notes, last seen, copilot, alert, autonomy, tags, agent and executor. |
+| `agenda_ver` | view calendar | Read the operator's Google Calendar over a date window (default today plus 7 days). |
+| `agenda_marcar` | create event | Create an event in the Google Calendar. |
+| `agenda_editar` | edit event | Change an event; only the fields you pass. |
+| `agenda_apagar` | delete event | Delete an event from the Google Calendar. |
+| `gerar_voz` | generate voice | Measure how the operator writes and return a ready voice skill, split into work and personal. |
+
+</details>
 
 ## Configuration
 

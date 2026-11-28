@@ -72,21 +72,26 @@ container unless its `mcp.json` entry sets `"sandbox": "off"` to run it on the
 host ([docs/mcp.md](docs/mcp.md)).
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/gebruder/wirken/main/install.sh | sh
+curl -fsSL https://wirken.ai/install.sh | sh
 
 wirken setup
 wirken run
 ```
 
-Pin the installer before piping. The committed `install.sh` has this SHA-256:
+Pin the installer before piping. `wirken.ai/install.sh` serves the committed
+`install.sh`, which has this SHA-256:
 
 ```
 085faf0359384403e4e80d1e75734b84cec7ce92182d9012c7879f9bc681fb70
 ```
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/gebruder/wirken/main/install.sh | sha256sum
+curl -fsSL https://wirken.ai/install.sh | sha256sum
 ```
+
+The same file is at
+`https://raw.githubusercontent.com/gebruder/wirken/main/install.sh`. A daily
+check fails when what `wirken.ai` serves is not the file this pin names.
 
 What the installer verifies, and how to check a release by hand:
 [docs/signing.md](docs/signing.md#release-signing).
@@ -102,11 +107,11 @@ routes messages to the agent, and serves a WebChat UI at
 `http://127.0.0.1:18790`; log in with `wirken webchat open --browser`:
 
 ```
-  wirken v3.6.0
+  wirken v3.6.2
   ──────
 
   Provider: ollama/llama3.2
-  Ollama version: 0.19.0
+  Ollama version: 0.40.18
   Route: Telegram -> agent:default
   WebChat: http://127.0.0.1:18790 (log in with `wirken webchat open`)
 
@@ -311,7 +316,7 @@ In defender mode Lyrik also checks a fix. For each confirmed finding it writes (
 [Multiple agents](docs/multi-agent.md) ·
 [Credentials and OAuth scopes](docs/credentials.md) ·
 [Cost monitoring](docs/cost-monitoring.md) ·
-[Proxy mode](docs/proxy.md) (other clients' model calls and tool calls through Wirken: [inference](docs/inference-proxy.md), [MCP tools](docs/proxy-mcp.md), [JWTs from an identity provider](docs/proxy-identity.md), [archive, redaction and export](docs/proxy-archive.md)) ·
+[Proxy mode](docs/proxy.md) (other clients' model calls and tool calls through Wirken: [inference](docs/inference-proxy.md), [MCP tools](docs/proxy-mcp.md), [JWTs from an identity provider](docs/proxy-identity.md), [contained runs](docs/proxy-run.md), [archive, redaction and export](docs/proxy-archive.md)) ·
 [Getting the chain out](docs/siem-forwarder.md) (SIEM, hooks, OpenTelemetry) ·
 [Imported archives](docs/imported-archives.md)
 

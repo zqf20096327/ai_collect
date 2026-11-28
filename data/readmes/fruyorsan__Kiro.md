@@ -1,0 +1,399 @@
+<div align="center">
+
+https://github.com/user-attachments/assets/38986f38-9953-40eb-94f1-a4c4c3fa1bac
+
+<br />
+
+### A taskbar replacement and desktop customization for Windows and Linux.
+
+A spring-animated **dynamic-island notch** and a dock replace the Windows 10 and
+Windows 11 taskbar: solid, frosted or liquid glass, or a Material You palette;
+snow, ivy, autumn leaves or blossom on every edge; Claude, ChatGPT and Gemini
+inside the notch. When a game goes fullscreen, all of it steps aside at the OS
+level and boosts the game instead of competing with it.
+
+<br />
+
+[![Download for Windows](https://img.shields.io/github/v/release/fruyorsan/Kiro?style=for-the-badge&label=Download%20for%20Windows&color=0078D4&labelColor=0078D4&logo=windows&logoColor=white)](https://github.com/fruyorsan/Kiro/releases/latest)
+[![Download for Linux](https://img.shields.io/github/v/release/fruyorsan/Kiro?style=for-the-badge&label=Download%20for%20Linux&color=FCC624&labelColor=333333&logo=linux&logoColor=white)](https://github.com/fruyorsan/Kiro/releases/latest)
+
+<br />
+
+[![License](https://img.shields.io/badge/License-GPL--3.0-3DA639?style=for-the-badge&logo=gnu&logoColor=white)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011%20%C2%B7%20Linux-FCC624?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/fruyorsan/Kiro/releases/latest)
+[![Sponsor](https://img.shields.io/badge/Sponsor-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/fruyorsan)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/fruyorsan)
+
+[**Download**](https://github.com/fruyorsan/Kiro/releases/latest) &nbsp;·&nbsp; [Features](#features) &nbsp;·&nbsp; [Themes](#themes-and-seasons) &nbsp;·&nbsp; [AI](#ai-in-the-notch) &nbsp;·&nbsp; [FPS Boost](#fps-boost) &nbsp;·&nbsp; [Screenshots](#screenshots) &nbsp;·&nbsp; [Install](#install) &nbsp;·&nbsp; [Settings](SETTINGS.md) &nbsp;·&nbsp; [Press](PRESS.md) &nbsp;·&nbsp; [Support](#support) &nbsp;·&nbsp; [Report a bug](https://github.com/fruyorsan/Kiro/issues/new/choose)
+
+<br />
+
+<sub><b>Free and open source</b> under GPLv3 · <b>no telemetry, no account, no analytics</b> · every feature ships to everyone, sponsored or not</sub>
+
+</div>
+
+<img src="docs/screenshots/season-winter.webp" alt="Kiro's notch, dock and Control Center with the Snow &amp; Ice seasonal effect over a fullscreen game" />
+
+<div align="center"><sub>Snow &amp; Ice on the notch rim and the dock edge — one of four seasonal effects, each with its own rim decoration and falling particles. Go fullscreen and it all steps aside at the OS level, so the game keeps its direct-to-screen flip.</sub></div>
+
+## Why Kiro
+
+Windows gives you a taskbar and a notification area. Kiro gives you a desktop
+that reacts: a notch that holds music, system controls, your calendar, notes and
+a shelf; a dock that mirrors the apps you actually use; themes that change with
+the season; an AI assistant one click away; and a performance layer that gets
+out of the way the moment a game goes fullscreen.
+
+- **One place for the small stuff.** Music, Wi-Fi, Bluetooth, volume, brightness,
+  battery, weather, calendar and timers live in the notch.
+- **A dock that behaves like a dock.** Real icons, real window previews, pinned
+  apps, running apps and notification dots, without the taskbar.
+- **Dressed for the season.** Four seasonal effects curl around the notch and dock
+  edges, four surface styles go from solid to liquid glass, and the accent, presets,
+  opacity and mascot are yours.
+- **AI without a browser tab.** Claude, ChatGPT and Gemini answer inside the notch,
+  screenshots included, and a long answer can be stopped mid-sentence.
+- **Frames when they matter.** Kiro stops its own work, hides its windows and
+  boosts the game while you play, then puts everything back.
+
+## Features
+
+| What you get | How it works |
+| --- | --- |
+| **A notch that does things** | Music, a Control Center you arrange yourself, status, a calendar and a file shelf in one spring-animated island. |
+| **A dock that replaces your taskbar** | Mirrors your real taskbar, same pinned apps and order, with real icons and names, and a dot on apps that want your attention. |
+| **Themes and seasons** | Solid, Frosted Glass, Liquid Glass or Material You; Snow &amp; Ice, Rain Ivy, Autumn or Blossom on every edge; nine colour presets, your own accent and your own mascot picture. |
+| **Ask AI from the notch** | Ask Claude, ChatGPT or Gemini a question, with up to four screenshots attached. The panel shows elapsed time and can be stopped at any moment. |
+| **A calendar that knows your day** | Day, week, month and agenda views, plus real events from Google, iCloud, Outlook, Proton, Nextcloud or any ICS/CalDAV feed. |
+| **Native where it counts** | The tray opens the real Windows flyout, and Quit ends an app like Task Manager's End task. |
+| **Out of your way** | Fixed, Smart or Peek modes, and both stay hidden over fullscreen games. |
+| **Made for your setup** | Every monitor, one monitor, or a specific one. English and Turkish. Every option lives in a plain `settings.json`. |
+| **Light on the system** | Audio capture, cursor tracking and thumbnail work pause themselves when nothing needs them. Seasonal particles are compositor-only and stop in games. Memory Saver hands unused RAM back to Windows. |
+| **Notes with pictures** | A small notebook in the dock: name a note, give it a colour, attach up to six pictures and export it as text. Pictures are downscaled so the notebook stays light. |
+| **Automatic Performance Mode** | When a fullscreen game or app is in front, Kiro stops capturing previews/icons, slows background polling, disables blur and animation work, stops trimming memory, and hides its always-on-top windows at the OS level so the game keeps direct-to-screen flip. Everything returns on exit. |
+
+<div align="center"><sub>Kiro is free and has no paid tier. If it earns a place on your desktop, <a href="#support">sponsoring</a> or a star keeps the weekly releases coming.</sub></div>
+
+## Themes and seasons
+
+Kiro ships four surfaces and four seasonal effects that work together. Everything
+lives in **Settings › Appearance**, behind a live preview of the notch and dock.
+
+<img src="docs/screenshots/season-blossom.webp" width="360" alt="The notch with the Blossom seasonal effect" />
+
+**Surfaces.** Solid, Frosted Glass, Liquid Glass and Material You. The two glass
+styles can show a blurred copy of your wallpaper — and of the window behind the
+notch — inside the glass. Material You builds a whole palette from a single
+accent colour.
+
+**Colour.** Auto (match Windows), dark, light, custom or adaptive accent, nine
+one-click presets (Graphite, Midnight, Ocean, Forest, Plum, Rose, Ember, Latte,
+Mist), Windows accent, monochrome or your own colour, plus opacity, saturation
+and brightness sliders. Screen corners and a UI &amp; font scale round it out.
+
+**Seasons.** **Snow &amp; Ice** frosts the rim and hangs icicles you can break —
+they shatter into shards and slowly grow back. **Rain Ivy** grows stems,
+dew and wet leaves. **Autumn** hangs leaves and berries. **Blossom** adds petals
+and closed buds. **Automatic** follows the calendar month, or pin one effect, or
+turn the layer off. The effect is about twenty composited spans per window — no
+canvas, no timers, no per-frame React work — so it costs no measurable memory, and
+it stops during Automatic Performance Mode or when Windows' reduced-motion
+setting is on.
+
+**Your mark.** Drop in your own picture for the Kiro mascot; it is cropped to a
+square and scaled down automatically, then appears on the notch, the dock, the
+splash and Settings at once.
+
+## AI in the notch
+
+Open Control Center from the notch, press the AI button, and ask. Kiro supports
+Claude, ChatGPT and Gemini, keeps the last working model warm, shows how long a
+request has been running, and lets you stop it at any time. Attach up to four
+screenshots or images with the paperclip, or paste one straight into the panel.
+
+Claude is the one that can need no key at all: if you already have the Claude Code
+CLI installed and logged in, Kiro asks it directly. Add an API key and it uses the
+API instead. If the CLI is missing or logged out, the request falls through to
+another provider whose key you have saved, so the panel does not just sit there
+thinking.
+
+<img src="docs/screenshots/ai.webp" width="560" alt="Asking an AI model from the notch" />
+
+Provider keys stay in your local settings and are only sent to the provider you
+chose. The model is yours to pick, and Kiro remembers the one that worked last —
+Google retires model ids every few months, so Kiro follows the new one instead of
+failing.
+
+## FPS Boost
+
+Kiro's FPS work is a capability, not a checklist you configure per game. It has
+two halves: silent, self-reverting work while a game runs, and an honest hardware
+audit that says what is actually costing frames.
+
+<img src="docs/screenshots/fps-boost.webp" width="820" alt="FPS Boost settings in Kiro" />
+
+| While a game is fullscreen | Why it matters |
+| --- | --- |
+| Raises the game process priority | Background work cannot preempt the render thread. |
+| Clears Windows EcoQoS throttling for the game | Windows otherwise parks game threads on efficiency cores. |
+| Raises the game's memory priority | Its pages stop being the first trim candidates mid-frame. |
+| Mutes toast notifications | A toast is a new topmost window; DWM composites a frame over the game and that shows up in 1% lows. |
+| Hides Kiro's own windows at the OS level | A visible topmost window steals the game's direct-to-screen flip path. |
+
+None of it needs a reboot, none of it touches the game's files, and all of it is
+reverted when the game exits or Kiro quits. Anti-cheat protected processes are
+left alone: Kiro never injects a DLL and never opens the game's memory.
+
+After Kiro has seen the same game twice, it can also route it to the
+high-performance GPU and disable fullscreen optimizations for that executable,
+with an **Undo** button for every profile. The hardware audit reports the real
+bottleneck (GPU power limit, MUX/hybrid routing, Flex Mode RAM, refresh rate)
+instead of promising frames it cannot deliver.
+
+Read the full design in [docs/fps-boost.md](docs/fps-boost.md).
+
+## Screenshots
+
+<div align="center">
+
+<img src="docs/screenshots/control-center.webp" width="560" alt="Control Center" />
+<br />
+<sub><b>Control Center</b> — Wi-Fi, Bluetooth, sound and light in one card you arrange yourself.</sub>
+
+<br />
+<br />
+
+<img src="docs/screenshots/music.webp" width="560" alt="Music" />
+<br />
+<sub><b>Music</b> — album art, playback controls and a live visualizer.</sub>
+
+<br />
+<br />
+
+<img src="docs/screenshots/notes.webp" width="560" alt="Notes" />
+<br />
+<sub><b>Notes</b> — a small notebook with colours, pictures and export.</sub>
+
+<br />
+<br />
+
+<img src="docs/screenshots/game.webp" width="560" alt="Kiro with the Autumn seasonal effect over a fullscreen game" />
+<br />
+<sub><b>Autumn</b> — leaves, berries and a media card, over the game.</sub>
+
+<br />
+<br />
+
+<img src="docs/screenshots/dock-menu.webp" width="280" alt="Dock right-click menu" />
+<br />
+<sub><b>Dock menu</b> — pin, add an app, open Settings or toggle FPS Boost.</sub>
+
+<br />
+<br />
+
+<img src="docs/screenshots/season-blossom.webp" width="280" alt="The notch with the Blossom seasonal effect" />
+<br />
+<sub><b>Blossom</b> — petals drifting over the notch.</sub>
+
+</div>
+
+## Install
+
+**Windows**
+
+1. Download `Kiro-Setup-<version>.exe` from the [latest release](https://github.com/fruyorsan/Kiro/releases/latest).
+2. Choose **Just me** or **All users**. An all-users install asks for administrator permission once.
+3. Kiro starts with a short splash, then the notch and dock appear together.
+
+**Linux**
+
+1. Download `Kiro_<version>_amd64.AppImage`, make it executable (`chmod +x`), and run it. No install step, no root.
+2. Or download `kiro_<version>_amd64.deb` and install it with your package manager if you prefer a system package.
+3. `xdg-open`-style dependencies are already present on any desktop: the AppImage needs GTK 3, WebKitGTK 4.1 and libayatana-appindicator.
+
+The two downloads are built separately in the same release: Windows ships the NSIS installer, Linux ships the AppImage (plus a `.deb`), and each platform's updater only ever sees its own entry in `latest.json`.
+
+Kiro updates itself: a green dot on the notch means an update is ready, and **Auto Update** in **Settings › About** installs it for you. Turn on **Get pre-releases** there to receive early builds before the weekly release. **Uninstall** from Windows Settings › Apps or from **Settings › About** puts your taskbar back; on Linux delete the AppImage (or remove the package) and the `~/.local/share/applications/kiro.desktop` entry.
+
+On Linux the notch and dock are ordinary always-on-top windows placed at the top and bottom of the screen, the panels use `nmcli`, `bluetoothctl`, `pactl` and `playerctl` for hardware, and fullscreen games get the same step-aside behaviour by hiding the windows instead of unregistering an appbar.
+
+**Code signing.** Kiro uses the [SignPath Foundation](https://signpath.org/) for
+free code signing of its Windows installers. The signing setup is not live yet, so
+Windows still shows an unknown-publisher warning the first time you run an
+installer. This paragraph changes to "signed" when the first signed installer
+ships, and not before.
+
+> **Antivirus warnings:** an unsigned installer is flagged by Windows SmartScreen, and a few heuristic antivirus engines flag it too, until reputation builds up. Kiro is open source, has no telemetry or tracking, and every installer is built by the release workflow in this repository. You can read every line, [build it yourself](#build-from-source), or drop the installer into [VirusTotal](https://www.virustotal.com/) before running it.
+
+<details>
+<summary><b>Why a couple of VirusTotal engines flag the installer</b></summary>
+
+<br />
+
+An unsigned packed installer that unpacks itself and writes to Program Files is exactly the shape heuristic engines look for, and SmartScreen reputation builds up over time. A release normally lands at around **2 detections out of ~70**, and it is almost always the same two machine-learning engines: **SecureAge** ("Malicious") and **Trapmine** ("Suspicious.low.ml.score"). Neither has a real signature for the file; they score its structure and score it low.
+
+This is not specific to Kiro. LibreWolf, ungoogled-chromium and other Windows builds collect the same verdicts, and they come back on every new build because VirusTotal scores files, not projects — each release gets a new hash and a new scan, so clearing one installer does not clear the next.
+
+Code signing is what fixes SmartScreen and it is not in place yet; the remaining detections are the machine-learning engines scoring structure rather than the publisher. You can confirm a download three ways: check its signature and hash, run it through VirusTotal and read the per-engine details, or build Kiro from this repository in two commands.
+
+</details>
+
+<details>
+<summary>Only download from this repository</summary>
+
+<br />
+
+Every installer is built by the release workflow in this repository and attached
+to a [GitHub release](https://github.com/fruyorsan/Kiro/releases). Builds that
+arrive from anywhere else are not ours. If you would rather not trust a binary
+at all, [build it from source](#build-from-source) — it takes two commands.
+
+</details>
+
+## Usage
+
+**Notch panels.** Scroll or swipe on the notch to change panel.
+
+| Panel | What it does |
+| --- | --- |
+| **Music** | Album art, track info, playback controls, a visualizer, and a switch between several playing apps. |
+| **Control Center** | Wi-Fi, Bluetooth, Do Not Disturb, volume and brightness. Drag tiles, buttons and sliders into your own layout, and open AI from here. |
+| **Status** | Battery (hidden on desktops without one) and weather, in a layout you choose. |
+| **Calendar** | Day, week, month and agenda views, a timer, a stopwatch and Pomodoro, with synced events from Google, iCloud, Outlook, Proton, Nextcloud and any ICS or CalDAV feed. |
+| **Shelf** | Drop files, text or a picture from your browser and drag them out later. |
+
+**Visibility modes.** The notch and the dock each have their own.
+
+| Mode | Behavior |
+| --- | --- |
+| **Fixed** | Always visible. The dock reserves screen space like a normal taskbar. |
+| **Smart** | Hides when another window overlaps it and reveals on hover. |
+| **Peek** | Hidden until the cursor reaches the screen edge, or a media event arrives. |
+
+In Smart and Peek both stay hidden, and click-through, while a fullscreen app is in front.
+
+**Multiple monitors.** Under **Show On**, pick **Primary Monitor** (the default), **All Monitors** or a **Specific Monitor** for the dock and the notch separately. Each extra monitor gets its own windows, so **All Monitors** uses more memory than a single display.
+
+**Dock menu.** Right-click any icon to pin or unpin it, open a new instance, change its icon, or quit the app. Right-click the dock background to add an app, open Settings or Calendar, or restart Kiro. The menu is yours: **Settings › Dock › Right-click menu** turns any built-in entry on or off and lets you add shortcuts to your own apps and files. **Customize this menu…** at the bottom of the menu takes you straight there.
+
+## Troubleshooting
+
+<details>
+<summary><b>The dock shows over my game</b></summary>
+
+<br />
+
+Kiro hides the dock and notch whenever a fullscreen game covers the whole monitor, in every dock mode. It does this natively (`ShowWindow`), not just by moving them off-screen, because a visible topmost window forces Windows to composite the game instead of letting it flip straight to the display. Only the monitor with the game is affected and everything comes back when you exit. Turn **Fullscreen Game Boost** off in Settings › General if you want the dock to stay visible. If something still appears, open an issue with the game and its display mode (fullscreen, borderless or windowed).
+
+</details>
+
+<details>
+<summary><b>The Windows taskbar did not come back</b></summary>
+
+<br />
+
+Start Kiro again; it restores the taskbar on launch even after a crash. Uninstalling from Windows Settings › Apps or from **Settings › About** brings it back too.
+
+</details>
+
+<details>
+<summary><b>Kiro uses a lot of memory</b></summary>
+
+<br />
+
+Every window runs in its own WebView2 process, so each monitor adds a notch and a dock. Set **Show On** to one monitor to cut it down. **Maximum Memory Saving** in Settings › General turns off GPU acceleration for another 140–170 MB.
+
+</details>
+
+<details>
+<summary><b>Brightness does not change on my external monitor</b></summary>
+
+<br />
+
+External monitors are controlled over DDC/CI. Turn DDC/CI on in the monitor's own menu, and connect it directly if you use a dock or adapter, since some do not pass it on.
+
+</details>
+
+<details>
+<summary><b>A seasonal effect is distracting</b></summary>
+
+<br />
+
+Set **Settings › Appearance › Seasonal effect** to **Off**, or pick a single effect instead of Automatic. The layer only animates transforms and opacity, respects Windows' reduced-motion setting, and hides itself while Automatic Performance Mode is on.
+
+</details>
+
+<details>
+<summary><b>Something else is broken</b></summary>
+
+<br />
+
+Open **Settings › About › Copy Diagnostics** and paste the result into a [bug report](https://github.com/fruyorsan/Kiro/issues/new/choose). It includes your versions, monitors and recent log.
+
+</details>
+
+## Build from source
+
+You need [Rust](https://rustup.rs/) and [Bun](https://bun.sh/) on Windows.
+
+```bash
+git clone https://github.com/fruyorsan/Kiro.git
+cd Kiro
+bun install
+bun run tauri dev
+```
+
+`bun run tauri build` makes a release build. Before a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Roadmap
+
+These are ideas under consideration, not promises.
+
+- [ ] Background tray programs (antivirus, VPN) in the notch
+- [ ] Lower memory use, with Settings loaded on demand
+- [ ] Code signing for the installer
+- [x] Stable and pre-release update channels
+- [x] Multiple media sessions, Task Manager in the dock menu, show desktop corner
+
+See the [open issues](https://github.com/fruyorsan/Kiro/issues) for requests and known bugs.
+
+## Built with
+
+[![Tauri](https://img.shields.io/badge/Tauri-24C8D8?style=for-the-badge&logo=tauri&logoColor=white)](https://tauri.app/)
+[![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+
+## Support
+
+Kiro is free, open source and built in the open. If it makes your desktop nicer,
+you can put something back into its development.
+
+<p align="center">
+  <a href="https://github.com/sponsors/fruyorsan"><img src="https://img.shields.io/badge/Sponsor-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub" /></a>
+  <a href="https://buymeacoffee.com/fruyorsan"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee" /></a>
+</p>
+
+Sponsorships pay for a code-signing certificate, the machines that build and test
+each release, and the hours that go into it. Nothing is locked behind them: every
+feature ships to everyone, sponsored or not.
+
+If you would rather help without money, a star, a bug report and a screenshot of
+your setup help just as much.
+
+## License
+
+Kiro is open source under the [GPLv3](LICENSE). Third-party notices are listed in
+[NOTICE.md](NOTICE.md). The Kiro name, logo and mascot are covered by the
+[trademark policy](TRADEMARK.md) — fork the code freely, but ship your fork under
+its own name.
+
+Using Kiro in a closed-source product, or shipping it under your own brand, needs
+a [commercial or OEM licence](COMMERCIAL.md).
+
+<div align="center">
+<br />
+<sub>Built for Windows 10 and 11. No telemetry. No account. No taskbar.</sub>
+</div>
+

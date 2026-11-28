@@ -1,4 +1,4 @@
-# Google Antigravity 中文本地化工具
+# Antigravity 社区中文本地化工具
 
 <p align="center">
   <a href="https://github.com/yiheng8023/antigravity-chinese/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/yiheng8023/antigravity-chinese/ci.yml?branch=main&amp;label=CI&amp;logo=github" alt="CI 状态"></a>
@@ -15,7 +15,7 @@
   <a href="README.md">简体中文</a> | <a href="README.en.md">English</a>
 </p>
 
-当前源码版本 **v3.3.65**，维护目标为 **Antigravity App 2.35.2 / VS Code 扩展 1.13.0**。本版补译内置浏览器的网站信息、下载和右键菜单，恢复会话运行耗时、工具摘要与消息时间戳的中文显示，并补齐模型选择提示。
+当前源码版本 **v3.3.67**，维护目标为 **Antigravity App 2.36.0 / VS Code 扩展 1.13.0**。本版补译悬浮输入栏、应用菜单、组织插件策略和云端自动化授权提示。
 
 这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。Google 官方及合作伙伴目录中已核实的短介绍，在市场、精选、已安装、详情和设置中复用同一译文。插件名、发布者提供的命令与技能说明、自定义内容和未匹配的完整字段按原文显示。界面与安装验证见 [2.35.0 维护记录](docs/maintenance/antigravity-2.35.0.md)。Linux 便携路径支持见 [Linux 便携安装维护记录](docs/maintenance/linux-portable-install.md)。
 
@@ -25,13 +25,13 @@ VS Code 扩展更新会覆盖本地汉化。更新扩展后请重新执行 `node
 
 | 组件 | 实现 | 当前验证范围 |
 | --- | --- | --- |
-| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows x64 2.35.2 安装、重复安装、还原、外置文件核验及部分界面实测。Linux x64 2.33.0 的安装验证见便携安装记录 |
+| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows x64 2.36.0 的原版前端核对、界面回归和安装副本验证。Linux x64 2.33.0 的安装验证见便携安装记录 |
 | VS Code 扩展 | 清单、原生菜单和通知翻译、Webview 本地代理、独立备份/还原 | Windows 1.13.0 安装、重复安装、还原与界面检查见 [1.13.0 维护记录](docs/maintenance/antigravity-2.33.1.md) |
-| 社区中文插件 | 中文交互规则与维护诊断技能 | 可选安装；不代表 Google 官方插件 |
+| 社区中文插件 | 中文交互规则与维护诊断技能 | 由 antigravity-chinese 社区维护，可选安装 |
 | 独立 IDE、其他 IDE 扩展 | 尚无专用汉化安装器 | 不声明已适配 |
 | Antigravity CLI | 保留官方原生行为 | 不修改 CLI 二进制或终端界面 |
 
-本轮桌面 2.35.2 的实测范围是 Windows x64。语音、远程智能体等官方灰度功能以实际账号开放情况为准。静态检查与候选字符串匹配均不代表整个上游产品的翻译覆盖率。
+桌面 2.36.0 的验证记录见 [本轮维护说明](docs/maintenance/antigravity-2.36.0.md)。语音、远程智能体等灰度功能以实际账号开放情况为准。
 
 ## 安装与使用
 
@@ -65,6 +65,8 @@ node cli.js help
 node cli.js install --path "<安装目录或 app.asar>"
 node cli.js install:vscode --path "<扩展目录>"
 ```
+
+在 Linux 的 VS Code Server 环境中，`install:vscode`、`status:vscode` 和 `restore:vscode` 也会探测 `~/.vscode-server/extensions`。两处都安装了扩展时，默认选 `~/.vscode/extensions`。处理远端副本时可在远端终端用 `--path` 指定实际扩展目录。
 
 Linux 解压版支持自动探测 `~/Applications/Portable`、`~/Applications` 和汉化工具同级目录下的 `Antigravity`、`antigravity` 或对应架构的官方解压目录（`Antigravity-x64` 或 `Antigravity-arm64`）。多个安装目录共存时，传入 `--path` 指定要处理的副本。
 
@@ -132,12 +134,15 @@ npm run scan:drift -- "<frontend-bundle.js>" --report "<report.json>"
 | 贡献者 | 贡献 |
 | --- | --- |
 | <a href="https://github.com/yiheng8023"><img src="https://avatars.githubusercontent.com/u/127850894?s=64&v=4" width="32" height="32" alt="" /> yiheng8023</a> | 维护汉化工具与词库、评审改动并发布版本。 |
+| <a href="https://github.com/XuanChuYun"><img src="https://avatars.githubusercontent.com/u/29687766?s=64&v=4" width="32" height="32" alt="" /> XuanChuYun</a> | 提供 macOS 下 Antigravity App 与 IDE 的对照截图，帮助明确两者的汉化支持范围。 [Issue #5](https://github.com/yiheng8023/antigravity-chinese/issues/5) |
 | <a href="https://github.com/a705876883-arch"><img src="https://avatars.githubusercontent.com/u/250879823?s=64&v=4" width="32" height="32" alt="" /> a705876883-arch</a> | 提交用户内容保护修复方案，并提供误译复现与回归用例。 [PR #6](https://github.com/yiheng8023/antigravity-chinese/pull/6) |
 | <a href="https://github.com/fansID512"><img src="https://avatars.githubusercontent.com/u/103017881?s=64&v=4" width="32" height="32" alt="" /> fansID512</a> | 提供详细环境、复现步骤和对照观察，帮助定位设置页掉帧问题。 [Issue #8](https://github.com/yiheng8023/antigravity-chinese/issues/8) |
 | <a href="https://github.com/MizuIro-H"><img src="https://avatars.githubusercontent.com/u/123630455?s=64&v=4" width="32" height="32" alt="" /> MizuIro-H</a> | 在 Bazzite 上复现 Linux 解压版探测问题，提出修复方案并验证安装。 [Issue #9](https://github.com/yiheng8023/antigravity-chinese/issues/9) |
 | <a href="https://github.com/tangyixiao"><img src="https://avatars.githubusercontent.com/u/115929632?s=64&v=4" width="32" height="32" alt="" /> tangyixiao</a> | 指出权限预设译名的歧义，提交修复和回归测试，并实测全局设置。 [PR #11](https://github.com/yiheng8023/antigravity-chinese/pull/11) |
 | <a href="https://github.com/Qiinn-71"><img src="https://avatars.githubusercontent.com/u/262174075?s=64&v=4" width="32" height="32" alt="" /> Qiinn-71</a> | 在 Apple Silicon 上对照三种安装状态，定位 macOS 更新安装时的签名验证问题。 [Issue #12](https://github.com/yiheng8023/antigravity-chinese/issues/12) |
 | <a href="https://github.com/mitang-ai"><img src="https://avatars.githubusercontent.com/u/275678971?s=64&v=4" width="32" height="32" alt="" /> mitang-ai</a> | 提供 Swarm 界面及斜杠命令搜索高亮的适配与回归用例，并分享插件详情页翻译方案。 [PR #14](https://github.com/yiheng8023/antigravity-chinese/pull/14) · [Issue #15](https://github.com/yiheng8023/antigravity-chinese/issues/15) |
+| <a href="https://github.com/Kame-Lanlan"><img src="https://avatars.githubusercontent.com/u/152709450?s=64&v=4" width="32" height="32" alt="" /> Kame-Lanlan</a> | 报告 Antigravity 扩展安装在 Linux 的 `.vscode-server` 路径时的支持缺口。 [Issue #23](https://github.com/yiheng8023/antigravity-chinese/issues/23) |
+| <a href="https://github.com/BH-0"><img src="https://avatars.githubusercontent.com/u/92411549?s=64&v=4" width="32" height="32" alt="" /> BH-0</a> | 在 Ubuntu 的 Remote SSH 环境中复现面板加载失败，提供环境、重载步骤、后端就绪日志和转发端口错配的分析。 [Issue #23 实测反馈](https://github.com/yiheng8023/antigravity-chinese/issues/23#issuecomment-7209393590) |
 
 ---
 

@@ -43,11 +43,27 @@ _Agentic coding in your terminal_
   <tbody>
     <tr>
       <td align="center">
+        <a href="https://kfccrazythursday.com"><img src="docs/images/logo.png" alt="Snow AI Router" width="120"/></a>
+        <br/>
+        <a href="https://kfccrazythursday.com"><b>Snow AI Router</b></a>
+      </td>
+      <td>Snow AI Router provides low-cost, full-power CCMAX access — as low as 0.2–0.5.<br/><a href="https://kfccrazythursday.com">Sign up through the link</a> and start using it right away.</td>
+    </tr>
+    <tr>
+      <td align="center">
         <a href="https://www.packyapi.ai/"><img src="docs/images/packyapi.jpg" alt="PackyCode" width="360"/></a>
         <br/>
         <a href="https://www.packyapi.ai/"><b>PackyCode</b></a>
       </td>
       <td>Access leading AI models through PackyCode with one API endpoint and one API key. Enjoy fast, reliable access with automatic failover and dedicated high-speed routes for Codex and Claude Code.<br/>Get started with $1 in free credits, a discount on your first top-up, and savings of up to 80% on eligible routes. Pay in RMB with no currency conversion markups or extra top-up fees.<br/><a href="https://www.packyapi.ai/">Sign up through the link</a> and start building today.</td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a href="https://go.apimart.ai/gh-snow-cli"><img src="docs/images/apimart.jpg" alt="APIMart" width="360"/></a>
+        <br/>
+        <a href="https://go.apimart.ai/gh-snow-cli"><b>APIMart</b></a>
+      </td>
+      <td>APIMart is a low-cost API platform for AI image & video generation — GPT-Image-2 from $0.006/image, 160+ images per dollar. One async API covers both image and video: submit a task, get an ID, fetch results via polling or callback. Batch tens of thousands of images without timeouts, switch models without changing code. Pay-as-you-go with no monthly fee — <a href="https://go.apimart.ai/gh-snow-cli">sign up here</a> to get started.</td>
     </tr>
     <tr>
       <td align="center">

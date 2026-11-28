@@ -98,10 +98,10 @@ Open `http://127.0.0.1:8000` and add a model on first launch. New chats work in
 the directory you started from; `lovia web ~/code/app` picks another.
 
 - **It works in your folders.** It reads and edits files, runs commands, plans
-  with a todo list, searches the web (through a hosted search service —
-  Parallel by default, no key needed; Settings → Web search picks another or
-  turns it off), draws charts and tables, and hands independent work to
-  background subagents. A panel follows what runs in the
+  with a todo list, searches the web (through a hosted search service, no key
+  needed — Parallel, or Exa then Tavily when it can't be reached; Settings →
+  Web search picks one or turns it off), draws charts and tables, and hands
+  independent work to background subagents. A panel follows what runs in the
   background: each command's output, each task's progress and report.
 - **Many projects at once.** The sidebar groups chats by workspace. Each chat
   has its own folder, model and permission mode, and the folder can be on an
@@ -116,12 +116,15 @@ the directory you started from; `lovia web ~/code/app` picks another.
   skills and `@` mentions a file.
 - **A complete chat.** Streaming, branching from any reply, steering a run
   while it works, attachments, scheduled runs, and long-term memory you can
-  edit. A run keeps going when you close the tab; one stopped by a turn limit
+  edit. Images go to any model; one that refuses them gets a text note in
+  their place, or a vision model you assign describes them. A run keeps going when you close the tab; one stopped by a turn limit
   or a model outage carries on, plan and all, with your next message. Optional voice input turns
   speech into text through a transcription service you choose.
 - **Settings without restarts.** Models, MCP servers, skills and the
-  assistant's instructions live in Settings. Everything is kept in one home
-  directory, `~/.lovia`, never in your repository.
+  assistant's instructions live in Settings; an MCP server with many tools
+  can load them on demand, keeping their definitions out of every prompt.
+  Everything is kept in one home directory, `~/.lovia`, never in your
+  repository.
 
 On `127.0.0.1` no credentials are needed; binding any other address requires a
 token. `lovia web --help` lists the flags.

@@ -75,6 +75,8 @@ Then start with an epic or a ticket:
 /make-it-work:implement APP-123
 ```
 
+If you know the repository, start `implement` there. Unsure which repository owns the ticket? From your multi-repo workspace, run `/make-it-work:find-the-repos APP-123` first and review its evidence-backed shortlist before starting refinement or implementation. Use an identified workspace boundary; sibling repositories alone do not establish ownership. See [workspace usage](#implement-across-repositories) for running `implement` across repositories.
+
 Choose the skill that matches your work; these are separate entry points. [Installation details](#install) cover existing marketplace installs and plugin reloads. [Usage](#usage) lists options, and [example workflows](#example-workflows) show how the skills fit together.
 
 ---
@@ -572,3 +574,13 @@ Workspace artifacts stay together under `<workspace>/make-it-work/<TICKET>/`. Ea
 ### Assess completed change complexity and risk
 
 Use `/make-it-work:assess-change <explicit delivery scope or PR reference>` for revision-bound code complexity and production change risk reports. New Implement runs assess after final context sync in both Lightweight and TDD, within Finalizing and its elapsed total. Only at final approval or completion, the dashboard header shows Code complexity and Production risk badges on a second row below the workflow settings, with completeness and rationale tooltips, or a neutral Assessment: Unavailable/Stale badge. The audit log shows the ratings, rationale and report link without repeating the result on refresh or resume; reassessments get a new entry. Detailed evidence remains in the reports and final package. Older runs require an explicit request. Missing evidence is disclosed; assessment never changes gates or approvals. The old `/make-it-work:assess-complexity` command remains a deprecated alias. See [evidence contract](docs/change-assessment.md).
+
+### Integrated artifact quality reviews
+
+Refinement, planning and test writing review their artifacts before handoff, using
+a fresh read-only reviewer or a disclosed self-review when delegation is unavailable.
+One correction round and confirmation review are allowed; unresolved blockers use
+existing questions/stops. Implement applies these checks to TDD, including spec
+review after mode selection; Lightweight and final code review retain their flow.
+Reviews assess actual requirements, designs and assertions without expanding test
+commands for metadata. See [the procedure](docs/artifact-quality-review.md).

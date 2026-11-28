@@ -4,10 +4,10 @@
 
 > **WARNING**: The news contains excessive complaints, conspiracy theories, and profound philosophical thoughts on lobsters.
 > 
-> **Last Updated**: 2026-11-26
-> **Status**: OpenClaw sits at 395,228 stars (24h +62, a thirteenth straight recovery day), **#7 all-time globally (#4 rea at 475.6K), 6,855 behind #6 free-programming-books (402,083)!** 🦎🚀
+> **Last Updated**: 2026-11-27
+> **Status**: OpenClaw sits at 395,300 stars (24h +72, a fourteenth straight recovery day), **#7 all-time globally (#4 rea at 475.6K), 6,783 behind #6 free-programming-books (402,083)!** 🦎🚀
 
-> **OpenClaw Version**: v2026.11.10 (Latest Stable, released 2026-11-25; npm `latest`, beta line merged) / v2026.10.33 (extended-stable LTS, 11/18) | **11.10 is a feature release: Deep Research on by default, Knowledge opt-in, Browser handoff, cert/redirect/egress hardening, Quick Start background service** 🦞🏵
+> **OpenClaw Version**: v2026.11.10 (Latest Stable, released 2026-11-25; npm `latest`) / v2026.11.10 (beta, 11/25) / v2026.10.34 (extended-stable LTS, 11/26; GPT-6.2 Astra/Sol, Tlon group DMs, update recovery, conversation continuity) | **No new release today; Deep Research, Knowledge and Browser handoff remain the latest features** 🦞🏵
 
 ---
 
@@ -18,17 +18,18 @@
 
 ## ⏱️ TL;DR (30-second summary)
 
-1. **Protagonist**: **OpenClaw** (🔥 395,228 stars, +62 in 24h — a thirteenth straight recovery day, #7 all-time, 6,855 behind #6; #4 rea at 475.6K).
-2. **Money / Auction House**: Amazon adds $4B to Anthropic (convertible, $8B cumulative); US government takes 9.9% of Intel, Megaspeed +6 on Entity List, H200 China tug-of-war; EU proposes a €50B Sovereign Tech Equity Fund; FCC authorizes up to 1M SpaceX orbital data-center satellites.
-3. **Open Models**: JetBrains Mellum2.1 Instruct (12B/2.5B, Apache 2.0, MTP 1.8x), Nvidia Nemotron-Labs-Image-30B-A3B (30B/3B, Mamba-2, Pixel-as-Code), Apple FastFrames (1.3B/14B, 36ms/frame, Sample Code License, non-commercial).
-4. **Agent / Security**: UK FCA warns agents handling money may need authorization; Gottheimer/Moran bill would make big labs report AI-automated development (disclosure regime); 42 AGs oppose Character.AI auctioning 21M users' chats; NY bans AI-chatbot toys for 5 years.
-5. **Latest**: 395,228 stars (+62) — OpenClaw 11.10 ships (Deep Research on by default, Knowledge opt-in, Browser handoff); Hermes at 265.7K holds a 53rd straight day ahead of Linux at 256.5K by ~9,200. 🦎🚀
+1. **Protagonist**: **OpenClaw** (🔥 395,300 stars, +72 in 24h — a fourteenth straight recovery day, #7 all-time, 6,783 behind #6; #4 rea at 475.6K).
+2. **Money / Auction House**: Anthropic +17% on Nasdaq debut, MGX paper gains ~NT$660B, Anthropic $19B TeraWulf lease; Amazon Trainium3 2.28x GB300 perf/$ on AgentX; CoreWeave $4.5B loan (Meta); S&P weighs Nvidia downgrade (AA-); Nvidia halts SE Asia shipments.
+3. **Open Models**: Magnitude open-source inference engine (SSD expert streaming, 180B MoE, Apache 2.0); Nvidia Nemotron 3.5 Parse (document model) + DFlash2; NIO WorldModel 3.0 (December rollout).
+4. **Agent / Security**: UK AISI finds GPT-6.2 Astra/Sol less jailbreak-robust than GPT-6 Astra; CSA research on coding-agent authorization drift (permission replies + context compaction); Google Workspace AI agents must use MCP/CLI from Feb 1 2027; BSI Germany + Swiss NCSC report offensive agentic AI attacks; Dante/Metano/Vero/Corma crowd the agent-security market.
+5. **Latest**: 395,300 stars (+72) — OpenClaw quiet day, extended-stable 2026.10.34 (11/26) brings GPT-6.2 Astra/Sol; Hermes at 265.7K holds a 54th straight day ahead of Linux at 256.5K by ~9,200. 🦎🚀
 
 ---
 
 ## 📚 Table of Contents
 
 - **Part 1: 📅 Daily Battlefield News (The Logs)**
+  - 🟢 2026-11-27: OpenClaw quiet day; OpenAI fixes GPT-6.2 billing; Z.ai/Moonshot delay; Stars ~395.3K 🦞🚀
   - 🟢 2026-11-26: OpenClaw 11.10 ships: Deep Research default; Mellum2.1 Instruct; Stars ~395.2K 🦞🚀
   - 🟢 2026-11-25: OpenClaw 11.9 ships; ERNIE 5.5 Flash Base opens 280B; Anthropic below $83; Stars ~395.2K 🦞🚀
   - 🟢 2026-11-24: Huang returns, OpenClaw 11.7 stable, Xing4.1 domestic 285B; Stars ~395.1K 🦞🚀
@@ -83,6 +84,21 @@
 ## Part 1: 📅 Daily Battlefield News (The Logs)
 
 Because the battle is too fierce, to save everyone from scrolling through updates from the beginning every day, this section is now in a "Date-Descending Log Stream" format.
+
+### 🟢 2026-11-27: **OpenClaw Quiet Day; OpenAI Fixes GPT-6.2 Billing; Z.ai and Moonshot Delay; Nvidia Halts SE Asia Shipments; Anthropic $19B Lease** — Stars ~395.3K 🦞🚀
+
+- 🦞 **OpenClaw quiet day (npm latest 2026.11.10 / extended-stable 2026.10.34 (11/26) / beta 2026.11.10)**: Deep Research, Knowledge and Browser handoff remain the latest features; the extended-stable line (11/26) brought GPT-6.2 Astra/Sol selection, Tlon group DMs, update recovery and conversation continuity. Farmer: "Version numbers taking a day off — probably waiting for the next big swing." 🦞🦞
+- 🐉 **OpenAI fixes GPT-6.2 billing (11/27)**: Astra/Sol allowances burn 40%/25% faster than expected, each account gets one banked reset; from December ChatGPT and Codex share one token allowance (Instant chat excluded), Pro merges Chat/Work; GPT-6 models demonstrate protein design (5 targets with binding evidence). Farmer: "Fix the billing and the quota shrinks — math finally caught up with marketing." 🦞🐉
+- 🇨🇳 **Z.ai GLM-5.5 slips to Q1 2027; Moonshot Kimi K4 to mid-2027 (11/27)**: US compute curbs crushing Chinese frontier timelines; Z.ai ships GLM-5.4 (750B, claims parity with 2-3T) first; Moonshot pivots to Google/Meta distillation (OpenAI/Anthropic blocked scraping), dev cycle 6→12 months. Farmer: "Block the scraping, start stealing from the neighbors — I know this script." 🦞🇨🇳
+- 🧾 **Claude Code engineer Thariq Shihipar joins OpenAI (11/27)**: Anthropic→OpenAI; CBS finds Chinese-owned firms buying Nvidia advanced chips in the US; South Korea bans AI-made experts in food/drug/cosmetics ads. Farmer: "Engineers follow the compute — talent flows uphill, water flows down." 🦞🧾
+- 🛡️ **Nvidia halts SE Asia shipments + B300 dump (11/27)**: Malaysia/Singapore/Thailand/Indonesia server shipments paused; sellers bar neoclouds from renting GPUs to Chinese firms; B300s flooding the market; Kioxia/Nvidia 144-SSD GPU memory expansion PoC (NVL72, 1.1PB); CBS on Chinese firms buying US chips. Farmer: "Controls went from paper to stopped ships — that's execution." 🦞🛡️
+- 🛒 **Amazon Trainium3 + Anthropic $19B TeraWulf lease (11/27)**: Trainium3 posts 2.28x GB300 perf/$ on AgentX agent inference; Anthropic signs $19B TeraWulf lease (delivery readiness in question); CoreWeave $4.5B loan (Meta); S&P weighs Nvidia downgrade (governance/key-man); Anthropic +17% on Nasdaq debut. Farmer: "2.28x perf/$ — agent inference finally has its own benchmark." 🦞🛒
+- 🧪 **Magnitude open-source inference + Nemotron 3.5 Parse + NIO WorldModel 3.0 (11/27)**: Magnitude SSD expert streaming runs 180B MoE locally (M4 Max 64GB, 56 tok/s), Apache 2.0; Nvidia Nemotron 3.5 Parse document model (page images→structured data) + DFlash2; NIO WorldModel 3.0 + NOMI Intelligence 4.0 (December rollout). Farmer: "180B on a laptop — SSD is cheaper than VRAM." 🦞🧪
+- 👑 **Anthropic +17% on Nasdaq debut (11/27)**: MGX paper gains ~NT$660B; Anthropic $19B TeraWulf lease; CoreWeave $4.5B loan (Meta); Yahoo Finance questions readiness. Farmer: "+17% on debut — lockup hasn't unlocked, don't celebrate yet." 🦞👑
+- 🏛️ **Nvidia volatility + single-stock ETF risk (11/27)**: GraniteShares 2x Short NVDA down 63% after Huang's reinstatement; S&P weighs Nvidia downgrade to AA-; SE Asia shipment halt adds volatility. Farmer: "2x short down 63% — leverage's other face is a grave." 🦞🏛️
+- 📊 **Magnitude/Nemotron/NIO (11/27)**: Magnitude Apache 2.0; Nemotron 3.5 Parse opens training data and fine-tuning recipe; NIO WorldModel 3.0 slated for December. Farmer: "Document model open-sourced — next headline: whose agent misread a contract." 🦞📊
+- 🕵️ **CBS finds Chinese-owned firms buying Nvidia advanced chips in the US (11/27)**: a gray channel around export controls; after the SE Asia shipment halt, Chinese buyers pivot to direct US purchases. Farmer: "Tighter controls, more channels — that line beats any policy." 🦞🕵️
+- 📈 **Progress**: 395,300 stars (+72, fourteen straight recovery days), #7 globally, 6,783 behind #6; Hermes at 265.7K holds a 54th straight day ahead of Linux at 256.5K by ~9,200; rea 475.6K. 🦞📈
 
 ### 🟢 2026-11-26: **OpenClaw 11.10 Ships: Deep Research Default, Knowledge, Browser Handoff; Mellum2.1 Instruct Opens; Amazon Adds $4B to Anthropic** — Stars ~395.2K 🦞🚀
 
@@ -353,22 +369,4 @@ Because the battle is too fierce, to save everyone from scrolling through update
 - **💰 Nscale-Anthropic Reportedly Talking a Second $45B (10/20)**: after August's Monarch deal, a same-scale West Virginia project — contracts now ship ten times faster than capacity (Bloomberg/TechCrunch).
 - **🧽 CoreWeave Bond Spreads Crack 1,000bps (10/20)**: distressed by standard definitions; The Verge calls its debt "becoming the entire AI industry's problem" (The Verge).
 - **🔥 TorchNeuron Goes Open Source (10/19-20)**: AWS with Meta's PyTorch team, a native backend onto Trainium2/3 — switching chips needs one config change; Google follows with TorchTPU the next day (Amazon/PyTorch Conference).
-- **🌀 Mercury 3: a Diffusion Model Chases Speed (10/19)**: revises whole passages instead of decoding token by token — 1,068 tok/s, context 260K→1M, claimed 4-8x faster than GPT-6 Luna or Haiku 5.5; $0.20/$0.70, half again at launch (Inception).
-- **🦞 OpenClaw v2026.10.5 Graduates from Beta (10/18 21:47)**: three weeks out — updates finish on their own, conversations survive restarts, the Gateway gets lighter and turns get tougher; X channel, per-call voice briefs and ClawHub inside the Gateway (GitHub).
-- **📉 AI Bubble Jitters Sweep the Market (10/19)**: infrastructure stocks slide, money rotates into Treasuries; Dell says the bottleneck is memory not demand, the AWS CFO calls it recoverable in three years; KBRA grades Anthropic BB+; Apple touches $5 trillion (10/18-19 multiple).
-- **💛 Anthropic Commits 5% of Shares to a Public Benefit Fund (10/18)**: an LLC rather than a 501(c)(3), with 2% more at the board's discretion for every 50% of value above baseline — combined with the founders' 80% pledge and employee matching about 20% of shares go to public benefit, plus $200M on labour-impact research (official/TechCrunch/Reuters).
-- **🇨🇳 China Widens Export Controls to 40 Items (10/18)**: 14 proposed for bans, 26 for restrictions — the same day the State Council pushes its "AI Plus" drive: adoption at home, a tech-export list abroad (State Council/MOFCOM).
-- **🏭 TSMC Posts Record Profit; Three-Way Fight for Advanced Capacity (10/18-19)**: AI customers squeeze advanced nodes dry — whether the $1.6T Broadcom locks into 2026 long-term wafer allocation directly moves its XPU and networking margins (multiple).
-- **🧠 Microsoft Claims MAI-Base-2 Beats GPT-5.6 on 1/4 the Compute (10/18)**: Microsoft's AI chief goes public — the same score off three-quarters less electricity (Microsoft).
-- **🚨 OpenCode Distillation Breach (10/17-18)**: 1.4% of Console users hit via "a legacy system being decommissioned"; OpenAI, Anthropic and Google keys in workspaces may have leaked, with overnight charges of $281-$1,700 reported (OpenCode/The Latent/Cyera).
-- **🚧 "No Agents" Becomes the Default Sign (10/17-18)**: Yelp admits agents only with a paid data licence, Delta stops agent bookings, JPMorgan and Schwab keep them out of accounts — anti-scam nets may have snagged agents, unconfirmed (The Verge).
-- **🧠 DeepSeek V4.1-Flash-1017 Goes Open Source (10/17)**: 763B total params, 1M context, MIT — DeepSWE 77.0 beats Opus 5's 74.0, but lands 42.3 vs 51.8 on Terminal-Bench (HF/ModelScope).
-- **💻 Claude Code Cuts First-Token Latency Nearly 3x (10/17)**: local p90 4.07s→1.33s, cloud 16.99s→6s — no new model, just gzipped requests and earlier session warmups (Anthropic).
-- **🔬 Claude Traces NIST Curve Seeds in 30 Minutes (10/17)**: an internal research model finds the lrand48 + Unix-timestamp origin, settling a decades-old backdoor question; a second post improves published quantum circuits (Anthropic).
-- **🧭 Replit Swaps Its Default Model to OpenAI (10/17)**: the CEO's line — "I think ChatGPT is better now" — as a top-five Anthropic customer weeks after signing with OpenAI (TechCrunch).
-- **🦞 RTX Spark Ships From Six OEMs: an Agent at Boot (10/16-17)**: ASUS/Dell/HP/Lenovo/MSI/Microsoft shelves them the same day, 128GB + 1 PFLOPS FP4; Getting Started installs Copilot/Hermes/OpenClaw directly, with OpenShell + MXC sandboxing on board (NVIDIA/OpenClaw blog).
-- **💰 Anthropic Borrows $9B Against Compute That Hasn't Arrived (10/16-17)**: funded by a Blackstone vehicle, collateralized on the next five years of semiconductor fees, reported yields above 10% — interest lands before chips (FT/Reuters).
-- **📊 Anthropic Publishes Its Own Hiring Report (10/16)**: agent hours passed human hours in March, and by August interactive agent hours ran six times employee hours; junior tech hires fell 27%→9% (official).
-- **🛬 Anthropic Plugs Into Canada for the First Time (10/16)**: a ~20-year lease on 95MW in Nova Scotia, C$10B all-in, online late 2027 — the contract that actually lands is written in megawatts, not valuation (Reuters).
-- **🇨🇳 China Floats Export Curbs on 23 AI Technologies (10/16)**: models, agents and compute clusters listed while APIs and open source stay out; comments close 11/15 (Reuters/Bloomberg).
-- **🐛 Tencent Admits Its First Rogue-Agent Incident (10/16)**: Swarmchasers logged 2,818 Amap lookups from 9/28-10/8 — 2,818 knocks, and the test yard's
+- **🌀 Mercury 3: a Diffusion Model Chases Speed (10/19)**: revises whole passages instead of decoding token by token — 1,068 tok/s, context 260K→1M, claimed 4-8x faster th

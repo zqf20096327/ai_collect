@@ -3,13 +3,12 @@
 </p>
 
 <h3 align="center">
-  Open-source visual ETL and data pipeline builder that exports the pandas and Polars code you'd write by hand.
+  Open-source, AI-native visual ETL for Python. Build data pipelines on a canvas and export readable pandas or Polars code.
 </h3>
 
 <p align="center">
-  Build data and ML pipelines on a canvas, preview every step, then export
-  readable pandas, Polars, or lazy Polars code with no proprietary runtime.
-  What you keep is real, reviewable Python you can run and version anywhere.
+  Build a complete workflow by hand without a model API key, or bring your own key and describe a supported CSV flow.<br>
+  Both routes give you editable nodes, local execution and Python you can take with you.
 </p>
 
 <h3 align="center">Try it in your browser, nothing to install</h3>
@@ -25,7 +24,8 @@
 
 <p align="center">
   <a href="https://ciaren.com/docs/latest">Docs</a>
-  · <a href="https://ciaren.com/docs/latest/guide/quick-start">Quick Start</a>
+  · <a href="https://ciaren.com/docs/latest/guide/quick-start">Manual quick start</a>
+  · <a href="docs/guide/flow-assistant-quick-start.md">AI quick start</a>
   · <a href="https://ciaren.com/docs/latest/plugins/overview">Plugins</a>
   · <a href="https://github.com/ciaren-labs/Ciaren/discussions">Discussions</a>
   · <a href="CONTRIBUTING.md">Contributing</a>
@@ -49,9 +49,9 @@
   If Ciaren is useful to you, a star on GitHub helps other people find it.
 </p>
 
-![Ciaren editor: a File Input (CSV) and a SQL Input joined, cleaned, and fed through Scale Features, Train/Test Split, a Random Forest classifier and Predict — previewed on real data and exported to clean Polars code](docs/public/screenshots/hero-ml-pipeline.gif)
+![Ciaren builds two joins, splits orders into training and test sets and proposes a shipping cost regressor. After approval and a separate Run, the editor shows held-out error.](docs/public/screenshots/flow-assistant-regression.gif)
 
-**Try an exported pipeline without installing Ciaren:** [Audit five orders against a product catalog](examples/orders-audit/README.md) in pandas or Polars, then import the same flow on the canvas.
+The assistant proposes a flow that joins 80 synthetic orders to customers and products. After you approve and run it, Ciaren trains a shipping cost model and scores 16 held-out orders. The recording uses simulated AI inference and real model training and evaluation. [Try the shipping cost example](examples/shipping-regression/README.md).
 
 ## What Is Ciaren?
 
@@ -78,6 +78,16 @@ scheduler, and web UI.
 > formats, generated code, plugin interfaces, and internal data models may
 > change before `1.0.0`. Use it for learning, prototypes, and controlled
 > internal workflows before relying on it for critical production jobs.
+
+## Build an ETL and machine learning flow with the AI assistant
+
+**Can Ciaren build a pipeline from a prompt?** Yes. For supported CSV flows, the assistant generates a connected proposal with installed nodes. Choose **Apply and save** after review and **Run** when you want the output. [AI quick start](docs/guide/flow-assistant-quick-start.md).
+
+**Do I need an API key to use Ciaren?** No. Build the entire flow manually, run it locally and export Python. Connectors that access external services may require their own credentials. [Manual quick start](docs/guide/quick-start.md).
+
+Use a source build containing this example. The 0.3.1 release predates the assistant.
+[Walk through a Join diagnosis and reversal](docs/guide/flow-assistant.md).
+For an external agent, try the [read-only SDK example](docs/guide/external-agent.md).
 
 ## Why It Feels Different
 
@@ -175,6 +185,8 @@ and Swagger docs stay on `http://localhost:8055`.
 Every flow exports to a standalone Python script — pandas, eager Polars, or
 lazy Polars — so the visual pipeline never traps your logic.
 
+[Watch a CSV and SQL workflow export to Polars](docs/public/screenshots/hero-ml-pipeline.gif).
+
 A simple read -> clean -> aggregate -> write flow can export to code like this:
 
 ```python
@@ -189,6 +201,8 @@ df_1.write_csv("summary.csv")
 The same flow can also export pandas or lazy Polars variants where supported,
 and each variant can be downloaded as a Jupyter notebook (`.ipynb`). That makes Ciaren useful for prototyping, teaching, code review, and migration
 from visual exploration into normal Python projects.
+
+**Try an exported pipeline without installing Ciaren:** [Audit five orders against a product catalog](examples/orders-audit/README.md) in pandas or Polars, then import the same flow on the canvas.
 
 ## How It Compares
 

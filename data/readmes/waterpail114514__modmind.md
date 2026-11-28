@@ -77,6 +77,10 @@ macOS 最低版本按当前构建配置为 **macOS 13**。Linux 提供源码构�
 
 生成器支持 Fabric 1.20.1/1.21.1、Quilt 1.20.1/1.21、Forge 1.20.1/1.21.1、NeoForge 1.21.1。其他版本会在页面内提示未验证。护甲穿戴外观沿用所选原版材质；配方、交互行为和自定义材质仍通过代码与资源工作流制作。
 
+### 从外部 coding agent 调用 ModMind
+
+外部 coding agent 可以从「设置 → 集成 → MCP 接入」复制本机 stdio 配置。ModMind 运行时，agent 可以列出、选择或新建项目，用 `modmind_guide` 查看使用示例，用 `modmind_skills` 读取适用的工作流程及参考文件。切项目和重启桌面沿用同一份配置。
+
 ### 真实游戏交互测试
 
 Java 模组的真实界面测试实验性接入 [Minecraft Mod MCP](https://github.com/langyo/minecraft-mod-mcp)。支持的版本与加载器组合可以启动隔离客户端，获取原生截图和状态，并执行点击、输入、按键等玩家操作。
@@ -101,6 +105,8 @@ npm run dev:features -- --only=image-studio
 ```
 
 保存插件源码后会自动构建并刷新对应界面与后端；版本号不变也会生效。逗号分隔可开发多个功能，例如 `--only=image-studio,resource-packs`；省略 `--only` 则构建全部可选功能。运行任务期间延后加载，构建失败保留上一版。使用独立开发配置，首次需要重新登录并打开测试项目；热更新会重建插件界面，未保存的页面状态可能重置。详见[本地功能开发流程](docs/extensions-development.zh-CN.md#仓库内功能的本地实时加载)。
+
+运行 `npm run features:build` 可将独立功能包和工作台包构建到 `feature-plugin-dist/`，供本地安装。需要单独构建某个包时，可用 `npm run features:build -- --only=image-studio`。
 
 ### 检查与测试
 
@@ -157,6 +163,7 @@ Windows 更新文件位于 `release/update`。稳定版使用 `latest.yml`，预
 | [ModMind 官网](https://ether-studio.top/) | 客户端下载、使用流程、账号与模型服务 |
 | [发布记录](https://github.com/waterpail114514/modmind/releases) | 安装包、更新日志与校验文件 |
 | [问题反馈](https://github.com/waterpail114514/modmind/issues) | 报告问题与提出建议 |
+| [项目位置、复制与备份](docs/project-library.zh-CN.md) | 找回搬走的项目、迁移目录，以及导出和恢复本地备份 |
 | [mmfeature 与 mmstudio 开发](docs/extensions-development.zh-CN.md) | 原生功能包、领域工作台、最小示例、MCP 与构建安装 |
 | [ModMind 开发者工作台](docs/developer-workbench.zh-CN.md) | 应用内独立开发工程、AI 创作、UI 预览、动作与 MCP 调试、扩展包导出 |
 | [光影工作台开发](docs/shader-studio-development.zh-CN.md) | 六个模块、源码导航、验证边界与 MCP 调用参考 |

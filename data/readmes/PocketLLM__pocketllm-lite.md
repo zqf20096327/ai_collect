@@ -7,7 +7,7 @@
 **A local-first AI chat app for Android. Your models, your documents, your device.**
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.41-02569B?logo=flutter)](https://flutter.dev)
-[![Version](https://img.shields.io/badge/version-1.0.40-6750A4)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.48-6750A4)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2E7D32.svg)](LICENSE)
 
 [Download APK (v1.0.40)](https://github.com/PocketLLM/pocketllm-lite/releases/tag/v1.0.40) ·
@@ -22,11 +22,13 @@
 
 ## Why PocketLLM Lite
 
-- **It actually runs on your phone.** Cactus-format model bundles (the in-app
-  catalog downloads these) run on-device through the
-  [Cactus](https://github.com/cactus-compute/cactus) runtime. No account and no
-  hosted inference. GGUF files are not loadable on-device; use them through
-  Ollama or another OpenAI-compatible server.
+- **It runs models on your phone.** GGUF models run on-device through
+  [llama.cpp](https://github.com/ggml-org/llama.cpp) (via the
+  [llamadart](https://pub.dev/packages/llamadart) package). The app ships a
+  short list of hand-checked starter models with pinned sizes, SHA-256 digests
+  and licenses, and you can import any GGUF file. Older Cactus-format bundles
+  still load through the Cactus runtime, which is archived upstream and being
+  phased out. No account and no hosted inference.
 - **You decide when the network is used.** Every app-managed connection goes
   through one policy gateway with a visible audit log. *Strict Offline Mode*
   blocks all non-loopback traffic from the app.
@@ -52,7 +54,7 @@ show the v1.0.40 build.
 | Area | What you get |
 | --- | --- |
 | Chat | Streaming local chat, persistent history, branches, tags, personas, prompts, skills, per-chat system prompts |
-| Models | On-device Cactus catalog, Hugging Face GGUF search for server use (with a copyable `ollama run` command), gated-repo token support, resumable verified downloads, local folder import, device-aware recommendations |
+| Models | Built-in verified GGUF starter list (llama.cpp, on-device), Hugging Face GGUF search (with a copyable `ollama run` command), gated-repo token support, resumable size and SHA-256 verified downloads, local file import, device-aware recommendations, Cactus bundles for older installs |
 | Documents | PDF/TXT/MD/CSV ingestion, keyword / semantic / hybrid retrieval, source-aware answers |
 | Vision & OCR | Android on-device OCR (ML Kit Latin). Image input only when the selected model confirms vision support |
 | Voice | On-device Whisper transcription via a guided, checksum-verified model install; text-to-speech |
@@ -93,7 +95,8 @@ Memory is the limit. As a rule of thumb, the model file plus its context cache
 must fit in free RAM with headroom for Android itself. PocketLLM recommends
 conservatively and shows `unknown` when the device does not expose a
 measurement. Compatibility depends on the exact file, quantization, device, and
-thermal state, and PocketLLM loads only Cactus-format bundles, never GGUF. Reports with device and
+thermal state. GGUF models run through llama.cpp; Cactus bundles still load through
+Cactus. Reports with device and
 model details are very welcome (see [Contributing](#contributing)).
 
 ## Privacy model in one paragraph

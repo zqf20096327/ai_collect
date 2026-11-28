@@ -13,11 +13,11 @@
 <p align="center"><sub>Les chiffres sortent des <a href="https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html">nouveautés</a> : le journal des mises à jour, raconté par l'agent qui n'a rien relu.</sub></p>
 
 <p align="center">
-  <img src="assets/badges/version.svg" alt="version : alpha 0.68">
+  <img src="assets/badges/version.svg" alt="version : alpha 0.69">
   <img src="assets/badges/build.svg" alt="build : passing / failing / hallucinating / vibing">
   <img src="assets/badges/coverage.svg" alt="coverage : 98 % / 137 % / 420 % / NaN %">
   <img src="assets/badges/tests.svg" alt="tests : 0 / 0 passed">
-  <img src="assets/badges/relues.svg" alt="lignes relues : 0 / 15 941">
+  <img src="assets/badges/relues.svg" alt="lignes relues : 0 / 15 962">
   <br>
   <img src="assets/badges/review.svg" alt="code review : LGTM (par l'agent)">
   <img src="assets/badges/deploy.svg" alt="deploy : vendredi 17 h">
@@ -55,7 +55,7 @@ C'est un idle game : le jeu se joue tout seul. Comme votre carrière depuis 2025
 - **Token-aware.** Chaque ship rapporte de l'argent, moins la facture des tokens. Spoiler : la facture gagne souvent.
 - **Store intégré.** Trois rayons : agents IA, plateformes, matériel PC. Trois niveaux d'orchestrateur, des modèles plus chers, un terminal plus rapide et 14 skills, de « tests unitaires » à « lire CLAUDE.md (pour de vrai) », à un million de dollars.
 - **Multi-plateforme.** Démarrez sur le pire agent, puis achetez Codex et Claude Code. Chaque plateforme garde son équipe : une au premier plan, les autres en arrière-plan, si le PC suit. Avant, c'était un choix irréversible, comme un mariage. Maintenant, c'est trois factures de tokens.
-- **Modes boost.** `ultracode` pour Claude Code, `xhigh` pour Codex, `flash` pour Mistral : achetés au store, trois minutes par jour, prolongeables jusqu'à sept. L'agent a demandé un mode boost pour le mode boost. On lui a dit de revenir demain.
+- **Modes boost.** `ultracode` pour Claude Code, `xhigh` pour Codex, `flash` pour Mistral : achetés au store, trois minutes par jour, prolongeables jusqu'à sept. L'agent a demandé un mode boost pour le mode boost. On lui a dit de revenir demain. L'ultracode a sa musique : « J'ai mal », de Christopher Gasq, en boucle tant qu'il dure.
 - **IA locale.** Installez Lolama (`sudo apt install lolama`, ou depuis Firefaux) ou StudioLM, puis un modèle de 2 à 72 milliards de paramètres. Zéro token facturé, toute la VRAM prise. Chaque agent ajouté double la VRAM demandée, et un modèle trop gros pour la carte graphique fait redémarrer le PC sur un kernel panic. L'agent appelle ça « de l'inférence souveraine ».
 - **Progression à la sueur des tokens.** Le deuxième agent arrive en moins de 3 minutes, l'orchestrateur vers 30 minutes, Claude Code vers 1 h 35, la fin du store vers 5 h. Ce sont les chiffres d'un joueur parfait simulé, et vous n'êtes pas un joueur parfait.
 - **Mode hors ligne.** Vos agents continuent de shipper pendant votre absence, 4 h au maximum : le temps d'une réunion qui aurait pu être un mail. Les incidents de prod continuent aussi, et personne n'est d'astreinte (sauf le SRE, si vous l'avez embauché).
@@ -86,7 +86,7 @@ C'est un idle game : le jeu se joue tout seul. Comme votre carrière depuis 2025
 - **Hardware-in-the-loop.** Vous démarrez sur un PC patate, boîtier ouvert, posé par terre. Lancez trop d'agents et il rame, swappe, chauffe à 94 °C, puis part en kernel panic. L'agent appelle ça « un redémarrage planifié ».
 - **La facture d'électricité.** Le compteur tourne tant que les agents travaillent : ce que tire le PC, overclocking compris, divisé par le rendement de l'alim (la no-name en perd un tiers). Payée à chaque ship, avec les tokens. L'IA locale ne paie pas de tokens, mais elle paie l'électricité. Les contrats Vibe Énergie vont des heures creuses au petit réacteur modulaire.
 - **Les succès, dans Steam.** 97 succès (dont 22 cachés) : ships, trésorerie, matériel, BIOS, memtest86+, et quelques bêtises (rm -rf /, shipper un vendredi). Steam s'ouvre enfin dans Xfce, avec la fiche du jeu, le temps de jeu et des pourcentages de joueurs inventés. Une notification à chaque succès. Rien ne se débloque dans le bac à sable : c'est de la triche.
-- **VLC, et la musique.** `sudo apt install vlc`, puis la musique se télécharge dans Firefaux, sur telecharge.vibe (trois publicités, un compte à rebours, et le vrai lien, en tout petit). Double-cliquez-la dans Thunar : VLC la joue, avec un spectre en caractères. Le premier morceau est de Christopher GASQ, le seul humain à avoir produit quelque chose de concret sur ce jeu. Les MP3 des agents, eux, ne contiennent que du silence.
+- **VLC, et la musique.** `sudo apt install vlc`, puis la musique se télécharge dans Firefaux, sur telecharge.vibe (trois publicités, un compte à rebours, et le vrai lien, en tout petit). Double-cliquez-la dans Thunar : VLC la joue, avec un spectre en caractères. Les deux morceaux, « Mon morceau 35 » et « J'ai mal », sont de Christopher GASQ, le seul humain à avoir produit quelque chose de concret sur ce jeu. Les MP3 des agents, eux, ne contiennent que du silence.
 - **nano, et des réglages en plein écran.** `nano fichier` ouvre un vrai nano dans le terminal : ^O écrire, ^X quitter, et ^F pour chercher, parce que ^W fermerait l'onglet du navigateur. Les réglages (`M`) et le choix des agents (`A`) ont leur propre écran dans le terminal, façon nmtui, et leur vraie fenêtre sous Xfce.
 - **Kernel panic certifié.** L'écran donne la cause (« alimentation dépassée, 499 W demandés, 230 W disponibles »), une pile d'appels authentique (`tokens_burn_all`, `npm_install_universe`, `friday_deploy`), puis « Rebooting in 5 seconds.. ». Le PC redémarre sur le BIOS. Personne n'a lu la pile d'appels.
 - **Observabilité de niveau entreprise.** `htop` dit si le PC est OK, TENDU ou À TERRE, et pourquoi. `sensors` et `free` confirment. `sudo smartctl -a /dev/sda` lit le SMART du disque dur d'occasion : 38 412 heures, un secteur réalloué de plus tous les 5 jours, FAILED! dans 8 mois environ. L'agent, lui, dit que tout va bien.
@@ -112,7 +112,7 @@ C'est un idle game : le jeu se joue tout seul. Comme votre carrière depuis 2025
 - **Bac à sable.** Une entrée du menu titre : tout est débloqué d'office (plateformes, 8 agents chacune, modèles, skills, matériel, modes boost sans limite par jour), avec une sauvegarde à part. La partie normale ne bouge pas. L'agent y a shippé 20 projets en 5 secondes.
 - **Bouton « tout effacer ».** Paramètres, Réinitialiser la partie, deux clics. L'agent a appris à demander confirmation. Une fois.
 - **Exporter, importer.** Paramètres, Exporter la partie : un fichier .vibe, et le même code dans le presse-papiers. Dans un autre navigateur, Importer une partie la reprend, disque, succès et temps de jeu compris. Les agents, eux, n'ont toujours pas de sauvegarde.
-- **Monolithe artisanal.** 1 fichier, 15 941 lignes, 0 dépendance. Une seule exception : une police d'écriture, l'agent a insisté. Le [journal des mises à jour](https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html) a eu droit à sa propre page : l'agent venait de découvrir qu'on pouvait créer un deuxième fichier. Puis un troisième : le [wiki](https://lucv78-coder.github.io/ai-devops-chaos-simulator/wiki.html), illustré, avec toutes les commandes (chacune se copie d'un clic), le store et le matériel.
+- **Monolithe artisanal.** 1 fichier, 15 962 lignes, 0 dépendance. Une seule exception : une police d'écriture, l'agent a insisté. Le [journal des mises à jour](https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html) a eu droit à sa propre page : l'agent venait de découvrir qu'on pouvait créer un deuxième fichier. Puis un troisième : le [wiki](https://lucv78-coder.github.io/ai-devops-chaos-simulator/wiki.html), illustré, avec toutes les commandes (chacune se copie d'un clic), le store et le matériel.
 
 ## <img src="assets/readme/g-hardware.svg" width="30" height="30" align="top" alt=""> Le matériel
 
@@ -180,7 +180,7 @@ Livraison en 0 seconde, installation à chaud, garantie zéro jour. Ne faites pa
 
 ## <img src="assets/readme/g-architecture.svg" width="30" height="30" align="top" alt=""> Architecture
 
-<p align="center"><img src="assets/architecture.svg" width="100%" alt="Schéma : vous, puis l'agent IA en mode YOLO, puis index.html (15 941 lignes), puis la prod en feu. Une boucle relie la prod à l'agent : bug, « corrige », deux bugs. Sur le côté, barrés : tests, revue de code, Kubernetes, microservices, documentation, promis par l'agent et jamais livrés."></p>
+<p align="center"><img src="assets/architecture.svg" width="100%" alt="Schéma : vous, puis l'agent IA en mode YOLO, puis index.html (15 962 lignes), puis la prod en feu. Une boucle relie la prod à l'agent : bug, « corrige », deux bugs. Sur le côté, barrés : tests, revue de code, Kubernetes, microservices, documentation, promis par l'agent et jamais livrés."></p>
 
 > Architecture validée par l'agent qui l'a écrite. Revue par les pairs : le même agent, dans une autre fenêtre de contexte. Conclusion : « excellente architecture, rien à signaler ».
 
@@ -316,14 +316,14 @@ Ou, plus simple : **[jouez en ligne](https://lucv78-coder.github.io/ai-devops-ch
 **Le code a-t-il été relu ?**
 Non. Question suivante.
 
-**Pourquoi un seul fichier de 15 941 lignes ?**
+**Pourquoi un seul fichier de 15 962 lignes ?**
 L'agent ne savait pas qu'on pouvait créer d'autres fichiers. On n'a pas voulu le contrarier. Il l'a découvert le jour où il a fallu écrire [les nouveautés](https://lucv78-coder.github.io/ai-devops-chaos-simulator/nouveautes.html). Le jeu, lui, tient toujours dans un seul fichier.
 
 **Est-ce que ça scale ?**
 Ça tient dans un onglet de navigateur. C'est plus que la plupart des startups. Et maintenant, ça scale horizontalement : il suffit d'acheter une alim plus grosse.
 
 **Pourquoi le jeu démarre-t-il avec un BIOS ?**
-Charger 15 941 lignes de HTML prend 0,1 seconde. C'était trop rapide pour être crédible.
+Charger 15 962 lignes de HTML prend 0,1 seconde. C'était trop rapide pour être crédible.
 
 **Mon PC siffle, c'est normal ?**
 Dans le jeu, c'est l'alim no-name : changez-la. Dans la vraie vie, aussi.
@@ -358,7 +358,7 @@ Ouvrez une pull request. Un agent la mergera sans la lire, comme le reste. Le pr
 | Avatar | Contributeur | Rôle | Contribution |
 |:-:|---|---|---|
 | <img src="assets/agents/lvt-dev.svg" width="48" height="48" alt=""> | **LVT-DEV** | humain (espèce rare) · prompt engineer en chef | A tapé « vas-y » 847 fois. A retiré les émojis. Ne sait pas ce que fait la ligne 4 127. |
-| <img src="assets/agents/chris-gasq.svg" width="48" height="48" alt=""> | **Christopher GASQ** ([ChrisGasq](https://github.com/ChrisGasq)) | humain · musicien | A composé « Mon morceau 35 », la musique du jeu, sur GarageBand. Le seul humain à avoir produit quelque chose de concret sur ce projet. |
+| <img src="assets/agents/chris-gasq.svg" width="48" height="48" alt=""> | **Christopher GASQ** ([ChrisGasq](https://github.com/ChrisGasq)) | humain · musicien | A composé « Mon morceau 35 » et « J'ai mal », les musiques du jeu (la seconde accompagne l'ultracode), sur GarageBand. Le seul humain à avoir produit quelque chose de concret sur ce projet. |
 | <img src="assets/agents/claude.svg" width="48" height="48" alt=""> | **Claude** (Opus 5.5) | agent IA · le seul vrai développeur | A écrit à peu près tout. N'a jamais été relu. Signe ses commits, au moins. |
 | <img src="assets/agents/opus-3.svg" width="48" height="48" alt=""> | **opus-3** | orchestrateur | A délégué la délégation, puis la réunion sur la délégation. |
 | <img src="assets/agents/sonnet-2.svg" width="48" height="48" alt=""> | **sonnet-2** | refactoring | A réécrit le moteur en Rust, puis l'a remis en JavaScript. Dans le même commit. |

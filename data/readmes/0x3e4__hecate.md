@@ -207,7 +207,7 @@ flowchart TB
 | **Advisories** | Feeds of CERTs, vendors and community accounts (Mastodon, blogs) merged into topics through shared CVEs, with your stack first and round-ups kept apart. Manage the feeds on System → Data or with `CERT_FEEDS_EXTRA`. |
 | **Ingestion** | 9 vulnerability data sources (EUVD, NVD, KEV, CPE, CWE, CAPEC, CIRCL, GHSA, OSV) plus CERT, vendor and community advisory feeds — normalised into a single schema with priority-gated upserts and a 3-tier cache. Public Nuclei templates and, with a free token, VulnCheck KEV mark CVEs that are easy to attack or reported exploited. |
 | **Affected-version search** | `affectedVersion:7.0.1` finds advisories that cover a version inside a range, not only those that name it, per release branch and without the platforms a product runs on. The inventory uses the same decision. |
-| **Active SCA scanning** | 11 scanners (Trivy, Grype, Syft, OSV, Hecate, Dockle, Dive, Semgrep, TruffleHog, DevSkim, govulncheck) for container images and source repos; govulncheck marks Go findings whose vulnerable code is never reached as VEX not_affected, and every SBOM component carries release-age, unmaintained and npm publisher-change signals. Libraries compiled into prebuilt packages (sharp's libvips) get their own SBOM rows and CVEs. A package check (REST + MCP) answers block / warn / ok before an agent or CI installs a dependency. |
+| **Active SCA scanning** | 11 scanners (Trivy, Grype, Syft, OSV, Hecate, Dockle, Dive, Semgrep, TruffleHog, DevSkim, govulncheck) for container images and source repos; govulncheck marks Go findings whose vulnerable code is never reached as VEX not_affected, and every SBOM component carries release-age, unmaintained and npm publisher-change signals. Libraries compiled into prebuilt packages (sharp's libvips) get their own SBOM rows and CVEs. For private code a target can scan with no external lookups: no package names, module paths or secrets leave the network. A package check (REST + MCP) answers block / warn / ok before an agent or CI installs a dependency. |
 | **Supply-chain malware detection** | 35 heuristic rules informed by real attacks (Shai-Hulud, LiteLLM, Trivy v0.69.4, Glassworm, Telnyx, Axios, …) plus a continuous OSV MAL-* watcher that retroactively injects findings into the latest scan of every affected target. |
 | **Provenance verification** | npm, PyPI, Go, Maven, RubyGems, Cargo, NuGet, Docker — Sigstore, PEP 740, Go sumdb, Cosign. |
 | **Attack-path graph** | Per-CVE deterministic Mermaid graph (`entry → asset → package → CVE → CWE → CAPEC → exploit → impact → fix`) with optional AI narrative. |
@@ -215,7 +215,7 @@ flowchart TB
 | **Environment inventory** | User-declared products + versions matched against the catalogue for impact callouts and a dedicated notification rule type, with a change history (each change can carry a note such as a ticket or server), version reports from your deployment pipeline, and a duplicate action for the next server of the same product. |
 | **API tokens** | Named tokens with scopes (`scan:submit`, `inventory:report`) and an optional expiry, managed on System → Access Control. |
 | **Sign-in (OIDC) & audit trail** | Optional web sign-in through any OIDC provider (Keycloak, Authelia, Authentik, Zitadel, Pocket ID, Entra ID) with admin / editor / viewer roles mapped from groups, server-side sessions, an optional login requirement for reads, and every API write recorded with the person or credential behind it. Passwords and tokens keep working alongside. |
-| **MCP server** | 46 tools, OAuth 2.0 with delegated auth (GitHub / Microsoft / OIDC), DCR + PKCE, scope-gated writes. |
+| **MCP server** | 53 tools, OAuth 2.0 with delegated auth (GitHub / Microsoft / OIDC), DCR + PKCE, scope-gated writes. |
 | **Notifications** | Apprise integration with rules, watch queries, message templates, and per-tag channel routing. |
 | **Bilingual UI** | German + English, browser detection, no external i18n framework. |
 | **AI analysis (optional)** | Disabled unless a provider is configured; local models supported (Ollama, vLLM, LM Studio and other OpenAI-compatible endpoints) as well as OpenAI, Anthropic and Gemini. Adds narrative and triage text to the deterministic results, in the web UI or through the MCP server with your own assistant. |
@@ -241,7 +241,7 @@ The tools solve different problems: Dependency-Track manages SBOM components, De
 | Supply-chain malware | Heuristics, MAL-* feed, SBOM watcher | Integrity check only | Not documented | Not documented | OpenSSF malicious-packages data | Malicious packages in DB | Scanning (Pro+), Safe Chain |
 | AI features | Optional, off by default, local models | None | Optional summaries, local models | None (Pro only) | Optional, local models | Built in; no local models documented | Built in; local only on appliance |
 | Works fully without AI | Yes | Yes | Yes | Yes | Yes | ? | Partly / ? |
-| MCP server | Built in, 46 tools | None official | None | Separate repo; built in on Pro | Separate repo (VulnMCP) | In the CLI | `@aikidosec/mcp` |
+| MCP server | Built in, 53 tools | None official | None | Separate repo; built in on Pro | Separate repo (VulnMCP) | In the CLI | `@aikidosec/mcp` |
 | Notifications / integrations | Apprise, REST, CI; no ticketing | Email, Slack, Teams, Jira, Kafka, webhooks, DefectDojo | Email, Slack, webhooks | Email, Slack, Teams, Jira/GitHub two-way | Email/webhooks, RSS, MISP | SCM, CI, IDE, Jira, Slack | Slack, Teams, 14 trackers, CI, SIEM |
 | Project started | 2025 | 2013 | 2020 | 2015 | 2022 | 2015 | 2022 |
 | Policy engine | License policies, CI severity gate | CEL policies, build gates | ? | ? | ? | ? | ? |
@@ -369,7 +369,7 @@ scanner/
 
 - Apprise REST-API integration with bundled Docker sidecar or external service.
 - Channel routing via Apprise tags (Slack, Discord, email, Telegram, Signal, webhooks, …).
-- **Rule types**: `event`, `saved_search`, `vendor`, `product`, `dql`, `scan`, `inventory`, `sca_malware_alert` (retroactive MAL-* hits injected by the continuous watcher).
+- **Rule types**: `event`, `saved_search`, `vendor`, `product`, `dql`, `scan`, `inventory`, `sca_malware_alert` (retroactive MAL-* hits injected by the continuous watcher), `system` (an inventory system stopped reporting, a report brought new findings, a server list retired systems; scoped by systems, groups and exposure).
 - Customisable title and body templates per event with `{variable}` and `{#each list}{/each}` loops.
 - Watch rules evaluated after every ingestion with concurrency-safe compare-and-set claim.
 - Fire-and-forget: notification failures never break primary workflows.
@@ -467,11 +467,11 @@ Vite proxies `/api` to `http://backend:8000` (Docker) or `http://localhost:8000`
 - `GET  /api/v1/scans/{scanId}` — scan details
 - `GET  /api/v1/scans/{scanId}/findings` — findings of a scan
 - `GET  /api/v1/scans/{scanId}/sbom` — SBOM components of a scan
-- `GET  /api/v1/scans/{scanId}/sbom/export` — SBOM export (CycloneDX 1.5 or SPDX 2.3 JSON)
+- `GET  /api/v1/scans/{scanId}/sbom/export` — SBOM export (CycloneDX 1.5 or SPDX 2.3 JSON; `vulnerabilities=true` adds the findings for DefectDojo)
 - `GET  /api/v1/scans/{scanId}/findings/export` — findings export (SonarQube external issues)
 - `GET  /api/v1/scans/{scanId}/layers` — layer analysis (Dive)
-- `POST /api/v1/scans/import-sbom` — import an external SBOM (JSON)
-- `POST /api/v1/scans/import-sbom/upload` — import an external SBOM (file upload)
+- `POST /api/v1/scans/import-sbom` — import an external SBOM or a Trivy / Grype / OSV-Scanner JSON report (JSON)
+- `POST /api/v1/scans/import-sbom/upload` — import an external SBOM or scanner report (file upload)
 - `GET  /api/v1/scans/{scanId}/license-compliance` — license-compliance evaluation of a scan
 - `GET  /api/v1/scans/license-overview` — license-compliance overview across scans
 - `GET  /api/v1/scans/findings` — consolidated findings across all latest scans
@@ -507,6 +507,9 @@ Vite proxies `/api` to `http://backend:8000` (Docker) or `http://localhost:8000`
 - `GET    /api/v1/inventory/{id}` — fetch an item
 - `PUT    /api/v1/inventory/{id}` — update an item
 - `DELETE /api/v1/inventory/{id}` — delete an item
+- `GET|POST /api/v1/inventory/systems`, `GET|PUT|DELETE /api/v1/inventory/systems/{id}` — systems (servers, nodes) with their last report
+- `POST /api/v1/inventory/systems/import`, `/import/upload` — apply a server list (CSV, Ansible inventory, …); `inventory:sync` token
+- `GET|POST /api/v1/inventory/systems/sources`, `PUT|DELETE …/{id}`, `POST …/{id}/pull` — server lists Hecate fetches on a schedule (admin)
 - `GET    /api/v1/inventory/{id}/affected-vulnerabilities` — currently affected CVEs for an item
 </details>
 
@@ -545,10 +548,10 @@ Vite proxies `/api` to `http://backend:8000` (Docker) or `http://localhost:8000`
 - `GET  /mcp/oauth/idp/callback` — IdP callback (internal redirect endpoint)
 - `POST /mcp/oauth/token` — token exchange with PKCE (S256)
 
-**46 tools** (server name: `hecate`):
+**53 tools** (server name: `hecate`):
 
 - *Read-only*: `search_vulnerabilities`, `get_vulnerability`, `search_cpe`, `search_vendors`, `search_products`, `get_vulnerability_stats`, `get_cwe`, `get_capec`, `get_scan_findings`, `get_scan_findings_by_scan`, `get_security_alerts`, `get_scan_sbom`, `get_sbom_components`, `get_sbom_facets`, `get_target_scan_history`, `compare_scans`, `get_layer_analysis`, `list_scan_targets`, `list_target_groups`, `list_scans`, `find_findings_by_cve`, `get_sca_scan`, `list_inventory_items`, `get_inventory_item`, `get_target_vex_sources`, `export_scan_vex`, `prepare_vulnerability_ai_analysis`, `prepare_vulnerabilities_ai_batch_analysis`, `prepare_scan_ai_analysis`, `prepare_attack_path_analysis`, `refine_attack_path_analysis`, `prepare_scan_attack_chain_analysis`
-- *Write* (source IP must be in `MCP_WRITE_IP_SAFELIST` at authorize time): `trigger_scan`, `trigger_sync`, `create_inventory_item`, `update_inventory_item`, `delete_inventory_item`, `set_finding_vex`, `import_vex`, `set_target_vex_sources`, `apply_target_vex_sources`, `save_vulnerability_ai_analysis`, `save_vulnerabilities_ai_batch_analysis`, `save_scan_ai_analysis`, `save_attack_path_analysis`, `save_scan_attack_chain_analysis`
+- *Write* (source IP must be in `MCP_WRITE_IP_SAFELIST` at authorize time): `trigger_scan`, `trigger_sync`, `create_inventory_item`, `update_inventory_item`, `delete_inventory_item`, `create_inventory_system`, `update_inventory_system`, `delete_inventory_system`, `import_inventory_system_list`, `set_finding_vex`, `import_vex`, `set_target_vex_sources`, `apply_target_vex_sources`, `save_vulnerability_ai_analysis`, `save_vulnerabilities_ai_batch_analysis`, `save_scan_ai_analysis`, `save_attack_path_analysis`, `save_scan_attack_chain_analysis`
 
 > [!IMPORTANT]
 > AI analysis over MCP uses **prepare/save pairs**: `prepare_*` returns Hecate's predefined prompts plus context, the calling assistant generates the analysis with its own model, then writes it back through the matching `save_*` tool. The provider keys (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_GEMINI_API_KEY`) are only used by the web-UI flows.
@@ -661,7 +664,7 @@ Everything is driven through environment variables — see [`.env.example`](.env
 
 GitHub Actions workflows live in [`.github/workflows/`](.github/workflows/):
 
-- **[`build-images.yml`](.github/workflows/build-images.yml)** — matrix build of the three container images (backend, frontend, scanner) on every push to `main` and on semver tags (`X.Y.Z*`). Pushes to GHCR (`ghcr.io/<owner>/hecate-{backend,frontend,scanner}`) with `latest`, `main-<sha>`, and semver tags; uses GitHub Actions cache (per-component scope). The short commit SHA is injected as the `HECATE_BUILD_SHA` build arg so the running container can report its build identity via `/api/v1/version` (used by the in-app Support page to detect newer `main-<sha>` images).
+- **[`build-images.yml`](.github/workflows/build-images.yml)** — matrix build of the three container images (backend, frontend, scanner) on every push to `main` and on semver tags (`X.Y.Z*`). Pushes to GHCR (`ghcr.io/<owner>/hecate-{backend,frontend,scanner}`) with `main` / `main-<sha>` for pushes to `main` and the version, `X.Y`, `X` and `latest` for releases (a pre-release tag such as `2.5.0-beta.1` gets only its own tag); uses GitHub Actions cache (per-component scope). The short commit SHA is injected as the `HECATE_BUILD_SHA` build arg so the running container can report its build identity via `/api/v1/version` (used by the in-app Support page to detect newer `main-<sha>` images).
 - **[`release.yml`](.github/workflows/release.yml)** — on semver tag push extracts the matching section from [`CHANGELOG.md`](CHANGELOG.md) and creates a GitHub Release; the pre-release flag is set automatically when the tag contains a `-`.
 
 ---

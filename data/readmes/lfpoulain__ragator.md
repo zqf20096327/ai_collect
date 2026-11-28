@@ -23,7 +23,6 @@ Ragator indexe les transcriptions et les descriptions visuelles des vidéos d'un
 - 🎯 **Réponses citées** : chaque phrase renvoie au moment exact de la vidéo, vérifié par le code.
 - 🔎 **Recherche hybride** : mots exacts (BM25 : marques, noms propres, fautes de frappe) et sens (vecteurs).
 - 🧭 **Plusieurs types de questions** : précises, générales, décomptes, « la première fois que… ».
-- **Inventaire des modèles essayés.** « Quelles imprimantes 3D ont-ils testées ? » retrouve les références et le minutage de leurs essais. La première lecture peut prendre plusieurs minutes. Sa durée et son coût avec OpenRouter dépendent du nombre d’épisodes relus. D’autres modèles peuvent avoir échappé à la recherche.
 - 💬 **Relances sur une scène**. Demandez « à quel moment exactement ? ». Si la parole et l’image désignent le même passage, le chat donne directement un lien au bon minutage. Si deux passages sont distincts, choisissez « la première » ou indiquez son minutage. Quand un détail manque, répondez « oui » à la proposition de chercher dans les autres épisodes du projet.
 - 📚 **Plusieurs chaînes** dans une même base, avec un filtre par chaîne.
 - 🖥️ **Interface web**, ligne de commande et **serveur MCP** pour Claude, Cursor et les autres clients IA.
@@ -152,7 +151,6 @@ Chaque famille de questions suit son propre chemin :
 |---|---|---|
 | **Précise** | « Quel firmware pour transformer un ESP32 en répéteur Wi-Fi ? » | quelques affirmations citées |
 | **Générale** | « Quand utilisent-ils une imprimante 3D ? » | une ligne par vidéo pertinente, les plus sûres d'abord |
-| **Inventaire** | « Quelles imprimantes 3D avons-nous testées ? » | modèles distincts avec leurs essais horodatés |
 | **Décompte** | « Toutes les vidéos où on parle de Raspberry Pi » | liste exacte calculée par la base, sans IA, ~2 s |
 | **Première / dernière mention** | « La première mention du PLA » | la plus ancienne (ou récente) vidéo avec son extrait, puis toutes par date |
 | **Première / dernière fois** | « La première fois qu'ils utilisent une scie circulaire » | la première ou dernière occurrence confirmée parmi les vidéos examinées, avec les pistes encore incertaines |
@@ -243,19 +241,23 @@ Le site Caddy conserve le Host public, efface les en-têtes d’identité reçus
 
 **Réglages → Accès invité** liste le groupe `ragator-collection-<clé>` de chaque collection. Chaque question invitée porte sur une seule collection autorisée. Pour couper l’accès invité, appliquez `RAGATOR_GATEWAY_TRUST=0` dans le déploiement Ragator. Si vous ouvrez l’administration par un nom DNS privé, ajoutez-le à `RAGATOR_HOSTS`.
 
+Les invités utilisent la même interface que vous, sans les onglets Administration et Réglages : la page qu’ils reçoivent est la page principale privée de ce code. Garde-fous de cet accès :
+
+- chaque invité pose une question à la fois et 30 par heure (`RAGATOR_GUEST_HOURLY`) ; les invités n’occupent jamais plus de deux des quatre places de réponse ;
+- la réponse qu’ils reçoivent est une liste fermée de champs (ni modèle, ni motif interne d’une réponse partielle) ; leurs questions sont journalisées à part (`npm run journal`, origine `invite`), sans le compte ;
+- `RAGATOR_GATEWAY_PEERS` (adresse Tailscale du VPS, ou plage CIDR) : seule cette machine peut se présenter comme la passerelle, et aucune de ses requêtes n’atteint l’administration, même avec le mot de passe. **Réglages → Accès invité** affiche l’adresse d’où la passerelle se connecte : ne renseignez la variable que si c’est bien celle du VPS (derrière certains réseaux Docker, Ragator ne voit que l’adresse du pont) ;
+- un mauvais mot de passe d’administration répété depuis une même adresse reçoit des réponses de plus en plus tardives, puis `429` ;
+- les pages partent avec une politique de contenu stricte (`Content-Security-Policy`) : seul leur propre script s’exécute. Si Caddy pose son propre en-tête, écrivez-le `?Content-Security-Policy` pour garder celui de Ragator.
+
+Pour voir la progression d’une réponse au fil de l’eau derrière Caddy, ajoutez `flush_interval -1` au `reverse_proxy` de Ragator ; sans cela la réponse arrive d’un bloc.
+
 | Onglet | Rôle |
 |---|---|
-| **Rechercher** | questions, réponses détaillées, courtes ou faites d'extraits ; filtre par chaîne ; vidéos proches de chaque vidéo citée |
+| **Rechercher** | questions, réponses approfondies, directes, courtes ou faites d'extraits ; filtre par chaîne ; vidéos proches de chaque vidéo citée |
 | **Administration** | dépôt de vidéos, mise à jour de l'index, état du corpus et de chaque vidéo, bilan par chaîne |
 | **Réglages** | mode local ou OpenRouter, état des serveurs locaux, jeton Hugging Face, clé et modèle OpenRouter, mot de passe |
 
-Dans **Rechercher**, choisissez votre chaîne et le mode **Courte** ou **Détaillée**. Le chat garde les références des cinq derniers échanges. Par exemple, après « Quelles imprimantes 3D avons-nous testées dans nos vidéos ? », cette relance sur la chaîne des Frères Poulain a donné la réponse suivante.
-
-> **Vous** — Et chez Bambu Lab ?
->
-> **Ragator** — Oui, vous avez testé les modèles Bambu Lab H2S et Bambu Lab X1-Carbon. [H2S à 02:19](https://www.youtube.com/watch?v=umlDmDKBBLM&t=139s) · [X1-Carbon à 00:48](https://www.youtube.com/watch?v=NbUIAMTs190&t=48s)
-
-« En une phrase ? » et « Sous forme de liste ? » reprennent les modèles et les citations de la réponse. Le mode **Courte** donne aussi une réponse directe aux demandes de confirmation. En ligne de commande, la commande `chat` permet le même dialogue.
+Dans **Rechercher**, choisissez votre chaîne et la forme de la réponse. **Approfondie** (par défaut) : Ragator lit sa première réponse, pose lui-même d’autres questions au corpus ou relit une scène quand un détail manque (deux tours au plus), puis rédige une réponse construite — une liste d’éléments nommés, une explication, un oui ou un non. Chaque phrase cite ses sources et recopie une preuve que le code retrouve dans l’une d’elles ; une phrase sans preuve est retirée, et si rien ne tient la réponse directe est rendue. Toute réponse passe par cette rédaction, y compris un décompte exact : la liste complète calculée par le code reste affichée dessous, intacte. **Directe** : une seule recherche, une affirmation par passage. **Courte** : quelques lignes. Le chat garde les références des cinq derniers échanges : « et dans cette vidéo ? », « à quel moment exactement ? » reprennent les scènes déjà citées. Le mode **Courte** donne aussi une réponse directe aux demandes de confirmation. En ligne de commande, la commande `chat` permet le même dialogue.
 
 ### Ligne de commande
 
@@ -268,7 +270,7 @@ docker exec -it ragator ragator journal --echecs # questions posées sans répon
 
 | Commande | Rôle |
 |---|---|
-| `ask "question"` | réponse citée ; `--court`, `--extractif`, `--sources N`, `--collection clé`, `--json` |
+| `ask "question"` | réponse citée ; `--approfondi`, `--court`, `--extractif`, `--sources N`, `--collection clé`, `--json` |
 | `chat` | conversation avec relances ; `/reset` efface l'historique |
 | `update [--surveiller N]` | indexe les vidéos nouvelles ou modifiées (toutes les N minutes avec `--surveiller`) |
 | `collections` | chaînes du corpus, avec leur clé et leur nombre de vidéos |
@@ -347,7 +349,6 @@ flowchart LR
   A --> S[Recherche hybride<br/>BM25 + vecteurs<br/>fusion RRF]
   DB --> S
   S -->|précise| P[Réponse citée]
-  S -->|inventaire| E[Modèles essayés<br/>et scènes des essais]
   S -->|générale| G[Le juge trie<br/>chaque vidéo]
   S -->|première / dernière fois| C[Parcours<br/>chronologique]
   S -->|décompte| L[Comptage<br/>exact SQL]

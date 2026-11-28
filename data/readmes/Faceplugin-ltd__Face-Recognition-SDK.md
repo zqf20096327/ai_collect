@@ -1,127 +1,155 @@
 <div align="center">
-<img alt="FacePlugin" src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/brand/logo.png" width="400"/>
+
+<img alt="FacePlugin" src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/brand/logo.png" width="380"/>
+
+# Face Recognition SDK — Fully On-Premise
+
+### 1:1 verification and 1:N identification with passive liveness, on your own servers and devices
+
+**On-device and on-premise face recognition for Android, iOS, Flutter, React Native, .NET MAUI, Ionic, Web, Windows and Docker. No cloud, no per-match fees, and no biometric data leaving your infrastructure.**
+
+<a href="https://faceplugin.com/"><img src="https://img.shields.io/badge/Website-faceplugin.com-0A66C2?style=for-the-badge&logo=googlechrome&logoColor=white" alt="FacePlugin face recognition SDK"></a>
+<a href="https://doc.faceplugin.com/"><img src="https://img.shields.io/badge/Docs-doc.faceplugin.com-0A66C2?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Face recognition SDK documentation"></a>
+<a href="https://hub.docker.com/u/faceplugin"><img src="https://img.shields.io/badge/Docker%20Hub-faceplugin-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="FacePlugin Docker images"></a>
+<a href="https://faceplugin.com/contact-us/"><img src="https://img.shields.io/badge/Request-License%20%26%20Demo-FF6F00?style=for-the-badge" alt="Request a face recognition SDK license"></a>
+
+`NIST FRVT evaluated` · `1:1 verification` · `1:N identification` · `passive 2D liveness` · `100% offline` · `unlimited matching`
+
 </div>
 
-#### 🌐 Company Site - [Here](https://faceplugin.com)
-#### 🤗 Hugging Face - [Here](https://huggingface.co/FacePlugin-Ltd)
-#### 🛟 Help Center - [Here](https://doc.faceplugin.com)
-#### 🐳 Docker Hub - [Here](https://hub.docker.com/u/faceplugin)
+---
 
-# FacePlugin Face Recognition SDK — Fully On-Premise
+## What this repository is
 
-> **NIST FRVT**-class **face recognition SDK** with **3D passive liveness detection**. Face detection, landmarks, quality, 1:1 / 1:N match — on your device, with **no** data leaving the device.
-> Jump: [Try it](#try-it) · [Screenshots](#screenshots) · [Platforms](#choose-your-platform) · [Products](#list-of-our-products) · [Contact](#contact)
+This is the **product hub** for the FacePlugin **Face Recognition SDK**. Pick your platform below and clone that repository — each one is a complete, runnable demo app with the SDK already wired in.
 
-## Overview
-
-FacePlugin **Face Recognition SDK** is a fully **on-premise face recognition SDK** for KYC, access control, and identity verification. It's paired with a passive liveness detection SDK, tested internally following ISO/IEC 30107-3 methodology, that guards against printed photos, video replays and 3D masks, with added protection against deepfake threats.
-
-You get **face detection** (box, landmarks, pose, attributes), **ICAO-style face quality**, **template extraction**, **1:1 match**, and **1:N identify** — on the phone or on your server.
-
-All processing stays on the device. **NO** biometric data is sent to FacePlugin cloud.
-
-Docs: [https://doc.faceplugin.com](https://doc.faceplugin.com)
-
-Dedicated PAD-only product: **[Face Liveness Detection SDK](https://github.com/Faceplugin-ltd/Face-Liveness-Detection-SDK)**.
-
-## Try it
-
-### Mobile SDK on Google Play
-
-<a href="https://play.google.com/store/apps/details?id=ai.faceplugin.recognition" target="_blank">
-  <img alt="Get FacePlugin Face Recognition on Google Play" src="https://user-images.githubusercontent.com/125717930/230804673-17c99e7d-6a21-4a64-8b9e-a465142da148.png" height="80"/>
-</a>
-
-### Server SDK on Playground & Hugging Face
-
-- [FacePlugin Playground](https://playground.faceplugin.com/)
-- [Hugging Face Space](https://huggingface.co/spaces/FacePlugin-Ltd/FaceRecognition-LivenessDetection-SDK)
-
-### Linux / Docker (no Drive)
-
-```bash
-docker pull faceplugin/face-recognition:latest
-docker run -d --name faceplugin-face-recognition \
-  --shm-size=2gb --privileged \
-  -p 8083:8083 \
-  -v /etc/machine-id:/etc/machine-id:ro \
-  faceplugin/face-recognition:latest
-curl -s http://127.0.0.1:8083/api/health
-```
-
-Then `POST /api/detect`, `/api/quality`, `/api/match`. Guide: [FaceRecognition-Docker](https://github.com/Faceplugin-ltd/FaceRecognition-Docker).
-
-## Screenshots
-
-| Home | Identify | Capture | Attributes |
-| ---- | -------- | ------- | ---------- |
-| <p align="center"><img src="assets/screenshots/home.png" alt="FacePlugin Face Recognition SDK Android home — Enroll, Identify, Capture, Attribute" width="220"/></p> | <p align="center"><img src="assets/screenshots/identify.png" alt="FacePlugin 1:N face recognition with live camera and liveness" width="220"/></p> | <p align="center"><img src="assets/screenshots/capture.png" alt="FacePlugin face capture SDK — oval coach on-device KYC" width="220"/></p> | <p align="center"><img src="assets/screenshots/attribute.png" alt="FacePlugin face attributes — liveness, quality, pose, age, gender" width="220"/></p> |
-
-## On YouTube
-
-<div align="center">
-<a href="https://www.youtube.com/watch?v=qVtdkwtGtqs" target="_blank">
- <img src="https://img.youtube.com/vi/qVtdkwtGtqs/maxresdefault.jpg" alt="Watch FacePlugin Face Recognition SDK on YouTube" width="720"/>
-</a>
-</div>
+Every platform wraps the **same native engine**, so a template extracted on Android matches the same face on iOS or on the server. Enrollment, template storage and search stay in **your** database.
 
 ## Choose your platform
 
-This GitHub repo is the **product hub**. Clone the platform SDK you need. Engine binaries are on Google Drive (too large for GitHub); Docker Hub already includes the runtime.
-
-| Platform | Repository | Fastest path |
+| Platform | Repository | What you get |
 | -------- | ---------- | ------------ |
-| **Android (Java, Kotlin)** | [FaceRecognition-Android](https://github.com/Faceplugin-ltd/FaceRecognition-Android) | Drop `facerecognitionsdk.aar` → Enroll / Identify |
-| **iOS (Objective-C, Swift)** | [FaceRecognition-iOS](https://github.com/Faceplugin-ltd/FaceRecognition-iOS) | Add frameworks → run the sample |
-| **Windows** | [FaceRecognition-Windows](https://github.com/Faceplugin-ltd/FaceRecognition-Windows) | Native Windows SDK + demo |
-| **Linux / Docker** | [FaceRecognition-Docker](https://github.com/Faceplugin-ltd/FaceRecognition-Docker) | `docker pull faceplugin/face-recognition` |
-| **React Native** | [FaceRecognition-React-Native](https://github.com/Faceplugin-ltd/FaceRecognition-React-Native) | Android + iOS sample |
-| **Flutter** | [FaceRecognition-Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-Flutter) | Android + iOS plugin + example |
-| **Ionic Capacitor** | [FaceRecognition-Ionic-Capacitor](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Capacitor) | Capacitor Android / iOS |
-| **Ionic Cordova** | [FaceRecognition-Ionic-Cordova](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Cordova) | Cordova Android / iOS |
-| **.NET MAUI** | [FaceRecognition-.Net](https://github.com/Faceplugin-ltd/FaceRecognition-.Net) | .NET sample |
-| **.NET WPF** | [FaceRecognition-WPF-.Net](https://github.com/Faceplugin-ltd/FaceRecognition-WPF-.Net) | WPF desktop |
-| **JavaScript** | [FaceRecognition-LivenessDetection-Javascript](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Javascript) | Web SDK |
-| **React** | [FaceRecognition-LivenessDetection-React](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-React) | React web |
-| **Vue** | [FaceRecognition-LivenessDetection-Vue](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Vue) | Vue web |
+| **Android** | [FaceRecognition-LivenessDetection-Android](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Android) | Native AAR, five-tab demo app |
+| **iOS** | [FaceRecognition-LivenessDetection-iOS](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-iOS) | Swift package and engine frameworks |
+| **Flutter** | [FaceRecognition-LivenessDetection-Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Flutter) | `face_recognition_sdk` plugin |
+| **React Native** | [FaceRecognition-LivenessDetection-ReactNative](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-ReactNative) | `face-recognition-sdk` plugin |
+| **.NET MAUI** | [FaceRecognition-LivenessDetection-DotNet-MAUI](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-DotNet-MAUI) | One C# codebase, Android and iOS |
+| **Ionic Capacitor** | [FaceRecognition-LivenessDetection-Ionic-Capacitor](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Ionic-Capacitor) | `face-recognition-capacitor` plugin |
+| **Ionic Cordova** | [FaceRecognition-LivenessDetection-Ionic-Cordova](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Ionic-Cordova) | Cordova plugin |
+| **JavaScript / Web** | [FaceRecognition-LivenessDetection-Javascript](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Javascript) | Face recognition in the browser |
+| **React** | [FaceRecognition-React](https://github.com/Faceplugin-ltd/FaceRecognition-React) | React web demo |
+| **Vue** | [FaceRecognition-Vue](https://github.com/Faceplugin-ltd/FaceRecognition-Vue) | Vue web demo |
+| **Windows** | [FaceRecognition-Windows](https://github.com/Faceplugin-ltd/FaceRecognition-Windows) | On-premise HTTP API |
+| **Linux / Docker** | [FaceRecognition-Docker](https://github.com/Faceplugin-ltd/FaceRecognition-Docker) | On-premise HTTP API |
 
-## List of our Products
+> **Open source:** [Open-Source-Face-Recognition-SDK](https://github.com/Faceplugin-ltd/Open-Source-Face-Recognition-SDK) — the free, open-source face recognition SDK.
 
-**Face Recognition with Liveness Detection**
+## What the SDK does
 
-- [Android (Java, Kotlin)](https://github.com/Faceplugin-ltd/FaceRecognition-Android)
-- [iOS (Objective-C, Swift)](https://github.com/Faceplugin-ltd/FaceRecognition-iOS)
-- [React Native](https://github.com/Faceplugin-ltd/FaceRecognition-React-Native)
-- [Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-Flutter)
-- [Ionic Capacitor](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Capacitor)
-- [Ionic Cordova](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Cordova)
-- [.NET MAUI](https://github.com/Faceplugin-ltd/FaceRecognition-.Net)
-- [.NET WPF](https://github.com/Faceplugin-ltd/FaceRecognition-WPF-.Net)
-- [JavaScript](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Javascript)
-- [React](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-React)
-- [Vue](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Vue)
-- [Windows](https://github.com/Faceplugin-ltd/FaceRecognition-Windows)
-- [Linux / Docker](https://github.com/Faceplugin-ltd/FaceRecognition-Docker)
+| Capability | Detail |
+| ---------- | ------ |
+| **Face detection** | Bounding box, landmarks, pose (yaw / pitch / roll), image quality |
+| **1:1 verification** | Compare two faces and get a similarity score |
+| **1:N identification** | Live search against your enrolled gallery |
+| **Face templates** | Extract a compact template and store it in your own database |
+| **Passive 2D liveness** | Anti-spoofing built into the mobile identify flow |
+| **Face attributes** | Age, gender, emotion, mask, glasses, eye state, occlusion |
 
-**Face Liveness Detection SDK**
+Mobile defaults: identify threshold **0.67**, liveness threshold **0.5**. The server HTTP API listens on port **8092**.
 
-- [Android (Java, Kotlin)](https://github.com/Faceplugin-ltd/FaceLivenessDetection-Android)
-- [iOS (Objective-C, Swift)](https://github.com/Faceplugin-ltd/FaceLivenessDetection-iOS)
-- [Windows](https://github.com/Faceplugin-ltd/FaceLivenessDetection-Windows)
-- [Linux / Docker](https://github.com/Faceplugin-ltd/FaceLivenessDetection-Docker)
-- [Face Liveness Detection SDK (hub)](https://github.com/Faceplugin-ltd/Face-Liveness-Detection-SDK)
+## Screenshots
 
-**More FacePlugin**
+<p align="center">
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/mobile/identify.gif" width="240" alt="FacePlugin Face Recognition — live 1:N identification with liveness"/>
+&nbsp;
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/mobile/people.gif" width="240" alt="FacePlugin Face Recognition — enroll people with the guided capture coach"/>
+&nbsp;
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/mobile/attribute.gif" width="240" alt="FacePlugin Face Recognition — face attributes, quality and landmarks from a photo"/>
+</p>
 
-- [Face Recognition SDK (this hub)](https://github.com/Faceplugin-ltd/Face-Recognition-SDK)
-- [Open Source Face Recognition SDK](https://github.com/Faceplugin-ltd/Open-Source-Face-Recognition-SDK)
-- [Palm Recognition SDK](https://github.com/Faceplugin-ltd/Palm-Recognition)
-- [ID Document Recognition SDK](https://github.com/Faceplugin-ltd/ID-Document-Recognition-SDK)
-- [ID Document Liveness Detection](https://github.com/Faceplugin-ltd/ID-Document-Liveness-Detection-Docker)
+<p align="center">
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/mobile/liveness.gif" width="240" alt="FacePlugin Face Recognition — passive liveness check on the camera feed"/>
+&nbsp;
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/mobile/settings.png" width="240" alt="FacePlugin Face Recognition — match, liveness and pose thresholds in Settings"/>
+</p>
 
-## Contact
+<p align="center">
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/windows/demo-ui-detect.png" width="560" alt="FacePlugin Face Recognition Windows demo — Face Detection tab with pose and attributes"/>
+</p>
 
-<div align="left">
-<a target="_blank" href="mailto:info@faceplugin.com"><img src="https://img.shields.io/badge/email-info@faceplugin.com-blue.svg?logo=gmail" alt="faceplugin.com"></a>&emsp;
-<a target="_blank" href="https://wa.me/+14692784822"><img src="https://img.shields.io/badge/whatsapp-faceplugin-blue.svg?logo=whatsapp" alt="faceplugin.com"></a>
+<p align="center">
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/windows/demo-ui-verify.png" width="560" alt="FacePlugin Face Recognition Windows demo — 1:1 Verification tab with similarity score"/>
+&nbsp;
+<img src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/screenshots/face-recognition/windows/demo-ui-identify.png" width="560" alt="FacePlugin Face Recognition Windows demo — 1:N Identification tab with ranked matches"/>
+</p>
+
+## Quick start
+
+```bash
+docker pull faceplugin/face-recognition:latest
+```
+
+On mobile, clone the platform repository above, place the engine from its Releases page, and run the demo on a physical phone. Full setup and API reference: **[doc.faceplugin.com](https://doc.faceplugin.com/)**.
+
+## Other FacePlugin products
+
+| Product | Hub | Use it when |
+| ------- | --- | ----------- |
+| **Face Liveness Detection** | [Face-Liveness-Detection-SDK](https://github.com/Faceplugin-ltd/Face-Liveness-Detection-SDK) | You need anti-spoofing **without** enrollment or 1:N |
+| **ID Document Recognition** | [ID-Document-Recognition-SDK](https://github.com/Faceplugin-ltd/ID-Document-Recognition-SDK) | Passport, driving licence and ID card OCR, MRZ and barcode |
+
+Combine all three for a complete **eKYC** flow: read the document, confirm it is genuine, check the selfie is a live person, then match that selfie to the document photo.
+
+## Frequently asked questions
+
+<details>
+<summary><b>Is this a cloud API?</b></summary>
+
+No. Everything runs on your own servers or on the end user's device. Face images and templates never leave your infrastructure, which keeps data residency and privacy compliance simple.
+</details>
+
+<details>
+<summary><b>Does face recognition work offline?</b></summary>
+
+Yes. Licensing is offline and inference needs no internet connection, including in air-gapped environments.
+</details>
+
+<details>
+<summary><b>What is the difference between 1:1 and 1:N?</b></summary>
+
+1:1 verification compares two faces and answers "are these the same person?". 1:N identification searches a live face against an enrolled gallery and answers "who is this?".
+</details>
+
+<details>
+<summary><b>Are there per-match or per-API-call fees?</b></summary>
+
+No. Licences are offline and matching is unlimited.
+</details>
+
+<details>
+<summary><b>Where are face templates stored?</b></summary>
+
+In your database. The SDK extracts a template and hands it back; it never uploads or stores it for you.
+</details>
+
+<details>
+<summary><b>Can I try it before buying?</b></summary>
+
+Yes. Every platform repository ships a runnable demo app with a sample licence key. [Request a key](https://faceplugin.com/contact-us/) for your own application id.
+</details>
+
+## Support
+
+| | |
+| --- | --- |
+| 🌐 Website | [faceplugin.com](https://faceplugin.com) |
+| 📘 Documentation | [doc.faceplugin.com](https://doc.faceplugin.com) |
+| 🤗 Hugging Face | [FacePlugin-Ltd](https://huggingface.co/FacePlugin-Ltd) |
+| 🐳 Docker Hub | [faceplugin](https://hub.docker.com/u/faceplugin) |
+| ✉️ Email | [info@faceplugin.com](mailto:info@faceplugin.com) |
+| 💬 Telegram | [@FacePluginSupport](https://t.me/FacePluginSupport) |
+| 📱 WhatsApp | [+1 (469) 278-4822](https://wa.me/14692784822) |
+
+<div align="center">
+<sub><b>Keywords:</b> face recognition SDK · face verification · face identification · 1:1 face matching · 1:N face search · face detection · face landmarks · face attributes · face liveness detection · anti-spoofing · biometric authentication · identity verification · eKYC · KYC · on-premise face recognition · offline face recognition · Android · iOS · Flutter · React Native · .NET MAUI · Ionic · JavaScript · React · Vue · Windows · Linux · Docker</sub>
 </div>

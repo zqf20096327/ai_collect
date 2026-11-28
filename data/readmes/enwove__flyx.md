@@ -43,7 +43,7 @@
 
 - **Up to 6× faster generation** — Built-in speculative decoding (MTP, DFlash2, DSpark, and prompt lookup): **565.5 tok/s** on Qwen3.8-27B and **438.9 tok/s** on Inkling-2-Mini on an RTX 5090 ([Performance](#performance)).
 - **Up to 1M native context on a consumer PC** — Runs Inkling-2-Mini at 1M context on 16 GB VRAM + 32 GB RAM.
-- **Tuned per GPU, zero manual flags** — Ships measured kernel tuning tables for 11 NVIDIA GPUs and automatically sizes context length, K/V precision, and GPU/RAM placement from available memory. No guessing offload counts, batch sizes, or cache types.
+- **Tuned per GPU, zero manual flags** — Ships measured kernel tuning tables for 16 NVIDIA GPUs and automatically sizes context length, K/V precision, and GPU/RAM placement from available memory. No guessing offload counts, batch sizes, or cache types.
 - **No install, no dependencies, ~57 MB** — CUDA and C++ runtimes are linked in; only the NVIDIA driver (≥ 580) is required. No CUDA Toolkit, Python, or Docker. Single ~57 MB `.exe` on Windows (double-click to run), or a tarball on Linux.
 - **Built-in web dashboard & terminal monitor** — Starts straight into a browser UI (7 languages) with guided next-step hints to search/download Hugging Face or local models, chat (text & images), read localized API docs, and watch live throughput, VRAM/RAM split, sessions, requests, and logs ([monitor guide](docs/monitor.md)).
 - **One-click coding agent integration** — Speaks OpenAI (Chat Completions, Responses) and Anthropic Messages with tool calls and multi-turn prompt reuse. Launch **Claude Code** or **Codex CLI** straight into your project folder from **Integration** (Windows), or copy ready-to-run commands for **DeepSeek Harness, OpenCode, and Pi**.

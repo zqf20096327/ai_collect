@@ -105,7 +105,7 @@ The server uses stdio. Protocol messages are written to stdout and diagnostics a
 |---|---|
 | `pdf_open` | Validate, decompose, index, resume, or load an exact PDF generation. |
 | `pdf_document_info` | Report metadata, decomposition, diagnostics, cache state, leases, and resource lifetime. |
-| `pdf_search` | Search with deterministic BM25, optional semantic retrieval, or reciprocal-rank fusion. |
+| `pdf_search` | Search with deterministic BM25, exact phrase matching, optional semantic retrieval, or reciprocal-rank fusion. |
 | `pdf_get_pages` | Return selected cited elements as structured data or Markdown in text, balanced, or fidelity mode under explicit budgets. |
 | `pdf_get_element` | Resolve one element, including bounded table slices, only in its expected extraction generation. |
 | `pdf_render_page` | Render a bounded page or crop as PNG or JPEG, returned inline only by explicit request. |
@@ -144,7 +144,7 @@ The legacy `extract_pdf_content` tool has been removed and is not aliased. See [
 
 Every element, citation, asset, render, canonical export, and `pdf-decompiler://` resource URI carries the extraction fingerprint. A reference from another generation returns a structured stale-reference error. Active cached generations are immutable and protected by leases during retrieval, rendering, rebuilds, deletion, and eviction.
 
-Canonical format version 4 and extraction revision 4 preserve displayed-page geometry and invalidate earlier canonical cache entries. Public bboxes use PDF points after CropBox and rotation, with a top-left origin. Link text is string or null, internal destinations are structured, and annotation subtype, content, geometry, authorship, dates, color, flags, and reply provenance are retained where available. Blocks represent headings, text, ordered or unordered lists, and code independently from native or OCR origin. Image-region OCR references its canonical figure. Page OCR reports accepted, partial, rejected, or not-attempted region status, and rejected text is not indexed or returned. Reading-order, table, OCR-confidence, and link-overlap thresholds are named internal heuristics, not public constants.
+Canonical format version 4 and extraction revision 6 preserve displayed-page geometry and invalidate earlier canonical cache entries. Public bboxes use PDF points after CropBox and rotation, with a top-left origin. Link text is string or null, internal destinations are structured, and annotation subtype, content, geometry, authorship, dates, color, flags, and reply provenance are retained where available. Blocks represent headings, text, ordered or unordered lists, and code independently from native or OCR origin. Image-region OCR references its canonical figure. Page OCR reports accepted, partial, rejected, or not-attempted region status, and rejected text is not indexed or returned. Reading-order, table, OCR-confidence, and link-overlap thresholds are named internal heuristics, not public constants.
 
 Raster and vector content share one bounded PDF.js operator inspection. Vector bounds may be conservative and are labeled exact, approximate, or unknown. Meaningful vector-only pages are never blank. Uncertain visual pages emit `visual_unknown` and expose a deferred, budgeted, generation-bound render without eager full-page rendering during decomposition.
 
@@ -166,7 +166,7 @@ Completion fields are independent. `documentComplete` means every PDF page is ca
 
 BM25 full-text retrieval is local, deterministic, available offline, and indexes normalized element text, positions, metadata, and outline entries.
 
-`pdf_get_pages` defaults to structured output. With `outputFormat: "markdown"`, the full paged Markdown appears once in `structuredContent.data.markdown`; the text block contains only a bounded summary, resource URI, and continuation instructions. Tables may use compact previews. `pdf_get_element.tableSelection` uses one-based inclusive row and column ranges for bounded full-table retrieval, with optional repeated canonical header context across continuations.
+`pdf_get_pages` defaults to structured output. With `outputFormat: "markdown"`, paged Markdown appears once in `structuredContent.data.markdown`. Set `citationDetail: "compact"` to keep exact element references and bounding boxes while sharing the document and extraction identifiers across citations. Tables may use compact previews. `pdf_get_element.tableSelection` uses one-based inclusive row and column ranges for bounded full-table retrieval, with optional repeated canonical header context across continuations.
 
 A complete-document Markdown resource is available for complete generations. It always uses full tables, is generated atomically, and is checksum verified before publication. Configurable hard bounds cover bytes, serialization time, working buffer, elements, table rows, table cells, and derived-cache entry size. Complete exports fail rather than truncate. Their serializer fingerprint contains only settings that affect full-export bytes or security, so a Markdown-only change does not repeat canonical extraction and compact preview tuning does not invalidate an unchanged full export.
 

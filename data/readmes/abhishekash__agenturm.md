@@ -1,232 +1,143 @@
-<p align="center">
-  <a href="https://www.agenturm.dev/">
-    <img src="media/brand/hero.svg" alt="Agenturm — Know what your agents are doing. Local observability for coding agents." width="100%">
-  </a>
-</p>
+# Agenturm
 
 <p align="center">
-  <strong>Find the agent request that needs you, then return to its recorded work.</strong><br>
-  See the owner and captured reason; answer in the agent’s own terminal.
+  <strong>Inspect your agents’ work. Run by run.</strong><br />
+  A local-first terminal cockpit for the work between a prompt and a result.
 </p>
 
 <p align="center">
-  <a href="https://www.agenturm.dev/#demo"><strong>Explore the workflow →</strong></a> &nbsp;·&nbsp;
-  <a href="docs/usage.md">Documentation</a> &nbsp;·&nbsp;
-  <a href="https://github.com/abhishekash/agenturm/releases/tag/v0.2.8">What’s new in 0.2.8</a>
+  <a href="https://github.com/abhishekash/agenturm/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/abhishekash/agenturm/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/abhishekash/agenturm/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/abhishekash/agenturm"></a>
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 </p>
+
+Agenturm brings supported coding-agent sessions and OpenTelemetry data into one keyboard-driven view. See which sessions need attention, follow the work recorded for a run, and inspect the evidence behind a reported result—without losing sight of what the capture does *not* establish.
+
+**Agenturm is an observability cockpit, not an agent orchestrator.** It does not steer conversations, approve actions, or rerun tests. Keep using each agent in its own terminal; open Agenturm alongside it. For telemetry collection, `agenturm run` can wrap a program to configure its OTLP endpoint, but it does not inject instrumentation or change the program’s logic.
 
 <p align="center">
-  <a href="https://github.com/abhishekash/agenturm/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/abhishekash/agenturm/ci.yml?branch=main&amp;label=CI&amp;labelColor=191621" alt="CI status on main"></a>
-  <a href="https://pypi.org/project/agenturm/"><img src="https://img.shields.io/pypi/v/agenturm?color=ffbd69&amp;labelColor=191621" alt="PyPI version"></a>
-  <a href="https://pypi.org/project/agenturm/"><img src="https://img.shields.io/pypi/pyversions/agenturm?logo=python&amp;logoColor=white&amp;color=c5adff&amp;labelColor=191621" alt="Supported Python versions"></a>
-  <a href="docs/privacy.md"><img src="https://img.shields.io/badge/data-local_by_default-c5adff?labelColor=191621" alt="Local by default"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-b9afc5?labelColor=191621" alt="MIT license"></a>
+  <img src="https://raw.githubusercontent.com/abhishekash/abhishekash/main/assets/agenturm-demo.gif" alt="Agenturm terminal walkthrough using synthetic agent-session records" width="960" />
 </p>
 
-<p align="center">
-  <a href="https://pypistats.org/packages/agenturm"><img src="https://img.shields.io/pypi/dm/agenturm?label=downloads%2Fmonth&amp;color=ffbd69&amp;labelColor=191621" alt="PyPI downloads per month"></a>
-  <a href="https://github.com/abhishekash/agenturm/stargazers"><img src="https://img.shields.io/github/stars/abhishekash/agenturm?style=flat&amp;logo=github&amp;color=c5adff&amp;labelColor=191621" alt="GitHub stars"></a>
-</p>
+<p align="center"><sub>Real terminal UI · synthetic records · no visitor or local machine data in the demo</sub></p>
 
-## Find the work that needs you
+<p align="center"><a href="https://www.agenturm.dev/#demo">Explore the interactive walkthrough</a></p>
 
-With concurrent agents, the immediate question is **which recorded request needs a response, and which session owns it?** Agenturm keeps request evidence scoped to its recorded owner and offers a Workflow inbox; native replies and approvals still happen in the agent's own terminal.
+## Why Agenturm?
 
-Agenturm reads supported local agent records and configured OpenTelemetry signals into SQLite. Its practical value is in three jobs: **attribute concurrent work**, **inspect recorded validation and its gaps**, and **carry evidence and engineering decisions across sessions**. Exact identities keep workers separate; Review distinguishes agent claims from recorded results; saved tasks retain a brief, rationale and linked runs. It does not independently attest command execution or establish the current worktree's correctness.
+An agent’s “done” is a useful signal—not a substitute for understanding what happened. Agenturm keeps the recorded work close to the decision you need to make next.
 
-| When you need to… | Agenturm gives you… |
-| --- | --- |
-| Find a recorded request | An attention inbox with the exact recorded owner, request reason, pending/seen state and source freshness where available |
-| Return to the agent | A terminal action only when the live target can be verified; otherwise inspect the evidence and use the native terminal manually |
-| Understand why it is waiting | Scoped request evidence and collection limits, without treating Seen as a response or resolution |
-| Understand a team of agents | Expandable parent/worker trees when the runtime records exact delegation; each worker has its own inspector |
-| Catch up without rereading a transcript | A human-readable task, recorded progress, and **Overview / Prompts / Details** |
-| Assess an agent’s “done” | Recorded checks, errors, later edits, and coverage limits in **Review** |
-| Investigate a broken tool call | Captured MCP arguments, responses, duration, and a linked trace when available |
-| Continue the task in another session | A saved brief, versioned decisions, linked runs, workspace capture, and a handoff you review before sharing |
+- **Find the session that needs you.** Scan multiple agents and, when the source records the relationship, follow delegated workers without blending their evidence together.
+- **Recover the request and the story.** Move from a session to its captured prompts, activity, tools, errors, and progress.
+- **Review facts, not just summaries.** Compare reported outcomes with recorded command results and later edits. A passing check followed by another edit is still something to review.
+- **Pick up work deliberately.** Keep a local task brief, decisions, rationale, and links to the runs that informed them.
+- **Bring telemetry into the same picture.** Receive OpenTelemetry traces, logs, and metrics from instrumented processes through OTLP/HTTP.
+- **Stay in your terminal.** Navigate and inspect with the keyboard; press **F1** in the cockpit for the current keymap.
 
-Reply to agents and approve their requests in their own terminals. Agenturm monitors their work; it does not launch or control them. Request capture and terminal routing depend on the runtime and environment, so an unavailable route is not a successful return.
+Evidence is source-backed and bounded. Runtime support, capture permissions, and available history affect what Agenturm can show; missing evidence is not treated as proof that an event did not happen.
 
-**In 0.2.8:** Follow agents in a simpler workspace with compact navigation and fewer repeated summaries. Inspect recorded interruption reasons and keep the header stable while switching views. Detailed evidence remains in Details and Activity. [What’s new](docs/releases/0.2.8.md).
+## Get started
 
-## See it in action
+### Install
 
-<p align="center">
-  <a href="https://www.agenturm.dev/#demo">
-    <img src="media/product/agents.png" alt="Agenturm 0.2.0 terminal showing distinct agent rows, delegated workers, recorded states, and the selected agent’s overview. Synthetic example records." width="100%">
-  </a>
-</p>
-
-**[Try the interactive walkthrough on agenturm.dev →](https://www.agenturm.dev/#demo)**
-
-[Watch the 37-second terminal walkthrough](media/product/walkthrough.mp4) · [Animated preview](media/product/walkthrough.gif) · [Written transcript](media/product/walkthrough.txt)
-
-Follow a refresh-token fix: find a worker that needs input, read the requests, inspect a reported test result alongside a later edit, investigate a failed MCP call, and preview a handoff. The browser walkthrough is a simplified, interactive explanation. Screenshots are captured from the actual v0.2.0 terminal. All demo records are synthetic.
-
-## Get your first useful view
-
-<p>
-  <a href="https://www.agenturm.dev/#demo"><img src="https://img.shields.io/badge/demo-interactive-ffbd69?labelColor=191621" alt="Try the interactive demo"></a>
-  <a href="docs/usage.md#install-and-launch-the-terminal-cockpit"><img src="https://img.shields.io/badge/launch-uvx_agenturm-c5adff?labelColor=191621" alt="Launch with uvx agenturm"></a>
-</p>
-
-Requires **Python 3.11+**. Use [uv](https://docs.astral.sh/uv/getting-started/installation/) or pip to install.
-
-Keep your coding agents open. In another terminal, run:
-
-```sh
-uvx agenturm
-```
-
-Agenturm starts or attaches to its local receiver. Recent supported **Codex, Claude Code, OpenCode, Pi, and Kiro** records are discovered locally; those agents do not need a restart. No Agenturm account, subscription, or provider API key is needed for local monitoring.
-
-1. In **Agents**, select a session with `↑` / `↓`. Expand a recorded delegation with `→`.
-2. Press `w` to open **Workflow** and inspect recorded requests. Select one to see its owner, reason and whether it remains pending or its observation is stale.
-3. Use **Locate terminal** to attempt the supported route; Agenturm selects a terminal only after exact identity is verified. Then respond in the native terminal. **Seen** only acknowledges locally; it does not resolve or approve a request.
-4. Use **Review** for captured checks and edits, or `b` to save a task for later.
-
-An empty screen means no supported recent records have been discovered yet. Run a supported agent and open collection diagnostics with `d`. Agenturm does not seed your workspace with example sessions. See [discovery, custom paths, and troubleshooting](docs/usage.md#local-agent-discovery).
-
-For a persistent command:
-
-```sh
-uv tool install agenturm
-agenturm
-```
-
-Or install with pip in your Python environment:
-
-```sh
-pip install agenturm
-agenturm
-```
-
-To upgrade a pip installation, run `pip install --upgrade agenturm`.
-
-To upgrade, run `uv tool upgrade agenturm`, then restart Agenturm and any separately running receiver. [Other installation methods](docs/usage.md#install-and-launch-the-terminal-cockpit).
-
-## Standalone Rust preview (Linux and Apple Silicon Mac)
-
-The opt-in Rust 0.3.9 bundle runs without Python or a Rust toolchain. The
-installer detects Linux x86-64/ARM64 or Apple Silicon macOS 13 or newer; Intel
-Macs and Rosetta are unsupported. It installs the separate `agenturm-rust`
-command and does not replace `agenturm`.
+**macOS (Apple Silicon) or Linux:**
 
 ```sh
 curl -fsSL https://www.agenturm.dev/install.sh | bash
-agenturm-rust
 ```
 
-The bootstrap pins the platform installer and downloads the exact Rust release
-assets over HTTPS. Apple Silicon is a preview pending independent clean-host
-acceptance. macOS builds are unsigned and not notarized; macOS may ask you to
-approve Agenturm in Privacy & Security on first launch. Keep Gatekeeper enabled.
-See the [Rust 0.3.9 prerelease notes](docs/releases/rust-0.3.9.md) and the
-[Rust installation guide](docs/rfcs/rust-distribution-installation.md).
-
-## From activity to understanding
-
-### See the agent and its workers
-
-**Today** puts active work and work needing review within reach; **History** keeps earlier sessions available. Search by task or project. Switch between the tree and flat list with `f`.
-
-The roster names what needs you: **Needs approval**, **Needs reply**, **Run failed**, or **Check status**, alongside **In progress** and **Ready for review**. Click the attention count or press **!** to reveal the affected agents; the inspector leads with the reason and next step. Spaced task blocks and deeper tree guides keep workers readable.
-
-Task labels stay anchored to the **first substantive recorded request**. Model changes, acknowledgements, and later steering stay in Prompts without renaming the task. The source line stays short; recent activity and status evidence live in the inspector. [Task identity and capture limits](docs/session-task-labels.md).
-
-A parent and its workers retain independent states. A completed parent can still have a working child; the branch summary makes that visible. Missing parent evidence stays explicit. Relationships use exact runtime identifiers, rather than guesses from similar tasks or nested spans. [Hierarchy support and limits](docs/agent-hierarchy.md).
-
-### Read the request with its context
-
-**Overview** collects the latest agent-reported update, recorded work, results, and delegated children. **Prompts** gives each request a readable place of its own, separates captured runtime scaffolding, and keeps the original text available. **Details** holds IDs, provenance, and reported usage.
-
-In Prompts, `↑` / `↓` chooses a request; `Enter` / `→` moves into the reader and `←` returns to the request list. `[` / `]` changes requests from the reader; `z` shows the original text. Reading positions survive section changes. [Complete keyboard guide](docs/keyboard-navigation.md).
-
-### Review the evidence behind “done”
-
-**Ready for review** means an agent reported completion. Open **Review** to inspect the captured checks, failures, edits, and coverage for that session. A passing command followed by a later edit is different from a check on the current files. Loaded evidence can be partial; the interface says so.
-
-Marking a run reviewed records your acknowledgement. Agenturm does not execute a fresh test suite or certify the change. MCP and trace inspectors let you go deeper when the producer recorded the corresponding arguments, results, and execution links.
-
-### Keep the task across sessions
-
-Press `b` to save a task. Write the intent, acceptance criteria, constraints, open questions, and next action. Record accepted or rejected approaches with their rationale. Link runs deliberately and capture workspace changes when you need a handoff.
-
-**Handoff** previews the saved brief, decisions, linked evidence, and captured diff before you copy it or export Markdown + self-contained HTML. Paste it into the agent you choose. Saved tasks are local and remain editable while the receiver is offline.
-
-The same workflow is available from the CLI:
+Or install with Homebrew:
 
 ```sh
-# Creates a task and prints its ID. Use that ID in the commands below.
-agenturm task create --title "Fix refresh token expiry" --workspace . \
-  --notes "Keep the public API. Next: add an expiry regression." --snapshot
-
-agenturm task brief TASK_ID --intent "Reject expired refresh tokens" \
-  --next-action "Add the expiry regression, then rerun tests"
-agenturm task decide TASK_ID --kind accepted --text "Keep the public API" \
-  --rationale "Existing clients depend on it"
-agenturm task handoff TASK_ID --output ./refresh-handoff.md
+brew install abhishekash/tap/agenturm
 ```
 
-The export creates `.md` and `.html` files and refuses to overwrite existing destinations. Workspace capture reads Git changes; it does not run checks or attribute every edit to one agent. [Saved tasks, decisions, and handoffs](docs/saved-tasks.md).
+### Open the cockpit
 
-## Connect the tools you already use
+```sh
+agenturm
+```
 
-| Source | How it connects | What to expect |
-| --- | --- | --- |
-| Codex, Claude Code, OpenCode, Pi, Kiro | Automatic discovery of supported local records | Recent sessions and recorded activity; available signals depend on runtime and record format |
-| Pydantic AI, Google ADK, Gemini CLI, and other supported OTLP producers | Configure OpenTelemetry export to the local receiver | Emitted traces, logs, metrics, and correlation identifiers |
-| Supported Python SDKs | Explicit automatic-capture launcher or documented integration | Captures supported SDK calls; existing processes may need a restart through the launcher |
-| Your own Python or JavaScript agent | Instrument with the clients or OTLP | Only the evidence and identifiers your producer emits |
+Keep your coding agents running. Agenturm discovers supported local session records and opens the cockpit in your terminal. It does not create demo sessions or require an account or API key for local inspection.
 
-Exact delegation is supported for documented Codex, Claude Code, OpenCode, and Kiro shapes. Automatic Pi subagent linking is not independently verified. A nested telemetry span alone is not treated as an agent. See the [integration guide](docs/frameworks.md), [Python capture](docs/python.md), [JavaScript client](docs/javascript.md), and [receiver configuration](docs/receiver.md).
+**Supported release platforms:** Apple Silicon macOS 13 or newer; Linux x86-64 or ARM64 with glibc 2.39 or newer. Intel Macs, Rosetta, and native Windows are not currently supported.
 
-## Local storage, explicit sharing
+See [installation and upgrade details](docs/install.md) if the command is not on your `PATH` or you need a custom install location.
 
-The built-in receiver defaults to **`127.0.0.1:14318`**. Local monitoring and recorded-progress summaries work without a cloud service. Telemetry now defaults to the private Agenturm state directory, with a local bearer token and 14-day retention for genuinely new managed stores. Existing explicit databases keep their retention policy. Saved tasks use a separate database, so telemetry retention does not delete your brief or decisions. [Storage, authentication and migration](docs/receiver.md).
+## What it can inspect
 
-Captured messages, commands, and tool results can contain project secrets. Credential redaction is best effort. `--metadata-only` omits native session content from future ingestion; it does not erase existing records. Saved workspace captures and handoffs need your own review before sharing. [Capture and privacy boundaries](docs/privacy.md).
-
-Optional AI summaries send documented session evidence to your configured provider only when explicitly requested. [AI summary setup and data](docs/usage.md#optional-ai-summaries).
-
-## The keys you’ll use every day
-
-| Key | Action |
+| Source | How it connects |
 | --- | --- |
-| `1`–`7` | Agents, Activity, MCP Calls, Traces, Host, Metrics, Findings |
-| `↑` / `↓`, `Enter` | Select and inspect |
-| `→` / `←`, `f` | Expand/collapse agents; switch tree/flat presentation |
-| `/`, `o` | Search; choose sort order |
-| `Ctrl+←` / `Ctrl+→`, `m` | Switch inspector sections |
-| `Tab` / `Shift+Tab` | Move between controls |
-| `w`, `b` | Attention inbox; saved tasks |
-| Workflow `g`, `c` | Locate the selected request's verified terminal; copy (never run) a native resume command |
-| `t`, `x`, `c` | Linked trace; evidence export; copy details |
-| `Esc` / `Alt+←` | Return / navigate back |
-| `F1`, `?`, `Ctrl+P` | Contextual help, help, command palette |
-| `q` | Quit |
+| Codex, Claude Code, OpenCode, and Pi | Discovers supported local session records. OpenCode’s local database is read-only. |
+| OpenTelemetry-instrumented processes | Sends traces, logs, and metrics to Agenturm’s local OTLP/HTTP receiver. |
 
-Choose **Current (Alpine Ember), Bright, Dark, or Solarized** through `Ctrl+P → Theme`. See the [daily workflow guide](docs/usage.md) for the full interface.
+The available detail depends on each runtime, its configuration, and the retained records. For process telemetry, the process must already use an OpenTelemetry SDK and exporter; Agenturm does not inject instrumentation. See [usage](docs/usage.md) and [receiver setup](docs/receiver.md).
 
-## Status and contributing
+## Bring telemetry from a process
 
-Agenturm is open source under the [MIT license](LICENSE). Version **0.2.8** includes the agent hierarchy, navigable attention list, readable evidence panels, request-focused Workflow, completion review, and saved-task continuity workflows. Signal coverage depends on the source. See the [current quality report](docs/validation/quality-completion.html) for measured performance, stability and remaining acceptance limits.
+Run an already-instrumented program through Agenturm’s local receiver:
 
 ```sh
-git clone https://github.com/abhishekash/agenturm.git
-cd agenturm
-uv sync
-uv run agenturm
-uv run python -m unittest discover -s tests -v
+agenturm run \
+  --db ./history.sqlite \
+  --source-id otlp.example \
+  -- ./your-agent
 ```
 
-[Contributing](CONTRIBUTING.md) · [Issues](https://github.com/abhishekash/agenturm/issues) · [Release notes](CHANGELOG.md) · [Resource budgets](docs/performance.md)
+Agenturm configures the standard OTLP/HTTP environment variables for the selected process and stores received data in SQLite. The program still needs its own OpenTelemetry SDK and OTLP exporter. To connect an existing process to a receiver you manage, see the [receiver guide](docs/receiver.md).
 
-For conversational queries over recorded MCP executions, see [SpanHound](https://github.com/abhishekash/spanhound).
+## Inspect and hand off
 
-<details>
-<summary>Upgrading from Agent Observatory</summary>
+The terminal cockpit is the starting point. For automation, exports, and explicit scopes, the CLI can produce a review from stored evidence without running the agent or its checks:
 
-Agenturm is the new name. Existing Python imports (`observatory`), `OBSERVATORY_*` settings, telemetry keys, and `observatory.db` history remain supported. Use the `agenturm` executable.
+```sh
+agenturm review \
+  --db ./history.sqlite \
+  --harness-id <source-id> \
+  --session-id <session-id> \
+  --turn-id <turn-id> \
+  --format markdown
+```
 
-</details>
+Reviews can distinguish a producer’s completion message from recorded command results, show later edits, and disclose incomplete coverage. They describe captured evidence; they do not certify the current worktree or independently attest that a command ran. See the [changelog](CHANGELOG.md) for recent capabilities and [release notes](docs/releases/) for versioned changes.
+
+## Local by default
+
+Session records and telemetry can contain prompts, commands, file paths, tool inputs, and results. Treat the local database and exports as sensitive project data.
+
+- The normal workflow stores data in local SQLite; the receiver binds to loopback by default.
+- Local inspection does not require an Agenturm account or API key.
+- Content access and exports have explicit boundaries. Retention is logical deletion, not secure erasure.
+
+Read [privacy and capture boundaries](docs/privacy.md) before sharing a database or review export. For network access, follow the receiver guide’s authentication and TLS requirements rather than exposing the local receiver directly.
+
+## Development
+
+Agenturm is a Rust workspace. Install the toolchain pinned in [`rust-toolchain.toml`](rust-toolchain.toml), then run from the repository root:
+
+```sh
+cargo run -p agenturm-app
+```
+
+Before submitting a change, run:
+
+```sh
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo test --workspace --locked
+```
+
+Crates are grouped by responsibility under `crates/`—applications, core contracts, domain, plugins, storage, and test support. Read the [workspace and plugin architecture guide](docs/rust-workspace-architecture.md) before adding a crate, and see [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
+
+## Documentation
+
+- [Install and upgrade](docs/install.md)
+- [Usage](docs/usage.md)
+- [Privacy and capture boundaries](docs/privacy.md)
+- [Receiver, OTLP, migration, and retention](docs/receiver.md)
+- [Workspace and plugin architecture](docs/rust-workspace-architecture.md)
+- [Changelog](CHANGELOG.md) · [Releases](https://github.com/abhishekash/agenturm/releases)
+
+## License
+
+Agenturm is released under the [MIT License](LICENSE).

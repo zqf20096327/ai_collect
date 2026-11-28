@@ -60,7 +60,7 @@ read-aloud and voice notes go through it.
 
 | | |
 |---|---|
-| **Expressive speech** | Fish Audio S2 models follow emotion and delivery cues such as `[excited]`, `[whispering]` and `[laughing]`. Drama 3 (`drama-3`) takes plain-language direction and word-level tags such as `<whisper>…</whisper>`. Multi-speaker dialogue and custom pronunciations are supported too. |
+| **Expressive speech** | Fish Audio S3 and S2 models follow emotion and delivery cues such as `[excited]`, `[whispering]` and `[laughing]`. Drama 3 (`drama-3`) takes plain-language direction and word-level tags such as `<whisper>…</whisper>`. Multi-speaker dialogue and custom pronunciations are supported too. |
 | **Streaming voice** | CLI voice mode and Desktop voice replies stream each sentence as it is ready. In our tests the first audio bytes arrived 0.24–0.38 s after a sentence was sent (see [Streaming voice](#configuration) for how this was measured). |
 | **Voice library** | Search Fish Audio's community voices from chat (`/fish voices narrator`) and switch with `/fish use <id>`. |
 | **Voice names** | Save a voice under a short name in any script (`/fish alias add 猫 <voice id>`), then use the name wherever a voice id goes: `/fish use 猫`, `/fish preview 猫` or `fish_speak`. |
@@ -105,7 +105,7 @@ Never paste API keys into a chat. `/fish` refuses them and tells you to rotate t
 | `/fish status` | Key, providers, voice, model and why it was chosen, credit, last error |
 | `/fish voices [query]` | Search the voice library |
 | `/fish use <voice-id, name or own title>` | Use a voice for this profile; a unique title of your own voice works too |
-| `/fish model <id>` | Pick a model (`s2.1-pro`, `s2.1-pro-free`, `s2-pro`, `s1`, `drama-3`) |
+| `/fish model <id>` | Pick a model (`s2.1-pro`, `s3-pro`, `s2.1-pro-free`, `s2-pro`, `s1`, `drama-3`) |
 | `/fish preview [voice-id, name or own title] [text]` | Hear the current voice or a chosen voice (a billed synthesis); use a single-word title for previews |
 | `/fish alias` | List your saved voice names |
 | `/fish alias add <name> <voice-id>` | Save a name for a voice: 1–32 letters (any script), digits, marks, `-` or `_`, starting with a letter |
@@ -245,7 +245,7 @@ All settings are per profile.
 | Setting | Where | What it does |
 |---|---|---|
 | Voice | `tts.fish-audio.voice`; `/fish use`, the Voices page, the settings page, `fish_settings` | A Fish voice id. `/fish use`, the pages and `fish_settings` also take a saved name or one of your own voice titles and save its id. Unset: Fish's default voice. |
-| Model | `tts.fish-audio.model`; `/fish model`, the settings page | `s2.1-pro`, `s2-pro`, `drama-3`, `s1` (deprecated) or `s2.1-pro-free`. Unset: chosen from your wallet (see "Which model?"). |
+| Model | `tts.fish-audio.model`; `/fish model`, the settings page | `s2.1-pro`, `s3-pro`, `s2-pro`, `drama-3`, `s1` (deprecated) or `s2.1-pro-free`. Unset: chosen from your wallet (see "Which model?"). |
 | Reading speed | `tts.fish-audio.speed`; the settings page, `fish_settings set_speed` | 0.5–2.0, default 1.0. A per-call speed wins. |
 | Pronunciation dictionaries | `tts.fish-audio.pronunciation_dictionary`; `fish_pronunciations use` | Up to three pinned dictionaries for ordinary voice replies. |
 | Streaming | `plugins.entries.fish-audio.settings.streaming` | `auto` streams sentence by sentence on Hermes 0.21.6+; `"off"` uses whole-file speech. |

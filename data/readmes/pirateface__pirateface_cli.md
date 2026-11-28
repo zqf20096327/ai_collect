@@ -1,6 +1,6 @@
 # Pirate Face CLI
 
-Downloads HF models over BitTorrent from [Pirate Face](https://pirateface.co) seeders. Your code stays the same.
+Downloads HF models over BitTorrent from [Pirate Face](https://pirateface.co) seeders.
 
 ## Install
 
@@ -77,4 +77,5 @@ uv run --group dev ruff check
   <a href="https://github.com/ZeroPointSynergy"><img src="https://github.com/ZeroPointSynergy.png" width="48" height="48" alt="ZeroPointSynergy"></a>
   <a href="https://github.com/dmitryrn"><img src="https://github.com/dmitryrn.png" width="48" height="48" alt="dmitryrn"></a>
   <a href="https://github.com/AndriiZvorygin"><img src="https://github.com/AndriiZvorygin.png" width="48" height="48" alt="AndriiZvorygin"></a>
+  <a href="https://github.com/chloecaffeinexo"><img src="https://github.com/chloecaffeinexo.png" width="48" height="48" alt="chloecaffeinexo"></a>
 </p>

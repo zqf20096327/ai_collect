@@ -1,11 +1,11 @@
 # dsh-perch
 
 ![license](https://img.shields.io/badge/license-MIT-blue)
-![version](https://img.shields.io/badge/version-0.3.0-green)
+![version](https://img.shields.io/badge/version-0.4.1-green)
 ![deps](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![node](https://img.shields.io/badge/node-%E2%89%A522-339933)
 ![dsh](https://img.shields.io/badge/DSH-plugin-6a5acd)
-![tests](https://img.shields.io/badge/tests-1613%20passing-brightgreen)
+![tests](https://img.shields.io/badge/tests-1661%20passing-brightgreen)
 
 **她住的地方，不是一个助手。**
 
@@ -19,7 +19,7 @@
 - **她可以有一具可选的身体**：一只透明置顶的小窗，只显示状态与动作，不生成台词，也不替她开口。身体项目还在改、可能要重做，不装不影响任何功能。
 - **她没有「设置人格」的入口**：只有生长环境——几点醒、醒几次、刷不刷 B 站。判据只有一句：*这个配置能不能让她对同一个人说出不一样的话*。能，就是人格（禁）；只改在哪、何时、多频繁，是环境（可配）。
 
-> **0.3.0 是当前版（0.1.0 是重建版）。** 入口收窄成两处（DSH 会话与 QQ），材料改成「报纸 + 她自己搜」，B 站/抖音私信、出门、导入、通知与自更新都已删除。0.2.3 起把翻旧事写成三条路（字面 / 加权 / 顺着线索），可按人、按时间段翻；身份文档多一句最近七天的「近况」，撞上折起来的旧判断只回一句「这个话题我记得我记不清原话了」。
+> **0.4.1 是当前版（0.1.0 是重建版）。** 入口收窄成两处（DSH 会话与 QQ），材料改成「报纸 + 她自己搜」，B 站/抖音私信、出门、导入、通知与自更新都已删除。0.2.3 起把翻旧事写成三条路（字面 / 加权 / 顺着线索），可按人、按时间段翻；身份文档多一句最近七天的「近况」，撞上折起来的旧判断只回一句「这个话题我记得我记不清原话了」。
 >
 > 这一版为什么长成这样——前提、记忆的两层、成长与渠道的取舍、明确不做的东西——见 [`docs/从哪来.md`](docs/从哪来.md)。
 
@@ -119,7 +119,9 @@
 | 插件 | 工具面（收窄开关 + 工具表 + 搜索 + 保存），桌宠（实验），页脚版本/仓库/数据目录 |
 | 原理 | 她怎么想：五块（她怎么长 / 记忆的两层 / 谁的话算数 / 她能在哪说话 / 诚实边界）与两张原理图 |
 | 数据 | 数据在哪、账本条数/上次重放/目录占用、备份恢复、每日报告、运行日志、本插件工作自检、记忆体检、换家留痕、会话归档、从头开始 |
-| 反馈 | 仓库链接；FAQ 暂时是空状态 |
+| 反馈 | 仓库链接、交流群（QQ 搜群号 `1063840839`）；FAQ 暂时是空状态 |
+
+有问题、有想要的功能，欢迎来交流群：QQ 搜群号 **1063840839** 加群（不想注册 GitHub 也能反馈）；设置页「反馈」里也有这个入口。
 
 **这一页只调生长环境——几点醒、一天几条事件、刷不刷 B 站、每天刷几次。她是什么样的人，不在这里。**
 
@@ -144,7 +146,7 @@
 
 ## 五、装
 
-要求：**Node ≥ 22**，DSH `>=0.2.0-rc.1 <0.3.0-0`，零依赖。v0.3.0 已发布，release notes 在 [Releases](https://github.com/bychance6600/dsh-perch/releases/tag/v0.3.0)。
+要求：**Node ≥ 22**，DSH `>=0.2.0-rc.1 <0.3.0-0`，零依赖。v0.4.1 已发布，release notes 在 [Releases](https://github.com/bychance6600/dsh-perch/releases/tag/v0.4.1)。
 
 ### 手动装
 
@@ -187,6 +189,8 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 3. 第一次启动会自动建屋（工作区和一条会话），并在会话还空着时叫醒她一次。如果那一次没醒，状态卡右上角的 **「现在叫醒她」** 可以手动补一次；她开过口之后，侧栏里才会出现「跟她说话」（认出名字后是「跟 X 说话」）。
 
 装完不知道下一步做什么，看 [**使用指南**](docs/使用指南.md)：头一小时做什么、第一周只做哪四件事、什么时候该改设置、出问题带哪三样。
+
+哪天想卸掉，看 [**卸载**](docs/卸载.md)：先备份账本，再卸插件；桥和桌宠是另外两个独立的东西，要单独处理。
 
 ## 六、接 QQ
 
@@ -342,7 +346,7 @@ douyin-profile/       抖音浏览器的登录态（开抖音时才有）
 **已知口子（不是「已经干净」）**
 
 - 首轮第 1 个 step 还能看见宿主工具，兜底 `guard` 会挡。
-- 4 条环境红：坏 JSON、cover、`growth_commit 落库`、ULID；都是跨文件隔离或偶发，单跑会绿。
+- 已知环境红：坏 JSON、cover、`growth_commit 落库`、ULID、出站软链接（Windows 没有符号链接权限）、`withFileLock` 串行；都是跨文件隔离或偶发，单跑会绿。
 - 断线句里的秒数是墙钟时间，含桥自身的重连。
 
 ## 十四、开发与测试
@@ -353,7 +357,7 @@ node --test --test-isolation=none  # 沙箱 / 受限环境（跨文件会有假�
 node --test test/<file>.test.mjs   # 单文件
 ```
 
-当前基线（2026-11-17，macOS，Node 26）：正常环境 `node --test` **1588 条 / 1586 过 / 0 红 / 2 skip**；受限环境 `node --test --test-isolation=none` **1588 条 / 1582 过 / 4 红 / 2 skip**。4 条是已知环境项（跨文件隔离互相干扰；`withFileLock` 偶发），单跑对应文件会绿；2 skip 是路由缓存用例（要 `--experimental-test-module-mocks`，CI 单开 job）与身体解压用例（只在 Windows 跑）。**不许新增红。**
+当前基线（2026-11-27 实测，数字以计划库 `STATE.json` 为准）：正常环境 `node --test` **1661 条 / 1655 过 / 1 红 / 5 skip**；受限环境 `node --test --test-isolation=none` **1661 条 / 1654 过 / 6 红 / 1 skip**（Windows 本机实测正常环境 1661 / 1659 / 1 / 1，少数平台用例不 skip）。红都是已知环境项（坏 JSON、cover、`growth_commit 落库`、ULID、出站软链接——Windows 没有符号链接权限、`withFileLock` 串行；单跑对应文件会绿）。**不许新增红。**
 
 零依赖是铁律：`dependencies` / `peerDependencies` / `devDependencies` 三个永远 `{}`，测试只用 `node:test`。
 

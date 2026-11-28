@@ -37,7 +37,7 @@
 
 <img src="docs/images/stickers.webp" alt="三花的表情包：打招呼、犯困、得意">
 
-**替你做事**：查资料、写文件、设提醒、定时任务，每一步都看得到。命令默认在她自己的 Docker 容器里跑；装了桌面端，还能在你的 Windows 上读写你授权的文件夹、跑命令：动手之前先问你，哪些能自动做由你在那台电脑上定。
+**替你做事**：查资料、写文件、设提醒、定时任务，每一步都看得到。命令默认在她自己的 Docker 容器里跑。要她直接读写你的文件，不用一个个发给她：在聊天页的「文件」里把文件夹共享给她，只能看或能改，改之前留一份旧版本。装了 Windows 桌面端，还能在你授权的文件夹里读写、跑命令：动手之前先问你，哪些文件夹改了不用问由你在那台电脑上定。这些都要模型能调用工具：OpenAI 兼容接口的模型在「模型」页打开「工具调用」。
 
 <img src="docs/images/tasks.webp" alt="一个任务的每一步：翻回忆、联网搜索、写文件，最后是她的汇报">
 
@@ -80,11 +80,12 @@
 
 ## 快速开始
 
-到 [Releases](https://github.com/Shikasar7/CicaNest/releases/latest) 下载，有两个包：
+到 [Releases](https://github.com/Shikasar7/CicaNest/releases/latest) 下载，有三个包：
 
 | 文件 | 是什么 | 装在哪 |
 | --- | --- | --- |
 | `nest-setup-版本.exe` | Windows 一个就够：后台、控制台、聊天窗口、桌宠、托盘都在里面，不用另装 Python、uv 或 Node | Windows 10、11（64 位） |
+| `nest-版本-arm64.dmg` | Mac 桌面端，同样什么都不用另装（没有「电脑上做事」） | Apple 芯片（M1 及以后）的 Mac，macOS 12 以上 |
 | `CicaNest-版本-server.zip` | 只有 nest 本体，控制台已经构建好 | 常开的 Mac、Linux 或服务器 |
 
 ### Windows
@@ -99,7 +100,17 @@
 
 > 安装包没有代码签名，Windows 第一次会提示「已保护你的电脑」：点「更多信息」→「仍要运行」。打开了「智能应用控制」的电脑可能不让运行没签名的程序。
 
-### Mac、Linux
+### Mac 桌面端
+
+1. 打开 `nest-版本-arm64.dmg`，把 nest 拖进「应用程序」。
+2. 第一次打开会提示无法验证开发者（安装包没有签名）：到「系统设置」→「隐私与安全性」，在下面找到 nest，点「仍要打开」。只要这一次。
+3. 选「在这台电脑上」，点「开始使用」，在「模型」页加一个模型，再请一位伙伴过来。
+
+关掉窗口它还在屏幕顶部的菜单栏里；想连伙伴一起停，在菜单栏图标里选「退出并停止 nest」。伙伴、聊天记录和密钥都在 `~/Library/Application Support/nest/home`。有新版本时会提醒，点「更新」会打开发布页，下载新的 dmg 拖进去替换就行，数据不动。
+
+「电脑上做事」（让她在你的电脑上开文件、跑命令）目前只有 Windows 版有；Mac 上可以在聊天页的「文件」里把文件夹共享给她。
+
+### Mac、Linux 的服务端
 
 装好 [uv](https://docs.astral.sh/uv/getting-started/installation/)，解压 `server.zip`，在解压出来的文件夹里运行：
 
@@ -124,11 +135,14 @@ nest 跑在常开的另一台电脑上，Windows 只当聊天窗口和桌宠：
 
 | 平台 | 怎么接 |
 | --- | --- |
-| QQ | NapCat（OneBot 11）。一个号一个 Docker 容器，控制台里建容器、扫码 |
+| QQ | OneBot 11 协议端（NapCat 这类）。nest 能给每个号建一个 NapCat 容器、在控制台扫码，也能接你自己运行的协议端 |
 | Discord、Telegram、Slack | 填官方 Bot 的 Token，支持代理 |
 | 企业微信 | 智能机器人，填 BotID 和 Secret |
 
 在控制台「伙伴」页点「添伙伴」，选「从号开始加」。桌面上的伙伴也能在她的「接入」里接一个平台，聊天和记忆跟着过去。接好的号在「平台接入」页看连接和在线情况。
+
+> [!NOTE]
+> NapCat 在 2026 年 11 月停止了维护，官方镜像 `mlikiowa/napcat-docker` 已经从 Docker Hub 下架，nest 不自带它。已经有这个镜像的电脑照常能用；新电脑要先自己弄到一个 NapCat 镜像（比如在有它的电脑上 `docker save`，再到这台 `docker load`），在控制台「平台接入」页的「QQ 容器的镜像」里填它的名字。也可以自己运行任何一个 OneBot 11 协议端，在「伙伴」页加号时选「接我自己运行的协议端」，填它的 HTTP 地址、正向 WebSocket 地址和令牌。
 
 模型支持 OpenAI 兼容接口（Chat Completions、Responses）、Anthropic、Gemini（Gemini API 和 Vertex AI），以及 ChatGPT 的 Codex 订阅。每个 bot 可以再设一个备用模型。
 

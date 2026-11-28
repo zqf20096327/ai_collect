@@ -83,10 +83,13 @@ Desktop clients (`macOS`, `Windows`, `Linux`) support **100% offline on-device c
 
 ## How UnimeType Compares to Traditional IMEs
 
-- **[UnimeType vs. Google Input Tools](https://unimetype.com/vs/google-input-tools)** — Native desktop and mobile input method with whole-sentence context instead of Chrome-only word-by-word spacebar replacement.
+- **[UnimeType vs. Sogou Pinyin](https://unimetype.com/vs/sogou-pinyin)** — Eliminates cross-window `Shift` / `Caps Lock` mode confusion (also common in **WeType / WeChat Keyboard**, **Microsoft Pinyin**, and app-level switchers like **Input Source Pro**), with `0 Bytes` uploaded during ordinary typing.
 - **[UnimeType vs. Rime (`Squirrel` / `Weasel`)](https://unimetype.com/vs/rime)** — Zero preedit candidate bar eating single-key shortcuts in Figma, Overleaf, or Vim, with optional local GGUF / MLX offline inference.
+- **[UnimeType vs. Google Input Tools](https://unimetype.com/vs/google-input-tools)** — Native desktop and mobile input method with whole-sentence context instead of Chrome-only word-by-word spacebar replacement.
 - **[UnimeType vs. Google Japanese Input (`Mozc`)](https://unimetype.com/vs/google-japanese-input)** — Type Japanese + English on standard US ANSI keyboards without Kana/Eisu mode toggles or accidental full-width ASCII (`ａｂｃ`).
-- **[UnimeType vs. Gboard](https://unimetype.com/vs/gboard)** & **[vs. Yamli](https://unimetype.com/vs/yamli)** — Stay on one QWERTY layout across WhatsApp, WeChat, LINE, and Slack without cycling the Globe key across non-Latin scripts.
+- **[UnimeType vs. Gboard](https://unimetype.com/vs/gboard)** & **[vs. Microsoft SwiftKey](https://unimetype.com/vs/swiftkey)** — Stay on one QWERTY layout across WhatsApp, WeChat, LINE, and Slack without cycling the Globe key or fighting bilingual autocorrect across non-Latin scripts.
+- **[UnimeType vs. Yamli](https://unimetype.com/vs/yamli)** & **[vs. Keyman](https://unimetype.com/vs/keyman)** — System-wide phonetic Arabizi (`2/3/5/7/9`) and multi-script conversion directly inside native apps instead of browser copy-paste or memorizing custom keymaps.
+- **[UnimeType vs. Grammarly Keyboard](https://unimetype.com/vs/grammarly-keyboard)** — Combines 12-language phonetic `Convert`, meaning-preserving `Polish`, and read-only `Explain` without uploading background keystrokes.
 
 ---
 

@@ -7,12 +7,12 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its n
 | Field | Value |
 | --- | --- |
 | Package | `praxo_core` |
-| Registry | [pub.dev](https://pub.dev/packages/praxo_core/versions/0.8.0) |
-| Install | `dart pub add praxo_core:0.8.0` |
-| Source version | `0.8.0` |
-| Published version | `0.8.0` |
+| Registry | [pub.dev](https://pub.dev/packages/praxo_core/versions/0.8.2) |
+| Install | `dart pub add praxo_core:0.8.2` |
+| Source version | `0.8.2` |
+| Published version | `0.8.2` |
 | Publication status | published |
-| Canonical source tag | [`dart/v0.8.0`](https://github.com/axisvela/praxo-core/tree/dart/v0.8.0) |
+| Canonical source tag | [`dart/v0.8.2`](https://github.com/axisvela/praxo-core/tree/dart/v0.8.2) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/dart/ |
@@ -27,7 +27,7 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This package is its n
 Install the published package:
 
 ```bash
-dart pub add praxo_core:0.8.0
+dart pub add praxo_core:0.8.2
 ```
 
 ```dart

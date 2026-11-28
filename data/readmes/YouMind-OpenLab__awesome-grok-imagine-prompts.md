@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3451** |
+| 📝 Total Prompts | **3455** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-26** |
+| 🔄 Last Updated | **2026-11-27** |
 
 ---
 
@@ -189,6 +189,82 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Ultimate War Machine Assembly Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine showing a futuristic machine scanning a body and assembling hundreds of robotic components into a massive red-and-black female war machine.
+
+#### 📝 Prompt
+
+```
+Ultimate War Machine: A futuristic machine scans her body, then launches hundreds of robotic components that lock together, creating a massive red-and-black female war machine.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2126203983362740224/img/4UgGL1CMh5ySY5mv.jpg" width="600" alt="Ultimate War Machine Assembly Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14183)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2126204157870621111) | **Published:** Nov 27, 2026
+
+---
+### Cybernetic Exoskeleton Transformation Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine depicting a character transforming into a cybernetic exoskeleton with robotic machinery assembling around them.
+
+#### 📝 Prompt
+
+```
+Cybernetic Exoskeleton: Her hands touch together, activating robotic machinery. Mechanical joints, shoulder plates, and metallic legs assemble into an advanced exoskeleton.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2126136101823787008/img/b0XrQkHRHXPMe8oK.jpg" width="600" alt="Cybernetic Exoskeleton Transformation Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14182)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2126136237249708132) | **Published:** Nov 27, 2026
+
+---
+### Woman Watching Bird Fly and Land on Hand
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt describing a woman watching a bird fly in front of her and eventually land on her hand, accompanied by fantasy background music.
+
+#### 📝 Prompt
+
+```
+Let the woman watch the bird flying in front of her and the bird end up landing on her hand with fantasy background music.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2125716271069036544/img/aAMCfaIto4bCWtT7.jpg" width="600" alt="Woman Watching Bird Fly and Land on Hand">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14184)**
+
+**Author:** [Eugenio Aguilar](https://x.com/EugyYesus) | **Source:** [Link](https://x.com/EugyYesus/status/2125716293999280338) | **Published:** Nov 25, 2026
+
+---
+### Woman Petting Cat with Harp Music
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt showing a woman petting a cat while they look at each other, with harp music playing in the background.
+
+#### 📝 Prompt
+
+```
+Let the woman pet the cat while both observe each other, with a harp sound as background music.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2125699972276330496/img/OSIgwKr_VIDKA27A.jpg" width="600" alt="Woman Petting Cat with Harp Music">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14185)**
+
+**Author:** [Eugenio Aguilar](https://x.com/EugyYesus) | **Source:** [Link](https://x.com/EugyYesus/status/2125700001011564996) | **Published:** Nov 25, 2026
+
+---
 ### CIA Spy Movie Interface Video Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -1972,75 +2048,4 @@ This video is an AI-generated fictional sci-fi concept created for entertainment
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A comprehensive prompt for creating a 4-second handheld walking POV video in Times Square using Grok Imagine, including camera specs, scene details, action, lighting, audio, and constraints.
-
-#### 📝 Prompt
-
-```
-Format: 16:9 horizontal, 4 seconds, iPhone 18 Pro 0.5x ultra wide, 4K 30fps, handheld walking POV.
-
-Scene: Walking into Times Square in daytime. Towering glowing billboards on every side, crowds of tourists, yellow cabs crossing.
-
-Action: 0-2s walking forward through the crowd. 2-4s slow pan left to right across the wall of screens against blue sky.
-
-Lighting: bright daylight mixed with colorful screen glow.
-
-Audio: diegetic only crowd chatter, street performer drum in distance, car horns.
-Last Frame: wide panorama of billboard canyon and crowd. All billboards show abstract colors and imagery only, no readable words. No on screen text, no captions, no logos, no watermarks.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2119818184048218112/img/EMr5_U0sEqalBgaQ.jpg" width="600" alt="Times Square Walking POV Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13821)**
-
-**Author:** [BMX](https://x.com/bmx_ai13) | **Source:** [Link](https://x.com/bmx_ai13/status/2119818224338661830) | **Published:** Nov 9, 2026
-
----
-### Cinematic Fuel Tanker Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed prompt for generating a photorealistic cinematic video of a fuel tanker truck on a highway using Grok Imagine.
-
-#### 📝 Prompt
-
-```
-Create an ultra-photorealistic, Hollywood-level cinematic 15-second video in 4K resolution. A massive stainless-steel fuel tanker truck, clearly designed for transporting diesel and petrol, is driving along a realistic modern highway during daylight....
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2119748603426295808/img/IM70t68JSavZojGD.jpg" width="600" alt="Cinematic Fuel Tanker Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13924)**
-
-**Author:** [Blairy](https://x.com/Blair_54q0) | **Source:** [Link](https://x.com/Blair_54q0/status/2119748851271905456) | **Published:** Nov 9, 2026
-
----
-### Static Background Particle Control Prompt
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> A technical prompt for Grok Imagine video generation to prevent excessive light particles and effects, ensuring the background remains completely static while only the character moves.
-
-#### 📝 Prompt
-
-```
-The background remains completely static and unchanged throughout the entire video. No particles, no sparks, no glowing dust, no floating lights, no falling light effects, no atmospheric effects. Preserve the exact background appearance from the first frame. Only the character moves.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2119588974729760768/img/K1NxpwqY16oouErY.jpg" width="600" alt="Static Background Particle Control Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13823)**
-
-**Author:** [Eris Create Lab](https://x.com/Eris_Create_Lab) | **Source:** [Link](https://x.com/Eris_Create_Lab/status/2119589115398406567) | **Published:** Nov 9, 2026
-
----
-### SpaceX Robotic Engineers Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for generating a video of thousands of humanoid robots working in a SpaceX factory using Grok Imagine.
-
-#### 📝 Prompt
-
-```
-Thousands of advanced 
+> A comprehensive prompt for creating a 4-second handheld walking 

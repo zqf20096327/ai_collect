@@ -95,7 +95,7 @@ the SKAI apps are GPL-3.0-or-later in their own repositories.
 **✅ Done**
 - Cinnamon, Lite and Mantis ISOs
 - SKAI setup wizard and SKAI Manager · launcher · sk_files · skaifox · sk_office · sk_mail
-- SKAI_ Memory, the memory shared by the apps · sk_notes 0.5.0 for PC and Android
+- SKAI_ Memory, the memory shared by the apps · sk_notes for PC and Android (reminders, Android widgets, drawing in canvas)
 
 **🚧 In progress**
 - **flowforge** — app store to build your own apps with vibe coding

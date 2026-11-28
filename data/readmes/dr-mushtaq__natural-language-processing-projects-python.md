@@ -407,6 +407,9 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 
 #### Course
 - **[CME 295 - Transformers & Large Language Models](https://cme295.stanford.edu/syllabus/)** - FREE
+- **[LLM Agents MOOC](https://rdi.berkeley.edu/llm-agents/f24)** Free
+- **[Advanced LLM Agents MOOC](https://rdi.berkeley.edu/adv-llm-agents/sp25)** Free
+- **[CS336 Language Modeling from Scratch](https://cs336.stanford.edu/)** Freee 
 - **[Introduction to large language models](https://www.youtube.com/playlist?list=PLZ2ps__7DhBbaMNZoyW2Hizl8DG6ikkjo)** - FREE
 - **[LLM Course Face hug](https://huggingface.co/learn/llm-course/chapter3/4)** - FREE
 - **[Hugging Face LLM Cours](https://huggingface.co/learn/llm-course/chapter1/3)** - FREE
@@ -520,5 +523,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |---|---|---|---|---|
  |**🌐1-BERT (Encoder-only models)**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |✅[1-How to build your own LLM from scratch-Diagram](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/Understanding%20Large%20Language%20Model/How%20to%20build%20your%20own%20LLM%20from%20scratc.md)| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**✅-Queries, Keys, and Values**|[1](https://youtu.be/GubJ71dCQBk?si=EC6zvQ_qaClQFGvm) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**✅-Transformer Architecture**|[1](https://youtu.be/DYo3Y_93KnI?si=EA1-9fbKYWZFMQy2)[-2](https://drive.google.com/file/d/1HSGA0gxwR7buvcWTnoPZo2k1DWQHr0AN/view?usp=sharing) |[![Colab icon](https
+ |**✅-Queries, Keys, and Values**|[1](https://youtu.be/GubJ71dCQBk?si=EC6zvQ_qaClQFGvm) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Nat

@@ -78,7 +78,7 @@ Connect any combination of providers at the same time (manage API keys in-app vi
 
 ## Your data stays on your machine
 
-Digress is a zero-build client (`web/index.html` + `web/styles.css` + native ES modules in `web/js/`) and a zero-dependency Node server (`server/server.mjs`). Conversations and documents live as plain JSON and files in `data/`; the server binds to `127.0.0.1`, has no accounts, refuses cross-origin/DNS-rebinding requests, and blocks auto-loading remote images in model output.
+Digress is a zero-build client (`web/index.html` + `web/styles.css` + native ES modules in `web/js/`) and a zero-dependency Node server (`server/server.mjs`). Conversations, flashcards and the search index live in a SQLite database (`data/digress.db`, using Node's built-in `node:sqlite`) and uploaded documents as files beside it in `data/files/`; the server binds to `127.0.0.1`, has no accounts, refuses cross-origin/DNS-rebinding requests, and blocks auto-loading remote images in model output.
 
 ## Keyboard shortcuts
 

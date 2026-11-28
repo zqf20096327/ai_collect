@@ -975,4 +975,4 @@ MIT — see [LICENSE](https://github.com/metiutek/editorvideo-ai/blob/main/LICEN
 
 ---
 
-made by https://metiu.xyz/
+Created by [Mattia Cibin (Metiu)](https://metiu.xyz/) — independent developer from Italy.

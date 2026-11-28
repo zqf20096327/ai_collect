@@ -10,7 +10,7 @@ Schema-valid JSON · exact OCR-span evidence · per-field confidence · Apache 2
 [![CI](https://github.com/eulogik/TinyDoc-VLM/actions/workflows/ci.yml/badge.svg)](https://github.com/eulogik/TinyDoc-VLM/actions)
 [![License](https://img.shields.io/badge/license-Apache_2.0-1E6F5C.svg)](LICENSE)
 [![HF Space](https://img.shields.io/badge/%F0%9F%A4%97-evidence%20card-1E6F5C)](https://huggingface.co/spaces/eulogik/TinyDoc-VLM)
-[![Tests](https://img.shields.io/badge/tests-262-1E6F5C.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-263-1E6F5C.svg)](tests/)
 
 </div>
 
@@ -28,8 +28,8 @@ grounded extraction layer around it. The first-party 256M checkpoint is retired
 (OCRBench 0.0%) and the SmolVLM2-2.2B SFT track is closed (no gain over base).
 
 **Measured today:** **0.9475** field F1 on SROIE clean-100 with Qwen2.5-VL-3B and
-**0.9200** with Qwen3-VL-2B-Instruct at 2× the speed. On a synthetic 181-page
-invoice probe, **65.7%** (3B) and **71.8%** (2B) of documents are fully correct.
+**0.9200** with Qwen3-VL-2B-Instruct at 2× the speed. On a synthetic 181-document
+invoice probe (one page each), **65.7%** (3B) and **71.8%** (2B) of documents are fully correct.
 A separate **real Portuguese receipt/invoice** probe (five fields) reaches
 **72.0%** field accuracy and **22/100** fully correct on a held-out 100-document
 set after a merge fix shipped in 0.3.1 (development set: 74.2% / 18). It is not a
@@ -91,7 +91,8 @@ amount labelled `Taxa` (fee) and no `Total` line; the reader can put that amount
 in `tax` and leave `total` empty. The new deterministic fallback reclassifies a
 lone, positive `tax` amount as `total` when the merged page has no subtotal, no
 line items, and no total. It makes no model call; if the page has more than one
-amount, it does nothing.
+amount, it does nothing. The fallback is on by default; pass
+`--no-total-fallback` to leave a missing total missing.
 
 ```bash
 pip install tinydoc==0.3.2
@@ -163,9 +164,9 @@ onto a PNG. The older receipt-only demo is `python demo/app.py --share` (require
 
 ## Architecture
 
-<img src="docs/assets/architecture.svg" alt="TinyDoc architecture: document input, local tier router with Qwen3-VL 2B or Qwen2.5-VL 3B, schema prompt, trust layer, and cited JSON output" width="100%">
+<img src="docs/assets/architecture.svg" alt="TinyDoc architecture: document input, local engine selector with Qwen3-VL 2B or Qwen2.5-VL 3B, schema prompt, trust layer, and cited JSON output" width="100%">
 
-A document enters the **tier router**, runs through a local VLM with a
+A document enters the **engine selector**, which runs an explicit local VLM with a
 schema-driven prompt, and is then passed through the **trust layer**:
 
 - **Schema validation** — reject or repair broken JSON before it reaches your code.
@@ -243,7 +244,7 @@ and 8/10 trigger a line-sum review flag. OCR adds ~0.2 s/doc; VLM inference
 dominates latency. A currency-symbol prompt (v2) was tested and **rejected**: it
 scored 81/90 raw and 5/10 fully correct versus 84/90 and 6/10 for v1, so the
 canonical run keeps v1 and uses deterministic reconciliation instead. Multipage
-is not a straight-through path. The 0.3.1 SDK exposes the page-wise
+is not a straight-through path. The 0.3.2 SDK exposes the page-wise
 method, but it is a probe-quality feature, not a production multipage claim.
 
 **Degraded multipage** — the same 10 synthetic invoices and 46 pages, with a
@@ -346,7 +347,7 @@ If you deploy it:
 
 - **Route by field.** Send low-confidence fields to a human. Field scores are for
   routing; document scores are not calibrated.
-- **Pick a tier per vertical.** 3B for receipts (0.9475 vs 0.9200 field F1); 2B
+- **Choose the reader per vertical.** 3B for receipts (0.9475 vs 0.9200 field F1); 2B
   for invoice throughput (93.5% vs 91.9% key-header, 16.1 s vs 26.5 s). The
   invoice tier gap is not statistically significant.
 - **Do not trust flags.** Inconsistent and multi-invoice files were flagged 0/7
@@ -358,7 +359,7 @@ If you deploy it:
   currency, arithmetic repairs, OCR-read printed totals) reached 10/10 on the
   nine key-header fields, but that is a pipeline result and line items remain
   weak (0.848 F1, 1/10 all right). Page-wise is ~2× slower; OCR adds ~0.2 s/doc.
-  The 0.3.1 SDK exposes the page-wise path; that is not a production
+  The 0.3.2 SDK exposes the page-wise path; that is not a production
   multipage claim.
 - **Budget latency.** Receipts 7–14 s/doc; page-1 invoices 16–27 s/doc;
   page-wise multipage 70.7 s/doc p50 (16.1 s/page) on an M4 through Ollama,
@@ -383,7 +384,7 @@ tracks were measured, failed to beat the free base model, and were closed.
 On a synthetic public benchmark (181 invoices, page 1) it reaches 91.9%/65.7%
 (3B) and 93.5%/71.8% (2B) key-header/fully-correct. It is not validated on real
 supplier invoices, flagging fails (0/7), and multipage is a 10-document probe.
-The 0.3.1 SDK exposes the same page-wise method, but the evidence is
+The 0.3.2 SDK exposes the same page-wise method, but the evidence is
 still that probe.
 
 **Does my data leave my machine?**
@@ -417,7 +418,7 @@ last-page currency, arithmetic repairs, and OCR-read printed totals accepted onl
 when `subtotal + tax == total` — reaches **10/10** on the nine key-header fields.
 That is a **pipeline result, not a pure VLM score**, the exact 95% CI is
 69.2–100% at n=10, line items are all right on only 1/10, and OCR adds ~0.2 s/doc.
-The 0.3.1 SDK exposes the page-wise path, but it is not a
+The 0.3.2 SDK exposes the page-wise path, but it is not a
 straight-through production claim. A deterministic degraded copy of the same
 pages completed 8/10 documents with 7/8 fully correct and 71/72 key-header; two
 pages failed (one malformed JSON, one transient Ollama HTTP 500).
@@ -455,7 +456,7 @@ for their terms.
 | Hybrid v2 (`hybrid_2p2b`, MLX + Tesseract F3) | 🚢 Shipped 2026-10-07, superseded | 0.603 clean-100; address 0.37; paired address 31/7/62 |
 | SmolVLM2-2.2B SFT / vision LoRA | ❌ Closed | Base 0.536; clean-100 LoRA 0.535–0.540; vision LoRA 0.0395 / 0.4277 |
 | TinyDoc-VLM-256M | ⚠️ Retired research checkpoint | OCRBench **0.0%** (n=999 scored); no performance claims |
-| Multipage invoice path (eval harness) | 🧪 Probe | All-pages 4/10; page-wise VLM 6/10; + OCR totals **10/10** key-header (90/90) but 0.848 line F1 and ~2× slower; degraded copy 7/8 fully correct with 2 page failures; 0.3.1 SDK exposes the page-wise path, probe-quality only |
+| Multipage invoice path (eval harness) | 🧪 Probe | All-pages 4/10; page-wise VLM 6/10; + OCR totals **10/10** key-header (90/90) but 0.848 line F1 and ~2× slower; degraded copy 7/8 fully correct with 2 page failures; 0.3.2 SDK exposes the page-wise path, probe-quality only |
 | TinyDoc-2B grounded LoRA (v3.1) | 🧪 Conditional | Only if v3.0 leaves a measured invoice/grounding residual |
 
 The honest one-liner: **the evaluation harness and product layer are real; the
@@ -493,7 +494,7 @@ third-party reader behind a grounded extraction layer.
 ## Development
 
 ```bash
-python3 -m pytest tests/ -q                 # 228 passed
+python3 -m pytest tests/ -q                 # 263 passed
 python3 -m ruff check tinydoc_vlm/ tests/   # CI-scope lint
 python3 evaluation/phase0/recompute_scores.py
 node scripts/verify-product.mjs claims

@@ -4,13 +4,13 @@
 >
 > 👈 **返回主站对应模块**：[Vibe Coding 作品展](https://soycodetrail.top/vibe-coding)  ·  🏠 全站：[https://soycodetrail.top](https://soycodetrail.top)
 >
-> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-25 22:24:28 UTC
+> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-27 22:43:44 UTC
 
 ## 📚 系列展示站（更多精选内容，互相导流）
 
 - [DeepSeek Harness 插件库](https://github.com/soycodetrail/deepseek-harness-plugins) · [主站模块 ↗](https://soycodetrail.top/dsh-plugins) · [在线浏览 ↗](https://soycodetrail.github.io/deepseek-harness-plugins/)
 
-## 📑 内容导航（833 个条目 / 15 个分类）
+## 📑 内容导航（846 个条目 / 15 个分类）
 
 - [📁 Web 应用](#cat-web-应用)
 - [📁 AI 工具](#cat-ai-工具)
@@ -606,6 +606,10 @@
   标签：15.5K 星 / CI/CD 排障 / 自动根因 / 开源 SRE / Trending
 - [Composio - 让 AI Agent 连接 1000+ 应用的工具网关](https://github.com/ComposioHQ/composio) — 用 TypeScript / Python SDK 给 Agent 提供跨 1000+ 应用的认证工具与统一调用能力，是 Agent 生态最主流的工具集成层之一；GitHub 31,292 星，被大量开源 Agent 项目作为标准工具底座。  
   标签：31.3K 星 / 1000+ 应用 / Agent 工具网关 / 认证集成 / 开源
+- [Cindy - 开箱即用的开源 AI Agent](https://github.com/makecindy/cindy) — 中文团队打造的开源 AI Agent，主打「想到，就能做到」，内置工具链与技能开箱即用，能自主完成真实任务；GitHub 10,696 星，一周内高频迭代，是国产 Agent 新锐。  
+  标签：10.7K 星 / 国产开源 / 开箱即用 / 自主任务 / Agent
+- [mini-swe-agent - 100 行代码解决 GitHub Issue 的极简 Agent](https://github.com/SWE-agent/mini-swe-agent) — SWE-bench / SWE-agent 团队出品的极简编码 Agent：整个 Agent 类只有约 100 行 Python，只给模型 bash 一个工具、无需复杂配置，却在 SWE-bench Verified 上拿下 74%+ 的成绩，支持本地或 Docker 运行、任意模型接入；GitHub 10,143 星、MIT 开源，是「少即是多」的 Agent 典范。  
+  标签：10.1K 星 / 100 行代码 / SWE-bench 74% / 极简 Agent / MIT
 
 <a id="cat-效率工具" name="cat-效率工具"></a>
 
@@ -827,6 +831,8 @@
   标签：PH 日榜#3 / 195 票 / CI 提速3倍 / 自托管 / 省钱
 - [App Store Compliance - 上架前自动排查拒审风险的 AI 技能包](https://github.com/mjmirza/app-store-compliance) — 把 124 条真实拒审模式、112 个合规截止日期（EU AI Act / DSA / COPPA 等）做成 Claude Code、Codex 可直接调用的提交前检查 Playbook，帮 AI 生成的应用少踩审核坑；GitHub 6,416 星，2026-11-25 单日暴涨 928 星冲上 GitHub Trending。  
   标签：6.4K 星 / 单日+928 / 124 拒审模式 / 上架合规 / 开源技能包
+- [BMAD-METHOD - 敏捷 AI 驱动开发方法框架](https://github.com/bmad-code-org/BMAD-METHOD) — 把 AI 编码变成有纪律的敏捷流程：分析师、产品经理、架构师、开发者、QA 多角色协作，覆盖从头脑风暴到上线的完整链路；GitHub 55,792 星，是与 Spec Kit 齐名的爆款 AI 开发方法论项目。  
+  标签：55.8K 星 / 敏捷开发 / 多角色协作 / SDD / 开源
 
 <a id="cat-游戏" name="cat-游戏"></a>
 
@@ -1006,6 +1012,8 @@
   标签：48h $35.6万 / 5万份销量 / AI 生成代码 / 肉鸽塔防 / Steam
 - [Wanaka Studio - 用一句话做可发布 3D 游戏的 AI 原生引擎](https://studio.wanaka.app) — 首个 AI 原生 3D 游戏引擎：自然语言生成场景后可在同步可视化编辑器里拖动素材、改地形与多人玩法，AI Agent 自带 30+ 原子引擎工具与自玩自测回滚闭环，一键链接发布。创始人 Yang Zhang 曾把字节 Helo 做到 5000 万 DAU、联合创办 AnswerAI（北美 Top3 教育 App、600 万用户），CTO 来自字节 Seed，团队兼具字节与米哈游背景。2026-11-04 上线即登 Product Hunt 当日榜 #1（约 500 票、118 评论）。  
   标签：PH 日榜#1 / 500 票 / AI 游戏引擎 / 字节+米哈游团队 / 一键发布
+- [PokeBonk - 一人用 AI 两周搓出的 3D 宝可梦割草爆款](https://pokebonk.com/) — 西班牙独立开发者 Charcher 借助 Blender + Claude Opus 生成 3D 资产、AI 辅助写代码，两周独自完成的 3D 宝可梦幸存者游戏：关都 151 只宝可梦、进化链、属性克制、多人联机一应俱全；2026-10-14 上线后预告片吸引 100 万人围观、注册玩家突破 50.4 万、数日内总玩家破 100 万，服务器被挤爆紧急扩容，登顶国内外游戏热榜。  
+  标签：100 万+玩家 / 一人开发 / 两周完成 / 3D 割草 / 宝可梦
 
 <a id="cat-金融财经" name="cat-金融财经"></a>
 
@@ -1106,14 +1114,4 @@
   标签：Next.js / 幻灯片 / OpenAI API
 - [SlideDeck AI](https://github.com/barun-saha/slide-deck-ai) — 与 AI 协作共创 PowerPoint 演示文稿的助手，根据输入话题自动组织大纲并导出 PPT 文件。  
   标签：Streamlit / LLM / PowerPoint
-- [AFFiNE](https://github.com/toeverything/AFFiNE) — 开源的 Notion + Miro 替代品，融合文档、白板与数据库的一体化工作空间，本地优先且内置 AI 能力。  
-  标签：TypeScript / Whiteboard / Local-first
-- [PageIndex - 无向量、推理式文档问答](https://www.pageindex.ai) — 放弃向量库与分块，用树状索引 + 大模型推理在长文档中精确定位并给出可溯源引用；Product Hunt 日榜第 1（342 票），金融文档问答基准 FinanceBench 达 98.7% 准确率。  
-  标签：文档问答 / RAG / 可溯源 / 企业
-- [Caddi - 看一眼就会干活的后台 Agent](https://trycaddi.com) — 面向律所、财富管理等专业服务公司的后台 Agent 构建器：屏幕共享演示一次，即自动跑成百上千条跨系统工作流；Product Hunt 日榜第 2（299 票），已获 500 万美元种子轮、单客户月省 904 小时。  
-  标签：后台自动化 / 专业服务 / Agent / 合规
-- [Paperclip - 给 AI 员工发组织架构图](https://paperclip.ing) — 把 Agent 当员工管而不是当工具调：定目标、发职位（CEO/CTO/工程师/市场）、审批战略、设月度预算，超支自动停工，全流程工单留痕且不可篡改；接任何 Agent 运行时（Claude、Codex、Cursor、OpenClaw、Pi），GitHub 7.98 万 star、MIT 自托管。  
-  标签：Agent 编排 / 组织架构 / 成本管控 / 开源
-- [meetily - 本地隐私优先的 AI 会议助手](https://github.com/Zackriya-Solutions/meetily) — 100% 本地实时转录 + 说话人分离 + AI 摘要，会议数据不出本机；GitHub 3.0 万+ Star，macOS/Windows 排名第一的自托管会议记录工具。  
-  标签：会议记录 / 本地 AI / Whisper / 隐私
-- [OfficeCLI - 首个专为 AI Agent 打造的 Office 套件](https://www.officecli.ai) — 单二进制免装 Office，让 Agent 直接读写自动化 Word / Excel / PPT；Git
+- [AFFiNE](https://github

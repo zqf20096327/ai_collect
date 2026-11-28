@@ -145,6 +145,7 @@ Telemetry, usage, and cost analysis for CLI coding agents such as Claude Code, C
 - [NovaFabric](https://github.com/MSKazemi/novafabric) - Self-hosted CLI whose `nova capture` wraps any command, such as an agent script, and records the run as a portable Run Capsule that you can replay and structurally diff against another run; Apache-2.0, pre-1.0.
 - [LEEVAR Battery](https://github.com/forevercrab321-svg/leevar-battery) - Grades agent conversation transcripts on 18 tests across six dimensions with a judge model you configure, reports tests the transcript cannot evidence as NOT TESTED and leaves them out of the score, and issues no letter grade when two thirds or fewer of the tests have evidence; MIT, and the same authors run an optional hosted scan.
 - [Agent-Causality](https://github.com/Psionic-labs/Agent-Causality) - Records LangGraph and OpenCode agent runs as event graphs with declared causal parents, so a failing event can be sliced to the earlier events it structurally depends on and agent state rebuilt at any event with a SHA-256 state hash, and decisions recorded through its Python SDK can be replayed with changed inputs to test which ones flip the outcome; AGPL-3.0.
+- [Traigent](https://github.com/Traigent/Traigent) - Python SDK that runs model and parameter configurations of an agent on your eval dataset and reports accuracy, and cost where it can be measured, for each configuration; AGPL-3.0 or a separate commercial license (dual-licensed).
 
 ## Agent and harness benchmarks
 

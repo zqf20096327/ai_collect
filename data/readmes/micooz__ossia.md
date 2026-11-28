@@ -91,7 +91,7 @@ Analyze and mark the harmony in Bach’s Prelude in C major, BWV 846.
 
 > ⚠️ Current installers are unsigned and the macOS app is not notarized. macOS and Windows may block installation. Download from a trusted source and follow the platform instructions to allow installation; this is only needed the first time.
 
-Download an installer for macOS (Apple Silicon) or Windows x64 from [Releases](https://github.com/micooz/ossia/releases).
+Download an installer for macOS (Apple Silicon or Intel) or Windows x64 from [Releases](https://github.com/micooz/ossia/releases).
 
 ### 2. Connect an agent
 

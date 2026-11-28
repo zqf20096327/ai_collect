@@ -202,6 +202,7 @@ If you'd rather build the graph yourself:
 * **CLIP Encoding Combinators:** Advanced prompt syntax with `AND`, `CAT`, `AVG(weight)`, and `BREAK` keywords for multi-segment conditioning. `AND` creates separate conditioning entries, `CAT` concatenates token contexts, `AVG(0.5)` blends prompts, and `BREAK` forces new 77-token chunks. `COUPLE` splits a prompt into left/right (or top/bottom) regions, see [Prompt Combinators & Regional Prompts (COUPLE)](#prompt-combinators--regional-prompts-couple).
 * **Model-Specific Prompts:** Per-config prompt prefix and suffix fields for model-appropriate quality tags (e.g., prepend `"masterpiece, best quality"` for anime models, append `"4k, photorealistic"` for realistic models).
 * **Recursive Cartesian Prompt Builder:** Visual chip-based prompt editor with `{option1|option2|option3}` syntax that expands into all combinations. Nest multiple groups for exponential prompt variation.
+* **Load Prompts From a Previous Run:** The Builder's Global Prompts section can pull in just the prompts of any earlier session (its global prompts, per-config prompts, or the distinct prompts of its images, each with image and favorite counts), replacing or adding to the current ones. Nothing else in the Builder changes.
 * **Model & LoRA On/Off Switches:** Toggle individual models and LoRAs on/off without removing them from the config. Bypassed entries are omitted from both the preview JSON and the generated config output.
 * **Drag-and-Drop Reorder:** Rearrange models, LoRAs, text encoders, and VAEs by dragging them into your preferred order.
 * **Per-Config Resolutions:** Override the sampler node's global resolution with per-config resolution lists. Each resolution becomes a Cartesian dimension.
@@ -243,6 +244,7 @@ The up-arrow button (⬆) on a card opens the upscale modal for that image, or f
 * **Presets:** pick one from the list; the badge shows `Preset: X`, `Preset: X (modified)` after you edit it, or `Unsaved config`. **Update preset** overwrites the loaded preset, **Save as…** stores the edits under a new name, **Revert** drops the edits, **Delete** removes the preset. Presets are shared with the Config Builder (same file), and every save re-reads the file first so a preset someone else added meanwhile is never lost.
 * **Inline editing:** add, remove, switch off and **reorder** pipelines and steps with the ▲ ▼ buttons (buttons, not drag and drop, so it works on a phone). Mode, ratios, denoise, steps, tiled sampling / VAE, upscale models, SeedVR2 and Florence2 options are all editable.
 * **Validation:** a field that cannot work (`1.5,x` as ratios, denoise above 1, no upscale model for a model mode, empty Florence2 text, ...) is outlined in red, listed under the editor, and **Run** stays disabled until it is fixed. Warnings (an upscale model that is not installed, several denoise values for Florence2) do not block. The server validates again and answers `400` with the list if something slips through.
+* **HiRes model (different checkpoint):** tick *Run HiRes passes through a different model* to sample every HiRes pass of the job (HiRes Fix Only, Model + HiRes Fix and the Florence2 hi-res step) with another checkpoint, optionally with its own LoRA stack and VAE, instead of the one that made the image. Sampler, scheduler, CFG and clip skip are blank = each image's own; seed and the image's prompts are kept. **From a previous run…** opens a picker: choose a run on the left (this session first), and on the right every distinct setup that really rendered images there (model, LoRAs, `sampler · scheduler · steps · cfg · clip`, ★ favorites and image counts, with a thumbnail); **Use** copies it into the section. Only checkpoints can be the HiRes model (diffusion / GGUF setups are greyed out). The upscaled images carry `upscale_hires_*` fields saying which model was used. Presets store the section too. After updating the node pack, restart ComfyUI once: until then the section only shows a restart note, because an older server would ignore the setting and upscale with the session model.
 * **Run vs Run once:** **Run** appears when the config equals the loaded preset; once you change anything it reads **Run once (unsaved)**. Either way the config is sent as it is and nothing is written to the presets file unless you press Update / Save as. A line under the editor says how many images and outputs the run will produce.
 * **Cancel:** **Cancel job** is only shown while a job runs (the editor is locked meanwhile). The job stops between images, pipelines, steps and combinations, and *inside* the sampler within one step (a cancel-aware copy of the model; ComfyUI's global interrupt is never used, so a Generator run in the queue is unaffected). SeedVR2 runs in an external node and can only stop between steps. Outputs finished before the cancel are kept and appear exactly once; the status line reads `Cancelled: 3/10 images done, 5 new images kept`. **Close** only hides the modal: reopen it (or reload the page) and it re-attaches to the running job. One job per session at a time (a second start answers `409`).
 * **Phone:** below 600 px wide the modal fills the screen, buttons are 44 px touch targets, inputs are 16 px and Run / Cancel stay pinned to the bottom.
@@ -606,7 +608,7 @@ Covered in their own sections: [Job Order & Preview Pass](#job-order--preview-pa
 Located at the top of the interface, this section controls the output session name for your tests.
 
 * **Session Name:** Sets the folder name where results are saved (`ComfyUI/output/benchmarks/{session_name}/`). Enter a descriptive name like `"sdxl_quality_test"` or `"character_lora_comparison"`. Changes automatically update the connected Sampler Grid node.
-* **Load Session:** Load a previously saved session's metadata from a searchable dropdown.
+* **Load Session:** Load a previously saved session's metadata from a searchable dropdown. To bring in only its prompts, use **Load prompts…** in the Global Prompts section (see [Recursive Cartesian Prompt Builder](#recursive-cartesian-prompt-builder)).
 * **Refresh Models/LoRAs:** Reload the list of available models and LoRAs from disk. Use when you've added new files or the dropdowns are showing stale data.
 
 ### Config Management (Save/Load Presets)
@@ -842,6 +844,14 @@ This expands into all combinations (3 × 2 × 2 = 12 prompts):
 - ... etc.
 
 The editor provides a visual chip interface for building and editing these variation groups. Each group is displayed as a clickable chip that can be expanded to add/remove options. Multiple groups can be nested for exponential prompt variation.
+
+**Load prompts from a previous run.** The Global Prompts section has a **Load prompts…** button. It opens a picker that lists your runs, newest first, with a filter box. Pick a run to see the prompts it used, then load them into Global Prompts. Only the prompts change: config arrays, session name and run settings stay as they are (**Load Session** in the top bar restores a whole run instead).
+
+* A run can offer several prompt sets: its **Global prompts**, the **Custom prompts** of individual config arrays, the **Generator node inputs**, and the **Prompts found on the images** (the only set for directory scans and older sessions).
+* Every prompt has a checkbox, the number of images that used it and a ★ count of favorited images. **★ Favorited** keeps only the prompts that produced a favorite. With everything ticked, the run's group structure is loaded exactly as it was; a partial selection loads the ticked prompts as one group.
+* **Replace current prompts** swaps the Global Prompts. **Add to current prompts** keeps yours and appends the new ones: duplicates are skipped and both sides are written out as one list.
+* **Also load the negative prompt** is on for Replace and off for Add until you change it.
+* After updating the node pack, restart ComfyUI once: the button appears as soon as the page reloads, but reading a run needs the new server code (the picker says so if it is missing).
 
 ### Prompt Combinators & Regional Prompts (COUPLE)
 
@@ -1195,119 +1205,4 @@ Find the optimal strength for a new LoRA using the Config Builder: add the LoRA 
 
 ### Quality Enhancement Stack
 
-Create a consistent quality stack using the Config Builder: add 3 LoRAs manually (e.g., detail_enhancer at 1.0, color_boost at 0.6, sharpness at 0.5), use the trigger word modal to set all placements to **Positive End**, exclude generic tags like "masterpiece" and "best quality", then save as a reusable preset.
-
----
-
-## 📋 Preset Configs
-
-### 🏆 Group 1: The "Gold Standards" (Reliable Realism)
-
-*Tests the 5 most reliable industry-standard combinations.*  
-5 samplers × 2 schedulers × 2 step settings × 2 cfgs = **40 images**
-
-```json
-[
-  {
-    "sampler": ["dpmpp_2m", "dpmpp_2m_sde", "euler", "uni_pc", "heun"],
-    "scheduler": ["karras", "normal"],
-    "steps": [25, 30],
-    "cfg": [6.0, 7.0],
-    "lora": "None"
-  }
-]
-```
-
-### 🎨 Group 2: Artistic & Painterly
-
-*Tests creative/soft combinations best for illustration and anime.*  
-2 samplers × 3 schedulers × 3 step settings × 2 cfgs = **36 images**
-
-```json
-[
-  {
-    "sampler": ["euler", "dpmpp_2m"],
-    "scheduler": ["simple", "beta", "normal"],
-    "steps": [20, 25, 30],
-    "cfg": [1.0, 4.5],
-    "lora": "None"
-  }
-]
-```
-
-### ⚡ Group 3: Speed / Turbo / LCM
-
-*Tests ultra-fast configs. (Note: Ensure you are using a Turbo/LCM capable model or LoRA).*  
-4 samplers × 3 schedulers × 4 step settings × 2 cfgs = **96 images**
-
-```json
-[
-  {
-    "sampler": ["lcm", "euler", "dpmpp_sde", "euler_ancestral"],
-    "scheduler": ["simple", "sgm_uniform", "karras"],
-    "steps": [4, 5, 6, 8],
-    "cfg": [1.0, 1.5],
-    "lora": "None"
-  }
-]
-```
-
-### 🦾 Group 4: Flux & SD3 Specials
-
-*Tests configs specifically tuned for newer Rectified Flow models like Flux and SD3.*  
-2 samplers × 3 schedulers × 3 step settings × 2 cfgs = **36 images**
-
-```json
-[
-  {
-    "sampler": ["euler", "dpmpp_2m"],
-    "scheduler": ["simple", "beta", "normal"],
-    "steps": [20, 25, 30],
-    "cfg": [1.0, 4.5],
-    "lora": "None"
-  }
-]
-```
-
-### 🧪 Group 5: Experimental & Unique
-
-*Tests niche combinations for discovering unique textures.*  
-6 samplers × 4 schedulers × 5 step settings × 4 cfgs = **480 images**
-
-```json
-[
-  {
-    "sampler": ["dpmpp_3m_sde", "ddim", "ipndm", "heunpp2", "dpm_2_ancestral", "euler"],
-    "scheduler": ["exponential", "normal", "karras", "beta"],
-    "steps": [25, 30, 35, 40, 50],
-    "cfg": [4.5, 6.0, 7.0, 8.0],
-    "lora": "None"
-  }
-]
-```
-
----
-
-## 🔧 Performance Tips
-
-### For Large Batches (1000+ images)
-1. Set `flush_batch_every: 10-20` to see progress updates without overwhelming the browser.
-2. Use `vae_batch_size: 8-12` (balance between speed and VRAM).
-3. Enable `overwrite_existing: False` so you can stop/resume safely.
-
-### For Multi-Model Testing
-1. Use identical LoRA/prompt settings across models for fair comparison.
-2. Use `add_random_seeds_to_gens: 2-3` to evaluate model consistency.
-
-### For MOSS-Image / Krea 2 / Qwen-Image grids with many prompts
-1. `te_batch_size` (Run Settings > Text Encoder Batch Size) is NOT a free win: on MOSS-Image a batch of 8 measured 1.5x slower and not image-identical (see Performance Settings). Try it only on an encoder you have measured; lower it if you see an OOM retry message.
-
-### For Memory-Constrained Systems
-1. Lower `vae_batch_size` to 1-2.
-
----
-
-## 💡 Tips & Best Practices
-
-### Organization
-- Use descriptive config names: `"
+Create a consistent quality stack using the Config Builder: add 3 LoRAs manually (e.g., detail_enhancer at 1.0, color_boost at 0.6, sharpness at 0.5), use the trigger word modal to set all placements to **Positive End**, exclude generic tags like "masterpiece" and

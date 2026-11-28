@@ -57,7 +57,7 @@ CLI 和 Web 的 Node.js 要求见 [DSH 官方运行说明](https://github.com/de
 2. 在 **包名或地址** 输入框中粘贴下面的包名（已带版本号）：
 
    ```text
-   dsh-codex-subscription@3.2.33
+   dsh-codex-subscription@3.2.35
    ```
 
 3. 点击 **安装**，等待安装完成；按页面提示操作，需要重启时先保存工作。
@@ -74,7 +74,7 @@ CLI 和 Web 的 Node.js 要求见 [DSH 官方运行说明](https://github.com/de
 <summary>终端安装（已能运行 dsh 命令）</summary>
 
 ```sh
-dsh plugin --profile web add dsh-codex-subscription@3.2.33
+dsh plugin --profile web add dsh-codex-subscription@3.2.35
 ```
 
 安装完成后按提示重启 DSH，再到 **设置 → Codex 订阅** 登录。插件页面和终端均由 DSH 管理安装。
@@ -87,7 +87,7 @@ dsh plugin --profile web add dsh-codex-subscription@3.2.33
 先在 Web 中完成登录并选择一次 Codex 模型，再把同一个插件安装到 Headless profile：
 
 ```sh
-dsh plugin --profile headless add dsh-codex-subscription@3.2.33
+dsh plugin --profile headless add dsh-codex-subscription@3.2.35
 dsh --profile headless "只回复：ok"
 ```
 
@@ -194,6 +194,10 @@ dsh --profile headless "只回复：ok"
 <summary><b>模型与搜索</b></summary>
 
 先按任务选模型，再按需要调整推理等级和速度。推理等级控制分析投入，速度影响支持的请求如何处理，输出详略控制你希望看到的细节。在**联网与工具**中，用搜索找网页，有现成网址时用网页读取。
+
+在输入框或模型菜单里改速度和输出详略，只保存到当前会话。插件设置里的默认值只用于新建会话，不改变已有会话；主动选择“跟随默认”的会话除外。升级前的会话以首次启用此功能时的默认值为起点。使用 Codex 订阅模型的子智能体继承 Codex 主智能体的实际速度；子模型不支持该档位时回到标准档。
+
+自动切换账号**默认关闭**。保存多个 ChatGPT 账号后，可开启**失败时自动切换账号**，在额度用尽或连续容量错误时重试。它会改变所有会话后续请求使用的当前账号，正在执行的请求可继续。每一步最多恢复重试 3 次，其中同账号最多重试 1 次；恢复机会用完后保留原始错误。
 
 | 功能 | 你可以做什么 | 使用方式 / 条件 |
 | --- | --- | --- |
@@ -304,7 +308,7 @@ dsh --profile headless "只回复：ok"
 <summary>终端方式</summary>
 
 ```sh
-dsh plugin --profile web update dsh-codex-subscription@3.2.33
+dsh plugin --profile web update dsh-codex-subscription@3.2.35
 ```
 
 仅在需要卸载时运行：

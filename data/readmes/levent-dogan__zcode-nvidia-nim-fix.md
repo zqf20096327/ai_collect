@@ -138,6 +138,7 @@ The [limit registry](nvidia_nim_proxy/model_limits.py) now uses exact model IDs:
 | `stepfun-ai/step-5-preview` | 1,000,000 | 16,384 | [Model card](https://build.nvidia.com/stepfun-ai/step-5-preview/modelcard), [API](https://docs.api.nvidia.com/nim/reference/stepfun-ai-step-5-preview-infer) |
 | `deepseek-ai/deepseek-v4.1-flash` | 1,048,576 | 16,384 | [Model card](https://build.nvidia.com/deepseek-ai/deepseek-v4.1-flash/modelcard) |
 | `moonshotai/kimi-k2.6` | 262,144 | 16,384 | [Model card](https://docs.api.nvidia.com/nim/reference/moonshotai-kimi-k2-6) |
+| `moonshotai/kimi-k3.1-pro` | 1,048,576 | 16,384 | [Model card](https://build.nvidia.com/moonshotai/kimi-k3_1-pro/modelcard), [hosted API](https://docs.api.nvidia.com/nim/reference/moonshotai-kimi-k3_1-pro-infer) |
 | `google/gemma-4-31b-it` | 262,144 | 16,384 | [Model card](https://docs.api.nvidia.com/nim/reference/google-gemma-4-31b-it) |
 | `poolside/laguna-xs-2.1` | 262,144 | 16,384 | [Model card](https://docs.api.nvidia.com/nim/reference/poolside-laguna-xs-2-1) |
 | `nvidia/nemotron-3.5-super-vl-120b-a12b` | 1,000,000 | 16,384 | [Model card](https://build.nvidia.com/nvidia/nemotron-3.5-super-vl-120b-a12b/modelcard), [API](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3_5-super-vl-120b-a12b-infer) |
@@ -148,7 +149,7 @@ The [limit registry](nvidia_nim_proxy/model_limits.py) now uses exact model IDs:
 | `meta/muse-glimmer-30b` | 131,072 | 16,384 | [Model card](https://docs.api.nvidia.com/nim/reference/meta-muse-glimmer-30b) |
 | `openai/gpt-oss-20b` | 131,072 | 4,096 | Hosted validation reported 131,072; [output schema](https://docs.api.nvidia.com/nim/reference/openai-gpt-oss-20b-infer) |
 
-The reviewed OpenCode shortlist currently contains **15** chat models, intersected
+The reviewed OpenCode shortlist currently contains **16** chat models, intersected
 with each successful public catalog refresh. Embedding, reward and safety models
 are not coding-agent choices and are not automatically added. Audio/video input
 support is not implied by a text-chat model entry.
@@ -162,9 +163,25 @@ the upstream catalog. It does not change your selected default model: if it poin
 to a removed endpoint, select a current model after reopening OpenCode. A failed
 or empty refresh never deletes configuration. Unrelated manual models remain.
 
-[Kimi K3.1 Pro](https://build.nvidia.com/moonshotai/kimi-k3_1-pro) is currently
-Playground-only according to its API example, so sync does not add it. Document
-parsing, embedding and reranking endpoints are likewise not added as chat models.
+[Kimi K3.1 Pro](https://build.nvidia.com/moonshotai/kimi-k3_1-pro/build) was rechecked
+on **2026-11-18**: NVIDIA now publishes a hosted Chat Completions example and lists
+`moonshotai/kimi-k3.1-pro` in its public catalog. Sync adds it to `nim-local` and
+the six existing direct providers with a `max` default and `low`, `medium`, `high`,
+and `max` variants. Existing manual settings and the selected model are preserved.
+The 16,384-token output setting is this project's operating budget; NVIDIA's
+request schema accepts up to 65,536 output tokens. Document parsing, embedding
+and reranking endpoints are not added as chat models.
+
+To pick up the new model, restart your usual proxy launcher with OpenCode sync
+enabled (for example `start_proxy_pool_debug.bat`), wait for model sync, then
+reopen OpenCode and select `moonshotai/kimi-k3.1-pro`. No disconnect is needed.
+The full-loop launcher does not enable config writes by default; its equivalent
+with sync is:
+
+```powershell
+.\run_proxy.ps1 -ApiKeyMode Pool -PoolRetryLoop -DebugMode -UpstreamTimeoutSeconds 600 `
+  -OpenCodeConfig "$HOME\.config\opencode\opencode.json"
+```
 
 The MiniMax M3.1 Flash and Mistral Large 4 model cards describe 1M checkpoints,
 but their hosted Build pages advertise 262K. The registry uses the smaller hosted value until
@@ -254,6 +271,7 @@ The proxy recognizes exact IDs in [the reasoning profile registry](nvidia_nim_pr
 | Model ID | No effort selected in client | Explicit supported values |
 | --- | --- | --- |
 | `moonshotai/kimi-k3` (retired free endpoint; legacy requests only) | Sends top-level `reasoning_effort: "max"` | `low`, `high`, `max` |
+| `moonshotai/kimi-k3.1-pro` | Sends top-level `reasoning_effort: "max"` when unspecified | `low`, `medium`, `high`, `max` |
 | `nvidia/nemotron-3.5-super-vl-120b-a12b` | Sends top-level `reasoning_effort: "high"`, its highest documented effort | `none`, `low`, `high` |
 | `mistralai/mistral-large-4-1t-a52b` | Sends top-level `reasoning_effort: "high"`, its highest documented effort | `none`, `high` |
 | MiniMax M3.1 Flash, Step 5 Preview, Nemotron 3.5 Bolt and Nano Omni | Uses hosted native default; no unverified `max` parameter | No effort override enabled |
@@ -272,6 +290,12 @@ effort selector. These models therefore use native defaults rather than a guesse
 wire format. For Super VL the [hosted schema](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3_5-super-vl-120b-a12b-infer)
 explicitly supports top-level `reasoning_effort`; the proxy defaults to `high`.
 Direct `nvidia_nim_1` through `nvidia_nim_6` requests bypass this proxy mapping.
+
+Kimi K3.1 Pro's hosted default is `low`; the proxy and newly generated OpenCode
+model entries deliberately default to `max`. Supported explicit efforts are
+preserved. Its schema fixes `top_p`, presence and frequency penalties, so the
+proxy strips those fields for this exact ID while preserving temperature,
+messages, tool calls and streaming. This does not change legacy Kimi K3 behavior.
 
 NVIDIA describes the GLM 5.3 model's default as `max`, but its [hosted request documentation](https://docs.api.nvidia.com/nim/reference/z-ai-glm-5-3-infer) has not been verified here to accept a per-request effort override. The proxy leaves that native default in place. DeepSeek V4.1 Flash's [model page](https://build.nvidia.com/deepseek-ai/deepseek-v4.1-flash) discusses high-effort evaluation, but its hosted example does not specify an effort parameter. Until NVIDIA publishes or a live test confirms the hosted wire format, selecting `Max` in OpenCode cannot be guaranteed for that model. Other models without a verified `max` capability use their provider default. References: [GLM 5.3 model card](https://build.nvidia.com/z-ai/glm-5-3/modelcard), [Kimi K3 API](https://docs.api.nvidia.com/nim/reference/moonshotai-kimi-k3-infer), and [NVIDIA model catalog](https://build.nvidia.com/models). A configured profile does not make a retired or inaccessible endpoint work.
 
@@ -376,13 +400,13 @@ Same-key requests use FIFO queues; different healthy keys can work in parallel. 
 ### Full-Loop Pool Launcher
 
 1. Stop the existing proxy with `Ctrl+C`. Reuse the same private Pool `.env`.
-2. From PowerShell run `.\start_proxy_pool_loop.bat`. It enables debug-safe logging and a 120-second upstream socket timeout per attempt. It does not write OpenCode settings.
+2. From PowerShell run `.\start_proxy_pool_loop.bat`. It uses a 600-second upstream socket timeout so a slow model is not restarted on another key after just two minutes. It enables debug-safe logging and does not write OpenCode settings.
 3. In OpenCode GUI or CLI, select your **local Pool provider** (`nim-local`), not a direct NVIDIA provider. Keep the local `/v1` URL and the local `NIM_PROXY_CLIENT_KEY` already configured. Use `Ctrl+C` in the proxy console to stop the proxy.
 
 Equivalent PowerShell command (change the per-attempt timeout here if needed):
 
 ```powershell
-.\run_proxy.ps1 -ApiKeyMode Pool -PoolRetryLoop -DebugMode -UpstreamTimeoutSeconds 120
+.\run_proxy.ps1 -ApiKeyMode Pool -PoolRetryLoop -DebugMode -UpstreamTimeoutSeconds 600
 ```
 
 On `408`, `429`, `500`, `502`, `503`, `504`, `529`, or a transient transport error before the client response, the proxy tries the next eligible key. After a full pass it starts another round with backoff from 2 to 30 seconds. It skips quarantined keys and honors upstream `Retry-After` cooldowns. DNS/TLS errors and permanent request errors are returned instead of looping. Queue capacity still applies; admitted requests have no overall retry or queue wait deadline in this mode.

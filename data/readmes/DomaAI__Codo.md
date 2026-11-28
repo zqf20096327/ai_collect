@@ -1,13 +1,14 @@
 <p align="center">
-  <img src="assets/agents.png" width="560" alt="Codo and its crew: Josh, Luna, Codo, Max and Mia">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero/hero-dark.webp">
+    <img src="assets/hero/hero-light.webp" width="100%" alt="Codo. Josh, Luna, Codo, Max and Mia, five live agent faces that blink and talk, over a lava lamp made of code. Your team of AI agents, on the plans you already pay for.">
+  </picture>
 </p>
 
-<h1 align="center">Codo</h1>
-
 <p align="center">
-  <b>Your team of AI agents, on the plans you already pay for.</b><br>
-  Claude Code, Codex, Gemini CLI, any API or a local model in one app and one terminal.<br>
-  When one plan hits its limit, the same conversation keeps going on the next one.
+  <b>Claude Code, Codex, Gemini CLI, any API or a local model. One app, one terminal, one crew.</b><br>
+  When one plan hits its limit, the same conversation keeps going on the next one.<br>
+  Free and open source. If Codo saves your day, a ⭐ helps other developers find it.
 </p>
 
 <p align="center">
@@ -17,9 +18,11 @@
 </p>
 
 <p align="center">
-  <a href="https://domaai.pl/pobierz-codo.html"><b>Download page</b></a>
+  <a href="https://domaai.pl/en/codo"><b>Website</b></a>
   &nbsp;&nbsp;|&nbsp;&nbsp;
   <a href="#see-it-work">See it work</a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="#agents-that-work-together">Groups</a>
   &nbsp;&nbsp;|&nbsp;&nbsp;
   <a href="#screenshots">Screenshots</a>
   &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -31,15 +34,58 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/DomaAI/Codo/stargazers"><img src="https://img.shields.io/github/stars/DomaAI/Codo?style=social" alt="GitHub stars"></a>
   <a href="https://github.com/DomaAI/Codo/actions/workflows/ci.yml"><img src="https://github.com/DomaAI/Codo/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a>
   <img src="https://img.shields.io/badge/python-3.9%2B-blue" alt="Python 3.9+">
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="macOS, Windows, Linux">
 </p>
 
+## See it work
+
+<h3 align="center">One conversation, many brains</h3>
+
 <p align="center">
   <img src="assets/demo/many-brains.webp" width="900" alt="Recording: a task runs on Claude Code, Claude Code reaches its plan limit and Codex finishes the same turn">
-  <br><sub>One conversation, many brains: when Claude Code hits its plan limit, Codex picks up right where it left off.</sub>
+  <br><sub>Claude Code hits its plan limit in the middle of a task. Codex picks up the same turn, with the whole history, files and plan.</sub>
+</p>
+
+<a name="agents-that-work-together"></a>
+<h3 align="center">Agents that work together</h3>
+
+<p align="center">
+  <img src="assets/demo/agents-together.webp" width="900" alt="Recording: a group of agents splits a launch between Max, Josh and Mia, each on its own brain">
+  <br><sub><b>Conversation.</b> Ask the group, mention one, and Luna splits the work across Claude Code, Codex and Gemini.</sub>
+</p>
+
+<p align="center">
+  <img src="assets/demo/group-vote.webp" width="900" alt="Recording: the group switches to Vote, four agents on Claude Code, Codex and Gemini each propose a headline, then vote, and the count picks Josh's proposal">
+  <br><sub><b>Vote.</b> Every agent proposes on its own brain, then they vote on each other's work and the count picks a winner.</sub>
+</p>
+
+Six ways for a group to work, picked per message from the composer:
+
+| Way | What happens |
+| --- | --- |
+| **Conversation** | A group chat: everyone answers as themselves, `@name` asks just one |
+| **Side by side and compare** | The same task for everyone, answers next to each other, the lead joins them into one |
+| **The lead splits the work** | The lead hands out parts by strength, they work at once, the lead puts it together |
+| **Cross review** | The lead writes, the others review, rounds stop when every reviewer approves |
+| **Vote** | Everyone proposes, everyone votes for the best of the others |
+| **Pipeline** | One after another, each result is the next one's input |
+
+<h3 align="center">A team that ships</h3>
+
+<p align="center">
+  <img src="assets/demo/team-ships.webp" width="900" alt="Recording: an agent team gets its plan approved, works in parallel and opens a pull request">
+  <br><sub>Approve the plan, watch agents build and review in parallel in their own git copies, then open the pull request.</sub>
+</p>
+
+<h3 align="center">Your agent, with a face</h3>
+
+<p align="center">
+  <img src="assets/demo/agent-creator.webp" width="900" alt="Recording: the agent creator, a new agent called Nova changes from a cube to a cloud to a kitten and its liquid colours mix live">
+  <br><sub>Name it, pick a shape and mix its liquid. The face is alive while you shape it, then choose the brain it thinks with.</sub>
 </p>
 
 ## Get Codo
@@ -63,7 +109,7 @@ codo ui     # the app in its own window
 codo        # the agent in your terminal
 ```
 
-Step by step help for every system: **[domaai.pl/pobierz-codo](https://domaai.pl/pobierz-codo.html)**
+Step by step help for every system (in Polish): **[domaai.pl/pobierz-codo](https://domaai.pl/pobierz-codo.html)**
 
 ## Use the plans you already pay for
 
@@ -97,29 +143,49 @@ the same turn moves on to the next brain with the whole history, files and plan.
   hand tasks over, on your computer and on the server together.
 - **MCP both ways.** `codo mcp` exposes Codo tools (browser, team, mail) to Claude Code and Codex.
 - **Skills that the agent writes itself**, plus skills from GitHub (`codo skills`).
+- **Files in the conversation.** Attach files, folders or a screenshot, type `@` for any project file,
+  and every path in an answer opens a preview: code, Markdown, HTML, images, PDF, video.
+- **Review every change.** The Changes panel shows what the agent did, side by side or unified. Accept or
+  reject a hunk, a file or everything, leave a note on a line, commit and open a pull request.
+- **Word, Excel and PowerPoint, edited in place.** The agent changes text, tables, cells, formulas and
+  slides without losing formatting, with a diff before saving and `/undo` after.
+- **Reviews and pull request checks.** Ask for a review and get a card with findings and "Fix this".
+  Codo follows the checks on your pull request, sends failed logs to the agent and merges when all pass.
 - **Undo for every edit.** Each file change is backed up; `/undo` reverts it, `/diff` shows it.
 - **Phone control.** With the DomaAI app (iOS, Android), `/rc` lets you follow the session and answer
   its questions from your phone. Commands that change things still ask for consent.
 - **A single Python file.** No dependencies beyond Python 3.9+, and the installer brings Python along
   when the computer has none.
 
-## See it work
-
-<p align="center">
-  <img src="assets/demo/agents-together.webp" width="900" alt="Recording: a group of agents splits a launch between Max, Josh and Mia, each on its own brain">
-  <br><sub>Your agents work together: mention one, and the team splits the work across Claude Code, Codex and Gemini.</sub>
-</p>
-
-<p align="center">
-  <img src="assets/demo/team-ships.webp" width="900" alt="Recording: an agent team gets its plan approved, works in parallel and opens a pull request">
-  <br><sub>A team that ships: approve the plan, watch agents build and review in parallel, then open the pull request.</sub>
-</p>
-
 ## Screenshots
 
 **Windows and Linux** (`codo ui`, the app in its own window)
 
 <table>
+  <tr>
+    <td width="50%"><img src="assets/screens/win-signin.webp" alt="Sign in to Codo with your email, Google or Apple"></td>
+    <td width="50%"><img src="assets/screens/win-creator.webp" alt="Agent creator: shape, liquid colours and eyes of a live agent face"></td>
+  </tr>
+  <tr>
+    <td align="center">Sign in once, the same account as the Mac app</td>
+    <td align="center">Create your agent, its face changes live</td>
+  </tr>
+  <tr>
+    <td><img src="assets/screens/win-files.webp" alt="Attached files as cards, file links in the answer and the @ file list"></td>
+    <td><img src="assets/screens/win-changes.webp" alt="Changes panel: changed files and a side by side diff with accept and reject"></td>
+  </tr>
+  <tr>
+    <td align="center">Files in the conversation: cards, links, <code>@</code></td>
+    <td align="center">The Changes panel: accept or reject every hunk</td>
+  </tr>
+  <tr>
+    <td><img src="assets/screens/win-review.webp" alt="Review card with important and minor findings and Fix this buttons"></td>
+    <td><img src="assets/screens/win-pr-checks.webp" alt="Pull request panel with failing checks, Fix now and merge when every check passes"></td>
+  </tr>
+  <tr>
+    <td align="center">A review you can apply with one click</td>
+    <td align="center">Pull request checks, fixed and merged for you</td>
+  </tr>
   <tr>
     <td width="50%"><img src="assets/screens/win-code.webp" alt="Codo on Windows and Linux: start screen with persistent agents"></td>
     <td width="50%"><img src="assets/screens/win-models.webp" alt="Model picker: Claude Code, Codex and Grok on this computer, backup brain"></td>
@@ -168,6 +234,9 @@ the same turn moves on to the next brain with the whole history, files and plan.
 | Several agents at once | Separate terminals, copy and paste between them | Teams in separate git copies, groups with review and voting, rooms and agent mail |
 | Long work | Stops when you close the terminal | Marathon mode for hours, always-on agents on a server |
 | Where it answers | The terminal | Terminal, app window, phone, Telegram, Discord, Slack, WhatsApp, Signal, e-mail |
+| Reviewing changes | Read the diff in the terminal | A Changes panel: accept or reject each hunk, notes on lines go back to the agent |
+| Office documents | Plain text files | Word, Excel, PowerPoint and ODF edited in place, formatting kept |
+| Pull requests | You watch the checks yourself | Codo follows the checks, sends failed logs to the agent and merges when all pass |
 | Undo | Depends on the tool | A backup of every edit, `/undo` and `/diff` |
 | Cost | Another subscription | Free and open source (Apache 2.0), uses the plans you already have |
 
@@ -181,6 +250,9 @@ the same turn moves on to the next brain with the whole history, files and plan.
 | Always-on agents and messengers (`codo host`) | ✓ | ✓ | ✓ |
 | Model picker with backup brain, team runs in the window | ✓ | ✓ | ✓ |
 | Compare models side by side, rooms with your agents | ✓ | ✓ | ✓ |
+| Files in the conversation, Changes panel, review card, pull request checks | ✓ | ✓ | ✓ |
+| Edit Word, Excel, PowerPoint and ODF in place | ✓ | ✓ | ✓ |
+| Tested in CI on every push (on Windows also the window, NTFS paths and Edge) | ✓ | ✓ | ✓ |
 | iMessage, Gmail and Calendar triggers, system notifications | ✓ | | |
 | 18 languages, light and dark | ✓ | ✓ | ✓ |
 
@@ -221,6 +293,8 @@ the same turn moves on to the next brain with the whole history, files and plan.
 | Area | What Codo does | Command |
 | --- | --- | --- |
 | Conversation | Interactive session, one shot task, resume, print mode for scripts with JSON output | `codo`, `codo "task"`, `codo -c`, `codo resume`, `codo -p --json` |
+| Files and changes | Attach files and folders, `@` for project files, previews, a Changes panel with hunk accept and reject, review cards, pull request checks | `codo ui`, `/diff`, `/undo` |
+| Office documents | Edit Word, Excel, PowerPoint and ODF in place: text, tables, cells, formulas, slides and notes | ask the agent |
 | App window | The full Codo app on Windows and Linux, the same as on Mac: code, model picker with compare, agent teams, groups and rooms, Office, bots and swarms, workflows, delegate, persistent agents and settings, in 18 languages (`--tab` for a browser tab) | `codo ui` |
 | Long work | Works alone for hours or days with a plan, log, queue of goals and hard limits | `codo work`, `codo work add`, `codo work status` |
 | Teams | A lead splits a goal, members work in separate git copies, reviewers check, you approve the plan and the merge, a pull request at the end | `codo team run`, `codo team apply --pr` |
@@ -348,8 +422,8 @@ codo work status | codo work log -f | codo work stop
 
 ## Free credits
 
-Signing in with MaddLabs (`codo login maddlabs`) gives a new account a 14 day trial with
-2 million free tokens per day on models hosted in the EU. Terms:
+Signing in with MaddLabs (`codo login maddlabs`) gives a new account a one-time pack of
+2 million free tokens on Qwen3.8 27B, hosted in the EU, and doubles the first top up. Terms:
 [maddlabs.co/legal/trial](https://maddlabs.co/legal/trial). After the trial you pay per token from a
 prepaid balance at [maddlabs.co](https://maddlabs.co), or switch to your own key at any time.
 

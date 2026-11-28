@@ -9,7 +9,7 @@
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
 [![Last Commit](https://img.shields.io/github/last-commit/ARUNAGIRINATHAN-K/ai-agent-registry)](https://github.com/ARUNAGIRINATHAN-K/ai-agent-registry/commits/main)
 ![Tools Listed](https://img.shields.io/badge/tools_listed-500%2B-blue?style=flat-square)
-[![Live Registry](https://img.shields.io/website?url=https%3A%2F%2Fai-agent-registry-kappa.vercel.app%2F&up_message=online&label=registry&style=flat-square)](https://ai-agent-registry-kappa.vercel.app/)
+[![Live Registry](https://img.shields.io/website?url=https%3A%2F%2Fopenagentregistry.vercel.app%2F&up_message=online&label=registry&style=flat-square)](https://openagentregistry.vercel.app/)
 [![License: CC0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg?style=flat-square)](LICENSE)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FARUNAGIRINATHAN-K%2Fai-agent-registry)
 
@@ -17,7 +17,7 @@
 
 AI Agent Registry is an open-source, community-driven directory designed to make the rapidly growing AI agent ecosystem easier to discover, explore, and navigate.
 
-**[Explore the Stack](#contents) • [Live App](https://ai-agent-registry-kappa.vercel.app/#live) • [Architecture](ARCHITECTURE.md) • [Data Schema](DATA_SCHEMA.md) • [Development](DEVELOPMENT.md) • [Contributing](#contributing) • [Agent Guide](AGENT.md)**
+**[Explore the Stack](#contents) • [Live App](https://openagentregistry.vercel.app//#live) • [Architecture](ARCHITECTURE.md) • [Data Schema](DATA_SCHEMA.md) • [Development](DEVELOPMENT.md) • [Contributing](#contributing) • [Agent Guide](AGENT.md)**
 
 <img src="img/main.png" width="100%">
 
@@ -95,7 +95,7 @@ Interactive Next.js 14 web application for searching, filtering, and exploring A
 npm install && npm run build:data && npm run dev
 ```
 
-**Live Web Registry**: [https://ai-agent-registry-kappa.vercel.app](https://ai-agent-registry-kappa.vercel.app/#explorer)  
+**Live Web Registry**: [https://openagentregistry.vercel.app/](https://openagentregistry.vercel.app//#explorer)  
 **Local Web App**: `http://localhost:3000`  
 **Docker**: `docker compose up --build`  
 **One-Click Deploy**: [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FARUNAGIRINATHAN-K%2Fai-agent-registry#deploy)
@@ -104,7 +104,7 @@ npm install && npm run build:data && npm run dev
 
 Have an AI agent, framework, tool, skill, or infrastructure project worth sharing?
 
-- **Web Submission Portal**: [Submit a Resource](https://ai-agent-registry-kappa.vercel.app/submit)
+- **Web Submission Portal**: [Submit a Resource](https://openagentregistry.vercel.app//submit)
 - **GitHub Issue Form**: [Open No-Code Submission Issue](https://github.com/ARUNAGIRINATHAN-K/ai-agent-registry/issues/new?template=submit_agent.yml)
 
 ---
@@ -270,6 +270,7 @@ The protocol layer that enables agents to discover tools, communicate with each 
 - [Datacircle](https://datacircle.dev/) `🔬` `[Cloud]` `[MCP]` - Query your favorite B2B data APIs through us. Same request, same price, no markup.
 - [DC Hub](https://github.com/azmartone67/dchub-mcp-server) `🔬` `[Cloud]` `[MCP]` - Scores where data centers can get grid power across 300+ markets daily, served to agents over hosted MCP.
 - [Docker MCP](https://github.com/docker/mcp-gateway) `🌱` `[Go]` `[MCP]` - Docker's MCP gateway CLI plugin for running MCP servers in isolated containers.
+- [GTD Brain](https://gtdbrain.com) `🔬` `[Cloud]` `[MCP]` - Hosted MCP server with OAuth 2.1 and 16 tools that lets ChatGPT, Claude, Gemini CLI and Cursor run a Getting Things Done board.
 - [Equibles](https://equibles.com/mcp) `🔬` `[Cloud]` `[MCP]` - Serves US stock data to agents over MCP: SEC filings, financials, earnings transcripts, insider trades and 13F holdings.
 - [HCS Agent Protocol](https://github.com/hashgraph/hedera-agent-kit-js) `🌱` `[TypeScript]` `[IDE]` - Hedera open standards for agent identity with trustless P2P communication and 187K+ verified agents.
 - [HIG Doctor](https://github.com/raintree-technology/hig-doctor) `🌱` `[TypeScript]` `[MCP]` - Apple HIG audit CLI and MCP server exposing design-guideline lookup and project audits for coding agents across SwiftUI, UIKit, React, Next.js, Flutter, Compose, HTML, and CSS.
@@ -290,6 +291,7 @@ The protocol layer that enables agents to discover tools, communicate with each 
 - [Xquik](https://github.com/Xquik-dev/x-twitter-scraper) `🔬` `[Cloud]` `[MCP]` - Hosted X Twitter data MCP for search, follower export, monitors, and confirmation-gated writes.
 - [Zapier MCP Server](https://zapier.com/mcp) `🌱` `[Cloud]` `[MCP]` - Connect agents to 7,000+ app integrations via MCP, powered by Zapier's automation platform.
 - [zero-api-key-web-search](https://github.com/wd041216-bit/zero-api-key-web-search) `🌱` `[Python]` `[MCP]` - Free web search toolkit for AI agents with no API keys, MCP server support.
+- [Zambo](https://github.com/zambodotdev/zambo-mcp) `🌱` `[TypeScript]` `[MCP]` - Open-source MCP server: 120 native execution tools across 17 products, MIT licensed. Free 20 calls/tool/day, no account.
 
 ## Browser and Computer Use Agents
 
@@ -325,7 +327,6 @@ Sandboxes, web scrapers, browser automation, and networking layers that agents d
 - [AgentDock](https://github.com/agentdock/agentdock) `🚀` `[Python]` `[Docker]` - Framework for building and deploying production-ready AI agents with composable node architecture.
 - [agent-qa](https://github.com/vostride/agent-qa) `🌱` `[TypeScript]` `[Testing]` - Runs natural-language web and mobile tests with persistent memory and UI-change adaptation.
 - [AgentSandboxes](https://agentsandboxes.fyi) `🔬` `[Cloud]` `[MCP]` - A free index of cloud sandboxes for AI agents with source-linked specs, a REST API and an MCP endpoint.
-- [Anansi Haven](https://github.com/kburrus64-max/anansi-haven) `🔬` `[Cloud]` `[MCP]` - Gives agents a free hosted home base with persistent memory, client-side encrypted storage, a job board and an agent directory over MCP, A2A and HTTP.
 - [Arcmira](https://arcmira.com) `🔬` `[Cloud]` `[MCP]` - Search indexed YouTube transcripts for timestamped passages, speaker appearances, entity mentions, sponsors and recommendations.
 - [codex-profiles](https://github.com/Ducksss/codex-profiles) `🚀` `[Python]` `[OpenAI]` - Bash CLI for switching OpenAI Codex CLI and Desktop profiles with isolated CODEX_HOME directories.
 - [Cohesivity](https://cohesivity.ai?ref=gh-awesome-ai-agents-2026) `🔬` `[Cloud]` `[MCP]` - Headless backend for AI agents with databases, hosting, storage, and 15+ services via API and MCP, no API keys or signups required to get started.
@@ -354,6 +355,7 @@ Sandboxes, web scrapers, browser automation, and networking layers that agents d
 - [Unstructured](https://github.com/Unstructured-IO/unstructured) `🌱` `[Python]` `[Pipeline]` - Ingests and preprocesses documents across 25+ file types for downstream LLM and agent pipelines.
 - [Vectoree](https://vectoree.ai) `🔬` `[Cloud]` `[CLI]` - A backend for coding agents with a model gateway, auth, Postgres and storage behind one key.
 
+- [Zambo](https://github.com/zambodotdev/zambo-mcp) `🌱` `[TypeScript]` `[MCP]` - Give any AI agent hands: 120 native MCP tools over one zero-auth endpoint; free 20 calls/tool/day, no account, with x402 USDC micropayments on Base.
 ## Low and No-Code Builders
 
 - [Activepieces](https://github.com/activepieces/activepieces) `🌱` `[TypeScript]` `[Docker]` - Open-source Zapier alternative with AI-powered automation nodes and visual workflow builder.
@@ -800,6 +802,4 @@ Platforms that generate full-stack applications, components, or web apps from na
 
 - [Bolt.new](https://bolt.new) `🌱` `[Cloud]` `[Multi-Agent]` - Generates full-stack web applications in the browser from natural language prompts with instant deploy.
 - [Dyad](https://github.com/dyad-sh/dyad) `🌱` `[TypeScript]` `[Local]` - Privacy-first open-source prompt-to-app builder that generates full-stack applications locally.
-- [Google Project IDX](https://firebase.studio) `🚀` `[Cloud]` `[IDE]` - AI-powered cloud IDE with free Claude Opus access for building full projects across all frameworks.
-- [Lovable](https://lovable.dev) `🌱` `[Cloud]` `[Multi-Agent]` - Iterates from chat to deployed web application with auto-deploy and real-time preview.
-- [PlayCode Agent](https://playcode.io) `🌱` `[Cloud]` `[Multi-Agent]` - Browser-only lightweight web app creation tool w
+- [Google Project IDX](https://firebase.studio) `🚀` `[Cloud]` `[IDE]` - AI-powered cloud IDE wi

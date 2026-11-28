@@ -127,7 +127,7 @@ cowork import --from hermes --dry-run
 cowork import --from hermes
 ```
 
-Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-run setup offers it when it finds either folder. You can also keep running your existing Hermes and hand tasks to it from CoWork over ACP. Guides: [Migrating from Hermes](docs/migrating-from-hermes.md) · [Migrating from OpenClaw](docs/migrating-from-openclaw.md)
+Use `--from openclaw` for OpenClaw, `--from claude-code` or `--from cursor` for your coding tools' instructions, skills, MCP servers and allowed commands, or **Settings > Import** in the app; first-run setup offers it when it finds any of them. You can also keep running your existing Hermes and hand tasks to it from CoWork over ACP. Guides: [Migrating from Hermes](docs/migrating-from-hermes.md) · [Migrating from OpenClaw](docs/migrating-from-openclaw.md) · [Importing from Claude Code and Cursor](docs/migrating-from-claude-code-and-cursor.md)
 
 ## Documentation
 
@@ -137,7 +137,7 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 | [Feature Tour](docs/feature-tour.md) | Why CoWork OS, how a task runs, and the full feature inventory |
 | [Features](docs/features.md) | Categorized feature reference |
 | [Models & Access](docs/providers.md) | Provider routes, sign-ins, local models, fallbacks |
-| [Migrating from Hermes](docs/migrating-from-hermes.md) · [OpenClaw](docs/migrating-from-openclaw.md) | Import persona, memory, skills, bots and schedules |
+| [Migrating from Hermes](docs/migrating-from-hermes.md) · [OpenClaw](docs/migrating-from-openclaw.md) · [Claude Code and Cursor](docs/migrating-from-claude-code-and-cursor.md) | Import persona, memory, skills, MCP servers, bots and schedules |
 | [Access Profiles](docs/access-profiles.md) | Approvals, sandbox, network and filesystem policy |
 | [Security Guide](docs/security-guide.md) | Threat model, guardrails, sandboxing, credential storage |
 | [Self-Hosting](docs/self-hosting.md) | Linux server, Docker and remote access |
@@ -161,13 +161,13 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 |---|---:|---:|
 | GitHub stars | 554 | n/a |
 | GitHub forks | 101 | n/a |
-| Installer/server downloads | 3,971 | 3,971 |
-| Download delta | +44 | n/a |
-| npm downloads | 133 (last week) | 11,257 |
-| GitHub views, last 14-ish days | 1,514 total / 791 unique | n/a |
-| GitHub clones, last 14-ish days | 4,152 total / 638 unique | n/a |
+| Installer/server downloads | 4,020 | 4,020 |
+| Download delta | +49 | n/a |
+| npm downloads | 135 (last week) | 11,281 |
+| GitHub views, last 14-ish days | 1,426 total / 775 unique | n/a |
+| GitHub clones, last 14-ish days | 4,058 total / 635 unique | n/a |
 
-Generated 2026-11-26T12:25:59.946Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
+Generated 2026-11-27T12:12:03.803Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
 <!-- COWORK_PUBLIC_ADOPTION_STATS_END -->
 
 ## License

@@ -15,8 +15,8 @@ clear cases on its own). No account, no cloud, and every move can be undone.
 - **The AI model downloads with one click** – in three sizes, matched to your Mac's memory.
 - **Careful by default:** folders, projects and apps are never touched; nothing moves until you confirm; every
   move can be put back.
-- **Searchable for AI assistants:** connect Claude Code, Codex or OpenCode with one click (or anything else
-  that speaks MCP) and ask "what did I save about …?". Read-only, and only while the app is open.
+- **Searchable for AI assistants:** connect Claude Code, Codex, OpenCode, Cursor, Windsurf, Zed or Claude Desktop with one
+  click (or anything else that speaks MCP) and ask "what did I save about …?". Read-only, and only while the app is open.
 
 ```text
 You:      Find my 2025 service charges statement and my Lisbon boarding pass.
@@ -35,6 +35,9 @@ it doesn't ship itself:
 |---|---|---|
 | Python 3.12+ | reads and moves the files | [python.org](https://www.python.org/downloads/macos/) or `brew install python` |
 | [Ollama](https://ollama.com/download) | runs the AI model | `brew install ollama` or the app helps during setup |
+
+Already running models with [LM Studio](https://lmstudio.ai), `mlx-lm` or `llama.cpp`? Tidywise can use that
+server instead of Ollama – see [Another local model server](#another-local-model-server).
 
 The app tells you if one of them is missing.
 
@@ -104,8 +107,8 @@ Everything can be changed later under **Settings** (⌘,). Every change applies 
 | **Rules** | How long a file has to sit · move automatically · how careful the AI is · how often to check · file types that are never touched |
 | **Topics** | Name, description, icon and color of each topic. The AI reads the description – the more specific, the better |
 | **AI model** | Choose and download a model · the language of summaries · a sentence about you that helps with sorting |
-| **Assistants** | Let AI assistants search the archive · connect Claude Code, Codex or OpenCode |
-| **General** | Start at login · automation · Chrome history as a link collection |
+| **Assistants** | Let AI assistants search the archive · connect Claude Code, Codex, OpenCode, Cursor, Windsurf, Zed or Claude Desktop |
+| **General** | Start at login · automation · browser history (Chrome, Safari, Firefox, Arc, Brave, Vivaldi, Edge) as a link collection |
 
 | | |
 |---|---|
@@ -123,7 +126,7 @@ Tidywise/                    (default: ~/Downloads/Tidywise – you choose)
 │   └── travel/ …
 ├── _inbox/                unsure cases – you pick the topic under "Review"
 ├── _private/              never read, neither by Tidywise nor by an AI assistant
-├── Links/<topic>.md       link collection from your Chrome history (only if turned on)
+├── Links/<topic>.md       link collection from your browser history (only if turned on)
 ├── Days/YYYY-MM-DD.md     what arrived on that day
 └── AGENTS.md              guide for AI assistants
 ```
@@ -137,14 +140,35 @@ Tidywise/                    (default: ~/Downloads/Tidywise – you choose)
 - Every move is recorded in `~/Library/Application Support/tidywise/moves.jsonl` and can be undone
   (in the app: file → *Put back*; in the terminal: `tidywise undo`).
 - The AI is told not to write ID, account or similar numbers into summaries.
-- **Nothing leaves your Mac.** Tidywise only talks to Ollama on `127.0.0.1`. It needs the internet once:
-  to download the model from ollama.com.
-- The Chrome history is only read if you turn it on.
+- **Nothing leaves your Mac.** Tidywise only talks to a model server on this Mac (Ollama, or the server you
+  chose) – an address on another computer is refused unless you set `allow_remote_llm = true`. It needs the
+  internet once: to download the model from ollama.com.
+- The browser history is only read if you turn it on, and only from the browsers you pick (Chrome, Safari,
+  Firefox, Arc, Brave, Vivaldi, Edge) – from a copy, locally. Safari's history needs Full Disk Access; if
+  macOS blocks a browser, Tidywise says so and keeps reading the others.
 - The background service only runs while the app is open. The **AI** switch stops running work and frees
   the memory immediately.
 
 Summaries and keywords are written in English by default. Under Settings → AI model you can pick the language
 you actually search in.
+
+### Another local model server
+
+Ollama is the default because the app can install it and download models with one click. If you already run
+models through **LM Studio**, **mlx-lm** (`mlx_lm.server`) or **llama.cpp** (`llama-server`), Tidywise can use
+their OpenAI-style API instead: Settings → AI model → *Runs on* → *Another local server*, then pick one of the
+server's models. In the terminal:
+
+```bash
+tidywise config set llm_backend openai
+tidywise config set llm_url http://127.0.0.1:1234/v1    # LM Studio; mlx-lm and llama.cpp: http://127.0.0.1:8080/v1
+tidywise config set model qwen/qwen3-vl-8b              # the name the server lists
+tidywise status                                         # checks that the server answers and has the model
+```
+
+Tidywise asks for answers in a JSON schema and falls back to describing the schema in the prompt for servers
+that can't enforce one. A model that understands images also recognizes photos and scanned PDFs. Only
+addresses on this Mac (`127.0.0.1`, `localhost`) are accepted.
 
 ## Command line
 
@@ -159,6 +183,8 @@ tidywise undo --last 5           # put back the last 5 moves (or --all, or numbe
 tidywise config                  # show the settings
 tidywise config set auto_apply true
 tidywise config set watch "~/Downloads, ~/Desktop"
+tidywise config set browsers "safari, firefox"   # whose history becomes the link collection
+tidywise links                   # read the browser history now
 tidywise service install         # set up the background service (uninstall removes it)
 tidywise mcp add claude          # let an AI assistant search the archive
 ```
@@ -173,13 +199,16 @@ the hosting company"*, *"what did I read about Lisbon last week?"*
 
 ![Assistants settings](docs/settings-assistants.png)
 
-**One click:** open *Settings → Assistants* and press *Connect* next to Claude Code, Codex or OpenCode. Or in
-the terminal:
+**One click:** open *Settings → Assistants* and press *Connect* next to Claude Code, Codex, OpenCode, Cursor, Windsurf,
+Zed or Claude Desktop. Or in the terminal:
 
 ```bash
-tidywise mcp add claude      # or: codex, opencode
+tidywise mcp add claude      # or: codex, opencode, cursor, windsurf, zed, claude-desktop
 tidywise mcp status          # who is connected
 ```
+
+Cursor, Windsurf, Zed and Claude Desktop have no command for this, so Tidywise adds one `tidywise` entry to
+their settings file and leaves the rest of it – other servers, comments, formatting – as it was.
 
 **Any other assistant:** add a local ("stdio") MCP server with the command `tidywise mcp`. In the common
 `mcpServers` format (the Assistants page shows it with the full path to copy):
@@ -190,13 +219,13 @@ tidywise mcp status          # who is connected
 
 What you should know:
 
-- **Three tools, read-only:** `search` (files and links by words), `recent` (what you filed, read or searched
-  for lately) and `topics`. An assistant cannot move, change or delete anything, and never sees `_private/`.
+- **Two tools, read-only:** `search` (files, pages read and web searches – by words, by the last days or
+  both) and `topics`. An assistant cannot move, change or delete anything, and never sees `_private/`.
 - **Only while the app is open,** and only if "Let assistants search your archive" is switched on. Otherwise
   the server answers with a sentence saying so. (Without the app: `tidywise mcp --always`.)
 - **No open port.** The assistant starts the server itself and talks to it directly; nothing listens on the
   network.
-- **Cheap to keep connected:** the tool definitions are about 250 tokens, answers are compact text lines with
+- **Cheap to keep connected:** the tool definitions are about 200 tokens, answers are compact text lines with
   a cap, and the server starts in well under a tenth of a second.
 
 There is also a Claude Code skill in `skill/` (linked to `~/.claude/skills/tidywise` by `install.sh`) that
@@ -213,12 +242,13 @@ tidywise/                 Python: the actual work
   config.py             read, validate and write settings (the only place that knows the file format)
   organize.py           find loose files, classify, move, put back
   extract.py            text excerpt, image and download source of a file
-  llm.py                talking to Ollama
-  chrome.py             Chrome history as a link collection
+  llm.py                talking to the model (Ollama or an OpenAI-style local server)
+  chrome.py             browser history as a link collection (filtering, sorting)
+  browsers.py           where Chrome, Safari, Firefox, Arc, Brave, Vivaldi, Edge keep their history
   render.py             AGENTS.md and the index files
   service.py            background service (launchd)
   mcp.py                MCP server for AI assistants (read-only search)
-  assistants.py         connecting Claude Code, Codex, OpenCode to it
+  assistants.py         connecting Claude Code, Codex, OpenCode, Cursor, Windsurf, Zed, Claude Desktop
   store.py, telemetry.py   database, measurements for the app
   default_config.toml   defaults and default topics
 app/Sources/TidywiseApp/  SwiftUI app
@@ -272,7 +302,7 @@ don't quietly cost quality. The reference is your own hand-classified links (the
 
 | What you see | What helps |
 |---|---|
-| "AI not reachable" | Ollama isn't running – click *Start Ollama* in the app |
+| "AI not reachable" | Ollama isn't running – click *Start Ollama* in the app. With another server: start it (LM Studio: Developer → Start Server) and check the address |
 | "AI model missing" | *Download model* on the Home page or under Settings → AI model |
 | "macOS isn't letting Tidywise access your files yet" | Allow Full Disk Access for the helper program (see above). After a Python update through Homebrew its path changes – run `./install.sh` once and allow access again |
 | "Python is missing" | Install Python 3.12 or newer (python.org or `brew install python`) – the app continues on its own |

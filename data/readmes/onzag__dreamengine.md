@@ -6,9 +6,11 @@ Created as a LLM Roleplay and Simulation engine, but considerably more advanced 
 
 <img width="891" height="596" alt="image" src="https://github.com/user-attachments/assets/66f56520-d07c-4ab2-943d-eb7cca31d8bd" />
 
-## Differences from Kobold / SillyTavern
+## Differences from Kobold / SillyTavern; DreamEngine is an Engine, not a Client
 
 DreamEngine is made as a LLM Roleplay Simulation engine, not as a simple method to interact with language models in roleplay settings; therefore it is considerably more advanced than thin LLM clients that set up character cards.
+
+As a content creator or developer, you create your own worlds, characters and items with as much fidelity as you want.
 
 The name DreamEngine is not merely a name, it is indeed akin a small RPG game engine with lifecycles, that orchestate using a LLM to mantain an internal game state, therefore:
 
@@ -51,6 +53,11 @@ The context is automatically resized as the story flows, DreamEngine uses a Dyna
 
 ### Power Scaling
 Builtin base and extendable power scaling system means you cannot just solo a universe by default, not even if you believe in yourself.
+
+### Social Simulation
+The social simulation is highly complex and detailed, characters have their own social lives, they can have relationships with each other, they can have friends and enemies, and they evolve independently of observation.
+
+This is done by the wander system.
 
 ### Works with any underlying model
 So as long as it is compatible with the inner infrastructure, Llama, Mistral, GLM, etc...

@@ -96,6 +96,10 @@ flowchart LR
   Celery --> Services
 ```
 
+平台管理端和企业端的通知缓存按端、账号和租户隔离，会话核验通过后恢复本地通知。
+同一账号和租户刷新令牌时沿用共享 Socket.IO 连接。标记已读和删除在接口成功后更新，
+分类标记已读后重新读取全局未读数。
+
 ## 技术栈
 
 | 层级 | 技术 |
@@ -267,6 +271,8 @@ pnpm test:unit
 pnpm build:antd
 ```
 
+平台、企业和用户端的手动刷新、HTTP 与 SSE 自动刷新共用会话协调逻辑。支持 Web Locks 的浏览器在同源标签页间只发送一次并发刷新请求，其他标签页复用同一会话的新令牌。浏览器缺少 Web Locks 时，同一页面的并发请求仍会合并。
+
 ## 代码生成
 
 框架包含 CRUD 代码生成能力。生成后，仓库根目录会产生运行时文件 `codegen_manifest.json`，用于记录生成产物并支持回滚。该文件属于工作区生成物，已被 Git 忽略，不应提交到仓库。
@@ -290,6 +296,7 @@ pnpm build:antd
 - `docker-compose.dev.yml` 用于本地 PostgreSQL 与 Redis。
 - `docker-compose.prod.yml` 作为生产编排参考，实际部署时需要结合私有环境变量、反向代理、HTTPS、日志、监控、备份和容量规划。
 - `production.env.example` 是生产环境变量示例文件，复制为 `production.env` 后按部署环境修改。
+- 使用 Compose 前，确认 `NOVUSAI_IMAGE_PREFIX` 和 `NOVUSAI_IMAGE_TAG` 对应同一版本的四个已发布镜像。默认前缀与当前仓库的镜像发布工作流一致。
 
 生产 Compose 参考启动方式：
 

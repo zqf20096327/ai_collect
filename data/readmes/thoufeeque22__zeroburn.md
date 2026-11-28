@@ -1,6 +1,6 @@
 # ZeroBurn (`zeroburn`)
 
-> **Cut AI coding-agent cloud API token & quota burn by 70–83%** by eliminating test/discovery output bloat, querying live-verified local code graphs, running deterministic AST/auth/scope checks, and offloading mechanical failure analysis and diff reviews to local Ollama models — without sacrificing Contract-First TDD or strict quality gates.
+> **Cut AI coding-agent orchestration & tooling token overhead by 70–98% — and end-to-end multi-file ticket tokens by ~31–46% in controlled A/B tests (with 0% tax on small fixes)** — by eliminating test/discovery output bloat, querying live-verified local code graphs, running deterministic AST/auth/scope checks, and offloading mechanical failure analysis and diff reviews to local Ollama models without sacrificing Contract-First TDD or strict quality gates.
 >
 > *Works across any coding agent harness and frontier model family (Google Gemini, Anthropic Claude, OpenAI, Cursor, Antigravity).*
 >
@@ -36,13 +36,15 @@ implement tier-based upload quota limits in src/lib/billing
 
 > **Note:** Upgrades preserve your existing project settings (`projectName`, `stackSummary`, `graphProjectId`, and local models) inside `.agents/project.config.json` while updating the engine, rules, and subagents. When a new release is available, your agent's session banner will automatically alert you.
 
+> *Tooling & context overhead preview from `benchmarks/try-now.mjs` (for full end-to-end ticket A/B results including IDE system prompt and code-editing tokens, see the End-to-End A/B Benchmark table below):*
+
 ```text
-🔥 ZeroBurn v2.10.0 — Live Token-Savings Benchmark & 0-Token Diff Auditor
+🔥 ZeroBurn v2.11.1 — Live Tooling-Overhead Benchmark & 0-Token Diff Auditor
 📂 Repository: /Users/dev/my-app (branch: feat/billing-quota)
 
 📊 1. Context & Cloud Token Footprint (Standard Subagent vs ZeroBurn)
 ┌────────────────────────────┬────────────────────────────┬─────────────────────────────┬────────────────┐
-│ Pipeline Stage             │ Vanilla Agent              │ ZeroBurn v2.10.0            │ Cloud Saved    │
+│ Pipeline Stage             │ Vanilla Agent              │ ZeroBurn v2.11.1            │ Cloud Saved    │
 ├────────────────────────────┼────────────────────────────┼─────────────────────────────┼────────────────┤
 │ 1. Repo & Route Discovery  │ 15,429 tok (1465 files)    │ 512 tok (5-line digest)     │ -96.7%         │
 │ 2. Rule & Docs Ingestion   │ 59,202 tok (4348 lines)    │ 195 tok (7-line digest)     │ -99.7%         │
@@ -72,11 +74,21 @@ Most multi-agent setups ("PM / Architect / Dev / QA prompt packs") drain your 5-
 2. **Test Log Bloat:** Verbose test/lint runs (`vitest`, `eslint`, `tsc`) dump 500+ lines (~15,000 tokens) into context on every turn, which then gets re-billed on every subsequent turn ($O(N^2)$ context growth).
 3. **Frontier Models on Mechanical Checks:** Cloud `pro` / `Opus` models are spawned to check line counts, `any` types, and file blast radius that Python + local Ollama can verify in **0 cloud tokens**.
 
-### Verified Production Benchmark (`directly.social` — 10,893 AST Nodes, 1,470 Source Files)
+### Verified End-to-End Controlled A/B Benchmark (`transcript.jsonl` Ground Truth)
 
-Measured on a real feature/audit loop (*"Locate and audit `checkUploadQuota` tier logic, run all 6 billing unit test suites (70 tests), and execute a diff security audit"*). Full raw traces and reproducible runner in [`benchmarks/REAL_WORLD_BENCHMARK.md`](benchmarks/REAL_WORLD_BENCHMARK.md):
+Measured across 3 real production tickets on **[directly.social](https://directly.social)** (`1,470` source files) in isolated `git worktree` checkouts from the same `main` commit (Arm A: ZeroBurn `v2.11.0` vs. Arm B: `.agents/` completely stripped), identical prompts, same primary model + Medium thinking, using exact Antigravity `transcript.jsonl` logs via [`benchmarks/token-benchmark.mjs`](benchmarks/token-benchmark.mjs). Full methodology & per-model tables in [`benchmarks/END_TO_END_AB_BENCHMARK.md`](benchmarks/END_TO_END_AB_BENCHMARK.md):
 
-| Stage | Standard Coding Agent (Vanilla) | `zeroburn` v2.10.0 Engine | Measured Savings |
+| Ticket Scope | Files | Total Tokens Delta | Model Steps | Wall-Clock Time | Est. Cloud Cost* | Tests |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Small (Backend Concurrency & Validation)** | 4 | `+0.6%` (`-1.4%` uncached, **0% tax**) | 9 vs 9 | **-1.8%** (`1m 47s` vs `1m 49s`) | `$0.22` vs `$0.22` | 22/22 |
+| **Medium, Pre-Mapped (UI, WCAG 2.1 AA, Tokens)** | 16 | **-30.7%** (`-547k` tokens) | **16 vs 19** (`-15.8%`) | **-13.8%** (`5m 01s` vs `5m 49s`) | **-16.1%** (`$0.59` vs `$0.70`) | 21/21 |
+| **Exploratory, 5 Domains (CI, FFmpeg, Auth, Worker, Docs)** | 16 | **-46.4%** (`-1.63M` tokens) | **19 vs 29** (`-34.5%`) | **-36.7%** (`5m 34s` vs `8m 48s`) | **-26.5%** (`$0.79` vs `$1.07`) | 42/42 |
+
+### Tooling & Context Overhead Microbenchmark (`directly.social` — 10,893 AST Nodes, 1,470 Source Files)
+
+Stage-by-stage orchestration & CLI overhead (*"Locate and audit `checkUploadQuota` tier logic, run all 6 billing unit test suites (70 tests), and execute a diff security audit"*). Full raw traces and reproducible runner in [`benchmarks/REAL_WORLD_BENCHMARK.md`](benchmarks/REAL_WORLD_BENCHMARK.md):
+
+| Stage | Standard Coding Agent (Vanilla) | `zeroburn` v2.11.1 Engine | Measured Savings |
 | :--- | :--- | :--- | :--- |
 | **1. Repo & Route Discovery** | `find src -type f` (`1,470` lines / **15,454 tokens**) | `build_repo_map_digest()` (`6` lines / **636 tokens**: 28 Prisma models, 32 domains, 60 API routes) | **-95.9% tokens** |
 | **2. Governance & Rule Loading** | `cat .agents/AGENTS.md .agents/base/*.md` (`276` lines / **10,274 tokens**) | Pre-computed inlined rule digests (`7` lines / **195 tokens**) | **-98.1% tokens** |
@@ -97,7 +109,7 @@ $ [Spawns Cloud Pro Subagent for Diff Review]       #              (12,000 token
 ----------------------------------------------------------------------------------
 💥 Result: 46,465+ tokens & ~185,000 cumulative billed tokens across a 5-turn loop.
 
-✅ WITH ZEROBURN v2.10.0 (848 tokens — 98.2% reduction):
+✅ WITH ZEROBURN v2.11.1 (848 tokens — 98.2% reduction):
 $ [codebase-memory-mcp] search_graph("billing tier quota check")   #     0 tokens
   -> FreemiumGuard.checkUploadQuota (src/lib/billing/freemium-guard.ts:43-83)
 $ [Inlined REPO_MAP_DIGEST + Rule Digests]                         #   831 tokens
@@ -121,8 +133,8 @@ Instead of relying on proprietary agent runtimes or buzzwords, ZeroBurn is a set
    - **Ad-hoc command filtering & live stats:** Run `quiet-cli.mjs exec --query "<terms>" <cmd...>` to keep 100 KB+ logs/JSON out of context and inspect cumulative real-world savings anytime via `quiet-cli.mjs stats`.
 
 2. **Deterministic `PreToolUse` Auto-Rewrite & Large-Read Context-Guard (`pre-tool-guard.mjs` + `command-rewrite.mjs`):**
-   - Transparently rewrites raw noisy commands (`npx/pnpm vitest run`, `tsc --noEmit`, `eslint`, `pnpm pr-check`) into `quiet-cli.mjs` via `PreToolUse` `overwrite` so token savings hold even when an agent forgets the wrapper.
-   - Blocks unbounded full-file reads of large source files (`>24 KB`, configurable via `maxUnboundedReadBytes`) without `StartLine`/`EndLine`, steering agents to `codebase-memory-mcp` or bounded line ranges.
+   - Transparently rewrites single **and chained `&&`** noisy verification commands (`npx/pnpm vitest run`, `pnpm test`, `tsc --noEmit`, `pnpm typecheck`, `eslint`, `pnpm lint`, `pnpm pr-check`) into `quiet-cli.mjs` via `PreToolUse` `overwrite` so token savings hold even when an agent chains commands or forgets the wrapper.
+   - Blocks unbounded full-file reads of large source files (`>24 KB`, configurable via `maxUnboundedReadBytes`) without `StartLine`/`EndLine`, steering agents to `codebase-memory-mcp` or bounded line ranges, while `SessionStart` steers final diff audits to 0-cloud-token `live-audit.mjs`.
 
 3. **Pre-Execution AST Code Graph with Live Tree Verification (`codebase-memory-mcp`):**
    - Queries a local SQLite/AST symbol index *before* constructing subagent prompts—avoiding both exploratory `find`/`grep` loops and the ~9k-token per-turn MCP tool-schema tax (schemas stay lazy-loaded).
@@ -163,7 +175,9 @@ CHANGELOG.md                        # Version history & upgrade notes
 docs/
 └── TIPS_AND_TRICKS.md              # Operational token-saving & prompt shortcut guide
 benchmarks/
+├── END_TO_END_AB_BENCHMARK.md      # Controlled Small (4-file) & Medium (16-file) A/B transcript benchmark
 ├── REAL_WORLD_BENCHMARK.md         # Verified A/B benchmark on 10,893-node production repo
+├── token-benchmark.mjs             # Exact Antigravity transcript.jsonl token & cost comparator CLI
 ├── try-now.mjs                     # Zero-install live token benchmark & local Ollama diff auditor
 └── run_benchmark.py                # Reproducible Python A/B benchmark runner
 .agents/
@@ -195,7 +209,7 @@ benchmarks/
 │   └── quiet-stats.mjs             # Live per-repo byte & token savings telemetry ledger
 └── plugins/
     └── zeroburn/
-        ├── plugin.json             # Single source of truth for ZeroBurn version (v2.10.0)
+        ├── plugin.json             # Single source of truth for ZeroBurn version (v2.11.1)
         └── agents/                 # 8 specialized subagent definitions
 ```
 

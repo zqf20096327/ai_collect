@@ -2,7 +2,8 @@
 
 # numallama — fast NUMA-aware CPU inference for Llama 3.x, Qwen2.5, Qwen3 / Qwen3-MoE and Qwen3.5 / 3.8
 
-numallama (code name) is a small C inference engine (one `.c` file + a header, no dependencies) for Llama 3.x, Qwen2.5,
+numallama (code name) is a small C inference engine (one translation unit: a thin `src/runq.c`
+entry point and topical headers, no dependencies) for Llama 3.x, Qwen2.5,
 Qwen3 / Qwen3-MoE and the hybrid Qwen3.5 / Qwen3.8 dense models, tuned for large Arm servers (Ampere Altra / Neoverse N1, NEON + dotprod) and multi-socket
 NUMA machines. It started as a fork of [jameswdelancey/llama3.c](https://github.com/jameswdelancey/llama3.c),
 itself derived from Andrej Karpathy's [llama2.c](https://github.com/karpathy/llama2.c).
@@ -19,6 +20,14 @@ Highlights:
   (single token and 4x8 batched kernels). Q4 is asymmetric (groups of 32, fp16 scale + min) and
   quantized with an importance matrix collected by the engine itself: on Llama 3.2 3B its KL to
   full precision is 0.013 (llama.cpp Q4_K_M: 0.015).
+- **KV cache int8 by default** (`-K f32` for full precision): int8 K/V and per-head queries with
+  per-64 group scales, scored with int8 `sdot`. It quarters the cache (Qwen3.8-27B at 131k:
+  16 GB -> 4 GB) and measured +6-28% decode and +5-26% prefill at 8k-30k prompts; the logits move
+  by ~0.005 KL against the f32 cache. Session dumps and shared system-prefix slots shrink the
+  same way.
+- **Quantized embeddings**: the token embedding table is never dequantized as a whole; the row of
+  the current token is dequantized on demand. This keeps RSS lower by 1.2 GB (Qwen3-30B) to
+  5.1 GB (Qwen3.8-27B) and shortens the load.
 - **Multi-socket NUMA**: every weight matrix and the KV cache are split between the sockets
   (`mbind`), each socket's threads compute only its rows, per-node work counters and per-node
   activation buffers keep cross-socket traffic minimal; attention and the MoE router synchronize
@@ -30,8 +39,9 @@ Highlights:
 - **Speculative decoding**, exact (output distribution unchanged):
   prompt lookup (n-grams from the whole dialog) and an optional small **draft model** (`-d`).
 - **OpenAI-compatible server** (`-m server`): `/v1/chat/completions` with streaming, tool calls and
-  reasoning, KV-cache reuse of the shared prefix between requests. Works with the official OpenAI
-  clients and anything built on them.
+  reasoning, KV-cache reuse of the shared prefix between requests, and **continuous batching**
+  (`-J`, dense/MoE models): several sessions decode one token each in one weight-reading pass.
+  Works with the official OpenAI clients and anything built on them.
 - **Chat** with the native templates (Llama 3, ChatML), context trimming, and **tool calling**
   (`config/tools.json`: sandboxed `ls`/`cat`/`grep`/`find` via fork/execvp, no shell).
 - Correct **tiktoken-style tokenizer** (Llama 3 / Qwen2 pre-tokenizer regex + byte-level BPE).
@@ -45,6 +55,17 @@ The binary is still called `runq` (the name of the upstream int8 runtime).
 Requirements: Linux, gcc or clang, Python 3 with numpy (only for converting models), and RAM for the
 model file plus a few GB. Tuned and tested on AArch64 with dotprod (Ampere Altra / Neoverse N1); other
 CPUs build with portable C fallbacks, which are not tuned or regularly tested.
+
+For ARMv8.0 boards without SDOT (Cortex-A53/A72, many SBCs) build the portable binary instead of
+`make`:
+
+```bash
+make portable        # -> ./runq_portable, -march=armv8-a, no SDOT
+```
+
+`make` keeps `-mcpu=native` and the SDOT kernels on the build machine; `make portable` also works on
+x86-64. The portable kernels are correct but slower; RAM-aware defaults for small boards are still
+on the low-end track in `todos.md`.
 
 ### Ready-made models
 
@@ -133,29 +154,66 @@ print(r.choices[0].message.content)
 
 | Endpoint | Supported |
 |---|---|
-| `POST /v1/chat/completions` | `messages` (system / developer / user / assistant / tool), `stream` (SSE) with `stream_options.include_usage`, `tools` + `tool_calls` (also streamed), `tool_choice: "none"`, `temperature`, `top_p`, `seed`, `max_tokens` / `max_completion_tokens`, `stop`; Qwen3.5 / 3.8 reasoning with `reasoning_effort` or `chat_template_kwargs.enable_thinking` (returned as `reasoning_content`) |
+| `POST /v1/chat/completions` | `messages` (system / developer / user / assistant / tool), `stream` (SSE) with `stream_options.include_usage`, `tools` + `tool_calls` (also streamed), `tool_choice: "none"`, `temperature`, `top_p`, `min_p`, `presence_penalty`, `frequency_penalty`, `seed`, `max_tokens` / `max_completion_tokens`, `stop`; Qwen3.5 / 3.8 reasoning with `reasoning_effort` or `chat_template_kwargs.enable_thinking` (returned as `reasoning_content`). Penalties apply when `temperature > 0`; greedy stays penalty-free so speculative verification remains exact. |
 | `GET /v1/models` | the loaded model (named after the file) |
 | `GET /v1/sessions` | the known sessions (id, tokens, live) plus the state files on disk |
+| `GET /metrics` | uptime, requests, prompt/completion/cached tokens, sessions, active/queued (requires the API key when `-A` is set) |
 | `GET /health` | `{"status": "ok"}` |
 
 - Listens on `127.0.0.1` by default; `-H 0.0.0.0` exposes it on the network, `-A <key>` then requires
   `Authorization: Bearer <key>`. There is no TLS: put it behind a reverse proxy for public access.
-- **One request at a time.** A request already uses every core, so concurrent requests wait in the
-  queue and are served in turn; there is no batching of several users.
+- **Continuous batching** for dense and MoE models (`-J <n>`, default 4): up to `n` sessions decode
+  one token each in one weight-reading pass, every session with its own KV cache. Measured on
+  Qwen3-30B-A3B (2 sockets, i8 KV): 4 sessions x 128 tokens give 104-109 tok/s aggregate against
+  65-73 tok/s with `-J 1` (1.5-1.6x); 2 sessions give 1.24x. Hybrid Qwen3.5/3.8 and GLM keep the
+  serial loop. Prefill is blocking in v1: a new long prompt pauses the other streams for its
+  duration (the shared system-prefix slots keep agent tails short); speculative decoding is off in
+  the batched path. Each session owns a full `-c` cache (i8: ~0.55 GiB at 32k for Qwen3-30B);
+  `-J 1` restores the previous one-request-at-a-time behavior.
+- **Operations.** SIGINT/SIGTERM stop the accept loop (active work is not drained in v1).
+  `/metrics` reports request/token/cache/active/queue counters; use it for health dashboards and
+  autoscaling.
+- **Scaling on many cores.** Decode is bandwidth/latency-bound: threads stop helping well before
+  256 cores, and oversubscription (`-T 240`) is slower. Qwen3-30B-A3B Q4 one process: `-J 16 -T 128`
+  ~229 tok/s, `-J 32` ~238. The useful unit is a **NUMA-local replica** with its own queue and KV
+  cache. Measured aggregate: 2 replicas x T64/J16 404, 4 x T32/J16 516, **8 x T16/J16 588** tok/s;
+  16 x T8/J16 drops to 365 (too many processes), and 2 x T128 is only 172. Start them with
+  `scripts/serve_replicas.sh MODEL TOKENIZER 8 16 16 19000
+  8192` (pinned with `numactl --cpunodebind/--membind`) and put
+  `scripts/replica_router.py 8080 127.0.0.1:19000 ...` in front: new `session_id`s are assigned
+  round-robin and stay sticky, so each conversation keeps its KV on one replica; SSE is relayed
+  chunk-by-chunk. The router measured 503 tok/s against 516 direct (~3% overhead). Each replica
+  loads its own model copy: budget RAM (Qwen3-30B Q4 ~19 GB each) and leave spare cores for prefill
+  or another model.
 - The KV cache is kept between requests: a conversation that grows turn by turn only processes the
   new messages (`usage.prompt_tokens_details.cached_tokens`). Hybrid models (Qwen3.5 / 3.8, GLM)
   can only resume from the end of the previous prompt (or the start).
 - **Sessions survive a restart.** Every conversation is journaled to `<session_dir>/<id>.jsonl`
-  (with the full request bodies) and its token history + KV cache / recurrent state are dumped to
-  `<session_dir>/<id>.bin` (throttled: on growth by 2048 tokens or 30 s) so a reconnect after a
-  server restart resumes without re-processing the history. The session id comes from the request's
-  `session_id` / `conversation_id` field or the `x-opencode-session-id` (also `x-session-id`,
-  `x-conversation-id`) header; without one, a single `default` session is used. `-W <dir>` sets the
+  (with the full request bodies) and its token history + model state (KV cache / recurrent state +
+  the GLM latent / indexer caches) are dumped to `<session_dir>/<id>.bin` (throttled: on growth by
+  2048 tokens or 30 s) so a reconnect after a server restart resumes without re-processing the
+  history. The dump is head-major and records the KV format: int8 (the default) keeps the cache
+  part 4x smaller (a Qwen3.8-27B session at 131k tokens: 16 GB -> 4 GB). Dumps written by an older
+  build (format v1) are ignored and rebuilt. The session id comes from the request's `session_id` / `conversation_id` field or the
+  `x-opencode-session-id` (also `x-session-id`, `x-conversation-id`) header; without one, a single
+  `default` session is used. Sessions also keep an in-memory snapshot: switching between
+  conversations (and resuming a dumped one) is a memory copy, not a re-prefill. With continuous
+  batching (`-J > 1`) each active session owns its cache and keeps it **resident across turns**, so
+  a normal follow-up pays no cache allocation, no disk restore and no dump. The resident set is
+  LRU-capped by available RAM (`RUNQ_KV_RESIDENT_MB`; default a quarter of `MemAvailable`, at most
+  32 GiB); a cache is dumped every `RUNQ_DUMP_SECS` seconds (default 300) and when it is evicted.
+  `-W <dir>` sets the
   session directory (default `workspace/sessions`, `-W none` disables). `GET /v1/sessions` lists
-  the known sessions. Clients like opencode send their session header automatically, so an
-  opencode conversation can be resumed after restarting the server. Streaming responses send the
-  headers immediately and keep-alive comments during prefill, so slow first tokens don't hit
-  client timeouts.
+  the known sessions. Clients like opencode send their session header automatically, so an opencode
+  conversation can be resumed after restarting the server. Streaming responses send the headers
+  immediately and keep-alive comments during prefill, so slow first tokens don't hit client
+  timeouts.
+- **The system prompt is processed once.** Agent clients send the same fat system prompt (tools +
+  instructions, often >10k tokens) in every session. The server captures the model state at the end
+  of that prefix (up to 8 distinct prefixes) and restores it for any session sharing it, so the
+  first request of a new opencode session processes only its own tail — a ~5-minute prefill of an
+  11k-token system prompt becomes a sub-second state load. Only prefixes of at least 2048 tokens
+  take a slot, so a short title/side request cannot evict an agent preamble.
 - The client runs the tools; the `-f` sandbox is used only by the CLI chat.
 - Not supported: `/v1/completions`, `/v1/embeddings`, images and audio, `n` > 1, `logprobs`,
   `response_format` (JSON mode), forcing a call with `tool_choice: "required"`.
@@ -165,11 +223,13 @@ print(r.choices[0].message.content)
 
 | Path | Contents |
 |---|---|
-| `src/runq.c` | the engine: model loading, NUMA placement, thread pool, kernels, forward passes, tokenizer, sampler, chat |
+| `src/runq.c` + `src/*.h` | the engine as one translation unit: model loading, NUMA placement, thread pool, kernels, forward passes, chat, server (`AGENTS.md` maps the headers) |
 | `src/tools.h` | tool calling: minimal JSON parser, `tools.json` loading, sandboxed command execution |
 | `src/server.h` | OpenAI-compatible HTTP server (`-m server`) |
 | `scripts/export_hf_q8.py` | Hugging Face safetensors → `.bin` (Q8 / Q4, optional SmoothQuant, numpy only) |
 | `scripts/export_tokenizer.py` | `tokenizer.json` → `tokenizer.bin` |
+| `scripts/export_inkling.py` | Inkling-2-Mini safetensors → `INK2JSON` (Q4 default, `--experts q8`) |
+| `scripts/compare_inkling_logits.py` | oracle/candidate logits: top-1, KL, top-10, correlation |
 | `scripts/calibrate.py` | fp32 numpy activation statistics (max \|x\| for `--smooth`) |
 | `data/calibration.txt` | calibration text for `-m imatrix` (English, Russian, Chinese, code) |
 | `config/tools.json` | tools offered to the model in chat mode |
@@ -245,13 +305,47 @@ are refused: re-export them.
 ./runq llama31_8b_q80.bin -t 0 -n 256 -i "Once upon a time"
 ```
 
+Inkling-2-Mini uses a separate `INK2JSON` container (text backbone only; see
+`scripts/export_inkling.py`). `runq` auto-detects it for raw generation, chat and the HTTP server.
+Provenance, container sizes, the quality table and known limitations are in
+[`docs/INKLING.md`](docs/INKLING.md); the published Q4/Q8 containers are at
+[miloserdev/Inkling-2-Mini-numallama](https://huggingface.co/miloserdev/Inkling-2-Mini-numallama):
+
+```bash
+./runq inkling_mini_q4.ink2 -z inkling2_tokenizer.bin -m generate -i "The capital of France is" -n 16 -t 0
+./runq inkling_mini_q4.ink2 -z inkling2_tokenizer.bin -m chat -i "What is the capital of France?" -n 128 -t 0
+./runq inkling_mini_q4.ink2 -z inkling2_tokenizer.bin -m server -P 8080 -c 8192
+```
+
+`scripts/export_inkling.py` defaults to Q4 experts (17.0 GB container); `--experts q8` keeps the
+dequantized NVFP4/MXFP8 source at 8 bits (27.7 GB). `tests/check_inkling` writes
+`/dev/shm/inkling2/logits_ours.bin`; compare it with the llama.cpp oracle using
+`scripts/compare_inkling_logits.py oracle.bin ours.bin`. On the fixed "The capital of France is"
+prompt both containers keep top-1 Paris and 10/10 top-10 overlap; Q8 has KL 0.0535 vs 0.0594 for
+Q4 against the IQ4_NL oracle, and Q4-vs-Q8 KL is 0.0083 — expert quantization is a small part of
+the remaining implementation/format gap.
+
+The Inkling server handles one request at a time and keeps one multi-turn session cache (prompt
+tokens + 48-slot state + last logits); a client that sends the previous assistant turn's
+`reasoning_content` and `content` reuses it (new `session_id`s reset the cache). Streaming uses SSE
+with keep-alives during prefill and reports `reasoning_content` separately from `content`;
+`stop`, `min_p`, presence/frequency penalties, seeds and `stream_options.include_usage` are
+supported. `/metrics` exposes requests/tokens/cache hits/errors, and SIGINT/SIGTERM trigger a
+graceful shutdown. Run several instances behind `scripts/replica_router.py` for concurrency.
+`-T` and `-J` do not apply to the Inkling forward yet (it is single-threaded). Because its prefill
+is token-by-token, requests longer than `INKLING_MAX_PROMPT` (default 4096) are rejected with a
+clear 400 instead of hanging; set `INKLING_MAX_PROMPT=0` to disable the guard. For agent clients
+(opencode) use the batched Qwen/dense server.
+
 | Option | Meaning |
 |---|---|
 | `-T <n>` | threads (default 0 = all idle CPUs of the used NUMA nodes, at most 96 per node) |
 | `-N <n>` | NUMA nodes to use (default 0 = all); weights are split between them |
 | `-c <n>` | context window (KV cache size), default 8192 |
+| `-K i8\|f32` | KV cache format: `int8` (default) with per-64 group scales and int8 dot products, or `f32` (full precision, ~4x more memory) |
 | `-k <n>` | max prompt-lookup draft length, default 8, `0` = off (adaptive for MoE models; off for hybrid models: a recurrent state cannot drop rejected drafts) |
 | `-m server`, `-H`, `-P`, `-A`, `-W` | OpenAI-compatible API server, listen address (default 127.0.0.1), port (default 8080), API key, sessions directory |
+| `-J <n>` | server: concurrent decode sessions for dense/MoE continuous batching, default 4 (`1` = serial) |
 | `-r <0\|1>` | Qwen3.5 / 3.8: `1` = reasoning (thinking shown dimmed), default `0` = answer directly |
 | `-o <file>` | output of `-m imatrix` (importance statistics for `--q4 --imatrix`) |
 | `-d <file>` | draft model for speculative decoding |
@@ -262,6 +356,8 @@ are refused: re-export them.
 After every reply the chat prints `[prompt N tok X tok/s | reply M tok Y tok/s | context a/b | draft accepted c/d]`
 to stderr. Thread placement: `RUNQ_PIN=1` keeps threads pinned, `RUNQ_PIN=0` disables placement.
 `RUNQ_BARBENCH=1` prints the latency of the node and cross-node barriers at start-up.
+`RUNQ_KV_RESIDENT_MB` and `RUNQ_DUMP_SECS` set the resident session-KV budget and the dump interval
+of the continuous-batching server.
 
 For Russian (and other non-English text) with small models keep the temperature around 0.6–0.7.
 

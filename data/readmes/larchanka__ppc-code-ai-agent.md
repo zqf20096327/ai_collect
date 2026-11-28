@@ -100,7 +100,7 @@ While in the agent prompt (`User> `), use these commands at any time:
 | `/new` | **Start a new conversation**: Clears chat history and resets context window without restarting the agent. |
 | `/compact` | **Compact conversation history**: Truncates verbose older tool outputs while keeping recent turns and strict tool IDs intact, reducing context bloat and speeding up serialization on slow CPUs. |
 | `/stats` | **View session statistics**: Inspect live session duration, user/assistant turns, API calls, tokens (input, output, cache), and per-tool usage. |
-| `/ctx [tokens]` | **View or set max output tokens**: Inspect current generation limit (default: 4k / 4,096 tokens) or set a new limit for model responses (e.g. `/ctx 65536`, `/ctx 64k`, `/ctx 128k`). |
+| `/ctx [tokens]` | **View or set max output tokens**: Inspect current generation limit (default: 16k / 16,384 tokens) or set a new limit for model responses (e.g. `/ctx 65536`, `/ctx 64k`, `/ctx 128k`). |
 | `/auto` | **Enable Autonomous Mode**: Tools (`write_file`, `edit_file`, `run_shell`) execute without asking for permission. |
 | `/manual` | **Enable Manual Mode**: Requires explicit `[y/N]` user confirmation before modifying files or running shell commands. |
 | `/claude` | Switch active provider to **Anthropic Claude** (Claude Sonnet 4.5 / 3.7). |

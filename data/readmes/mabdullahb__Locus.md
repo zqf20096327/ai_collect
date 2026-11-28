@@ -8,7 +8,7 @@
 with AI-verified emails. Free, open-source, bring your own keys, no account
 with us, no fees.**
 
-[![Tests](https://github.com/mabdullahb/Locus/actions/workflows/test.yml/badge.svg)](https://github.com/mabdullahb/Locus/actions/workflows/test.yml) [![License: AGPL-3.0](https://img.shields.io/github/license/mabdullahb/Locus)](LICENSE) [![Docker ready](https://img.shields.io/badge/docker-ready-2496ED)](docker-compose.yml) [![Self-hosted](https://img.shields.io/badge/self--hosted-yes-blue)](#run-it-for-real-with-docker) [![GitHub stars](https://img.shields.io/github/stars/mabdullahb/Locus)](https://github.com/mabdullahb/Locus/stargazers)
+[![Tests](https://github.com/mabdullahb/Locus/actions/workflows/test.yml/badge.svg)](https://github.com/mabdullahb/Locus/actions/workflows/test.yml) [![License: AGPL-3.0](https://img.shields.io/github/license/mabdullahb/Locus)](LICENSE) [![Docker ready](https://img.shields.io/badge/docker-ready-2496ED)](docker-compose.yml) [![Self-hosted](https://img.shields.io/badge/self--hosted-yes-blue)](#run-it-for-real-with-docker) [![GitHub stars](https://img.shields.io/github/stars/mabdullahb/Locus)](https://github.com/mabdullahb/Locus)
 
 [Quickstart](#setup) | [Self-Hosting](#run-it-for-real-with-docker) | [Development](#development) | [Contributing](#contributing)
 
@@ -23,7 +23,7 @@ JSON), or push to a webhook.
 
 ![Locus demo: search, live results, and history](docs/screenshots/demo.gif)
 
-Found this useful? A star helps others find it.
+Found this useful? [A star](https://github.com/mabdullahb/Locus) helps others find it.
 
 Built with Next.js (App Router), Prisma and Postgres, NextAuth, BullMQ and Redis
 for the background worker, and a bring-your-own-key model for the search and AI
@@ -93,7 +93,8 @@ cd Locus
 cp .env.example .env
 # Fill in NEXTAUTH_URL, NEXTAUTH_SECRET, ENRICHMENT_KEY_SECRET, and
 # INTERNAL_API_SECRET in .env before continuing. Docker compose refuses to
-# start without them, on purpose.
+# start without them, on purpose. On a server, also change POSTGRES_PASSWORD
+# (and the password inside DATABASE_URL) from the public default.
 docker compose up --build -d
 ```
 
@@ -103,7 +104,9 @@ Settings. See the comments in `docker-compose.yml` and `.env.example` for
 what `NEXT_PUBLIC_WS_URL` needs to be once this is reachable from outside
 your own machine (it has to be a real address a browser can reach, not a
 Docker-internal one), and put a reverse proxy (nginx, Caddy, Traefik) in
-front for HTTPS rather than exposing the app's port directly.
+front for HTTPS rather than exposing the app's port directly. Postgres and
+Redis are published on `127.0.0.1` only, so they're never reachable from the
+network (Docker's published ports bypass host firewalls like UFW).
 
 ### Run it for development, without Docker
 

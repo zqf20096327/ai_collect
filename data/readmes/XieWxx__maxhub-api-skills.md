@@ -15,6 +15,7 @@
 
 <p align="center">
   <a href="https://www.aconfig.cn">🔑 获取 API Key</a> ·
+  <a href="https://github.com/XieWxx/maxhub-api-skills">🛒 GitHub 仓库</a> ·
   <a href="https://agentskills.io">📖 Agent Skills 标准</a>
 </p>
 
@@ -60,7 +61,10 @@ open https://www.aconfig.cn
 export MAXHUB_API_KEY="your-api-key"
 
 # 3. 在 AI Agent 中安装 Skill
-# 打开 SkillHub，搜索平台名称（如「抖音」），一键安装
+# 让 Agent 完成：对 Agent 说「安装抖音 skill」
+# Agent 会自动从 GitHub 拉取对应目录并安装到技能目录
+# 手动安装（备用）：
+git clone https://github.com/XieWxx/maxhub-api-skills.git
 ```
 
 安装后，直接对 Agent 说：
@@ -77,20 +81,19 @@ Agent 会自动激活 `maxhub-douyin` Skill 并调用对应 API。
 
 | Skill                                    | 平台      |  端点 | 核心能力                  |
 | ---------------------------------------- | ------- | :-: | --------------------- |
-| 📺 [maxhub-bilibili](./maxhub-bilibili/) | B站      |  42 | 视频详情、弹幕、直播、UP主画像      |
-| 🎵 [maxhub-douyin](./maxhub-douyin/)     | 抖音      | 275 | 视频/用户/搜索/热榜/直播/星图/创作者 |
-| 🎬 [maxhub-kuaishou](./maxhub-kuaishou/) | 快手      |  38 | 视频、用户、直播、评论           |
-| 🎶 [maxhub-tiktok](./maxhub-tiktok/)     | TikTok  | 154 | 视频/用户/广告/电商/创作者       |
-| ▶️ [maxhub-youtube](./maxhub-youtube/)   | YouTube |  39 | 视频、频道、搜索、评论           |
+| 📺 [maxhub-bilibili](./maxhub-bilibili/) | B站      |  41 | 视频详情、弹幕、直播、UP主画像      |
+| 🎵 [maxhub-douyin](./maxhub-douyin/)     | 抖音      | 259 | 视频/用户/搜索/热榜/直播/星图/创作者 |
+| 🎬 [maxhub-kuaishou](./maxhub-kuaishou/) | 快手      |  39 | 视频、用户、直播、评论           |
+| 🎶 [maxhub-tiktok](./maxhub-tiktok/)     | TikTok  | 138 | 视频/用户/广告/电商/创作者       |
+| ▶️ [maxhub-youtube](./maxhub-youtube/)   | YouTube |  33 | 视频、频道、搜索、评论           |
 | 🍉 [maxhub-xigua](./maxhub-xigua/)       | 西瓜视频    |  8  | 视频、用户                 |
-| 🎥 [maxhub-sora2](./maxhub-sora2/)       | Sora2   |  18 | AI 视频、创作者、工具          |
 
 ### 📱 社交媒体 & 社区
 
 | Skill                                          | 平台        |  端点 | 核心能力            |
 | ---------------------------------------------- | --------- | :-: | --------------- |
-| 📕 [maxhub-xiaohongshu](./maxhub-xiaohongshu/) | 小红书       |  44 | 笔记、用户、搜索、商品     |
-| 🐦 [maxhub-weibo](./maxhub-weibo/)             | 微博        |  65 | 博文、用户、热搜、评论     |
+| 📕 [maxhub-xiaohongshu](./maxhub-xiaohongshu/) | 小红书       |  36 | 笔记、用户、搜索、商品     |
+| 🐦 [maxhub-weibo](./maxhub-weibo/)             | 微博        |  54 | 博文、用户、热搜、评论     |
 | 💡 [maxhub-zhihu](./maxhub-zhihu/)             | 知乎        |  41 | 内容、用户、搜索、热榜     |
 | 📰 [maxhub-toutiao](./maxhub-toutiao/)         | 今日头条      |  8  | 内容、用户           |
 | 💬 [maxhub-wechat](./maxhub-wechat/)           | 微信        |  24 | 视频号、公众号、搜索      |
@@ -105,10 +108,34 @@ Agent 会自动激活 `maxhub-douyin` Skill 并调用对应 API。
 
 | Skill                                      | 平台       |  端点 | 核心能力        |
 | ------------------------------------------ | -------- | :-: | ----------- |
-| 💼 [maxhub-linkedin](./maxhub-linkedin/)   | LinkedIn |  50 | 用户、公司、职位、内容 |
-| 📧 [maxhub-temp-mail](./maxhub-temp-mail/) | 临时邮箱     |  4  | 临时邮箱生成与收件   |
+| 💼 [maxhub-linkedin](./maxhub-linkedin/)   | LinkedIn |   9 | 用户、公司、职位、内容 |
 
+### 🛒 GitHub 安装地址（一一对应）
 
+> Agent 会自动从 GitHub 仓库安装与更新（也可手动 git clone）：<https://github.com/XieWxx/maxhub-api-skills>
+
+| 本地技能目录             | GitHub 地址                                |
+| ------------------ | -------------------------------------------- |
+| maxhub-bilibili    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-bilibili>    |
+| maxhub-douyin    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-douyin>    |
+| maxhub-instagram    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-instagram>    |
+| maxhub-kuaishou    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-kuaishou>    |
+| maxhub-lemon8    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-lemon8>    |
+| maxhub-linkedin    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-linkedin>    |
+| maxhub-pipixia    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-pipixia>    |
+| maxhub-reddit    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-reddit>    |
+| maxhub-threads    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-threads>    |
+| maxhub-tiktok    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-tiktok>    |
+| maxhub-toutiao    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-toutiao>    |
+| maxhub-twitter    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-twitter>    |
+| maxhub-wechat    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-wechat>    |
+| maxhub-weibo    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-weibo>    |
+| maxhub-xiaohongshu    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-xiaohongshu>    |
+| maxhub-xigua    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-xigua>    |
+| maxhub-youtube    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-youtube>    |
+| maxhub-zhihu    | <https://github.com/XieWxx/maxhub-api-skills/tree/main/maxhub-zhihu>    |
+
+***
 
 ## 🏗️ 项目结构
 

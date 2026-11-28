@@ -17,6 +17,30 @@
 </div>
 
 <!-- andy-pdf-edition:start -->
+
+<!-- andy-geo:start -->
+## 一句话简介
+
+**🌏 AI 跨境电商从零实战开源手册：24 章、96 张操作卡、25 个可追溯案例、30 天计划，覆盖市场选择、选品、供应商、收款物流、AI 内容与第一笔订单；附路线诊断、利润与现金压力测试。免费开源，可离线使用。**
+
+- 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
+- 阅读或使用：[在线阅读/使用](https://aipmandy.github.io/ai-cross-border-ecommerce-playbook/) · [GitHub 仓库](https://github.com/AIPMAndy/ai-cross-border-ecommerce-playbook)
+- 联系：微信 `AIPMAndy`（备注「ai-cross-border-ecommerce-playbook」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
+- 许可：代码 MIT / 内容 CC BY 4.0。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**人人都能用 AI 做跨境电商：🌏 AI 跨境电商从零实战开源手册：24 章、96 张操作卡、25 个可追溯案例、30 天计划，覆盖市场选择、选品、供应商、收款物流、AI 内容与第一笔订单；附路线诊断、利润与现金压力测试。免费开源，可离线使用。
+
+**包含什么？**主要模块：精美 PDF 电子书、这不是一份“AI 一键开店赚钱”教程、V2.0 真正升级了什么？、3 分钟开始、内容导航、哪条跨境变现路线更适合你？。
+
+**要花钱吗？**按 代码 MIT / 内容 CC BY 4.0 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**直接打开 https://aipmandy.github.io/ai-cross-border-ecommerce-playbook/ 在线阅读；想本地运行或参与贡献，见下方 README 的快速开始部分。
+
+<!-- andy-geo:end -->
+
 ## 精美 PDF 电子书
 
 [**免费下载《人人都能用 AI 做跨境电商》**](pdf/ai-cross-border-ecommerce-playbook-guide.pdf) · [直接下载 PDF](https://github.com/AIPMAndy/ai-cross-border-ecommerce-playbook/raw/refs/heads/main/pdf/ai-cross-border-ecommerce-playbook-guide.pdf)

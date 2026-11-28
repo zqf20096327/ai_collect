@@ -17,6 +17,9 @@ Control replay playback, compose camera shots, edit keyframes and export videos 
 
 </div>
 
+> [!NOTE]
+> **The Flashback MCP mod is currently awaiting approval on Modrinth.** Until it is approved, you can temporarily download the mod for Minecraft 26.x from the [`mod`](mod) folder of this repository: [26.1 – 26.1.2](https://github.com/Jepez00/FlashbackMCP/raw/main/mod/flashback-mcp-1.0.0%2Bmc26.1.2.jar) · [26.2](https://github.com/Jepez00/FlashbackMCP/raw/main/mod/flashback-mcp-1.0.0%2Bmc26.2.jar) · [26.3](https://github.com/Jepez00/FlashbackMCP/raw/main/mod/flashback-mcp-1.0.0%2Bmc26.3.jar). The Modrinth links on this page may not work until the review is complete.
+
 Flashback MCP connects an AI assistant to [Flashback](https://modrinth.com/mod/flashback), the Minecraft replay editor. Describe the shot you want, inspect the timeline together, preview frames and turn a replay into a finished video using **22 tools** exposed through the Model Context Protocol.
 
 This repository contains the **Node.js MCP server**. Install the companion [Flashback MCP Fabric mod](https://modrinth.com/mod/flashbackmcp) in Minecraft to connect it to the game. The server has **no npm dependencies** and needs no provider API key of its own; your AI client manages its model and account.

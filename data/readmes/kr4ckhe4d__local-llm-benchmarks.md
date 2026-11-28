@@ -23,7 +23,7 @@ router branch: upstream plus the Inkling-2 fusions (`inkling2-strata-ideas`, sin
 | Qwen3.8 27B | **UD-Q6_K** + MTP | 57 tok/s; KLD vs BF16 0.0020 (IQ4_XS: 0.0179); as good as Q8_0 in Claude Code, 12% faster |
 | GLM-4.7-Flash 30B-A3B | Q4/Q8, 128K | 75 tok/s in an empty context, but **154 tok/s prefill** at 128K depth (attention-bound; removed) |
 | Nemotron 3.5 Lightning 30B-A3B | Q8_0 + MTP, 128K | **167 tok/s**, 83% draft acceptance (1.70x); 128K costs only 2.7 GB more than 32K — but 28K thinking tokens per coding task |
-| Inkling-2-Mini | UD-Q8_K_XL, 128K, R9700 | 31 -> **62 tok/s** in llama.cpp over two rounds of kernel fusion (KLD 0); reads a 33K prompt at **716 tok/s**, 11% faster than Strata (643); Strata still generates 14% faster empty (68) |
+| Inkling-2-Mini | UD-Q8_K_XL, 128K, R9700 | 31 -> **62 tok/s** in llama.cpp over two rounds of kernel fusion (KLD 0); 63 since the 2026-11-27 rebase onto upstream; reads a 33K prompt at **711 tok/s**, 11% faster than Strata 0.2.22 (642); Strata still generates 10% faster empty (68 against 61.7 served) |
 | MoE models generally | second card | CPU expert offload gone: **+38% to +183%** generation |
 
 Generation is the 700-token probe in an empty context unless it says "depth";
@@ -38,6 +38,8 @@ in the linked files.
 | [claude-harness.md](claude-harness.md) | Running **Claude Code** against local llama.cpp models: what breaks, fixes, which model to pick, SearXNG web search |
 | [aider-harness.md](aider-harness.md) | Running **aider** against the same router |
 | [`pi-local.sh`](pi-local.sh) | Running the **Pi** coding agent against the router or Strata (the `claude-local.sh` counterpart) |
+| [`loop templates/claude-code-goal-loop/`](<loop templates/claude-code-goal-loop/>) | The same loop for **Claude Code**: `run-loop.sh` runs one headless `claude -p` session per task, hooks block tool calls after `task-complete`, nudge early stops and warn at 70% context. Works with `claude-local.sh` for local models |
+| [`loop templates/pi-goal-loop/`](<loop templates/pi-goal-loop/>) | The **Pi goal-loop template**: brief, task list, handoff and a Pi extension that starts a fresh session after every finished task, so a local model works unattended until the acceptance checks pass. `init.sh` scaffolds a project |
 | [pi-pagoda-demo.md](pi-pagoda-demo.md) | **Pi + Qwen3.8-27B Q8_0, unattended for 11.8 h**: a Three.js pagoda garden built from a brief in 16 tasks and 21 sessions, 60 fps, live demo on the site. What a model without image input gets wrong when it judges its own screenshots, and where the session loop broke |
 | [real-world-testing.md](real-world-testing.md) | Agentic coding through **Cline**: can the models do a job end to end |
 | [big-codebase-guide.md](big-codebase-guide.md) | Using these models on a large codebase |
@@ -48,6 +50,7 @@ in the linked files.
 | [dflash2-qat-q2.md](dflash2-qat-q2.md) | DFlash2 speculative drafter and QAT Q2_0 for Qwen3.8-27B on 16 GB |
 | [turboquant.md](turboquant.md) | TurboQuant 2-4 bit KV-cache quantization |
 | [instella-moe.md](instella-moe.md) | AMD Instella-MoE-16B-A3B |
+| [hy4-flash-fit.md](hy4-flash-fit.md) | **Hy4-flash (220B-A12B) does not fit on this box, and VRAM is not the reason**: 30 GiB of RAM against a 64 GiB floor, and a 63 GiB Engram table paged from disk. Published sizes, not measurements. `hy_v4_flash` has been in the router build since the 2026-11-27 rebase; where the DFly2 drafter sits, and what would change the answer |
 | [nemotron-3.5-lightning-30B.md](nemotron-3.5-lightning-30B.md) | Nemotron 3.5 Lightning 30B-A3B `Q8_0`: the repo's fastest generation and cheapest 128K, spent on 28K reasoning tokens a task |
 | [inkling-2-mini-speedups.md](inkling-2-mini-speedups.md) | Inkling-2-Mini 31 to 54 tok/s on the R9700: fewer kernels per token, CUDA/HIP fusions, and an RDNA4 matvec grid fix; long prompts read 2.2x faster at 111K (190 to 414 tok/s) with the per-head attention mask built by one kernel, and a HIP graph crash fixed |
 | [inkling-strata-vs-llama.md](inkling-strata-vs-llama.md) | Inkling-2-Mini on Strata against llama.cpp, same Q8 GGUF: Strata 68 against 53 tok/s because llama.cpp runs 2,138 kernels per token to Strata's 915. Strata's fusions taken onto the branch `inkling2-strata-ideas`: 54 -> 62 tok/s, 1,233 kernels, bit-identical logits, 128K now at `-ub 512` (33K prompt 510 -> 716 tok/s). Strata's no-thinking prefill makes Inkling refuse harmless prompts (6 of 10 against 0 of 10) |
@@ -1952,30 +1955,4 @@ presets cannot enforce this — it is a client setting.
 The tell is the token accounting. In the truncated response, Open WebUI
 reported `output_tokens: 1095` against `completion_tokens: 653`; the ~440
 token gap is reasoning, and content got only what was left. (Do not read that
-gap as exactly the reasoning count — it varies more than the budget allows,
-so Open WebUI appears to fold its follow-up-question and title generations
-into `output_tokens` as well.)
-
-### The probes needed a flag for this
-
-`needle-test.py` sends `max_tokens: 60` and reads only `content`, so against
-any thinking model it scores 0/5 regardless of actual recall — the reasoning
-consumes the budget first. Both probes now take `--no-think`, which sends
-`chat_template_kwargs: {"enable_thinking": false}`:
-
-```bash
-benchmarks/needle-test.py --depth 119000 --no-think
-benchmarks/semantic-recall-test.py --depth 20000 --no-think
-```
-
-This also keeps the comparison fair: every long-context number already in this
-file was measured on Qwen3-Coder-Next, which does not think at all.
-
-### Both probes overshoot `--depth`, by different amounts
-
-Neither script hits the depth you ask for, and the error is large enough to
-push a request past `n_ctx` and get a bare `HTTP 400` back:
-
-| Script | Asked | Built | Overshoot |
-|---|---|---|---|
-| `semantic-recall-test.py` | 30,000 | ~35,000 | **~17%** (adds a distractor
+gap as exactly the reasoning count — 

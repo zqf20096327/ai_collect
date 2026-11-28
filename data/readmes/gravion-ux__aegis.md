@@ -14,7 +14,7 @@ declared, scoped, limited, audited, and recoverable.
 This repository is the working core. It runs on Node.js 18+ with **zero
 runtime dependencies**.
 
-> **Status.** Phase 0–3 complete. **315 automated tests**, and CI runs
+> **Status: Experimental.** Phase 0–3 complete. **315 automated tests**, and CI runs
 > the suite on Node 18, 20 and 22. The HTTP provider is proven against a
 > local mock server; it has **not** been pointed at a paid model, because no
 > credential is available in this environment. See

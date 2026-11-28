@@ -8,7 +8,7 @@
 
 ![Sheaf sorting a messy folder: every file is placed in a collection named for what it holds](screenshots/library.png)
 
-> **The source goes public at 100 stars.** It is private while the beta settles. When this repository reaches 100 stars, the source code is published so anyone can read it and build on it. A star is how you vote for that. Until then, [PRIVACY.md](PRIVACY.md) and [how to verify it yourself](docs/VERIFY-PRIVACY.md) list what you can check.
+> **The source goes public at 100 stars.** It is private for now. When this repository reaches 100 stars, the source code is published so anyone can read it and build on it. A star is how you vote for that. Until then, [PRIVACY.md](PRIVACY.md) and [how to verify it yourself](docs/VERIFY-PRIVACY.md) list what you can check.
 
 - **Local only.** No account, no cloud, no telemetry. The only network connection is to the model server on your own Mac.
 - **Never moves anything without your approval.** Every change is journaled and can be undone.
@@ -36,7 +36,7 @@
 | macOS | 14 Sonoma or later |
 | Model runner | [Ollama](https://ollama.com), free. Setup installs it if you do not have it |
 | Download, once | Bigger 2.4 GB or Light 1.6 GB (see below) |
-| First open | Unsigned beta: macOS asks you to choose **Open Anyway** |
+| First open | Not signed by Apple yet: macOS asks you to choose **Open Anyway** |
 
 1. Download the DMG and its `.sha256` file from [Releases](../../releases/latest). Check it: `shasum -a 256 -c Sheaf-<version>-arm64.dmg.sha256`
 2. Drag Sheaf to Applications.
@@ -66,8 +66,8 @@ Your files and their contents never leave your Mac. See [PRIVACY.md](PRIVACY.md)
 - [Models](docs/MODELS.md)
 - [Roadmap](ROADMAP.md) and [Changelog](CHANGELOG.md)
 
-## Beta feedback
+## Feedback
 
-Sheaf is in public beta. Bugs, wrong groupings and ideas are very welcome: [open an issue](../../issues/new/choose). Describe files rather than attaching them. See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to help and [SECURITY.md](SECURITY.md) for reporting vulnerabilities privately.
+Bugs, wrong groupings and ideas are very welcome: [open an issue](../../issues/new/choose). Describe files rather than attaching them. See [CONTRIBUTING.md](CONTRIBUTING.md) for ways to help and [SECURITY.md](SECURITY.md) for reporting vulnerabilities privately.
 
 Licence: [free to use](LICENSE.txt).

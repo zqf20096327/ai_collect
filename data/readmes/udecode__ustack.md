@@ -1,0 +1,35 @@
+# ustack
+
+Shared skills that the pstack plugin does not cover: test audits (`test-audit`, adapted from openclaw's), skill and override audits (`skill-audit`), video clips and transcripts, and pstack setup and sync (`sync-pstack`). Review runs on pstack's panels with Codex seats, on the work each project's reviews list names.
+
+`passwords` owns unattended 1Password login and new-Mac setup. Each owner's
+machine configuration stays in `~/.config/agent-passwords/machines/`, outside
+the shared source and installed skill folder.
+
+The engineering method comes from the pstack plugin, `pstack@pstack-claude` from `michael-denyer/pstack-claude`, pinned per project: poteto-mode, its playbooks, the principle skills, how, why, architect, arena, interrogate, swarm, reflect, show-me-your-work, tdd, deslop and the rest. ustack does not vendor them.
+
+Read [SKILLS.md](SKILLS.md) for the generated inventory, capability limits and pinned install commands for the unchanged upstream skills listed in `upstream-skills.json`. Their source is not copied here.
+
+## Ownership
+
+- `skills/` owns reusable methods. Keep product names, private paths, credentials, release environments and infrastructure assumptions out of shared instructions.
+- `sync-pstack` sets pstack up in a project through an interview and keeps every pstack project on one plugin tag and one shared overrides block. Its `assets/block.md` is the shared override source; project-only rules stay in each project.
+- Each project's instructions own its commands, source and verification owners, and publication policy.
+- Native tools, browser access, provider connections, paid models and host-provided skills are separate capabilities. Installing a method does not supply them.
+
+## Install
+
+Install a skill with the Skills CLI, naming the skill and each agent, for example `npx skills add udecode/ustack --skill test-audit --agent codex claude-code`. Project scope is the default; use `--global` only for a user-wide install.
+
+## Validate
+
+```sh
+scripts/validate-skills
+scripts/validate-skills --all
+node scripts/build-workflow.mjs
+node scripts/build-workflow.mjs --check
+```
+
+`validate-skills` checks every skill's frontmatter, structural size budgets, the generated catalog, and runs every skill test file.
+
+`build-workflow.mjs` regenerates `SKILLS.md`, rejects duplicate ownership, and resolves dependencies and local Markdown references. `--forbid '<pattern>'` optionally scans shipped content for project or private vocabulary.

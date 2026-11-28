@@ -1,220 +1,132 @@
 <p align="center">
-  <img src="src-tauri/icons/icon.png" width="84" alt="Wrytrove app icon">
+  <img src="src-tauri/icons/128x128.png" alt="Wrytrove logo" width="96" height="96" />
 </p>
 
 <h1 align="center">Wrytrove</h1>
 
-<p align="center"><strong>A little space for notes, code, and everything in between.</strong></p>
-
-<p align="center">Free and open source · Windows x64 · 0.4.0 preview · <a href="LICENSE">MIT license</a></p>
+<p align="center">
+  <strong>A local-first Windows text, code, and Markdown editor built for plain-file portability, crash-safe recovery, and verifiable AI.</strong>
+</p>
 
 <p align="center">
-  <a href="#features">Features</a> ·
-  <a href="#get-started">Get started</a> ·
-  <a href="#ai-and-privacy">AI &amp; privacy</a> ·
-  <a href="docs/USER-GUIDE.md">Full guide</a> ·
+  <a href="https://github.com/RANJITHROSAN17/Wrytrove/actions/workflows/ci.yml"><img src="https://github.com/RANJITHROSAN17/Wrytrove/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/RANJITHROSAN17/Wrytrove/releases"><img src="https://img.shields.io/github/v/release/RANJITHROSAN17/Wrytrove?include_prereleases&label=release" alt="Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white" alt="Node.js 22" />
+</p>
+
+<p align="center">
+  <a href="#why-wrytrove">Why Wrytrove</a> ·
+  <a href="#key-features">Features</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#benchmarks">Benchmarks</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#security-and-trust">Security</a> ·
   <a href="#contributing">Contributing</a>
 </p>
 
-Wrytrove is a Windows text and code editor designed to be approachable for everyday notes and useful for quick programming tasks. Edit files without an account; AI assistance is optional.
+---
 
-> [!TIP]
-> **Contributing?** Most of Wrytrove is platform-neutral TypeScript. `npm ci && npm test` and
-> `npm run build` run on Linux and macOS too — you do not need Windows, Rust or MSVC Build Tools
-> to contribute. See [CONTRIBUTING.md](CONTRIBUTING.md) for exactly which work needs Windows.
+## Why Wrytrove
 
-> [!IMPORTANT]
-> **Early preview, not a production release.** Keep backups and test with non-critical files first. Current tagged releases produced by the Windows workflow state whether their installer is signed or an explicit unsigned preview; consumer Windows 10/11, full accessibility and security audits, and Windows performance measurements remain outstanding. The only benchmarks so far are a synthetic Linux baseline; see [Benchmarks](#benchmarks). See the [release verification and rollback guide](docs/RELEASE-VERIFICATION.md).
+- **The Problem:** Modern editors force a trade-off between heavyweight, telemetry-heavy, extension-risky IDEs and bare-bones text editors that lack Markdown structure, crash-safe recovery, or safe AI workflows.
+- **The Solution:** Wrytrove combines a **Rust / Tauri 2** native shell with **CodeMirror 6** and strict capability boundaries—keeping your notes and code as ordinary UTF-8 files on disk while adding verifiable AI, hash-checked note moves, and an append-only draft journal.
+- **The Value:** Zero telemetry, no account required, no proprietary database lock-in, and explicit pre-send visibility before any byte leaves your machine.
 
-![Wrytrove's dark editor showing a Python sample, folder sidebar, tabs, and lavender accents](docs/images/wrytrove-browser-preview.png)
+---
 
-*Browser preview of the editor. The sample is not a saved file; Windows-native integration is not shown.*
+## Key Features
 
-## Choose your first run
+- **Plain-File Markdown & Code Editing:** Native Windows file I/O with UTF-8 validation, NUL-byte/surrogate checks, line-ending normalization, outline, minimap, focus mode, and 100+ CodeMirror language modes.
+- **Crash-Safe Draft Journal & 3-Way Review:** Append-only IndexedDB draft journal (`src/recovery-journal.ts`) with a 3-way restore view (disk vs. last saved snapshot vs. newest draft) that never silently overwrites files.
+- **Capability-Gated AI & Verifiable Citations:** Explicit session consent and pre-send byte/hash previews (`src/ai-provider.ts`) for local **Ollama** or **Arena**, plus **Ask-Document Q&A** (`src/ask-document.ts`) that verifies every cited line range and SHA-256 hash—marking unverified claims as `citation unavailable`.
+- **Reviewable Note Move & Link Repair:** `src/note-transaction.ts` previews affected `[[wikilinks]]`, flags ambiguous stem matches for manual review, verifies expected file hashes, and rebuilds the index only after commit.
+- **Untrusted-Workspace Tool Broker:** `src/tool-broker.ts` keeps subprocess execution disabled by default in untrusted workspaces and enforces environment allowlists.
+- **Large-File Streaming:** Streams 100–500 MiB files in bounded windows with cancelable worker search (`src/large-file-view.ts`).
 
-- **Use the Windows app:** [download the latest preview and its verification assets](https://github.com/RANJITHROSAN17/Wrytrove/releases/latest). No Node.js or Rust is needed for a packaged installer. Check its signing mode and checksum before running it; keep backups and use non-critical files.
-- **Evaluate the UI or contribute without Windows:** use the [browser UI preview](#browser-ui-preview); it does not verify native desktop behavior.
-- **Build the native app:** follow [Windows app from source](#windows-app-from-source) and its toolchain prerequisites.
+---
 
-For your first desktop session, open a disposable text file, edit, save and reopen it before enabling optional AI features. Compare the installer’s SHA-256 against the attached `SHA256SUMS.txt`; in PowerShell use `Get-FileHash .\Morrow_0.4.0_x64-setup.exe -Algorithm SHA256`. A matching checksum verifies the downloaded bytes against that release’s checksum, not publisher identity or safety. The [verification guide](docs/RELEASE-VERIFICATION.md) also covers Authenticode, provenance, WinGet, rollback and reinstall.
+## Architecture
 
-> **Naming note:** the product is now **Wrytrove**. The GitHub repository URL and the already published `Morrow_0.4.0_x64-setup.exe` asset keep their historical names until a separate repository/release rename; links and checksum instructions remain valid.
-
-## Features
-
-- **A familiar editor:** tabs, open/save dialogs, undo and redo, find and replace, line numbers, word wrap, and dark and light themes.
-- **Code and writing:** syntax highlighting for many programming and markup formats, automatic or manual language selection, and a live, inert Markdown preview.
-- **Folders and navigation:** add multiple folders to a workspace, create files and folders, search saved files across roots, and use quick open to navigate.
-- **Review before applying:** compare a pasted replacement with a selected range, explicitly accept it, and undo it. Applying a change does not automatically save the file.
-- **AI on your terms:** optional inline suggestions, **reviewable AI actions on a selection** (improve, fix, shorten, expand, summarize, bullets, explain), a browser-first Arena workflow, and a separate optional Arena API panel. Replace actions always show a diff before anything changes. See [AI and privacy](#ai-and-privacy) before sharing text.
-- **A writing surface for notes:** live words/characters/reading time, an optional daily word goal, a click-to-jump minimap, and focus / typewriter / zen modes. Markdown shortcuts for bold, italic, links, lists, quotes, code blocks and headings, plus line operations and optional smart typography.
-- **A notes layer over your own files:** an outline of the current note, tags from `#tag` and front matter, `[[wiki links]]` with backlinks and orphans, quick capture, daily notes and templates. The index is built locally on demand, reads only folders you opened, and can be cleared.
-- **Recovery and file awareness:** optional session recovery and checks for external file changes. Recovery is unencrypted and is **not a backup**.
-- **One picture of the product:** [Wrytrove at a glance](docs/WRYTROVE-AT-A-GLANCE.md).
-
-Wrytrove is not yet a full IDE: it does not provide a debugger, integrated terminal, extension marketplace, or language-server features. See the [full guide](docs/USER-GUIDE.md) for file formats, limits, shortcuts, and safety details.
-
-## Get started
-
-### Windows app from source
-
-You will need Windows x64, [Git](https://git-scm.com/), [Node.js 22](https://nodejs.org/) or newer, current stable [Rust](https://rustup.rs/), Microsoft C++ Build Tools with **Desktop development with C++**, and the Microsoft Edge WebView2 runtime. See [Tauri's Windows prerequisites](https://v2.tauri.app/start/prerequisites/).
-
-In PowerShell:
-
-```powershell
-git clone https://github.com/RANJITHROSAN17/Wrytrove.git
-cd Wrytrove
-npm ci
-npm run tauri dev
+```mermaid
+flowchart LR
+  UI["CodeMirror 6 + Workbench UI"] --> Store["DocumentStore & Services"]
+  Store --> Platform["Platform Boundary (platform.ts)"]
+  Platform --> Rust["Tauri 2 Rust Shell (save_transaction.rs, large_file.rs)"]
+  UI --> AI["AI Provider Registry & Ask-Document"]
+  UI --> Journal["Crash-Safe Draft Journal (IndexedDB)"]
+  Rust --> Disk["Plain UTF-8 Files on Disk"]
 ```
 
-To build an **unsigned** Windows x64 installer after installing the prerequisites and dependencies:
-
-```powershell
-rustup target add x86_64-pc-windows-msvc
-npm run tauri build -- --target x86_64-pc-windows-msvc
-```
-
-The NSIS installer is written to `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/`. Windows may warn about an unknown publisher. If WebView2 is missing, its bootstrapper may need internet access.
-
-[**Download v0.4.0 for Windows**](https://github.com/RANJITHROSAN17/Wrytrove/releases/latest) — a 3.6 MB NSIS installer, no Rust toolchain required. For releases produced by the current workflow, `SIGNING-MODE.txt` is authoritative: `signed` means its Authenticode publisher and timestamp were verified; `unsigned-preview` means Windows may warn about an unknown publisher, and that warning is accurate. `SHA256SUMS.txt` is attached, and checking the download against it takes one command:
-
-```bash
-sha256sum Morrow_0.4.0_x64-setup.exe
-```
-
-This is a **preview**, not a production release: it has not had consumer Windows testing, an accessibility audit or a security audit. What has and has not been verified is written down in [`docs/IMPLEMENTATION-0.4.0.md`](docs/IMPLEMENTATION-0.4.0.md#verification-and-limits). For release files, signatures, provenance, the package-manager route and rollback instructions, read [`docs/RELEASE-VERIFICATION.md`](docs/RELEASE-VERIFICATION.md).
-
-### Browser UI preview
-
-```sh
-npm ci
-npm run dev
-```
-
-Open the local address printed by Vite. This shows the editor UI, **not** the Windows application: native dialogs, file associations, and local Ollama integration are not demonstrated. Browser file and folder access also depends on browser support and permission.
-
-## AI and privacy
-
-### Arena in your browser
-
-1. Select the text you want to work with and open **Arena → Website**.
-2. Optionally add an instruction, choose **Capture selection**, review the prepared prompt, and explicitly choose **Copy preview**.
-3. Choose **Open Arena in browser**, sign in there, and paste and submit the prompt yourself.
-4. Back in Wrytrove, choose **Review a pasted change**, paste the replacement, review it, and explicitly apply or reject it.
-
-Wrytrove does **not** embed the Arena website, transfer cookies or login sessions, or automatically send your text to it. An Arena website login is not an API key.
-
-### Optional API and local suggestions
-
-- **Arena API:** the separate **API key** panel requires an eligible key and model. Wrytrove asks for confirmation before sending your instruction and any captured selection to the cloud provider. Availability, privacy terms and charges depend on your account. The key is held in panel memory and cleared when the panel closes.
-- **Ollama:** inline suggestions start off each time. If you explicitly enable them in the desktop app, nearby editor text is sent to your Ollama service at `127.0.0.1:11434`. A loopback address does not guarantee the service or model is offline; choose and configure a genuinely local model if needed. Changing the model turns suggestions off until you approve the new model. Selection-edit and selection-answer actions have separate session approvals. Suggestions are single-line and can be wrong.
-- **Request diagnostics:** the AI panel can show and copy a bounded, memory-only list of request attempts. It contains provider/capability, route labels and size counts, but not text, instructions, model names, paths or keys. Counts can still be sensitive; review before sharing. The list excludes model checks and browser copy/paste, is cleared on restart, and cannot prove delivery or downstream processing. Clearing it does not clear the clipboard.
-- **Your data:** session recovery is on by default and stores document contents and related metadata locally without Wrytrove-provided encryption. Folder-access permissions may persist after closing the view. The secret warning is only a fallible heuristic—review text yourself before sharing it.
-
-[Read the full privacy, setup, and safety notes →](docs/USER-GUIDE.md#privacy-and-storage)
-
-## Keyboard shortcuts
-
-| Action | Shortcut |
-| --- | --- |
-| New / open / save | `Ctrl+N` / `Ctrl+O` / `Ctrl+S` |
-| Find / replace | `Ctrl+F` / `Ctrl+H` |
-| Find in folders / quick open | `Ctrl+Shift+F` / `Ctrl+P` |
-| Go to line / command palette | `Ctrl+G` / `Ctrl+Shift+P` |
-| Settings | `Ctrl+,` |
-| Request / accept / dismiss an AI suggestion | `Ctrl+Shift+Space` / `Tab` / `Esc` |
-| Quick capture / today's note / notes panel | `Ctrl+Alt+N` / `Ctrl+Alt+D` / `Ctrl+Alt+B` |
-| Bold / italic / link | `Ctrl+B` / `Ctrl+I` / `Ctrl+K` (bold applies to a Markdown selection; elsewhere `Ctrl+B` still toggles the sidebar) |
-| Heading 1–6 / quote / bullets | `Ctrl+Shift+1…6` / `Ctrl+Shift+Q` / `Ctrl+Shift+U` |
-| Focus / typewriter / zen | `F8` / `F9` / `F11` |
-| Zoom in / out / reset | `Ctrl++` / `Ctrl+-` / `Ctrl+0` |
+---
 
 ## Benchmarks
 
-These numbers are a **synthetic, Linux-only baseline**. They were measured in a Linux sandbox with Vitest bench and generated inputs. They have **not** been measured on Windows or in WebView2, so they say nothing about the installed app's startup, memory use, typing latency or file dialogs. They are **not** comparisons with other editors.
+<!-- BENCHMARK_RESULTS:START -->
+Measured large-file streaming & cancellation (`node scripts/benchmark-large-file.mjs`, Node v22.22.3, linux x64):
 
-Each Wrytrove function is run next to a reference that does the same core job with a standard library or a simpler algorithm, so you can see what Wrytrove's extra work costs:
+| File Size | First Window | Streaming Search | Worker Cancel | Peak RSS |
+| --- | ---: | ---: | ---: | ---: |
+| 100 MiB | 1.17 ms | 756.12 ms | 1.44 ms | 142,924 KiB |
+| 500 MiB | 1.20 ms | 3,636.65 ms | 1.29 ms | 144,020 KiB |
+<!-- BENCHMARK_RESULTS:END -->
 
-| Workload | Wrytrove | Reference | Wrytrove ÷ reference |
-| --- | ---: | ---: | ---: |
-| Decode 1 MiB UTF-8 | 2.07 ms | 0.54 ms (`TextDecoder`, fatal) | 3.9× |
-| Decode 5 MiB UTF-8 | 10.59 ms | 3.31 ms | 3.2× |
-| Decode 20 MiB UTF-8 | 43.57 ms | 14.34 ms | 3.0× |
-| Encode 1 MiB UTF-8 | 5.52 ms | 0.39 ms (`TextEncoder`) | 14× |
-| Encode 5 MiB UTF-8 | 28.38 ms | 1.70 ms | 17× |
-| Quick Open, 5,000 files | 3.51 ms | 0.22 ms (substring filter) | 16× |
-| Review diff, 5,000 lines | 1.02 ms | 1.08 ms (`diffLines`, unbounded) | 0.94× |
+> **Note:** These are synthetic Linux baseline measurements. Windows WebView2 startup, memory, and typing-latency benchmarks are defined in [`docs/VAL01-BENCHMARK-PROTOCOL.md`](docs/VAL01-BENCHMARK-PROTOCOL.md).
 
-Environment: Linux 6.1 (x64) sandbox, Intel Xeon 2.60 GHz with 2 logical CPUs, Node 22.22.3. Each row is the mean over Vitest's sampled iterations, with relative margin of error between 1% and 3%. Across two runs in this sandbox the ratios moved: decode ranged from 3.0× to 4.0×, encode from 14× to 22×, and Quick Open from 16× to 17×. Treat them as rough, not as precise figures.
+### Comparison with Other Editors
 
-How to read the table:
+| Product | Their Best Technical Strengths | Where Wrytrove Stands Out |
+| --- | --- | --- |
+| **Wrytrove** | Tauri 2 + CodeMirror 6 + Rust native FS | Capability-gated AI with verifiable citations, crash-safe draft journal, hash-checked note move transactions, untrusted-workspace tool broker |
+| **VS Code / Zed** | Mature LSP/extension ecosystems; Zed's GPU-rendered Rust UI | Zero-telemetry local-first Markdown without account/extension-marketplace supply-chain exposure |
+| **Notepad++** | Ultra-fast native Win32/Scintilla startup & large-file handling | Built-in Markdown preview, wikilink/backlink index, 3-way recovery review, and capability-gated AI |
+| **MarkText / Joplin** | Rich WYSIWYG Markdown (MarkText); E2EE sync & plugins (Joplin) | Plain-file portability (no SQLite lock-in), pre-send AI byte/hash preview, and signed/attested release provenance |
 
-- **Decode and encode are slower than the bare standard library** because Wrytrove also scans for NUL bytes, detects and normalizes line endings, and checks for unpaired surrogates before saving. Those checks are deliberate; the ratio is their cost.
-- **Quick Open** ranks files with a scoring function, not a plain substring filter, so the ratio is the cost of ranking. It is not a claim about search quality.
-- **Review diff** is about the same speed as the reference at this size. Its 120,000-character bound limits how much work a very large paste can cause; this benchmark does not measure inputs near that limit.
+---
 
-Reproduce the table on your machine:
+## Quick Start
+
+### Windows Installer (Preview `.exe`)
+
+Download the **`v0.5.0` Windows x64 `.exe` installer** directly from [**GitHub Releases (`v0.5.0`)**](https://github.com/RANJITHROSAN17/Wrytrove/releases/tag/v0.5.0) (or browse all [**Releases**](https://github.com/RANJITHROSAN17/Wrytrove/releases)).
+
+> **Signing notice:** Preview builds without a configured publisher certificate are labeled **`unsigned-preview`**. Windows SmartScreen may show an unknown-publisher warning. Every release includes `SHA256SUMS.txt`, CycloneDX/Cargo SBOMs, and GitHub SLSA provenance attestations—see the [release verification and rollback guide](docs/RELEASE-VERIFICATION.md).
+
+### Test in Your Browser (No Windows Required)
+
+Contributors on **Linux, macOS, or Windows** can test the editor UI and run the full test suite without installing Rust or Tauri:
 
 ```sh
+git clone https://github.com/RANJITHROSAN17/Wrytrove.git
+cd Wrytrove
 npm ci
-npm run benchmark:json
-npm run benchmark:table
+./run.sh        # Runs unit/fixture tests, tsc + vite build, static security audit, and roadmap check
+./run.sh dev    # Starts the browser preview on http://localhost:5173
 ```
 
-`npm run benchmark` gives the interactive Vitest output.
+---
 
-### Comparison with other editors
+## Security and Trust
 
-[**docs/BENCHMARK-COMPARISON.md**](docs/BENCHMARK-COMPARISON.md) compares Wrytrove's editor engine (CodeMirror 6) with Monaco and Ace on identical synthetic files, as percentages. Run `npm --prefix benchmarks/engines ci` once, then `npm run benchmark:engines` and `npm run benchmark:compare`.
+- **Static Security Gate:** `npm run audit:static` (`scripts/security-audit.mjs`) enforces CSP, capability scope, and forbids `innerHTML` and dynamic code execution.
+- **No Silent Egress:** AI requests require session consent (`AiSessionConsent`), and cloud requests (`arena`) require explicit per-action confirmation with destination, model, and character-count previews.
+- **Responsible Disclosure:** See [`SECURITY.md`](SECURITY.md).
 
-Comparison with the desktop apps (Notepad++, Notepads, VS Code, Zed) has to run on Windows with those apps installed. Use `npm run benchmark:products` after copying `benchmarks/product/products.example.json`. That harness is written but has not yet been run on Windows. Until those results are published, Wrytrove makes no speed or memory advantage claim against any product. Startup, memory and typing-latency claims stay under [issue #65](https://github.com/RANJITHROSAN17/Wrytrove/issues/65).
+---
 
-## Development and testing
+## Documentation
 
-The frontend uses TypeScript, CodeMirror 6 and Vite; the desktop shell uses Tauri 2, Rust and WebView2. To run the frontend checks:
+- [`docs/USER-GUIDE.md`](docs/USER-GUIDE.md) — Keyboard shortcuts, workflows, and settings
+- [`docs/RELEASE-VERIFICATION.md`](docs/RELEASE-VERIFICATION.md) — Offline checksum, SBOM, and provenance verification
+- [`docs/ACCESSIBILITY-VALIDATION.md`](docs/ACCESSIBILITY-VALIDATION.md) — Keyboard-only, Narrator/NVDA, and 200% scaling matrix
+- [`docs/VAL01-BENCHMARK-PROTOCOL.md`](docs/VAL01-BENCHMARK-PROTOCOL.md) — Competitor & Windows benchmark protocol
 
-```sh
-npm ci
-npm run build
-npm test
-npx playwright install --only-shell chromium
-npm run test:e2e
-```
-
-For the network-free synthetic AI evaluation, run `npm run ai:eval -- --mode mock`. The [AI evaluation guide](docs/AI-EVALUATION.md) describes optional Ollama runs, privacy boundaries and why mock passes do not measure a real model.
-
-With the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) installed, run native tests with:
-
-```sh
-cargo test --manifest-path src-tauri/Cargo.toml --lib --locked
-```
-
-The 0.4.0 candidate received automated tests and a targeted installed-app smoke test using synthetic data on a Windows Server 2025 VM. This is not a substitute for testing on consumer Windows, a real model or an authenticated Arena account. The Tauri IPC mock test runs on Linux; the Windows test binary containing it failed to start on the hosted runner. See [verification and limits](docs/IMPLEMENTATION-0.4.0.md#verification-and-limits).
-
-## Branches
-
-`main` is the default development branch. Work happens on short-lived branches and lands through pull requests; there are no long-lived side branches. Tagged previews are built from `main` by the Windows workflow.
+---
 
 ## Contributing
 
-Issues and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), which
-names the tasks that do **not** need Windows and the 24-hour reply expectation. Bug reports need
-your Windows version, steps to reproduce, and expected versus actual behavior. Please **do not
-post API keys, private files, or sensitive text** in public issues — use
-[SECURITY.md](SECURITY.md) for anything sensitive.
-
-Look for [`good first issue`](https://github.com/RANJITHROSAN17/Wrytrove/labels/good%20first%20issue):
-each one names the file, the acceptance criteria and a command that proves it.
-
-- [Report a bug or suggest an improvement](https://github.com/RANJITHROSAN17/Wrytrove/issues)
-- [Changelog](CHANGELOG.md) · [Product research](docs/PRODUCT-RESEARCH-2026.md) · [Competitive audit and AI upgrade plan](docs/COMPETITIVE-AUDIT-AND-ROADMAP-2026-11.md) · [README comparison](docs/README-RESEARCH-2026-11-01.md)
-
-## Maintainer
-
-**[Ranjith Rosan](https://github.com/RANJITHROSAN17)** maintains Wrytrove, the Windows text and code editor in this repository. Community contributions and third-party components retain their respective credits; see [third-party notices](THIRD_PARTY_NOTICES.md).
+Contributions are welcome! Non-Windows development (Linux/macOS) is fully supported for TypeScript, Vitest, and Vite workflows. See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 
 ## License
 
-Wrytrove's source code is available under the [MIT License](LICENSE). Dependencies and separately downloaded models have their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
+[MIT](LICENSE)

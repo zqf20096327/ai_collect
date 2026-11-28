@@ -26,7 +26,7 @@
 |:--:|:--:|:--:|:--:|
 | **最小起步样例**<br>一页纸最短路径 | **中文学位论文**<br>目录域 / 罗马页码 / 章名双线页眉 | **现代技术报告**<br>全网格表 / 引用块 / 彩色标题 | **英文期刊投稿**<br>APA 作者-年份制 / 交叉引用 |
 
-> 💡 另含繁体中文期刊样例（[`demo/04_zh_tw_paper`](demo/04_zh_tw_paper)），5 套样张的完整源码与格式文件详见 [demo/ 目录](demo/)。
+> 💡 另含繁体中文期刊、党政机关公文正文（GB/T 9704）与 APA 7 学生论文样例（[`demo/04_zh_tw_paper`](demo/04_zh_tw_paper)、[`demo/05_gb9704`](demo/05_gb9704)、[`demo/06_apa_student`](demo/06_apa_student)），7 套样张的完整源码与格式文件详见 [demo/ 目录](demo/)。
 
 ---
 
@@ -48,8 +48,15 @@ md-to-word init
 # 3. 编译导出
 md-to-word hello.md -f format.txt -o hello.docx
 
+# （可选）先只跑预检、不生成文件
+md-to-word hello.md --validate-only
+
 # （可选）没有格式文件时，使用内置学术预设快速出稿
 md-to-word hello.md --preset zh-academic -o hello.docx
+
+# （可选）给 Agent / 脚本的机器可读契约与结构化诊断
+md-to-word --contract --json
+md-to-word hello.md -o hello.docx --json
 ```
 
 #### 2. AI 智能体（Claude Code / 终端 Agent）
@@ -83,10 +90,11 @@ npx skills add ls-open/md-to-word
 ### 核心特性
 
 - **Word 原生数学公式**：输出原生 OMML 矢量公式（Word 中双击可二次编辑，非位图），公式绝对居中、编号精准靠右对齐，支持 `@eq-` 交叉引用。
-- **学术三线表**：边框线宽精准可控，长表格跨页自动重复表头。
+- **学术三线表**：边框线宽精准可控；要求文件写「跨页重复」后，长表格跨页会重复表头（内置预设默认开启）。
 - **独立分节与页码**：支持前置页罗马页码（`i, ii`）、正文阿拉伯页码（`1, 2`）独立计数，生成 Word 原生动态目录域（按 F9 刷新）与随章变换页眉。
-- **29 套 CSL 参考文献**：内置国标 GB/T 7714、Nature、IEEE、APA 等常用样式，由 `.bib` 自动生成引文列表。
-- **带精确行号的双向门禁**：导前语法预检、导后防丢数核对、底模 XML 样式对账。格式不合规时带行号报错中止，方便人类与 AI Agent 定位修改。
+- **29 套 CSL 参考文献**：内置国标 GB/T 7714、Nature、IEEE、APA 等常用样式，由 `.bib` 或 CSL-JSON（Zotero / Mendeley / Crossref 导出）自动生成引文列表。
+- **带精确行号的双向门禁**：导前语法预检、导后防丢内容核对、底模 XML 样式对账。格式不合规时带行号报错中止，方便人类与 AI Agent 定位修改；`--validate-only` 可单独跑预检、不写文件。
+- **输入编码从宽**：稿件、格式文件与 `.bib` 支持 UTF-8（含 BOM）、UTF-16 与 GB18030；非 UTF-8 会照常读取并提醒另存。
 - **同一平台逐字节一致**：固定时间戳、权限与打包顺序，相同源文件在同系统下重复编译产物二进制完全一致，便于 Git 差异比对。
 
 ---
@@ -99,8 +107,9 @@ npx skills add ls-open/md-to-word
   ```
 - **正文灌入底模**：原样保留学校或单位模板的封面与授权书：
   ```bash
-  md-to-word 论文.md -f format.txt --base-template 模板.docx --keep-until 版权使用授权书 -o 论文.docx
+  md-to-word 论文.md -f format.txt --base-template 模板.docx --keep-until 作者签名 -o 论文.docx
   ```
+  `--keep-until` 写你想保留的**最后一行**（含这一行）；单节和多节底模都在这一段之后切开，想留整页就写这一页的最后一行，想留整节用 `--cover-sections N`。底模与格式的兼容模式、镜像边距、标点压缩、奇偶页设置必须一致，不一致会直接拒绝。
 
 ---
 
@@ -112,7 +121,7 @@ npx skills add ls-open/md-to-word
 | **编号公式** | `$$E=mc^2$$ {#eq-mass}` | 独立成行；正文使用 `@eq-mass` 交叉引用 |
 | **图表题注** | 表前 `%% 表题 **表 1** 数据对比`<br>图后 `%% 图片题注 图 1 架构图` | 题注与图表同页绑定，换页不分离 |
 | **参考文献** | 正文 `[@smith2024]`，YAML 中声明 `bibliography: refs.bib` | 文献表按 CSL 样式自动渲染 |
-| **结构标记** | `{{< toc >}}`、`{{< section page_number=lowerRoman start=1 >}}` | 目录域、分节换页码；各自独立成行 |
+| **结构标记** | `{{< toc >}}`、`{{< section 正文 >}}` | 目录域、按节名切换页码与页眉页脚；各自独立成行 |
 
 > 完整词表与规范详见[使用手册](src/md_to_word/resources/manual.md)，亦可运行 `md-to-word --contract` 打印。
 
@@ -123,6 +132,8 @@ npx skills add ls-open/md-to-word
 - **逐字节一致限同平台**：跨平台受系统底层 zlib deflate 压缩实现差异影响，二进制会略有不同。
 - **不便支持的复杂版式**：受 Markdown 与单栏样式模型所限，暂不支持单元格合并、斜线表头、多栏混排及文字环绕浮动图。
 - **PDF 导出**：`--pdf` 展开目录域依赖 macOS 系统的 Word 环境；无 Word 环境时跳过 PDF，`.docx` 正常生成。
+- **字体与打开软件**：`.docx` 只记录字体名、不嵌入字体；打开机器缺少声明字体时 Word 会替换，分页可能变化。WPS 能打开，但目录域不会自动展开，`STYLEREF` 章名页眉可能显示错误；正式交付以 Microsoft Word 打开核对为准。
+- **引文**：引文与文献表是导出时写成的静态文本，不是 Word 域；改稿后重新导出，需要 Word 内实时更新请用 Zotero 插件。CSL `class="note"`（脚注/ibid）及少数高级构造会明确报错；中文作者-年份的姓名排序按字符编码，不按拼音。详见手册 §4/§6。
 
 ---
 
@@ -134,6 +145,8 @@ npx skills add ls-open/md-to-word
 
 ---
 
-### 许可
+### 许可与第三方声明
 
-[MIT License](LICENSE)。内置 CSL 样式来自 [citation-style-language/styles](https://github.com/citation-style-language/styles)（CC BY-SA 3.0）。
+本项目采用 [MIT License](LICENSE)。
+
+内置 CSL 引文引擎派生自 [citeproc-py 0.12.2](https://github.com/brechtm/citeproc-py)，按 BSD-2-Clause-Views 许可再分发；本地改动已合入 `src/md_to_word/csl/`，上游许可全文见 [src/md_to_word/csl/LICENSE](src/md_to_word/csl/LICENSE)。内置 CSL 样式来自 [citation-style-language/styles](https://github.com/citation-style-language/styles)，CSL locale 来自 [citation-style-language/locales](https://github.com/citation-style-language/locales)，均为 CC BY-SA 3.0。完整清单与许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

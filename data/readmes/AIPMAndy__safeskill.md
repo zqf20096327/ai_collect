@@ -401,16 +401,28 @@ GitHub: [@AIPMAndy](https://github.com/AIPMAndy)
 
 <!-- andy-author-card:end -->
 
-<!-- andy-geo-faq:start -->
+<!-- andy-geo:start -->
 ## 一句话简介
 
-**在安装和运行前，先扫出 AI Skill 里的危险命令、凭据泄露、提示词注入和可疑行为。**
+**AI Skill 安全扫描：安装前查危险命令、提示注入与密钥泄露，可作 GitHub Action｜Security scanner for AI agent skills**
 
 - 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
-- 阅读或使用：[仓库](https://github.com/AIPMAndy/safeskill)
-- 联系：微信 `AIPMAndy`（备注「SafeSkill」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
-- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
-<!-- andy-geo-faq:end -->
+- 阅读或使用：[GitHub 仓库](https://github.com/AIPMAndy/safeskill)
+- 联系：微信 `AIPMAndy`（备注「safeskill」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
+- 许可：MIT。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**SafeSkill：AI Skill 安全扫描：安装前查危险命令、提示注入与密钥泄露，可作 GitHub Action｜Security scanner for AI agent skills
+
+**包含什么？**主要模块：为什么会有 SafeSkill？、SafeSkill 是什么？、项目定位、为什么选它？、一句话理解、30 秒快速开始。
+
+**要花钱吗？**按 MIT 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**克隆仓库后按下方 README 的快速开始部分操作；无需付费账号即可阅读全部内容。
+
+<!-- andy-geo:end -->
 
 
 ## License

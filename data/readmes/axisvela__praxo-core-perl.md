@@ -8,11 +8,11 @@ PRAXO-CORE is an embeddable, MIT-licensed AI agent framework. This distribution 
 | --- | --- |
 | Package | `Praxo::Core` |
 | Registry | [CPAN (MetaCPAN index)](https://metacpan.org/dist/Praxo-Core) |
-| Install | `cpanm Praxo::Core@0.8.0` |
-| Source version | `0.8.0` |
-| Published version | `0.8.0` |
-| Publication status | published on CPAN; README.pod indexed |
-| Canonical source tag | [`perl/v0.8.0`](https://github.com/axisvela/praxo-core/tree/perl/v0.8.0) |
+| Install | `cpanm Praxo::Core@0.8.1` |
+| Source version | `0.8.1` |
+| Published version | `0.8.1` |
+| Publication status | published on CPAN; README.pod includes examples, tutorials, reference-application status, and community |
+| Canonical source tag | [`perl/v0.8.1`](https://github.com/axisvela/praxo-core/tree/perl/v0.8.1) |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/perl/ |
@@ -34,7 +34,7 @@ PRAXO-CORE is an embeddable, MIT-licensed AI agent framework. This distribution 
 Install the published package:
 
 ```bash
-cpanm Praxo::Core@0.8.0
+cpanm Praxo::Core@0.8.1
 ```
 
 ```perl

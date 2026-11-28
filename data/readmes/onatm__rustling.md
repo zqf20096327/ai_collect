@@ -109,7 +109,8 @@ rustling pull --draft && rustling chat --backend cpu --draft   # the draft model
 ## Coding agents
 
 `rustling serve` provides streaming and tool calls through the OpenAI-compatible Chat Completions and
-Responses APIs. [Configure Codex, aider or opencode](cli/src/agent/README.md#other-coding-agents).
+Responses APIs. `tool_choice: "none"` keeps a reply from calling tools while they stay declared, so the processed
+prompt is still reused. [Configure Codex, aider or opencode](cli/src/agent/README.md#other-coding-agents).
 
 ## Performance
 

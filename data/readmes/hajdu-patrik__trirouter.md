@@ -72,7 +72,7 @@ prompt ─► hook / MCP tool ─► trirouter/core.route()
 
 | Surface | Mechanism |
 | --- | --- |
-| Claude Code (CLI, desktop *Code*, Remote Control) | `UserPromptSubmit`, `Stop`, `SessionStart`, `SubagentStart`, `PostModelSwitch`, `PreToolUse` hooks |
+| Claude Code (CLI, desktop *Code*, Remote Control) | `UserPromptSubmit`, `Stop`, `SessionStart`, `SubagentStart`, `PostModelSwitch`, `PreToolUse`, `PostToolUse` hooks |
 | Codex (CLI, ChatGPT app) | `UserPromptSubmit` + `Stop` hooks |
 | Antigravity (CLI, desktop app) | `PreInvocation` + `Stop` hooks (prompt read from the transcript, once per turn) |
 | Claude desktop *Chat / Cowork* | MCP tool `route_prompt` |
@@ -118,7 +118,7 @@ answer. `--catalog-only=gke-*` keeps rarely used skills out of every session whi
 | Environment variable | Default | Meaning |
 | --- | --- | --- |
 | `ROUTER_BACKEND` | `auto` | `jev`, `local` or `auto` (JEV when a key exists) |
-| `JEV_TIMEOUT` | `1.8` | seconds for the whole JEV call; on timeout the local classifier decides |
+| `JEV_TIMEOUT` | `1.2` | seconds for the whole JEV call; on timeout the local classifier decides |
 | `ROUTER_MAX_EXTRA_AGENTS` | `4` | hard cap for parallel agents |
 | `ROUTER_DISTILLED` | on | `0` switches the local distilled model off |
 | `ROUTER_WELCOME` | on | `0` drops the welcome line of new Claude Code sessions |

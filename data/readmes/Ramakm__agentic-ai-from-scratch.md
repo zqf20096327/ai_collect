@@ -13,16 +13,11 @@
 </p>
 
 <p align="center">
-  <a href="https://www.linkedin.com/in/ramakrushnamohapatra"><img src="assets/readme/icons/linkedin.svg" width="16" height="16" alt="LinkedIn"> ramakrushnamohapatra</a> &nbsp;·&nbsp;
-  <a href="https://www.instagram.com/techwith.ram/"><img src="assets/readme/icons/instagram.svg" width="16" height="16" alt="Instagram"> techwith.ram</a> &nbsp;·&nbsp;
-  <a href="https://x.com/techwith_ram"><img src="assets/readme/icons/x.svg" width="16" height="16" alt="X (Twitter)"> techwith_ram</a>
-</p>
-
-<p align="center">
   <a href="https://agentic-ai-from-scratch.vercel.app/"><b>Website</b></a> ·
-  <a href="phases/00-setup-and-tooling/01-your-agent-dev-environment/docs/en.md"><b>Start learning</b></a> ·
+  <a href="#quick-start"><b>Quick start</b></a> ·
   <a href="#learning-paths"><b>Choose a path</b></a> ·
   <a href="#contents"><b>Curriculum</b></a> ·
+  <a href="https://agentic-ai-from-scratch.vercel.app/interviews/"><b>Interview prep</b></a> ·
   <a href="ROADMAP.md"><b>Roadmap</b></a>
 </p>
 
@@ -34,19 +29,11 @@
   <a href="https://github.com/Ramakm/agentic-ai-from-scratch/stargazers"><img src="https://img.shields.io/github/stars/Ramakm/agentic-ai-from-scratch?style=flat-square&labelColor=fafaf5&color=EC4D36" alt="GitHub stars"></a>
 </p>
 
-Turn your coding agent into a tutor with one command:
-
-```bash
-npx skills add Ramakm/agentic-ai-from-scratch
-```
-
-Then, in Claude Code, Codex, Cursor, or any agent that reads `SKILL.md`: **"Use start-building to begin the course."**
-
 ---
 
 ## Why build agents from scratch
 
-Most agent material is framework tutorials. You can wire a crew of five agents but can't say why the third one loops forever. You can install an MCP server but couldn't write the JSON-RPC message it answers.
+Most agent material is framework tutorials. You can wire up a crew of five agents but can't say why the third one loops forever. You can install an MCP server but couldn't write the JSON-RPC message it answers.
 
 This course goes the other way. Every pattern is built by hand first, in plain Python you can read in one sitting:
 
@@ -58,8 +45,34 @@ This course goes the other way. Every pattern is built by hand first, in plain P
 | An MCP server over stdio | Off-the-shelf MCP servers |
 | An orchestrator with parallel workers | CrewAI, AutoGen, LangGraph `Send` |
 | An eval harness and trace viewer | LangSmith, Braintrust, OpenTelemetry backends |
+| Injection defences, permission rules, an audit log | Guardrail products and agent sandboxes |
 
 When the frameworks show up in Phase 9, you already know what they do under the hood, and when to skip them.
+
+## Quick start
+
+You need Python 3.10+ and git. No API key, no GPU, and no model: every lesson runs offline first.
+
+```bash
+git clone https://github.com/Ramakm/agentic-ai-from-scratch.git
+cd agentic-ai-from-scratch
+
+# check your machine for the route you're starting (prints the fix for anything missing)
+python3 phases/00-setup-and-tooling/01-your-agent-dev-environment/code/main.py
+
+# run your first agent, against a scripted model
+python3 phases/03-the-agent-loop/01-the-agent-loop-in-120-lines/code/main.py
+```
+
+Switch any lesson to a real model with two environment variables. Ollama, OpenAI, vLLM, LM Studio, OpenRouter and any other OpenAI-compatible server work:
+
+```bash
+ollama pull llama3.2
+AGENT_BASE_URL=http://localhost:11434/v1 AGENT_MODEL=llama3.2 \
+  python3 phases/03-the-agent-loop/01-the-agent-loop-in-120-lines/code/main.py
+```
+
+For a hosted API, also set `AGENT_API_KEY`. Lesson code reads keys only from the environment. The setup checker covers other routes too: `--route real-model --ping`, `typescript`, `sandboxing` and `sdks`. Run it with `--list` to see them, or read [00.01 Your agent dev environment](phases/00-setup-and-tooling/01-your-agent-dev-environment/docs/en.md).
 
 ## How every lesson works
 
@@ -81,16 +94,18 @@ phases/03-the-agent-loop/01-the-agent-loop-in-120-lines/
 └── outputs/            what you ship: skill-*.md, prompt-*.md
 ```
 
-Lessons run **offline by default** against a scripted model, so they're deterministic and free. Point them at a real model with two environment variables. Ollama, OpenAI, vLLM, LM Studio and any other OpenAI-compatible server work:
+Lessons run **offline by default** against a scripted model, so they're deterministic and free, and the tests never touch the network. When a lesson shows model output, it's real output from a real run, failures included.
 
-```bash
-AGENT_BASE_URL=http://localhost:11434/v1 AGENT_MODEL=llama3.2 python3 code/main.py
-```
+## Ways to learn
 
-## Choose how to learn
+- **On the website.** Every lesson, with diagrams, quizzes, and progress saved in your browser: **[agentic-ai-from-scratch.vercel.app](https://agentic-ai-from-scratch.vercel.app/)**
+- **With your coding agent as tutor.** Install the skills into Claude Code, Codex, Cursor, or any agent that reads `SKILL.md`:
 
-- **On the website.** Every lesson, with quizzes and progress saved in your browser: **[agentic-ai-from-scratch.vercel.app](https://agentic-ai-from-scratch.vercel.app/)**
-- **With your coding agent as tutor.** Install the skills, then:
+  ```bash
+  npx skills add Ramakm/agentic-ai-from-scratch
+  ```
+
+  Then say: **"Use start-building to begin the course."**
 
   | Skill | What it does |
   |-------|--------------|
@@ -100,13 +115,7 @@ AGENT_BASE_URL=http://localhost:11434/v1 AGENT_MODEL=llama3.2 python3 code/main.
   | `check-understanding` | Quizzes you on any phase or lesson |
   | `debug-my-agent` | Reads your agent's trace or error and points to the lesson that fixes it |
 
-- **Locally.** Clone, then run any lesson's code and tests:
-
-  ```bash
-  git clone https://github.com/Ramakm/agentic-ai-from-scratch.git
-  cd agentic-ai-from-scratch
-  python3 phases/00-setup-and-tooling/01-your-agent-dev-environment/code/main.py --ping
-  ```
+- **Locally.** Clone the repo and work through `phases/` in order. Every lesson's `code/` runs on its own, and `python3 -m unittest` inside it runs its tests.
 
 ## Learning paths
 
@@ -125,15 +134,20 @@ AGENT_BASE_URL=http://localhost:11434/v1 AGENT_MODEL=llama3.2 python3 code/main.
 | Shipping LLM apps already | [02.02 Tool schemas from first principles](phases/02-tool-use/02-tool-schemas-from-first-principles/docs/en.md) |
 | Here to build an agent from scratch | [03.01 The agent loop in 120 lines](phases/03-the-agent-loop/01-the-agent-loop-in-120-lines/docs/en.md) |
 | Going multi-agent | [08.02 Orchestrator–worker](phases/08-multi-agent-systems/02-orchestrator-worker/docs/en.md) |
+| Securing an agent you already run | [12.01 The agent threat model](phases/12-safety-and-security/01-the-agent-threat-model/docs/en.md) |
 
 Prerequisites: comfortable Python, and a terminal. No ML background needed.
+
+## Interview prep
+
+[**50 agent engineering interview questions**](https://agentic-ai-from-scratch.vercel.app/interviews/) across 8 topics, from fundamentals to staff level: concept, debugging, design, trade-off, estimation and whiteboard-code questions. Each one has a short answer, a full answer, follow-ups with what a strong reply covers, the wrong answers interviewers hear most, and links to the lessons that teach it. The source lives in [`interviews/`](interviews/), one Markdown file per question.
 
 ## Contents
 
 <!-- CONTENTS:START -->
 <!-- Generated by scripts/build.mjs. Edit curriculum.json instead. -->
 
-**16 phases · 163 lessons · 137 live · ~127 hours**
+**16 phases · 163 lessons · 145 live · ~127 hours**
 
 <details open>
 <summary><b>Phase 00 · Setup & Tooling</b> · 8 lessons · 8 live</summary>
@@ -470,21 +484,21 @@ Streaming step views, approvals and undo, voice, background agents, and the desi
 
 </details>
 
-<details>
-<summary><b>Phase 15 · Capstone: Your Own Agent Harness</b> · 8 lessons · 0 live</summary>
+<details open>
+<summary><b>Phase 15 · Capstone: Your Own Agent Harness</b> · 8 lessons · 8 live</summary>
 
 Everything at once. A loop, tool registry, memory, MCP, subagents, permissions, and evals, shipped as a CLI.
 
 | # | Lesson | Status | Time |
 |---|--------|--------|------|
-| 15.01 | Why build a harness | □ planned | 35 min |
-| 15.02 | The core loop & tool registry | □ planned | 70 min |
-| 15.03 | Memory & context manager | □ planned | 70 min |
-| 15.04 | MCP client integration | □ planned | 60 min |
-| 15.05 | Subagents & delegation | □ planned | 60 min |
-| 15.06 | Permissions & sandbox | □ planned | 60 min |
-| 15.07 | Evals & traces | □ planned | 60 min |
-| 15.08 | Ship it: CLI + docs | □ planned | 60 min |
+| 15.01 | [Why build a harness](phases/15-capstone-agent-harness/01-why-build-a-harness/docs/en.md) | ■ live | 35 min |
+| 15.02 | [The core loop & tool registry](phases/15-capstone-agent-harness/02-the-core-loop-tool-registry/docs/en.md) | ■ live | 70 min |
+| 15.03 | [Memory & context manager](phases/15-capstone-agent-harness/03-memory-context-manager/docs/en.md) | ■ live | 70 min |
+| 15.04 | [MCP client integration](phases/15-capstone-agent-harness/04-mcp-client-integration/docs/en.md) | ■ live | 60 min |
+| 15.05 | [Subagents & delegation](phases/15-capstone-agent-harness/05-subagents-delegation/docs/en.md) | ■ live | 60 min |
+| 15.06 | [Permissions & sandbox](phases/15-capstone-agent-harness/06-permissions-sandbox/docs/en.md) | ■ live | 60 min |
+| 15.07 | [Evals & traces](phases/15-capstone-agent-harness/07-evals-traces/docs/en.md) | ■ live | 60 min |
+| 15.08 | [Ship it: CLI + docs](phases/15-capstone-agent-harness/08-ship-it-cli-docs/docs/en.md) | ■ live | 60 min |
 
 [Phase overview →](phases/15-capstone-agent-harness/README.md)
 
@@ -492,16 +506,33 @@ Everything at once. A loop, tool registry, memory, MCP, subagents, permissions, 
 
 <!-- CONTENTS:END -->
 
+## Repository layout
+
+| Path | What's there |
+|------|--------------|
+| [`phases/`](phases/) | 16 phases, one folder per lesson: `docs/en.md`, `code/`, `quiz.json`, `outputs/` |
+| [`interviews/`](interviews/) | Interview questions, one Markdown file each, rendered to `/interviews/` on the site |
+| [`skills/`](skills/) | The tutor skills installed by `npx skills add` |
+| [`site/`](site/) | The website: static HTML, CSS and JS, no framework |
+| [`scripts/`](scripts/) | `build.mjs` generates the site data, this README's contents, the roadmap and phase pages; `test_lessons.py` runs every lesson's tests |
+| [`curriculum.json`](curriculum.json) | Source of truth for phases, lessons, titles and times |
+
+```bash
+python3 scripts/test_lessons.py         # every lesson's tests, each in isolation
+node scripts/build.mjs                  # regenerate derived files
+python3 -m http.server -d site 8000     # preview the site at localhost:8000
+```
+
 ## Contributing
 
-The curriculum is planned; most lessons still need writing. If you've built agents, you can help.
+Phases 00–12 and the Phase 15 capstone are written. Phases 13 and 14 (production agents and agent UX) are planned, and that's where help counts most. Fixes to existing lessons and new interview questions are welcome too.
 
 1. Pick a planned lesson from the [roadmap](ROADMAP.md) and open an issue saying you're on it.
 2. Copy the structure in [LESSON_TEMPLATE.md](LESSON_TEMPLATE.md).
 3. Make the code run offline with a scripted model, add tests, write the quiz, and ship one artifact.
-4. Run `node scripts/build.mjs` and `python3 scripts/test_lessons.py`, then open a PR.
+4. Run `python3 scripts/test_lessons.py` and `node scripts/build.mjs --check`, then open a PR.
 
-Full guide: [CONTRIBUTING.md](CONTRIBUTING.md). Agents contributing on someone's behalf should read [AGENTS.md](AGENTS.md).
+Interview questions follow the format in [interviews/README.md](interviews/README.md); the build checks every one. Full guide: [CONTRIBUTING.md](CONTRIBUTING.md). Agents contributing on someone's behalf should read [AGENTS.md](AGENTS.md).
 
 ## Maintainer
 

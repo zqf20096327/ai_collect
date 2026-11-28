@@ -6,30 +6,31 @@
 
 ## 🔗 Dataset & Paper Links
 
-- **📄 Official Data Descriptor Paper (Research Square / *Scientific Data*):** [10.21203/rs.3.rs-10487060/v1](https://doi.org/10.21203/rs.3.rs-10487060/v1)
-- **🎓 Google Scholar Indexed Entry:** [The FIFA World Cup 2026 Master Dataset (MD Mominul Islam, 2026)](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=F6LgH7gAAAAJ&citation_for_view=F6LgH7gAAAAJ:u5HHmVD_uO8C)
-- **🆔 Author ORCID:** [0009-0009-1572-4830](https://orcid.org/0009-0009-1572-4830)
+- **📄 Official Data Descriptor Preprint (Primary Citation):** [10.21203/rs.3.rs-10487060/v1](https://doi.org/10.21203/rs.3.rs-10487060/v1) (*Under Review at Scientific Data, Nature Portfolio*)
+- **🎓 Google Scholar Citation Profile:** [The FIFA World Cup 2026 Master Dataset (MD Mominul Islam, 2026)](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=F6LgH7gAAAAJ&citation_for_view=F6LgH7gAAAAJ:u5HHmVD_uO8C)
+- **🏷️ Zenodo Secondary Data Archive:** [10.5281/zenodo.21592427](https://doi.org/10.5281/zenodo.21592427)
 - **📊 Kaggle:** [FIFA World Cup 2026 Dataset](https://www.kaggle.com/datasets/mominullptr/fifa-world-cup-2026-dataset)
 - **💻 GitHub:** [FIFA-World-Cup-2026-Dataset](https://github.com/mominullptr/FIFA-World-Cup-2026-Dataset)
 - **🤗 Hugging Face:** [fifa-world-cup-2026-dataset](https://huggingface.co/datasets/Mominullptr/fifa-world-cup-2026-dataset)
-- **🏷️ Zenodo Data Archive:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21592427.svg)](https://doi.org/10.5281/zenodo.21592427)
 
 ## 📄 Official Data Descriptor & Citation (Please Cite This Paper)
 
 > ### ⚠️ IMPORTANT NOTE FOR RESEARCHERS (HOW TO CITE)
-> If you use this dataset in your research paper, thesis, or sports analytics project, **please cite our formal Data Descriptor paper on Research Square** (instead of citing only the raw Kaggle/GitHub/Zenodo URL) so that your citation is properly indexed on **Google Scholar** and **Crossref**:
+> If you use this dataset in your research paper, thesis, or sports analytics project, **please cite our formal Data Descriptor preprint on Research Square** (currently Under Review at *Scientific Data*, Nature Portfolio) so that your citations are properly tracked on **Google Scholar**:
 >
-> - **Author:** MD Mominul Islam ([ORCID: 0009-0009-1572-4830](https://orcid.org/0009-0009-1572-4830))
-> - **Affiliation:** Department of Computer Science and Engineering, Shahjalal University of Science and Technology, Sylhet 3114, Bangladesh (`mominulcse11@gmail.com`)
-> - **Primary Paper DOI:** [10.21203/rs.3.rs-10487060/v1](https://doi.org/10.21203/rs.3.rs-10487060/v1) (*Preprint, Under Review at Scientific Data, Nature Portfolio*)
-> - **Secondary Data Archive DOI:** [10.5281/zenodo.21592427](https://doi.org/10.5281/zenodo.21592427)
-> - **Google Scholar:** [View Indexed Citation](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=F6LgH7gAAAAJ&citation_for_view=F6LgH7gAAAAJ:u5HHmVD_uO8C)
+> - **Author:** MD Mominul Islam
+> - **Affiliation:** Department of Computer Science and Engineering, Shahjalal University of Science and Technology, Sylhet 3114, Bangladesh
+> - **Email:** `mominulcse11@gmail.com`
+> - **ORCID:** [`https://orcid.org/0009-0009-1572-4830`](https://orcid.org/0009-0009-1572-4830)
+> - **Paper Preprint DOI (Primary Citation):** [`10.21203/rs.3.rs-10487060/v1`](https://doi.org/10.21203/rs.3.rs-10487060/v1)
+> - **Data Archive DOI (Secondary Data Link):** [`10.5281/zenodo.21592427`](https://doi.org/10.5281/zenodo.21592427)
+> - **Google Scholar:** [View on Google Scholar](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=F6LgH7gAAAAJ&citation_for_view=F6LgH7gAAAAJ:u5HHmVD_uO8C)
 >
-> **APA / IEEE Text Format:**
+> **APA Format:**
 >
-> Islam, M. M. (2026). *The FIFA World Cup 2026 Master Dataset: A Normalized 3NF Relational Benchmark of the Expanded 48-Team International Football Tournament* [Preprint]. Research Square. https://doi.org/10.21203/rs.3.rs-10487060/v1
+> Islam, MD Mominul (2026). *The FIFA World Cup 2026 Master Dataset: A Normalized 3NF Relational Benchmark of the Expanded 48-Team International Football Tournament*. Research Square preprint. DOI: [10.21203/rs.3.rs-10487060/v1](https://doi.org/10.21203/rs.3.rs-10487060/v1). Under Review at *Scientific Data*.
 >
-> **Primary BibTeX:**
+> **BibTeX (Primary Citation):**
 > ```bibtex
 > @article{islam2026fifaworldcup,
 >   author    = {Islam, MD Mominul},
@@ -42,13 +43,13 @@
 >   note      = {Preprint (Version 1), Under Review at Scientific Data. ORCID: 0009-0009-1572-4830}
 > }
 > ```
-> *(Full BibTeX and secondary data archive citation are also available in the [Citation section](#%EF%B8%8F-citation) below and in [CITATION.cff](./CITATION.cff)).*
+> *(Full citation details and secondary data archive BibTeX are also available in the [Citation section](#%EF%B8%8F-citation) below and in [CITATION.cff](./CITATION.cff)).*
 
 ---
 
-**The most complete and actively maintained FIFA World Cup 2026 relational benchmark.** A clean, authentic, 3NF-normalized dataset covering the entire tournament (June 11 – July 19, 2026, concluding with Spain defeating Argentina 1–0 in the Final) with the first-ever 48-team format. Includes real match results across all 104 matches, 1,248 players across all 48 squads, 2,704 minute-by-minute lineup records, expected goals (xG), match events, and per-team match statistics sourced from FIFA.com and verified providers.
+**The most complete and actively maintained FIFA World Cup 2026 relational benchmark.** A clean, authentic, 3NF-normalized dataset covering the entire tournament (June 11 – July 19, 2026) with the first-ever 48-team format. Includes real match results across all 104 matches, 1,248 players across all 48 squads, expected goals (xG), minute-by-minute match events, and per-team match statistics sourced from FIFA.com and verified providers.
 
-> **Why this dataset?** Unlike other World Cup datasets, this one is (1) complete with verified match results for all 104 games, (2) fully relational (12 tables in 3rd Normal Form) with strict PK/FK constraints for SQL/database modeling, (3) audited via a 9-stage programmatic verification suite and a 30-match manual spot-check against official FIFA Technical Study Group (TSG) reports (**99.87% empirical accuracy**), and (4) includes advanced metrics like xG (**Pearson's $r = 0.81, p < 0.001$** calibration with actual goals), VAR events, and a 65-feature leakage-free ML matrix.
+> **Why this dataset?** Unlike other World Cup datasets, this one is (1) complete with verified match results for all 104 games, (2) fully relational (3NF) with normalized foreign keys for SQL/database modeling, (3) 100% authentic for all match results, events, lineups, and team stats (with player market valuations combining verified Transfermarkt values for star players with rank-calibrated heuristic estimates for remaining roster members), and (4) includes advanced metrics like xG, match team stats, VAR events, and a 65-feature leakage-free ML matrix.
 
 ---
 
@@ -56,10 +57,10 @@
 
 - **Tournament:** FIFA World Cup 2026
 - **Format:** 48 Teams (12 Groups, A–L)
-- **Current Stage:** Final (Completed — Spain 1–0 Argentina)
+- **Current Stage:** Final (Completed)
 - **Matches Completed:** 104 / 104
 - **Total Goals Recorded:** 308 (294 individual player goals + 14 opponent own goals)
-- **Validation:** 9-stage programmatic verification suite (100% relational compliance) & 99.87% empirical accuracy
+- **Validation:** 3NF relational integrity verified before every release
 
 ---
 
@@ -71,7 +72,7 @@ The FIFA World Cup 2026 Master Dataset is actively cited in peer-reviewed intern
 
 - **SAGE Journals (*International Journal of Sports Science & Coaching*, 2026):** Cited in *"Does squad league exposure predict national team performance? Evidence from the 2026 FIFA World Cup"* (Amiri-Khorasani, M., et al., 2026).
 - **SSRN (*Methods & Sports Analytics*, 2026):** Utilized in *"Feature Engineering to Improve Predictive Match Classification for FIFA World Cup 2026"* (Hikmawati, E., Nugroho, H., & Hendriyanto, R., 2026).
-- **IEEE Conference Proceedings (2026):** Cited in *Proc. IEEE Int. Conf. on Artificial Intelligence and Emerging Technology (AISummit)* for real-time football analytics.
+- **IEEE Proceedings (2026):** Cited in IEEE International Conference on Artificial Intelligence and Emerging Technology for football match and player analytics.
 
 ### 🌐 Featured Media & Community Mentions
 
@@ -100,7 +101,7 @@ The FIFA World Cup 2026 Master Dataset is actively cited in peer-reviewed intern
 The dataset is described and evaluated in our formal Data Descriptor paper (*Under Review at Scientific Data, Nature Portfolio*):
 
 ### 1. 🛡️ Technical Validation & Accuracy
-- **10-Stage Programmatic Verification:** Audited via a comprehensive 10-stage programmatic verification suite ([`scripts/validation/validate_dataset.py`](./scripts/validation/validate_dataset.py)) achieving **100% relational compliance** across primary keys, foreign keys, lineup sizes (26-man squads, 11 starting XI), and scoreline reconciling logic.
+- **13-Stage Programmatic Verification:** Audited via a comprehensive 13-stage programmatic verification suite ([`scripts/validation/validate_dataset.py`](./scripts/validation/validate_dataset.py)) achieving **100% relational compliance** across primary keys, foreign keys, lineup sizes (26-man squads, 11 starting XI), scoreline reconciling logic, 5-way mathematical parity (294 Goals, 14 Own Goals, 204 Assists, 268 Yellow Cards, 2 Second Yellows, 15 Red Dismissals, 211,797 Minutes), and live internet ground-truth benchmarks.
 - **Official TSG Spot-Check Audit:** A manual 30-match ground-truth spot-check against official FIFA Technical Study Group (TSG) post-match reports achieved **99.87% empirical accuracy** across recorded match events, substitutions, and team statistics.
 
 ### 2. 📈 Statistical Calibration (Expected Goals vs. Actual Goals)
@@ -118,7 +119,7 @@ Evaluated under a strict temporal split protocol (**Group Stage M1–M72** for t
 
 ---
 
-## 🤖 ML-Ready Match Prediction Dataset & Benchmarks
+## 🤖 ML-Ready Match Prediction Dataset
 
 Skip tedious feature engineering. This repository provides pre-engineered machine learning matrices in `data/ml/`:
 - **`data/ml/match_prediction_features_X.csv`**: Pre-match feature matrix (60 input columns: ELO, FIFA ranks, squad values, rolling xG, rest days, referee cards). Zero target leakage!
@@ -294,13 +295,17 @@ All primary data tables are organized under `data/csv/` and `data/ml/`:
 5. **`data/csv/matches.csv`**: Match outcomes, dates, times, scores, xG metrics, and statuses using relational IDs (`stage_id`, `venue_id`, etc.) for clean database modeling.
 6. **`data/csv/matches_detailed.csv`**: A denormalized, user-friendly version of `matches.csv` that displays human-readable names (e.g. `home_team_name`, `stadium_name`, `city`, `referee_name`) instead of IDs. Ideal for quick analysis without SQL joins!
 7. **`data/csv/squads_and_players.csv`**: Detailed player registries (1,248 rows) containing verified player names (preserved with native accents), positions, clean club teams, market values, international caps, dates of birth (in YYYY-MM-DD format), heights in centimeters, and international goals.
-8. **`data/csv/match_events.csv`**: Time-series game events (`Goal`, `Own Goal`, `Assist`, `Yellow Card`, `Red Card`, `VAR Review`, `Penalty Shootout Goal`, `Penalty Shootout Miss`) chronologically mapped to matches and players. Own goals are explicitly categorized as `Own Goal` events (14 total) linked to the player who scored into their own net.
-9. **`data/csv/match_team_stats.csv`**: Per-team per-match statistics (possession %, shots, shots on target, corners, fouls, offsides, saves) with `data_source` and `last_updated` columns for full traceability. Only populated with verified data from authentic sources (FIFA, Sofascore, FBref, etc.).
-10. **`data/csv/match_lineups.csv`**: Tactical lineups for all completed matches: starting XI (11 players per team) and substitutes with actual minutes played (2,704 records).
-11. **`data/csv/player_stats.csv`**: Cumulative tournament statistics for each player (1,248 rows), updated continuously as matches conclude. Individual player goals (294 total) and own goals (14 total) are recorded separately. Note: Total goals scored by teams across all 104 matches equal 308 (294 individual player goals + 14 opponent own goals credited to teams on match scorelines).
-12. **`data/ml/match_prediction_features.csv`**: A machine-learning-ready features dataset containing 65 pre-calculated predictive features compiled for every match of the World Cup. Features include team ratings (ELO, FIFA ranking, squad value), rolling team form (possession, shots, goals, xG, corners, saves), player fatigue (rest days), environmental factors (stadium elevation), and final target labels.
+8. **`data/csv/match_events.csv`**: 850 time-series game events (`Goal` 294, `Own Goal` 14, `Assist` 204, `Yellow Card` 268, `Second Yellow Card` 2, `Red Card` 13, `VAR Review` 15, `Penalty Shootout Goal` 25, `Penalty Shootout Miss` 15) chronologically mapped to matches and players.
+9. **`data/csv/match_team_stats.csv`**: Per-team per-match statistics (208 rows) including reconciled `goals`, `own_goals`, `goals_for`, `goals_against`, `assists`, `yellow_cards`, `second_yellow_cards`, `red_cards`, `minutes_played`, `possession_pct`, `total_shots`, `shots_on_target`, `corners`, `fouls`, `offsides`, and `saves` with `data_source` and `last_updated` columns for full traceability.
+10. **`data/csv/match_lineups.csv`**: Tactical lineups for all 104 completed matches: 5,408 records (26 squad members per team per match, 11 starting XI) totaling 211,797 verified player-minutes.
+11. **`data/csv/player_stats.csv`**: Cumulative tournament statistics for each player (1,248 rows), computed directly via `GROUP BY player_id` aggregations from `match_events.csv` and `match_lineups.csv` (294 goals, 14 own goals, 204 assists, 268 yellow cards, 2 second yellows, 15 red dismissals, 211,797 minutes).
+12. **`data/ml/match_prediction_features.csv`**: A machine-learning-ready features dataset containing 60 zero-leakage pre-match features + target (`match_result`) across all 104 matches, alongside isolated `match_prediction_features_X.csv` and `match_prediction_targets_y.csv`.
+13. **`data/universal/fifa_wc2026_universal_matches.csv` & `.parquet`**: Single-file universal match master table (104 rows x 80 columns) joining match metadata, venues, referees, team stats, and exact verified card/goal/event aggregations for frictionless SQL/R/Python analysis.
+14. **`data/universal/fifa_wc2026_universal_players.csv` & `.parquet`**: Single-file universal player master table (1,248 rows x 35 columns) joining squad profiles, national teams, and verified cumulative tournament statistics.
 
 ---
+
+> **Disciplinary totals track squad players strictly (excluding coaching staff bookings): 268 yellow cards, 2 second-yellow dismissals, and 13 straight red cards (15 total dismissals).**
 
 ## 📋 Data Integrity Policy
 
@@ -321,10 +326,13 @@ FIFA-World-Cup-2026-Dataset/
 │   ├── csv/                     # 12 core 3NF relational CSV tables (matches.csv, teams.csv, etc.)
 │   ├── ml/                      # Machine learning feature matrices (features_X.csv, targets_y.csv)
 │   ├── parquet/                 # High-performance Snappy-compressed Parquet tables
-│   └── sqlite/                  # Fully normalized SQLite relational database (sqlite_fifa_world_cup_2026.db)
+│   ├── raw_cache/               # Cached ground-truth Wikipedia/FIFA match reports & JSON logs
+│   ├── sqlite/                  # Fully normalized SQLite relational database (sqlite_fifa_world_cup_2026.db)
+│   └── universal/               # Universal denormalized match & player master exports (CSV & Parquet)
 ├── scripts/
-│   ├── pipeline/                # Automated ETL & ingestion pipeline scripts
-│   ├── validation/              # 10-stage programmatic relational verification suite & TSG audit
+│   ├── etl/                     # Ground-truth ingestion & caching scripts (reconcile_ground_truth.py)
+│   ├── pipeline/                # Automated ETL & parity pipeline scripts
+│   ├── validation/              # 12-stage programmatic relational verification suite & TSG audit
 │   ├── analysis/                # Machine learning baseline benchmarks & figure rendering
 │   └── deploy/                  # Platform distribution & archive packaging tools
 ├── assets/
@@ -344,7 +352,7 @@ FIFA-World-Cup-2026-Dataset/
 ## 🛠️ Installation & Usage
 
 ### 1. Programmatic Validation Suite
-To audit all 10 relational verification checks across all 12 tables, Parquet, and the SQLite database:
+To audit all 12 relational verification and 3-way parity checks across all tables, Parquet, Universal exports, and the SQLite database:
 ```bash
 python scripts/validation/validate_dataset.py
 ```
@@ -381,9 +389,9 @@ python scripts/pipeline/generate_prediction_features.py
 
 ## 🏷️ Citation
 
-To ensure proper academic indexing on **Google Scholar** and **Crossref**, please cite our **Research Square** Data Descriptor paper using the BibTeX entry below (also available in [CITATION.cff](./CITATION.cff)):
+To ensure proper academic indexing on **Google Scholar**, please cite our **Research Square** Data Descriptor preprint using the BibTeX entry below (also available in [CITATION.cff](./CITATION.cff)):
 
-### Primary Citation (Data Descriptor Paper — Mandatory for Google Scholar)
+### Primary Citation (Research Square Data Descriptor — Mandatory for Google Scholar)
 
 ```bibtex
 @article{islam2026fifaworldcup,
@@ -394,18 +402,18 @@ To ensure proper academic indexing on **Google Scholar** and **Crossref**, pleas
   month     = {aug},
   doi       = {10.21203/rs.3.rs-10487060/v1},
   url       = {https://doi.org/10.21203/rs.3.rs-10487060/v1},
-  note      = {Preprint (Version 1), Under Review at Scientific Data. Google Scholar: https://scholar.google.com/citations?view_op=view_citation&hl=en&user=F6LgH7gAAAAJ&citation_for_view=F6LgH7gAAAAJ:u5HHmVD_uO8C}
+  note      = {Preprint (Version 1), Under Review at Scientific Data. ORCID: 0009-0009-1572-4830}
 }
 ```
 
-### Secondary Data Repository Citation (Zenodo)
+### Secondary Data Archive Citation (Zenodo)
 
 ```bibtex
 @dataset{islam2026fifawcdataset,
   author    = {Islam, MD Mominul},
   title     = {FIFA World Cup 2026 Dataset - Live \& Daily Updated Stats},
   year      = {2026},
-  publisher = {Zenodo / Kaggle},
+  publisher = {Kaggle / Zenodo},
   version   = {1.0.0},
   doi       = {10.5281/zenodo.21592427},
   url       = {https://doi.org/10.5281/zenodo.21592427}
@@ -415,7 +423,7 @@ To ensure proper academic indexing on **Google Scholar** and **Crossref**, pleas
 ---
 
 ## 📄 License
-The dataset is dedicated to the public domain under the **Creative Commons Zero v1.0 Universal** (CC0-1.0) Public Domain Dedication, and the accompanying Data Descriptor manuscript is licensed under **CC BY 4.0**.
+This project is licensed under the **Creative Commons Zero v1.0 Universal** (CC0-1.0) Public Domain Dedication. Feel free to copy, modify, distribute, and perform the work, even for commercial purposes, all without asking permission.
 
 ---
 

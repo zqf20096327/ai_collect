@@ -103,8 +103,9 @@ sign-in, model credentials and tools; see
 
 - **[Shell](docs/tools.md#shell)** — run commands, read/write/edit files, spawn long-running
   processes, and manage their I/O.
-- **[Coding agents](docs/tools.md#coding-sub-agent)** — hand coding tasks to Claude Code
-  or Codex, on an API key or your own subscription, and follow them to the end.
+- **[Coding agents](docs/tools.md#coding-sub-agent)** — hand coding tasks to Claude Code,
+  Codex, or Antigravity CLI, on an API key or your own subscription, and follow them to
+  the end.
 - **[Web pages](docs/tools.md#reading-web-pages)** — read a public page's text without opening a browser.
 - **[Computer use](docs/computer.md)** — use websites and desktop apps on its own
   desktop and browser, in chat, goals or scheduled tasks. Open **Computer** in

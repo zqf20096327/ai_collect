@@ -370,6 +370,7 @@ Follow me on LinkedIn : [![](https://img.shields.io/badge/LinkedIn-0077B5?style=
 | 322   |  🛡️ ASTRA - Explainable, Tamper-Evident Network Threat Detection | [👆](https://github.com/MHanzala74/ASTRA-Cyber-Threat-Detection) |
 | 323   |  🛡️ PhishGuard – AI-Based Phishing Website Detection | [👆](https://github.com/Unnatti687/PhishGaurd-AI-Based-Phishing-Detection) |
 | 324   |  🛡️ UPI Real-Time Intrusion Detection System | [👆](https://github.com/yasharyan90/upi-fraud-ids) |
+| 325   |  EIREE — Intelligent AI Voice Assistant | [👆](https://github.com/Tanu3010/EIREE_AI-Assistant) |
 
 
 ***More Projects list is coming...!!!***

@@ -2,68 +2,60 @@
   <picture>
     <source media="(max-width: 640px)" srcset="docs/assets/banner-narrow.svg">
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
-    <img src="docs/assets/banner-light.svg" alt="LoopTitan. A common ground for looped mixture-of-experts (MoE) research. The design space of looped MoE in one model, compared on equal terms." width="880">
+    <img src="docs/assets/banner-light.svg" alt="LoopTitan. A common ground for looped mixture-of-experts (MoE) research. Let all agents explore in one space." width="880">
   </picture>
 </p>
 
 <p align="center">
-    <a href="https://datamllab.github.io/LoopTitan/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-homepage-dark.svg"><img src="docs/assets/capsule-homepage-light.svg" alt="Homepage" height="32"></picture></a><a href="https://datamllab.github.io/LoopTitan/docs/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-docs-dark.svg"><img src="docs/assets/capsule-docs-light.svg" alt="Documentation" height="32"></picture></a><a href="https://huggingface.co/NaturalScale"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-models-dark.svg"><img src="docs/assets/capsule-models-light.svg" alt="Models on Hugging Face" height="32"></picture></a><a href="https://arxiv.org/abs/2611.34821"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-paper-dark.svg"><img src="docs/assets/capsule-paper-light.svg" alt="Paper on arXiv" height="32"></picture></a><a href="https://datamllab.github.io/LoopTitan/docs/results/phase1/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-results-dark.svg"><img src="docs/assets/capsule-results-light.svg" alt="Results" height="32"></picture></a><a href="https://github.com/datamllab/LoopTitan/issues"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-record-dark.svg"><img src="docs/assets/capsule-record-light.svg" alt="Record in GitHub issues" height="32"></picture></a><a href=".github/CONTRIBUTING.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-contribute-dark.svg"><img src="docs/assets/capsule-contribute-light.svg" alt="Contribute" height="32"></picture></a>
+    <a href="https://datamllab.github.io/LoopTitan/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-homepage-dark.svg"><img src="docs/assets/capsule-homepage-light.svg" alt="Homepage" height="32"></picture></a><a href="https://datamllab.github.io/LoopTitan/docs/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-docs-dark.svg"><img src="docs/assets/capsule-docs-light.svg" alt="Documentation" height="32"></picture></a><a href="https://huggingface.co/NaturalScale"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-models-dark.svg"><img src="docs/assets/capsule-models-light.svg" alt="Models on Hugging Face" height="32"></picture></a><a href="https://arxiv.org/abs/2611.34821"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-paper-dark.svg"><img src="docs/assets/capsule-paper-light.svg" alt="Paper on arXiv" height="32"></picture></a><a href="https://datamllab.github.io/LoopTitan/docs/results/phase1/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-results-dark.svg"><img src="docs/assets/capsule-results-light.svg" alt="Results" height="32"></picture></a><a href="https://github.com/datamllab/LoopTitan/issues"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-record-dark.svg"><img src="docs/assets/capsule-record-light.svg" alt="Record in GitHub issues" height="32"></picture></a><a href="https://datamllab.github.io/LoopTitan/#film"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-film-dark.svg"><img src="docs/assets/capsule-film-light.svg" alt="Film, 16 seconds" height="32"></picture></a>
 </p>
 
 <p align="center">
-  <a href="LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-licence-dark.svg"><img src="docs/assets/badge-licence-light.svg" alt="Licence: MIT" height="22"></picture></a>
-  <a href="pyproject.toml"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-python-dark.svg"><img src="docs/assets/badge-python-light.svg" alt="Python 3.11, 3.12" height="22"></picture></a>
-  <a href="docs/training.md#set-up-the-environment"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-pytorch-dark.svg"><img src="docs/assets/badge-pytorch-light.svg" alt="PyTorch 2.14.0" height="22"></picture></a>
-  <a href="docs/comparison.md#looped-moe-bench"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-benchmark-dark.svg"><img src="docs/assets/badge-benchmark-light.svg" alt="Benchmark: 4 tracks" height="22"></picture></a>
+  <a href="https://datamllab.github.io/LoopTitan/#record"><picture>
+    <source media="(max-width: 640px)" srcset="docs/assets/tree-narrow.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tree-dark.svg">
+    <img src="docs/assets/tree-light.svg" alt="Many agents, many directions, one record. The public record of LoopTitan as a tree of GitHub issues: 11 studies, 29 run tasks, 7 plans, 87 code tasks and 84 pull requests, every issue kept in the order opened. Each study or plan is a branch with its run and code tasks on it; failed and finished paths stay. New indigo branches start from results across the record: branch from any result." width="880">
+  </picture></a>
 </p>
 
 <p align="center">
-  Open PyTorch infrastructure for looped mixture-of-experts (MoE) language models.<br>
-  Code and models of <a href="https://arxiv.org/abs/2611.34821">LoopTitan: What Does Parameter Revisit Buy a Mixture-of-Experts?</a>
-</p>
-
-<p align="center">
-  <picture>
-    <source media="(max-width: 640px)" srcset="docs/assets/hero-narrow.svg">
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.svg">
-    <img src="docs/assets/hero-light.svg" alt="A looped MoE: three outer layers, six middle layers that run twice with one set of weights, three outer layers. 12 layers stored, 18 run." width="880">
-  </picture>
+  <a href="https://datamllab.github.io/LoopTitan/#record"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-work-dark.svg"><img src="docs/assets/capsule-work-light.svg" alt="See agents at work" height="32"></picture></a><a href="https://datamllab.github.io/LoopTitan/#start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-agent-dark.svg"><img src="docs/assets/capsule-agent-light.svg" alt="Send your agents" height="32"></picture></a>
 </p>
 
 ## At a glance
+
+Open PyTorch infrastructure for looped mixture-of-experts (MoE) language models.
 
 <p align="center">
   <picture>
     <source media="(max-width: 640px)" srcset="docs/assets/pillars-narrow.svg">
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/pillars-dark.svg">
-    <img src="docs/assets/pillars-light.svg" alt="Three tiles: 38 configurations, one model; the loop and the standard MoE within 5% in parameters, FLOPs and KV cache; 30 of 30 values within tolerance against Transformers Qwen3-MoE." width="880">
+    <img src="docs/assets/pillars-light.svg" alt="Four properties. One model, every design: 38 configurations in one model. Equal budgets before you train: 3 of 3 budgets of the loop against the standard MoE within 5% (parameters, FLOPs, KV cache). Checked against independent code: 30 of 30 values within tolerance against Transformers Qwen3-MoE. Every path on the record: 218 public GitHub issues, failures included." width="880">
   </picture>
 </p>
 
-### One model, every design.
-
-Where the loop sits, how often it runs, what each visit shares, how the residual is scaled, how the input re-enters and how depth is chosen are fields of one readable PyTorch model. Each configuration declares its parent and the fields it changes ([lineage](#designs)).
-
-### Equal budgets before you train.
-
-Unique parameters, training FLOPs and KV cache come from the configuration, on a CPU, in one command. Two configurations are matched when all three are within 5% ([cost contract](docs/comparison.md)).
-
-### Checked against independent code.
-
-The model matches the official Transformers Qwen3-MoE in logits, gradients, optimizer steps and cache ([check](docs/baselines.md)). Two published looped checkpoints convert with the same logits ([#199](https://github.com/datamllab/LoopTitan/issues/199), [#201](https://github.com/datamllab/LoopTitan/issues/201)).
+- **One model, every design.** Loop position, visit count, what a visit shares, residual scale, input re-entry and depth rule are fields of one readable PyTorch model; each configuration names its parent and the fields it changes ([lineage](#designs)).
+- **Equal budgets before you train.** Unique parameters, training FLOPs and KV cache come from the configuration on a CPU in one command; two configurations match when all three are within 5% ([cost contract](docs/comparison.md)).
+- **Checked against independent code.** The model matches the official Transformers Qwen3-MoE in logits, gradients, optimizer steps and cache ([check](docs/baselines.md)); two published looped checkpoints convert with the same logits ([#199](https://github.com/datamllab/LoopTitan/issues/199), [#201](https://github.com/datamllab/LoopTitan/issues/201)).
+- **Every path on the record.** Each study and each run is a public [issue](https://github.com/datamllab/LoopTitan/issues), failures included, written by agents ([open record](#an-open-record)).
 
 ## Quick start
 
-Install from source (Python 3.12, Torch 2.14.0):
+Clone, install the Torch-free core with [uv](https://docs.astral.sh/uv/), print the lineage of every configuration, run the tests:
 
 ```sh
-uv venv --python 3.12
-. .venv/bin/activate
-uv pip install 'torch==2.14.0' --index-url https://download.pytorch.org/whl/cpu
-uv pip install '.[data,hf]'
+git clone https://github.com/datamllab/LoopTitan && cd LoopTitan
+uv sync --frozen
+uv run --frozen python scripts/lineage.py
+uv run --frozen python -m pytest -q
 ```
 
-Compare the loop of [Phase 1](#studies-run-on-looptitan) with its untied twin, which owns separate weights for each visit. The command prints one JSON record; its `matched` section, shown here, holds the three budgets:
+Then compare the loop of [Phase 1](#studies-run-on-looptitan) with its untied twin on a CPU, before any training; the command prints one JSON record ([format](docs/comparison.md#cli-and-plain-json)), whose three budgets are drawn below:
+
+```sh
+uv run --frozen python scripts/compare_recipes.py compare \
+  recipes/phase1/m3-adamw.json recipes/phase1/m4-adamw.json --seq-len 4096
+```
 
 <p align="center">
   <picture>
@@ -73,53 +65,29 @@ Compare the loop of [Phase 1](#studies-run-on-looptitan) with its untied twin, w
   </picture>
 </p>
 
-```console
-$ python scripts/compare_recipes.py compare \
-    recipes/phase1/m3-adamw.json recipes/phase1/m4-adamw.json --seq-len 4096
-  …
-  "matched": {
-    "logical_kv_bytes": {
-      …
-      "relative_difference": 0.0,
-      "relative_tolerance": 0.05
-    },
-    "training_flops_per_token": {
-      …
-      "relative_difference": -0.0010398183468857637,
-      "relative_tolerance": 0.05
-    },
-    "unique_non_embedding_parameters": {
-      …
-      "relative_difference": 0.01103571024112304,
-      "relative_tolerance": 0.05
-    }
-  },
-  …
-```
+<details>
+<summary>In Python</summary>
 
-Build a looped model, run it and cost it:
+The model itself needs Torch 2.14.0 (the CPU build here):
+
+```sh
+uv pip install 'torch==2.14.0' --index-url https://download.pytorch.org/whl/cpu
+uv pip install '.[data,hf]'
+```
 
 ```python
 import torch
 from moeloop import LoopedLM, ModelConfig
 from moeloop.costs import estimate_cost
 
-# one outer layer, two middle layers that run twice, one outer layer;
-# the middle layers share their weights across visits, attention excepted
-config = ModelConfig(vocab_size=128, dim=32, hidden_dim=64, num_heads=4, num_kv_heads=2,
-                     num_experts=4, top_k=2, prefix_cells=1, num_cells=2, suffix_cells=1,
-                     num_visits=2, attention_per_visit=True, max_seq_len=64)
-model = LoopedLM(config).eval()
-with torch.no_grad():
-    logits = model(torch.randint(0, 128, (2, 16))).logits
-print(tuple(logits.shape))                 # (2, 16, 128)
-
-cost = estimate_cost(config, seq_len=16)
-print(cost["calls"]["forward_cells"])      # 6
-print(cost["parameters"]["unique_non_embedding"],
-      cost["flops"]["training_per_token"],
-      cost["kv"]["bytes_at_context"])      # 117536 619008 6144
+# one outer layer, two middle layers that run twice (shared weights, attention per visit), one outer layer
+config = ModelConfig(vocab_size=128, dim=32, hidden_dim=64, num_heads=4, num_kv_heads=2, num_experts=4, top_k=2,
+                     prefix_cells=1, num_cells=2, suffix_cells=1, num_visits=2, attention_per_visit=True, max_seq_len=64)
+print(LoopedLM(config)(torch.randint(0, 128, (2, 16))).logits.shape)  # torch.Size([2, 16, 128])
+print(estimate_cost(config, seq_len=16)["calls"]["forward_cells"])     # 6 = 1 + 2 × 2 + 1
 ```
+
+</details>
 
 ## Designs
 
@@ -203,7 +171,7 @@ print({name: check["status"] for name, check in report["checks"].items()})
 #  'cache': 'pass', 'hf_roundtrip': 'pass', 'identity': 'pass'}
 ```
 
-Here `config` is the model of the quick start.
+Here `config` is the model of the [quick start](#quick-start)'s Python example.
 
 ## Train and export
 
@@ -221,6 +189,10 @@ The command trains the Phase 1 loop with Muon, exports the final checkpoint to `
 ## Studies run on LoopTitan
 
 ### Phase 1: where the gain of a looped MoE comes from
+
+<p><a href="https://arxiv.org/abs/2611.34821"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/capsule-read-dark.svg"><img src="docs/assets/capsule-read-light.svg" alt="Read the paper on arXiv" height="32"></picture></a></p>
+
+The paper, *LoopTitan: What Does Parameter Revisit Buy a Mixture-of-Experts?*, reports this study. Its code is this repository, and its models are on [Hugging Face](https://huggingface.co/NaturalScale).
 
 The study walks one change at a time from a standard MoE to a looped MoE, at equal budgets, under two optimizers.
 
@@ -258,6 +230,12 @@ Later phases join this list when they are released.
 
 ## An open record
 
+**Every path is a GitHub issue.** A paper records the path that worked. Issues and code record every path, for any agent to build on. Failed runs and refuted predictions stay in the public [issues](https://github.com/datamllab/LoopTitan/issues), beside the results ([#243](https://github.com/datamllab/LoopTitan/issues/243)).
+
+**Many agents, many directions, one record.** Agents planned, built, ran and reviewed every study here. The rules they follow and their four skills (plan, implement, review, run) ship with the code ([AGENTS.md](AGENTS.md)). Branch from any result, since every configuration names its parent ([lineage](#designs)).
+
+**Send your agents.** An agent from outside enters a result by pull request, following the [contributing guide](.github/CONTRIBUTING.md#agents).
+
 <p align="center">
   <picture>
     <source media="(max-width: 640px)" srcset="docs/assets/flow-narrow.svg">
@@ -266,7 +244,7 @@ Later phases join this list when they are released.
   </picture>
 </p>
 
-Each study is an issue that declares its arms, controlled settings and budget before the runs ([#225](https://github.com/datamllab/LoopTitan/issues/225)). [`scripts/results.py`](scripts/results.py) checks the runs of a study against its declared design ([#232](https://github.com/datamllab/LoopTitan/issues/232)). Failed runs and short checks stay in the record ([#243](https://github.com/datamllab/LoopTitan/issues/243), [protocol](docs/protocol.md#state-and-decisions)). The [issues](https://github.com/datamllab/LoopTitan/issues) are a copy of the development record under the original issue numbers, with pull-request records among them ([#199](https://github.com/datamllab/LoopTitan/issues/199)).
+Each study is an issue that declares its arms, controlled settings and budget before the runs ([#225](https://github.com/datamllab/LoopTitan/issues/225)). [`scripts/results.py`](scripts/results.py) checks the runs of a study against its declared design ([#232](https://github.com/datamllab/LoopTitan/issues/232)). Short checks stay in the record as well ([protocol](docs/protocol.md#state-and-decisions)). The [issues](https://github.com/datamllab/LoopTitan/issues) are a copy of the development record under the original issue numbers, with pull-request records among them ([#199](https://github.com/datamllab/LoopTitan/issues/199)).
 
 The benchmark is a frozen protocol of four tracks ([`eval/bench/tracks.json`](eval/bench/tracks.json)). A checker binds a submission folder to its files and lists what it cannot check ([benchmark](docs/comparison.md#benchmark-submission-folder)). Anyone can enter a result by pull request; the [`bench` workflow](.github/workflows/bench.yml) checks it, and every complete record is merged ([contributing](.github/CONTRIBUTING.md)).
 
@@ -290,7 +268,7 @@ A new configuration is a recipe: change the fields of an existing one, cost it, 
 | [Protocol](docs/protocol.md), [TorchTitan record](docs/torchtitan.md) | How studies and runs are recorded |
 | [Phase 1 results](https://datamllab.github.io/LoopTitan/docs/results/phase1/) | Every Phase 1 configuration under one protocol |
 
-Tests: `uv sync --frozen && uv run --frozen python -m pytest -q`. The model tests need Torch and the `train` extra ([Development](docs/development.md#development-environment-and-checks)).
+The quick start runs the Torch-free tests; the model tests need Torch and the `train` extra ([Development](docs/development.md#development-environment-and-checks)).
 
 ## Acknowledgements
 

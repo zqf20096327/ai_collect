@@ -1,18 +1,14 @@
-<h1>
-    <img height="72" align="center" alt="" src="https://silviom97.github.io/assets/img/logos/kannolo.webp" />
-    &nbsp;&nbsp;&nbsp;kANNolo
-</h1>
-
+<h1 align="center">kANNolo</h1>
 <p align="center">
-    <a href="https://arxiv.org/abs/2611.03927"><img src="https://badgen.net/static/arXiv/2611.03927/red" /></a>
-    <a href="https://arxiv.org/abs/2501.06121"><img src="https://badgen.net/static/paper/ECIR 2025/yellow" /></a>
+    <img height="200px" align="center" alt="" src="https://silviom97.github.io/assets/img/logos/kannolo.webp" />
 </p>
 
 <p align="center">
-    <!-- crates.io is stale (0.3.8) until the next crates.io release; restore these then.
-    <a href="https://crates.io/crates/kannolo"><img src="https://badgen.infra.medigy.com/crates/v/kannolo" /></a>
-    <a href="https://crates.io/crates/kannolo"><img src="https://badgen.infra.medigy.com/crates/d/kannolo" /></a>
-    -->
+    <a href="https://arxiv.org/abs/2501.06121"><img src="https://badgen.net/static/paper/ECIR 2025/yellow" /></a>
+    <a href="https://arxiv.org/abs/2611.03927"><img src="https://badgen.net/static/arXiv/2611.03927/red" /></a>
+</p>
+
+<p align="center">
     <a href="https://pypi.org/project/kannolo/"><img src="https://badgen.net/pypi/v/kannolo" /></a>
     <a href="LICENSE"><img src="https://badgen.net/static/license/MIT/blue" /></a>
 </p>
@@ -57,7 +53,8 @@ kANNolo's indexes are in-memory and static, built once over a fixed collection: 
 disk-based indexes, or insertions and
 deletions after construction, look elsewhere for now.
 
-## Quick start (Python)
+
+## Quick Start (Python)
 
 Dense, two-stage: an HNSW over 1-bit RaBitQ codes retrieves 100 candidates, and the `f16` vectors rescore them.
 
@@ -101,7 +98,8 @@ Every other composition (single-stage, Flat and IVF indexes, multi-vector and hy
 cascades, graph compression, batch search) is one `kannolo.build` call, covered in
 [`docs/PythonUsage.md`](docs/PythonUsage.md).
 
-## What's inside
+
+## What's Inside
 
 | | |
 |---|---|
@@ -111,6 +109,7 @@ cascades, graph compression, batch search) is one `kannolo.build` call, covered 
 | **Metrics** | inner product · squared Euclidean · MaxSim |
 | **Graph storage** | `standard` · `permuted` (cache-friendly node order) · `compressed` (StreamVByte + Elias–Fano; roughly halves the edges memory) |
 | **Interfaces** | Rust library · Python bindings · command-line build/search tools |
+
 
 ## Rust
 
@@ -169,7 +168,8 @@ RUSTFLAGS="-C target-cpu=native" cargo build --release --features "cli,multivec"
 
 Binaries land in `target/release/`. [`docs/Binaries.md`](docs/Binaries.md) documents every flag.
 
-## Installing the Python package
+
+## Installing the Python Package
 
 `pip install kannolo` installs a prebuilt wheel with every index: dense, sparse, multi-vector,
 two-stage and hybrid. If no wheel matches your platform, pip compiles from source. A build from
@@ -183,7 +183,7 @@ see [Building a smaller library](docs/PythonUsage.md#building-a-smaller-library)
 RUSTFLAGS="-C target-cpu=native" pip install --no-binary :all: kannolo
 ```
 
-**Development build** (editable install from a clone):
+**Development Build** (editable install from a clone):
 
 ```bash
 git clone https://github.com/TusKANNy/kannolo.git && cd kannolo
@@ -200,6 +200,7 @@ However, LLVM can no longer inline across units, and **search is about 2% slower
 > install`, which use `codegen-units = 1`). `import kannolo` warns when the installed build is a
 > `dev-python` one, and `kannolo.build_profile` tells which profile built it.
 
+
 ## Documentation
 
 - [`docs/PythonUsage.md`](docs/PythonUsage.md): the Python API
@@ -211,37 +212,20 @@ However, LLVM can no longer inline across units, and **search is about 2% slower
 **Data formats:** dense collections are `.npy` (`float32`), sparse collections use the Seismic binary
 format. [`scripts/`](scripts/) converts between the two.
 
-## Reproducing our papers
+
+## Reproducing our Papers
 
 kANNolo keeps evolving, so this repository does not track the exact setup of any paper. The
 versions, configurations and instructions that reproduce the results of our papers are in
 [**papers_reproducibility**](https://github.com/tusKANNy/papers_reproducibility).
 
 
-## 📚 Bibliography
+## Bibliography
 
-1. Silvio Martinico, Franco Maria Nardini, Cosimo Rulli and Rossano Venturini. "*Modular and Efficient Approximate Nearest Neighbors Search with Vectorium and kANNolo*." arXiv:2611.03927. 2026. Submitted to *Information Systems*.
-2. Leonardo Delfino, Domenico Erriquez, Silvio Martinico, Franco Maria Nardini, Cosimo Rulli and Rossano Venturini. "*kANNolo: Sweet and Smooth Approximate k-Nearest Neighbors Search*." Proc. ECIR. 2025.
+1. Leonardo Delfino, Domenico Erriquez, Silvio Martinico, Franco Maria Nardini, Cosimo Rulli and Rossano Venturini. "*kANNolo: Sweet and Smooth Approximate k-Nearest Neighbors Search*." Proc. ECIR. 2025.
+2. Silvio Martinico, Franco Maria Nardini, Cosimo Rulli and Rossano Venturini. "*Modular and Efficient Approximate Nearest Neighbors Search with Vectorium and kANNolo*." 2026. [ArXiv](https://arxiv.org/abs/2611.03927). Submitted to *Elsevier Information Systems*.
 
-### Citation
-If you use kANNolo for your work (whether be it a research paper, dissertation, article, poster, presentation, or documentation), please cite our papers:
-
-arXiv 2026 (submitted to *Information Systems*):
-
-```bibtex
-@misc{martinico2026modularefficientapproximatenearest,
-      title={Modular and Efficient Approximate Nearest Neighbors Search with Vectorium and kANNolo},
-      author={Silvio Martinico and Franco Maria Nardini and Cosimo Rulli and Rossano Venturini},
-      year={2026},
-      eprint={2611.03927},
-      archivePrefix={arXiv},
-      primaryClass={cs.IR},
-      url={https://arxiv.org/abs/2611.03927},
-}
-```
-
-ECIR 2025:
-
+ECIR 2025
 ```bibtex
 @InProceedings{10.1007/978-3-031-88717-8_29,
 author =    "Leonardo Delfino and
@@ -258,3 +242,23 @@ pages =     "400--406",
 isbn =      "978-3-031-88717-8"
 }
 ```
+
+ArXiv 2026 (Submitted to *Elsevier Information Systems*):
+```bibtex
+@misc{martinico2026modularefficientapproximatenearest,
+      title={Modular and Efficient Approximate Nearest Neighbors Search with Vectorium and kANNolo},
+      author={Silvio Martinico and Franco Maria Nardini and Cosimo Rulli and Rossano Venturini},
+      year={2026},
+      eprint={2611.03927},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR},
+      url={https://arxiv.org/abs/2611.03927},
+}
+```
+
+## Citation License
+The source code in this repository is subject to the following citation license: **By downloading and using this software, you agree to cite the papers listed in the Bibliography section above in any kind of material you produce where it was used to conduct a search or experimentation, whether it be a research paper, dissertation, article, poster, presentation, or documentation. By using this software, you have agreed to the citation license**.
+
+
+## License
+This software is released under the **MIT License** (see [LICENSE](LICENSE)).

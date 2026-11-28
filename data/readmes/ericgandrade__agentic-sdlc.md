@@ -1,22 +1,258 @@
 <h1 align="center">The Agentic SDLC Method</h1>
 
-<p align="center"><b>v3.0.1</b> · Open Source · MIT License · Vendor-Agnostic</p>
+<p align="center"><b>v3.1.0</b> · Open source · MIT · Works in Claude Code, GitHub Copilot, Codex, Cursor, Gemini and 3 more tools</p>
 
 <p align="center">
-  <img alt="Version 3.0.0" src="https://img.shields.io/badge/version-3.0.1-blue.svg">
-  <img alt="Open source" src="https://img.shields.io/badge/open%20source-yes-1d3fbf.svg">
+  <img alt="Version 3.1.0" src="https://img.shields.io/badge/version-3.1.0-blue.svg">
   <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-green.svg">
-  <img alt="Vendor-agnostic" src="https://img.shields.io/badge/vendor-agnostic-1d3fbf.svg">
   <img alt="23 skills" src="https://img.shields.io/badge/skills-23-brightgreen.svg">
+  <img alt="8 AI tools" src="https://img.shields.io/badge/AI%20tools-8-1d3fbf.svg">
 </p>
 
-<p align="center"><img src="docs/assets/hero.svg" width="100%" alt="The definitive approach to AI-native software engineering. Agent-driven, human-governed, evidence-verified. 13 specialized agents, 23 integrated skills, 7 lifecycle stages. From idea to production, beyond code generation."></p>
+<p align="center"><img src="docs/assets/hero.svg" width="100%" alt="The definitive approach to AI-native software engineering. Agent-driven, human-governed, evidence-verified. 13 specialized agents, 23 integrated skills, 7 lifecycle stages."></p>
 
-Coding agents write code in minutes. The Agentic SDLC makes that code something a team can **trust, approve and ship**: every requirement is written down before code, every claim of "done" comes with fresh evidence, a reviewer that never wrote the code checks it, and a named person approves each stage.
+**A software delivery method for teams that build with AI coding agents.** Agents do the work, from the first spec to production. Named people approve each stage. Every requirement is proven with fresh evidence before anyone calls it done.
 
-**It is for engineering teams that already use AI coding agents and need an audit trail:** who asked for what, what proved it works, and who approved it. It is vendor-agnostic: the same skills run in Claude Code, GitHub Copilot CLI, OpenAI Codex, Gemini CLI, Cursor and three more tools. [Get started](#get-started) takes two commands.
+Coding agents can write a feature in minutes. What they do not give you is a reason to trust it: what exactly was asked, what proves it works, who checked it, and who approved it. The Agentic SDLC adds those answers to every change, and it sizes the ceremony to the change, so a one-line fix stays a one-line fix.
+
+## The idea in one picture
 
 ![How the Agentic SDLC works: seven stages from idea to production, 13 specialized AI agents coordinated by a Scrum Master, and four human sign-offs](docs/assets/agentic-sdlc-overview.svg)
+
+- **7 stages**, the standard software life cycle: Discover → Specify → Design → Build → Test → Release → Operate. Operate feeds the next Discover.
+- **13 AI agents**, named by what they do. A Scrum Master agent runs the flow and calls a specialist only when the change needs one.
+- **4 human sign-offs**: the Product Owner approves the spec, the Tech Lead the plan, a human reviewer the pull request, and the Release Owner the release.
+- **3 paths** (Quick, Standard, Full), chosen from the size and risk of the change.
+
+## Quick start
+
+**1. Install** (Node 14 or later for the installer):
+
+```bash
+npx agentic-sdlc-method --bundle agentic-sdlc -y
+```
+
+This installs the skills into every supported AI tool it finds on your machine. For other options, open the section below.
+
+<details>
+<summary><b>Claude Code plugin, local install and other tools</b></summary>
+
+**Claude Code plugin.** Run inside a `claude` session; skills then appear as `/agentic-sdlc:<name>`:
+
+```text
+/plugin marketplace add ericgandrade/agentic-sdlc
+/plugin install agentic-sdlc@agentic-sdlc
+```
+
+**Without npm.** `git clone https://github.com/ericgandrade/agentic-sdlc && ./agentic-sdlc/scripts/local-install.sh`
+
+**Per tool.** See [Supported AI tools](#supported-ai-tools) below and the [installation guide](docs/INSTALLATION.md).
+
+</details>
+
+**2. Set up your project.** Open your AI tool in the repository and ask:
+
+> *"Set up the Agentic SDLC here."*
+
+The agent reads your build and CI files and writes a short `AGENTS.md` block with your Definition of Done (lint, types, tests, coverage floor). It also installs the CI checks and copies the check scripts into `.agentic-sdlc/bin/`. It shows you everything and waits for your "yes" before writing.
+
+**3. Make your first change:**
+
+> *"Fix issue #142 with the Agentic SDLC."*
+
+**What you should see:** the agent scores the change (for example `Path: Quick · S=3 · R=0`), writes one acceptance criterion, runs a failing test before it touches the code, and stops to ask for your approval at the end. If it writes code without a failing test first, or approves its own work, something is wrong: see [Troubleshooting](#troubleshooting).
+
+The [quickstart](skills/agentic-sdlc/references/quickstart.md) walks through this first change step by step.
+
+## See it in action
+
+A Quick-path bug fix, condensed. The lines in grey boxes are what the agent prints.
+
+> **You:** Fix issue #142 with the Agentic SDLC. The orders page shows dates in UTC.
+
+```text
+Path: Quick · S=3 · R=0 (no risk trigger)
+AC-1  Given a user in America/Sao_Paulo, when they open /orders,
+      then each date shows in their time zone.
+```
+
+> **Agent:** Wrote the test `#142 AC-1 shows dates in the user's time zone`. It fails (expected `09:00`, got `12:00`). Fixing `src/format-date.ts` now.
+
+```text
+PASS  lint · typecheck · test · coverage 81.2 ≥ 78.4   fingerprint 3f9c2a7d1e04
+Reviewer (fresh context): lenses L1 spec, L2 correctness — 0 Critical, 1 Minor
+```
+
+> **Agent:** The PR is ready. Its Verification table shows each command, its exit code and the fingerprint of the tested files. Do you approve it (Test sign-off)?
+>
+> **You:** Approved.
+
+```text
+Agentic SDLC · Quick · #142
+Discover ✅ ▸ Build ✅ ▸ Test ✅ Test sign-off ▸ Release ⏳
+```
+
+A feature goes the same way, with more stages: a spec and a plan that each get approved, acceptance tests written from the spec before any code, task-by-task Build, four review lenses, and a rehearsed rollback before release. The whole feature, file by file: [worked example](skills/agentic-sdlc/examples/worked-example/).
+
+## Pick your path
+
+The Analyst agent scores every change. **Size** counts files, components and iterations. **Risk** counts triggers: authentication, personal or health data, money, public API, schema change, irreversible action, regulated work. The path is the higher of the two.
+
+| Path | Typical change | Human sign-offs | What gets written |
+|---|---|---|---|
+| **Quick** | A bug or small task, no risk trigger | Test (plus Release when it goes to production) | The issue with its acceptance test, and the PR with evidence |
+| **Standard** | A feature, or one risk trigger | Specify, Design, Test, Release | `spec.md`, `plan.md`, acceptance tests, PR, release notes, retro |
+| **Full** | An epic, legacy modernization, regulated work, two or more risk triggers, personal data or an irreversible action | All four, plus a second human reviewer | Standard set plus ADRs, threat model, constraints and runbook |
+
+When a change turns out bigger or riskier than scored, the path goes up. It never goes down silently.
+
+## The 7 stages
+
+| Stage | The question | Lead agent | What it leaves behind | Sign-off |
+|---|---|---|---|---|
+| **1 · Discover** | Is it worth doing? How big and risky is it? | Analyst | Scored issue | |
+| **2 · Specify** | What exactly must it do? | Analyst | `spec.md` with numbered acceptance criteria and non-goals | **Product Owner** |
+| **3 · Design** | How will we build it? | Planner, Architect | `plan.md` with tasks, dependencies and decisions | **Tech Lead** |
+| **4 · Build** | Does each task pass its test? | Developer | Commits traced to tasks and criteria | |
+| **5 · Test** | Does it do what was asked, and nothing else? | Reviewer, Test Engineer | PR with fresh evidence and review findings | **Human reviewer** |
+| **6 · Release** | Can we ship it and undo it? | Release Engineer | Release notes, rehearsed rollback | **Release Owner** |
+| **7 · Operate** | Is it working, and what did we learn? | SRE | Ops record, incidents, retrospective actions | |
+
+A sign-off counts only when a person answers in a later turn. Silence is never approval, and editing an approved spec or plan voids its sign-off.
+
+## Meet the agents
+
+The core agents (in bold) take part in most changes. The others join only when the change needs them.
+
+| Agent | What it does | Joins when |
+|---|---|---|
+| **Scrum Master** | Reads the state of the work from the repository, picks the path, calls the right agent, asks people for sign-offs | Always |
+| **Analyst** | Scores size and risk; writes the spec and its acceptance criteria | Always |
+| Product Manager | Defines the problem, the expected outcome and the success indicator | New capability or unclear value |
+| UX Designer | Designs journeys, screen states and accessibility | A user-facing screen changes |
+| **Planner** | Splits the work into tasks of at most a day, with a dependency graph | Standard and Full paths |
+| Architect | Records hard-to-reverse decisions as ADRs | New component, data model or integration |
+| **Developer** | Writes the test first, then the code; one task per fresh context | Always |
+| **Test Engineer** | Designs acceptance tests from the spec, without seeing the code | Standard and Full paths |
+| **Reviewer** | Reviews in a fresh context, never edits code; the default verdict is NO-GO | Always |
+| Security Auditor | Writes the threat model and runs the security review | Auth, personal data, money, public API |
+| Tech Writer | Writes user docs and release notes | Users or operators see a change |
+| Release Engineer | Rehearses the rollback, runs go/no-go and deploys | The change ships |
+| SRE | Watches alerts, runs incidents and postmortems | The change runs in production |
+
+## The skills
+
+Each agent works through skills: Markdown workflows your AI tool loads when they apply. You rarely call them by name. Ask in plain language, and the `agentic-sdlc` router picks the right one.
+
+<details>
+<summary><b>All 23 skills, by stage</b></summary>
+
+| Stage | Skill | Use it to |
+|---|---|---|
+| Router | `agentic-sdlc` | Run any change end to end; ask "what's next?" |
+| Discover | `issue-triage` | Turn a request into a scored, decision-ready issue |
+| Discover | `project-context` | Set up or adopt a repository: `AGENTS.md` block, Definition of Done, code map, CI checks |
+| Discover | `brainstorming` | Shape an idea before any spec |
+| Specify | `spec-driven-development` | Write `spec.md` with numbered acceptance criteria |
+| Specify | `grill-me` | Stress-test a spec, plan or design with hard questions |
+| Specify, Design | `codebase-modernization` | Change legacy code safely: inventory, characterization tests, migration slices |
+| Specify, Test | `security-hardening` | Threat model, secure-build rules and security review |
+| Design | `senior-solution-architect` | C4 diagrams, ADRs and design reviews |
+| Design | `writing-plans` | Write `plan.md` as a task graph |
+| Build | `executing-plans` | Run plan tasks one per fresh context, test first |
+| Build | `test-driven-development` | Red, then green, then refactor |
+| Build | `systematic-debugging` | Find a root cause with bounded hypotheses |
+| Test | `test-strategy` | Design acceptance tests from the spec |
+| Test | `verification-gate` | Turn "done" into fresh, fingerprinted evidence |
+| Test | `multi-axis-code-review` | Review through four independent lenses |
+| Release | `deployment-pipeline` | Enforce the checks in CI; staged rollout and rehearsed rollback |
+| Release | `shipping-and-handover` | Pre-ship checklist, PR body, release notes, runbook |
+| Operate | `operations-and-incidents` | Alerts, incidents and postmortems |
+| Operate | `retrospective` | A retro whose actions change files |
+| Support | `skill-creator` | Build and test new skills |
+| Support | `agent-skill-discovery` | List the skills, agents and tool servers installed |
+| Support | `agent-skill-orchestrator` | Plan a task across installed resources |
+
+Bundles and the full catalog: [skills library](docs/skills-library.md).
+
+</details>
+
+## Why you can trust the output
+
+![Two panels: an evidence chain from acceptance criterion to human sign-off, and the loop limits, budgets and authority limits that bound the agents](docs/assets/guardrails.svg)
+
+| Without a method | With the Agentic SDLC |
+|---|---|
+| The agent builds what it guessed you meant | A spec with numbered acceptance criteria, approved before any code |
+| "Done" means the agent says so | Each criterion has a test that was seen failing, then passing, on the exact files that ship |
+| The agent checks its own work | Acceptance tests come from the spec alone, and a reviewer in a fresh context starts from NO-GO |
+| Approval is a thumbs-up in chat | Four named sign-offs, each bound to a hash of the approved version |
+| The agent loops on the same failure | Numeric limits (3 red-green tries, 5 build-test rounds, 3 review rounds), then a person decides |
+| Every change gets the same heavy process | Three paths sized by size and risk |
+
+The rules are backed by dependency-free Node scripts with 195 automated tests: `spec-lint`, `plan-graph`, `preflight`, `run-ledger`, `dod-gate`, `status`, `doctor`, `ext-check` and `budget-check`. The same checks run in CI from the day a team adopts the method. Without Node, the method runs from the Markdown rules, and the pull request says so (`enforcement: prompt-only`).
+
+## How it compares
+
+We scored the method against nine well-known approaches under a scoring methodology that was written and locked before any scoring.
+
+![Bar chart of baseline scores for ten methods: Agentic SDLC 88.5 in first place, AWS AI-DLC 68.6, Agile V 67.0, BMad Method 66.8, Addy Osmani agent-skills 57.6, Superpowers 56.0, AWS Kiro 44.4, Matt Pocock skills 43.8, GitHub Spec Kit 43.2, OpenSpec 38.8](docs/assets/scores.svg)
+
+| Method | Score | Strongest at | Where it is lighter |
+|---|---:|---|---|
+| **Agentic SDLC** | **88.5** | Spec quality, verification, review, loop control, release and operations | Ease of adoption, portability |
+| [AWS AI-DLC](https://github.com/awslabs/aidlc-workflows) | 68.6 | Evidence bound to commits, context management | Heavy to start, needs its own runtime |
+| [Agile V](https://agile-v.org) | 67.0 | Verification, portability, human governance | Little on release and learning |
+| [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD) | 66.8 | Easiest to adopt | Security opt-in, ends at a local commit |
+| [Addy Osmani agent-skills](https://github.com/addyosmani/agent-skills) | 57.6 | TDD and code-quality guidance | No retrospective loop, thin review |
+| [Superpowers](https://github.com/obra/superpowers) | 56.0 | Context discipline, TDD | Stops at the pull request |
+| [AWS Kiro](https://kiro.dev) | 44.4 | Easy start (scored from documentation) | Tests optional, approvals not recorded |
+| [Matt Pocock skills](https://github.com/mattpocock/skills) | 43.8 | Sharp context hygiene | No Definition of Done |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | 43.2 | Three commands to start, 40+ agents | Tests optional, weak review |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 38.8 | Precise change specs | Little traceability or security |
+
+![Dot plot of the 16 criteria: the Agentic SDLC leads on 8, ties on 5 and is behind on ease of adoption, human governance and portability](docs/assets/criteria.svg)
+
+**How to read these numbers.** It is our own evaluation: 16 criteria with evidence-based levels, five weightings, two AI scorers per method and a red-team audit. It compares documented and shipped mechanisms, not productivity in the field. The score above was measured on an earlier build of the method. This is how the numbers were produced:
+
+![How we built it: research, a frozen scoring method, a failed first round at 53.2, gap closure, a second round at 88.5, and an end-to-end trial](docs/assets/journey.svg)
+
+Methodology, every scorecard and the audits: [research](docs/research/) · [results](docs/research/scoring/results.md).
+
+## Supported AI tools
+
+| Tool | Installed to | Invoke |
+|---|---|---|
+| Claude Code | plugin, or `~/.claude/skills/` | `/agentic-sdlc:agentic-sdlc`, or ask in plain language |
+| GitHub Copilot CLI | `~/.copilot/skills/` | Ask in plain language |
+| OpenAI Codex | `~/.codex/skills/` | `Use agentic-sdlc to …` |
+| Gemini CLI | `~/.gemini/skills/` | `Use agentic-sdlc to …` |
+| Cursor IDE | `~/.cursor/skills/` | `@agentic-sdlc` in chat |
+| OpenCode | `~/.agent/skills/` | `opencode run @agentic-sdlc` |
+| Antigravity | `~/.gemini/antigravity/skills/` | Agent mode: `Use agentic-sdlc to …` |
+| AdaL CLI | `~/.adal/skills/` | Loads on demand |
+
+## Troubleshooting
+
+| You see | Do this |
+|---|---|
+| Not sure what comes next | `node .agentic-sdlc/bin/status.mjs`: the current state, the evidence and the next step |
+| Setup looks wrong after install or upgrade | `node .agentic-sdlc/bin/doctor.mjs`: seven checks, each with the command that fixes it |
+| The PR says `enforcement: prompt-only` | Node or a host permission config is missing locally. CI still runs the checks; see [platforms](skills/agentic-sdlc/references/platforms.md) |
+| Evidence marked stale | A file changed after the test run. Run the commands again (`dod-gate`); old output never counts |
+| A check blocks a correct change | Ask for a waiver (owner ≠ requester, expiry ≤ 30 days). Never delete the check |
+| An extension was refused | `ext-check --json` names the rule; see the [extension interface](skills/agentic-sdlc/references/extension-interface.md) |
+| Upgrading from 3.0 | Follow [upgrading.md](skills/agentic-sdlc/references/upgrading.md) |
+
+## Learn more
+
+| | |
+|---|---|
+| [Quickstart](skills/agentic-sdlc/references/quickstart.md) | Your first change, step by step |
+| [Worked example](skills/agentic-sdlc/examples/worked-example/) | One feature from spec to retrospective |
+| [Method guide](docs/guides/agentic-sdlc.md) | The whole method, plus mappings to ISO/IEC/IEEE 12207, IEC 62304 and NIST SSDF |
+| [Skills library](docs/skills-library.md) | Bundles, every platform and the catalog |
+| [Changelog](CHANGELOG.md) | What changed in each release |
 
 <details>
 <summary><b>Terms used on this page</b></summary>
@@ -37,216 +273,12 @@ Coding agents write code in minutes. The Agentic SDLC makes that code something 
 
 </details>
 
----
+## Contributing and license
 
-## A day with the Agentic SDLC
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Maintained by [Eric Andrade](https://github.com/ericgandrade).
 
-**Morning: a bug report.** *"The orders page shows dates in UTC."* You ask: *"Fix issue #142 with the Agentic SDLC."*
-
-1. The Analyst agent scores it: two files, no risk → **Quick path**. It adds one acceptance criterion to the issue, in Given/When/Then form.
-2. The Developer agent writes a test named after that criterion, runs it and records the failure. Only then does it change the code, until the test passes and the project's Definition of Done passes.
-3. The pull request carries a Verification table: command, exit code and the fingerprint of the exact tree that was tested.
-4. A Reviewer agent in a fresh context checks the change against the criterion.
-5. You read the evidence and approve (plus a Release sign-off if it ships to production). Proof comes attached.
-
-**Afternoon: a feature.** *"Let customers export their orders as CSV."* It is a feature and it touches order totals (money), so the path is **Standard**; a second risk trigger, or any personal data, would make it Full.
-
-1. The Analyst writes `spec.md` with numbered criteria and non-goals, and a fresh-context critique challenges it. **The Product Owner approves the spec.**
-2. The Planner and Architect produce `plan.md`: tasks of at most a day, files, dependencies and decisions. **The Tech Lead approves the plan.**
-3. The Test Engineer writes acceptance tests from the spec alone, before any code exists.
-4. The Developer works task by task, test first. Every failed attempt is logged, and numeric limits decide when a person steps in. No silent loops.
-5. At Test, the acceptance tests must pass and four review lenses run. **A human reviewer approves.**
-6. Release rehearses the rollback on the same commit and checks that the alert fires. **The Release Owner approves.** The retrospective turns lessons into file changes.
-
-Every step leaves a file in the repository, so any session, or any person, can pick up where the last one stopped. The full feature, file by file: [worked example](skills/agentic-sdlc/examples/worked-example/).
-
-## Why we built it
-
-This repository started as Claude Superskills, a library of useful AI skills. In November 2026 we went back to it with one question: **what would a complete, defensible method for delivering software with AI agents look like?**
-
-| The question a team is accountable for | The Agentic SDLC answer |
-|---|---|
-| Did we build what was asked? | A spec with numbered acceptance criteria, approved before code |
-| Is "done" really done? | Fresh command output for each criterion; the reviewer's default verdict is NO-GO |
-| Who checked the agent's work? | Acceptance tests designed from the spec, and a reviewer that never wrote the code |
-| Who approved it? | Four named human sign-offs, bound to the exact version approved |
-| What stops an agent going in circles? | Numeric loop limits, then escalation to a person |
-| Is a one-line fix buried in ceremony? | Three paths sized by change size and risk |
-
-We did not want another opinion. We wanted a method that could be measured against the best existing ones, so we fixed the rules first and let the scores decide.
-
-![How we built it: research, a frozen scoring method, a failed first round at 53.2, gap closure, a second round at 88.5, and an end-to-end trial](docs/assets/journey.svg)
-
-1. **Research.** We studied nine leading methods and inventoried more than 400 of their mechanisms ([inventory](docs/research/inventory/), [methods](docs/research/methods/)).
-2. **Freeze the rules.** The [scoring methodology](docs/research/scoring/methodology.md) was written and locked before any scoring, without reading our own proposal.
-3. **Round 1 failed.** Our design scored 53.2 and ranked 6th ([round 1](docs/research/scoring/round1-agentic-sdlc/results-round1.md)). That told us exactly what was missing.
-4. **Close the gaps.** We built the missing mechanisms as skills and tested scripts, not as promises.
-5. **Round 2: first place.** 88.5 against 68.6 for the runner-up ([results](docs/research/scoring/results.md)).
-6. **End-to-end trial.** We ran the method on a real change, with agents playing every role. It found 1 Critical and 14 Important gaps; all are fixed and the Critical one was re-tested ([trial report](docs/research/2026-11-25-dogfood-report.md)).
-
-All of this happened in one week. The method has not yet been piloted by a human team; that is the first item under [What's next](#whats-next).
-
-## How it measures up
-
-![Bar chart of baseline scores for ten methods: Agentic SDLC 88.5 in first place, AWS AI-DLC 68.6, Agile V 67.0, BMad Method 66.8, Addy Osmani agent-skills 57.6, Superpowers 56.0, AWS Kiro 44.4, Matt Pocock skills 43.8, GitHub Spec Kit 43.2, OpenSpec 38.8](docs/assets/scores.svg)
-
-**Read the score with these limits.** It is an internal evaluation: our methodology, AI agents as scorers, no external review, and the method's owner ran the scoring round. The Agentic SDLC was scored as a partly built design, the others as released products; a fresh re-score of the built method by new scorers is planned. It compares documented and implemented mechanisms, not productivity or defect rates in the field.
-
-**How the scoring works.** 16 criteria (C1–C16 in the charts), from ease of adoption to release and operations, each with levels that need evidence such as a quoted rule, a script or a template. Five weightings (balanced, equal, startup, regulated enterprise, autonomous scale), so no single weighting decides the result. Two AI scorers rated each method separately and agreed closely (Krippendorff's α = 0.877, where 0.8 or more counts as reliable), and a red team audited every scorecard. Features we had designed but not built yet scored lower.
-
-| Method | Maker | Score | Why it scored this way |
-|---|---|---:|---|
-| **Agentic SDLC** | This repository | **88.5** | Top marks on spec quality, code quality, verification, review, loop control, task graphs and context management. Lowest on human governance (3.0) and traceability (3.5), where enforcement scripts are not built yet. No criterion below 3. |
-| [AWS AI-DLC](https://github.com/awslabs/aidlc-workflows) | AWS Labs | 68.6 | Evidence bound to commits, good context management. Heavy to adopt (about 19k words to start), security is conditional, needs its own runtime. |
-| [Agile V](https://agile-v.org) | Christopher Koch | 67.0 | Strong verification and portability, solid human governance. No non-goals in specs, human-gated by design, little on release and learning. |
-| [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD) | BMad Code | 66.8 | Easiest to adopt: one entry point and a short core. Security is opt-in, the flow ends at a local commit, needs Python tooling. |
-| [Addy Osmani agent-skills](https://github.com/addyosmani/agent-skills) | Addy Osmani | 57.6 | Excellent TDD and code-quality guidance. No retrospective loop; review, loops, autonomy and traceability are thin. |
-| [Superpowers](https://github.com/obra/superpowers) | Jesse Vincent | 56.0 | Very good context discipline and TDD. Stops at the pull request: nothing on release or operations, little on security. |
-| [AWS Kiro](https://kiro.dev) | AWS | 44.4 | Easy to start, good context handling; scored from documentation, as it is a closed product. Tests optional, approvals not recorded, little on operations. |
-| [Matt Pocock skills](https://github.com/mattpocock/skills) | Matt Pocock | 43.8 | Sharp context hygiene. No Definition of Done, almost nothing on security or operations. |
-| [GitHub Spec Kit](https://github.com/github/spec-kit) | GitHub | 43.2 | Three commands to start, runs on 40+ agents. Tests optional, weak review, no learning loop. |
-| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | Fission AI | 38.8 | Precise change specs (SHALL / WHEN-THEN deltas). No unattended mode, no learning loop, little traceability or security. |
-
-Balanced weighting, 0–100. All weightings, per-criterion tables and every scorecard: [results](docs/research/scoring/results.md) · [scorecards](docs/research/scoring/scores/).
-
-### Where the lead comes from
-
-![Dot plot of the 16 criteria: the Agentic SDLC leads on 8, ties on 5 and is behind on ease of adoption, human governance and portability](docs/assets/criteria.svg)
-
-It is **first under all five weightings**, 19.9 points ahead of second place, and best or tied on 13 of 16 criteria, including the five core ones: spec quality, code quality, verification, review rigor and loop control. The lead comes from mechanisms that run:
-
-- **Specs that are checked.** `spec-lint` rejects a spec without testable criteria, non-goals, a rollback command or an alert threshold.
-- **Evidence bound to the code.** Every claim carries the command, its exit code and the fingerprint of the tested tree; stale evidence is re-run, never reused.
-- **Independent tests and review.** Acceptance tests are designed from the spec before code exists; four review lenses run in fresh contexts, and every finding is verified before it counts.
-- **A task graph.** `plan-graph` checks dependencies and cycles and shows which tasks can run in parallel.
-- **End to end.** It continues past the merge into rollback rehearsal, alerts, incidents and retrospectives that change files.
-
-Others still lead on three criteria: **ease of adoption** (BMad), **human governance** (Agile V) and **portability** (Agile V and Spec Kit). Those gaps are on the [roadmap](#whats-next).
-
-## How it works
-
-| Stage | What happens | What it leaves behind | Human sign-off |
-|---|---|---|---|
-| **1 · Discover** | Triage, duplicate check, size and risk score, success indicator | Scored issue | |
-| **2 · Specify** | Acceptance criteria, UX states, security notes, critique | `spec.md` | Product Owner |
-| **3 · Design** | Architecture decisions, tasks of at most one day, dependency graph | `plan.md`, ADRs | Tech Lead |
-| **4 · Build** | Test first, one task per fresh context, bounded fix loops | Commits traced to tasks and criteria | |
-| **5 · Test** | Independent acceptance tests and multi-lens review | Pull request with evidence | Human reviewer |
-| **6 · Release** | Rollback rehearsal, go/no-go checklist | Release notes, runbook | Release Owner |
-| **7 · Operate** | Alerts, indicator reading, incidents, retrospective | Ops record, postmortems, retro | |
-
-A sign-off counts only when a person answers in a later turn. Silence is never approval, and editing an approved spec or plan voids its sign-off.
-
-### Three paths, sized to the risk
-
-| Path | Typical change | Human sign-offs |
-|---|---|---|
-| **Quick** | Bug or small task | Test (plus Release if it goes to production) |
-| **Standard** | Story or feature, or one risk trigger | Specify, Design, Test, Release |
-| **Full** | Epic, legacy modernization, regulated work, or several risk triggers | All four, plus a second human reviewer |
-
-Risk triggers: authentication, personal or health data, money, public APIs, schema changes, irreversible actions, regulated work. Personal data or an irreversible action alone always means Full.
-
-### Why you can trust the output
-
-![Two panels: an evidence chain from acceptance criterion to human sign-off, and the loop limits, budgets and authority limits that bound the agents](docs/assets/guardrails.svg)
-
-The loop limits and run budgets in the diagram are enforced by the `run-ledger` and `preflight` scripts, which ship with 127 automated tests. The authority limits are instructions to the agents; enforce them as well with branch protection and CODEOWNERS (the `deployment-pipeline` skill sets these up).
-
-## The team: 13 agents
-
-A **Scrum Master** agent runs the flow. It reads the state of the work from files in the repository, picks the path, calls the right specialist and asks a human for each sign-off.
-
-| Agent | Job | Joins when |
-|---|---|---|
-| **Scrum Master** | Routes the work, tracks state, requests sign-offs, removes blockers | Always |
-| **Analyst** | Scores size and risk, writes the spec and its acceptance criteria | Always |
-| Product Manager | Problem, expected outcome, success indicator | New capability or unclear value |
-| UX Designer | Journeys, screen states, accessibility | A user-facing surface changes |
-| **Planner** | Splits the work into tasks of at most a day, with a dependency graph | Standard and Full paths |
-| Architect | Hard-to-reverse decisions, recorded as ADRs | New component, data model or integration |
-| **Developer** | Test first, one task per fresh context | Always |
-| **Test Engineer** | Designs acceptance tests from the spec, without seeing the code | Standard and Full paths |
-| **Reviewer** | Independent multi-lens review; never edits code; default verdict NO-GO | Always |
-| Security Auditor | Threat model and security review | Auth, personal data, money, public API |
-| Tech Writer | User docs and release notes | Users or operators see a change |
-| Release Engineer | Rollback rehearsal, go/no-go, deploy | The change ships |
-| SRE | Alerts, incidents, postmortems | The change runs in production |
-
-Core agents are in bold. The others join only when the change needs them, so a small fix never pays for a full team.
-
-## Get started
-
-**Requires:** git, Node 18 or later (for the check scripts) and one of the supported AI tools. Works best with a CI pipeline and branch protection.
-
-**Claude Code (plugin, recommended).** Inside a `claude` session:
-
-```text
-/plugin marketplace add ericgandrade/agentic-sdlc
-/plugin install agentic-sdlc@agentic-sdlc
-```
-
-Skills appear as `/agentic-sdlc:<name>`. Start with `/agentic-sdlc:agentic-sdlc`, or just ask in plain language.
-
-**Any of the 8 supported tools (npm installer).** Installs into every AI tool it detects; drop `-y` to choose:
-
-```bash
-npx agentic-sdlc-method --bundle agentic-sdlc -y
-```
-
-Then, in your project:
-
-1. Ask *"Set up the Agentic SDLC here."* It reads your build and CI files and writes a short block in `AGENTS.md` (or `CLAUDE.md`) with your Definition of Done, then copies the check scripts into `.agentic-sdlc/bin/`. On an existing codebase it first inventories what is there.
-2. Ask *"Fix issue #142 with the Agentic SDLC."* The [quickstart](skills/agentic-sdlc/references/quickstart.md) walks through this first change step by step.
-
-## What to expect
-
-- **Time and cost.** A Quick change adds one written criterion, a recorded failing test and one review pass. A Standard change adds two approvals before code. Token and time overhead per path has not been measured yet; the team pilot will measure it.
-- **Maturity.** v3.0.0 is the first release of the method. The checks are tested; the workflow has been trialled end to end by agents, not yet by a team.
-- **Maintenance.** Maintained by [Eric Andrade](https://github.com/ericgandrade). Issues and pull requests are welcome.
-
-## What's in v3.0.0
-
-| Delivered | |
-|---|---|
-| The method | 20 skills: the `agentic-sdlc` router and 19 stage skills from Discover to Operate |
-| The team | 13 agent briefs, from Scrum Master to SRE |
-| The checks | `spec-lint`, `plan-graph`, `preflight`, `run-ledger`, `budget-check`: dependency-free Node scripts with 127 automated tests |
-| The templates | spec, plan, acceptance tests, PR body, release notes, runbook, retro, threat model, CI and CODEOWNERS |
-| The proof | A worked example from spec to retro, a scored comparison with nine methods, an end-to-end trial |
-
-## What's next
-
-| Next | Why |
-|---|---|
-| Pilot with a real team | Measures time, cost and rework in practice; the trial so far was run by agents |
-| Independent re-score of the built method | New scorers, same locked rules |
-| Approval and traceability checks in CI | Closes the two criteria scored lower today, human governance and traceability |
-| Unattended loop driver | Lets a run continue across fresh agent sessions without a person pressing Enter, inside the same limits and sign-offs ([study](docs/research/2026-11-25-ralph-loop-study.md)) |
-| Easier adoption | The criterion where BMad still leads |
-
-Full plan with projected score gains: [roadmap](docs/plans/2026-11-25-roadmap-v3.md).
-
-## Also in this repository
-
-Three skills support the method and work on their own: `skill-creator` (build and test skills), `agent-skill-discovery` (list the skills, agents and tool servers installed) and `agent-skill-orchestrator` (plan a task across installed resources; it proposes the Agentic SDLC for software work).
-
-The research, content and document skills of earlier versions moved to [knowledge-superskills](https://github.com/ericgandrade/knowledge-superskills). Bundles, all platforms and the catalog: [skills library](docs/skills-library.md).
-
-## Learn more
-
-| | |
-|---|---|
-| [Method guide](docs/guides/agentic-sdlc.md) | The whole method and its mapping to ISO/IEC/IEEE 12207, IEC 62304 and NIST SSDF |
-| [Quickstart](skills/agentic-sdlc/references/quickstart.md) | Your first change |
-| [Worked example](skills/agentic-sdlc/examples/worked-example/) | A feature from spec to retrospective |
-| [Research](docs/research/) | Methods studied, scoring, audits and the trial report |
-| [Skills library and installation](docs/skills-library.md) | The 23 skills, bundles and every platform |
-
-## License
-
-MIT. Ideas and adapted content from other projects are credited in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT. Ideas adapted from other open-source projects are credited in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ---
 
-*Version 3.0.1 | November 2026*
+*Version 3.1.0 | November 2026*

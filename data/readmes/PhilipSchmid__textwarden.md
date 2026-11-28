@@ -161,6 +161,7 @@ TextWarden is tuned for the apps below. Some apps give macOS less information ab
 | Claude | Full | Full |
 | ChatGPT | Full | Full |
 | Perplexity | Full | Full |
+| T3 Code | Full | Full |
 | Safari, Chrome, and Brave | Full[^extension] | Extension preview[^extension] |
 | Firefox and Zen | Full[^extension][^gecko] | Extension preview[^extension] |
 | Comet | Full | Indicator only[^browsers] |
@@ -237,6 +238,7 @@ TextWarden is maintained as a side project. If it helps your writing, you can su
 <a href="https://buymeacoffee.com/textwarden"><img src="Assets/bmc-button-black.png" alt="Support TextWarden on Buy Me a Coffee" height="40"></a>
 
 - [Report a bug](https://github.com/PhilipSchmid/textwarden/issues/new/choose)
+- [Report a security issue privately](SECURITY.md)
 - [Request a feature or ask a question](https://github.com/PhilipSchmid/textwarden/discussions)
 
 ## License

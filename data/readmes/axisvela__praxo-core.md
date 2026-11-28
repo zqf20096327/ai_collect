@@ -19,10 +19,24 @@ model providers and integrations. AxisVela products are not required.
 [Language Implementations](docs/languages/index.md) |
 [Examples](language/go/examples)
 
-**PRAXO-CORE is a multi-language framework.** Go is the reference
-implementation; Python, TypeScript, Java, Rust, C#, R, Ruby, PHP, Elixir, Lua,
-and other implementations ship independent packages. It is not a Go-only
-framework.
+## Go Reference Module
+
+This repository's root Go module is the reference implementation:
+`github.com/axisvela/praxo-core/v2`.
+
+```bash
+go get github.com/axisvela/praxo-core/v2@v2.11.3
+```
+
+The Go Core provides the agent loop, policy hooks, tool contracts, memory,
+checkpoints, context compaction, events, streaming, MCP, OpenTelemetry,
+retrieval, and delegation. See the
+[Go consumer](docs/getting-started/consumer-go.md) and
+[Go implementation](docs/languages/go/index.md).
+
+The same repository also ships independent Python, TypeScript, Java, Rust, C#,
+R, Ruby, PHP, Elixir, Lua, and other packages. They do not require the Go
+runtime.
 
 ## Two Paths
 
@@ -75,7 +89,7 @@ Go is the reference implementation; use the language table above for other
 runtimes.
 
 ```bash
-go get github.com/axisvela/praxo-core/v2@v2.11.0
+go get github.com/axisvela/praxo-core/v2@v2.11.3
 ```
 
 First verify the [independent Go consumer](docs/getting-started/consumer-go.md):
@@ -192,6 +206,50 @@ Task-oriented and language-organized catalogs:
 [docs Examples](docs/getting-started/examples.md) and
 [language/go/examples/README.md](language/go/examples/README.md).
 
+## Scenario Tutorials and Reference Applications
+
+Scenario tutorials are bounded teaching slices. Reference applications are
+portfolio integrations: source implementations exist, while end-to-end portfolio
+acceptance remains tracked in the roadmap.
+
+### Scenario Tutorials
+
+| Scenario | Language | Tutorial |
+| --- | --- | --- |
+| SE-01 Full-stack development | Go | [fullstack-workspace](language/go/Tutorial/fullstack-workspace) |
+| SE-02 Bug diagnosis and repair | Python | [bug-repair](language/python/Tutorial/bug-repair) |
+| SE-03 Legacy refactoring and migration | Java | [legacy-migration](language/java/Tutorial/legacy-migration) |
+| SE-04 Test generation | C# | [test-generation](language/csharp/Tutorial/test-generation) |
+| SE-05 Code review and security audit | Go | [evidence-vault](language/go/Tutorial/evidence-vault), [soc-alert-triage](language/go/Tutorial/soc-alert-triage) |
+| SE-06 AIOps RCA and remediation | Erlang | [aiops-rca](language/erlang/Tutorial/aiops-rca), [otp-recovery](language/erlang/Tutorial/otp-recovery) |
+| SE-07 Cloud and FinOps governance | Ruby | [finops-review](language/ruby/Tutorial/finops-review) |
+| SE-08 API orchestration | PHP | [api-orchestration](language/php/Tutorial/api-orchestration) |
+| OP-01 Service desk | C# | [internal-service-desk](language/csharp/Tutorial/internal-service-desk) |
+| OP-03 Knowledge maintenance | Python | [office-qa](language/python/Tutorial/office-qa) |
+| OP-04 Cross-system RPA | Java | [rpa-reconciliation](language/java/Tutorial/rpa-reconciliation) |
+| OP-05 Recruiting match | Ruby | [recruiting-match](language/ruby/Tutorial/recruiting-match) |
+| OP-06 Employee onboarding | Dart | [onboarding-plan](language/dart/Tutorial/onboarding-plan) |
+| OP-07 Executive brief | R | [executive-brief](language/r/Tutorial/executive-brief) |
+
+Full lists: [100 candidate agent scenarios](docs/getting-started/agent-scenarios.md)
+and the [unified Tutorial Catalog](docs/getting-started/tutorial-catalog.md).
+
+### Reference Applications
+
+| Priority | Language | Application | Status |
+| --- | --- | --- | --- |
+| 1 | PHP | [Drupal/Laravel content portal](language/php/application) | Source implementation; acceptance pending |
+| 2 | Java | [Spring Boot commerce](language/java/application) | Source implementation; acceptance pending |
+| 3 | Elixir / Erlang | [OTP real-time operations](language/elixir/application), [Erlang](language/erlang/application) | Source implementations; acceptance pending |
+| 4 | Go | [Cloud and DevOps](language/go/application) | Source implementation; acceptance pending |
+| 5 | C++ / Rust | [Industrial/embedded](language/cpp/application), [Systems/edge](language/rust/application) | Source implementations; acceptance pending |
+| 6 | COBOL | [Batch exception analysis](language/cobol/application) | Source implementation; acceptance pending |
+| 7 | Julia | [Scientific computing](language/julia/application) | Source implementation; acceptance pending |
+| 8 | Ruby | [Rails back-office](language/ruby/application) | Source implementation; acceptance pending |
+
+See the [reference application portfolio](docs/project/roadmap.md#reference-application-portfolio)
+for acceptance criteria and current limits.
+
 ## Repository Map
 
 | Location | Purpose |
@@ -217,10 +275,10 @@ or [optional AxisVela integrations](docs/integrations/ecosystem.md). See the
 
 ## Releases and Contributing
 
-Core `2.11.0` is the current release. It moves the runnable example tree under
-`language/go/examples`, links scenario tutorials and reference applications from
-the language registries, and refreshes source-release metadata. It does not
-change the exported `pkg/...` API or wire contract.
+Core `2.11.3` is the current release. It adds scenario-tutorial and
+reference-application lists to this README and refreshes the public registry and
+release documentation for the current published versions. It does not change the
+exported `pkg/...` API or wire contract.
 
 The earlier `2.9.0` fixed the Go memory recall role: recalled content is injected
 as untrusted user data with frame/source labels instead of a system message, and
@@ -228,7 +286,7 @@ assistant-written memory records carry `source` and `trust` metadata. That relea
 added two-run regressions without changing the exported `pkg/...` API or wire
 shape. Optional adapters and Core implementations are versioned independently.
 
-- [Latest release notes](docs/releases/2.11.0.md)
+- [Latest release notes](docs/releases/2.11.3.md)
 - [Release history](docs/releases/index.md)
 - [Language Release Index](docs/languages/registry-status.md)
 - [Compatibility policy](docs/project/compatibility-policy.md)

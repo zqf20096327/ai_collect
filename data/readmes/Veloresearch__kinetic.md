@@ -13,12 +13,12 @@
 ### The open engine for running AI on your own computer.
 
 Written in Rust. It reads GGUF files, the format llama.cpp uses, and runs the models it
-supports on the CPU and on NVIDIA, AMD and Intel GPUs, from one binary. Fast, and no
+supports on the CPU and on NVIDIA, AMD, Intel and Apple GPUs, from one binary. Fast, and no
 speed-up ever changes the answer.
 
 <br>
 
-[![Windows and Linux](https://img.shields.io/badge/Windows_and_Linux-x86--64-DCD5E2?labelColor=1C1A1F&style=flat-square)](#install)
+[![Windows, Linux and macOS](https://img.shields.io/badge/Windows,_Linux,_macOS-x86--64_and_Apple_Silicon-DCD5E2?labelColor=1C1A1F&style=flat-square)](#install)
 [![GPUs](https://img.shields.io/badge/NVIDIA,_AMD,_Intel-GPUs-E2AC80?labelColor=1C1A1F&style=flat-square)](#devices)
 [![API](https://img.shields.io/badge/API-OpenAI--compatible-DCD5E2?labelColor=1C1A1F&style=flat-square)](#use-it-from-your-app)
 [![License](https://img.shields.io/badge/license-Apache--2.0-DCD5E2?labelColor=1C1A1F&style=flat-square)](LICENSE)
@@ -32,29 +32,47 @@ speed-up ever changes the answer.
 ## Status: beta, on the road to 0.2
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/coverage/progress-0.1.1-4-of-12-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/coverage/progress-0.1.1-4-of-12-light.svg">
-  <img src="assets/coverage/progress-0.1.1-4-of-12-light.svg" alt="Next update 0.1.1: 33%, 4 of 12 done." width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/coverage/progress-0.1.2-0-of-12-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/coverage/progress-0.1.2-0-of-12-light.svg">
+  <img src="assets/coverage/progress-0.1.2-0-of-12-light.svg" alt="Next update 0.1.2: 0%, 0 of 12 done." width="100%">
 </picture>
 
 Until 0.2 we ship small 0.1.x updates often, each with fixes and new models. The bar shows how
 far the next one is, and it moves with the commits that move it.
 
-### Next: 0.1.1
+### Out now: 0.1.1
 
-- [x] macOS on Apple Silicon, on the CPU and on the GPU through Metal
-- [x] Older NVIDIA GPUs (Pascal, Volta) and several GPUs for one model with `--gpus`
-- [x] Vulkan prompts on the matrix units, about 3x faster on GPUs that have them
-- [x] `-hf`, as llama.cpp takes it
-- [ ] Inkling 2 Mini on NVIDIA GPUs, also on cards with 6 GB
-- [ ] Inkling 2 Mini on AMD GPUs through Vulkan
-- [ ] Flywheel for every mixture-of-experts model: experts placed by how often their layer
-      runs, the rest computed on the CPU where they are
+Inkling 2 Mini on NVIDIA GPUs through CUDA and on AMD GPUs through Vulkan, also on cards
+with 6 GB; macOS on Apple Silicon, on the CPU and on the GPU through Metal; older NVIDIA GPUs
+(Pascal, Volta), several GPUs for one model with `--gpus`, and AMD's GCN and Vega GPUs;
+drafting that no longer slows down models split between the GPU and the CPU; a home screen
+when you run `kinetic` alone, and `kinetic update`. Everything else is in the
+[changelog](CHANGELOG.md).
+
+Still known:
+
+- On Vulkan, LFM2.5 MoE gives logits that differ from the CPU's, and the first tokens of an
+  answer can differ; dense models and Inkling 2 match.
+- Gemma 4 26B A4B runs on the CPU only.
+- With a very long context on a small GPU (32,000 tokens on 6 GB), plain generation is slower
+  than llama.cpp's; up to 8,000 tokens Kinetic is ahead.
+- Inkling 2 has no image input yet.
+- `--gpus` spreads dense models only.
+
+### Next: 0.1.2
+
+- [ ] Experts copied to the GPU without a copy in system memory first
+- [ ] Expert pages warmed at start
 - [ ] Gemma 4 26B A4B on the GPU
-- [ ] RAD-1 never slower than plain decoding, also on models split between the GPU and the CPU
-- [ ] AMD's GCN and Vega GPUs through Vulkan
-- [ ] Agent loops keep their prompt cache when a client sends the history back rewritten
-- [ ] Tool calls from OpenCode with LFM3
+- [ ] Long drafts for every mixture-of-experts and dense model
+- [ ] DSpark drafters as a draft source for RAD-1 ([#42](https://github.com/Veloresearch/kinetic/pull/42))
+- [ ] Phi-3 ([#39](https://github.com/Veloresearch/kinetic/pull/39))
+- [ ] Every layer split over two GPUs ([#40](https://github.com/Veloresearch/kinetic/pull/40))
+- [ ] LFM2.5 MoE on Vulkan matching the CPU
+- [ ] A live engine panel in the terminal screen
+- [ ] Long context on small GPUs: an 8-bit context cache as an option
+- [ ] Image input for Inkling 2
+- [ ] The first answer after loading at full speed
 
 ### Road to 0.2
 
@@ -86,7 +104,7 @@ bugs to [issues](https://github.com/Veloresearch/kinetic/issues/new). We read al
 irm https://raw.githubusercontent.com/Veloresearch/kinetic/main/scripts/install.ps1 | iex
 ```
 
-On Linux:
+On Linux and macOS:
 
 ```sh
 curl -fsSL \
@@ -106,11 +124,19 @@ kinetic chat LiquidAI/LFM3-1.7B-GGUF
 ```
 
 <a name="quick-start"></a>
-Not sure which model to take? Run `kinetic` alone: it checks your computer,
-suggests two or three models that run well on it (the ones you already have
-first), and one key press downloads it and opens a chat. A GGUF file you already
-have works too if its model family is [supported](#supported-models):
-`kinetic chat path/to/model.gguf`.
+**Or type nothing at all.** Run `kinetic` alone: a home screen opens that
+you drive with the arrow keys and Enter. Chat, Models, API, Benchmark,
+Doctor and Settings are one key away; the model list shows every model
+already on your computer (Ollama's, LM Studio's and Hugging Face's
+included) and offers two to download, and a folder browser finds any other
+`.gguf` file. `kinetic chat` with no model opens the same list, and a model
+name typed slightly wrong is matched for you. See
+[the command line](docs/src/cli.md#without-typing).
+
+<img src="assets/screens/home.png" alt="The kinetic home screen: tiles for Chat, Models, API, Benchmark, Doctor and Settings, and an Every command button" width="100%">
+
+A GGUF file you already have works too if its model family is
+[supported](#supported-models): `kinetic chat path/to/model.gguf`.
 
 <div align="center">
 
@@ -147,7 +173,7 @@ from doing less work, never from changing the output.
 
 The install scripts download the latest release, check it against
 `SHA256SUMS` and put `kinetic` on your `PATH`: in
-`%LOCALAPPDATA%\Programs\kinetic` on Windows, in `~/.local/bin` on Linux.
+`%LOCALAPPDATA%\Programs\kinetic` on Windows, in `~/.local/bin` on Linux and macOS.
 
 **By hand.** Take an archive from the
 [releases page](https://github.com/Veloresearch/kinetic/releases), check it
@@ -155,13 +181,14 @@ and unpack it anywhere:
 
 ```sh
 sha256sum -c SHA256SUMS --ignore-missing      # Windows: Get-FileHash <archive>
-tar xzf kinetic-0.1.0-linux-x86_64-cuda.tar.gz
+tar xzf kinetic-0.1.1-linux-x86_64-cuda.tar.gz
 ```
 
 | Archive | Runs on |
 |---|---|
 | `...-x86_64-cuda` | NVIDIA through CUDA, any GPU through Vulkan, the CPU |
 | `...-x86_64-cpu` | the CPU only, the smallest download |
+| `...-macos-arm64-metal` | Apple Silicon: the GPU through Metal, the CPU |
 
 Take a `cuda` archive even if you are not sure you have a GPU: it starts on
 any machine and falls back to the CPU. It needs only the graphics driver,
@@ -329,7 +356,8 @@ unpacked once and used for many tokens. CPU (AVX2) and CUDA.
 
 A mixture-of-experts model keeps the experts in use on the GPU and the rest
 in system memory, and runs each missing expert on the CPU or copies it over,
-whichever is cheaper at that moment. CUDA; see
+whichever is cheaper at that moment. On Vulkan it keeps every expert of the layers a token
+runs most on the GPU and runs the others on the CPU. See
 [models bigger than your GPU](#run-models-bigger-than-your-gpu).
 
 ### Exact batching
@@ -541,9 +569,10 @@ Examples: [Python, C and Rust](https://veloresearch.github.io/kinetic/bindings.h
 | Family | GGUF architecture | Notes |
 |---|---|---|
 | Qwen3.5, dense and MoE | `qwen35`, `qwen35moe` | drafts from its MTP block, images |
-| Gemma 4 | `gemma4` | E2B and E4B with images; the 26B A4B mixture of experts is not supported yet |
+| Inkling 2 Mini | `inkling2_loop`, `inkling2` | mixture of experts; CPU, CUDA and Vulkan, experts split between the GPU and the CPU |
+| Gemma 4 | `gemma4` | E2B and E4B with images, 12B and 31B; the 26B A4B mixture of experts on the CPU |
 | Qwen3, Qwen2.5 | `qwen3`, `qwen2` | thinking and tool calls |
-| Llama 3, Mistral, SmolLM2 | `llama` | |
+| Llama 3, Mistral, Mistral Nemo, SmolLM2 | `llama` | |
 | Gemma 3 | `gemma3` | |
 | LFM3, LFM2 | `lfm3`, `lfm2` | convolution and attention |
 | Granite 3 and 4.0 | `granite`, `granitehybrid`, `granitemoe` | dense, hybrid, MoE |
@@ -558,8 +587,8 @@ Images need the model's vision projector (`mmproj`): `qwen3vl_merger` for
 Qwen3.5, `gemma4v` for Gemma 4.
 
 **Weights:** F32, F16, BF16, Q8_0, Q4_0, Q4_1, Q5_0, Q5_1, the K-quants
-(Q2_K to Q6_K), the IQ formats (IQ1_S to IQ4_XS), TQ1_0, TQ2_0, MXFP4 and
-PrismML's PQ2_0. Which run on which device, and what to do with a file that
+(Q2_K to Q6_K), the IQ formats (IQ1_S to IQ4_XS), TQ1_0, TQ2_0, MXFP4, NVFP4,
+F8_E4M3 and PrismML's PQ2_0. Which run on which device, and what to do with a file that
 does not load: [Models and formats](https://veloresearch.github.io/kinetic/models.html).
 
 `kinetic info` shows what a file holds before you load it:
@@ -592,12 +621,13 @@ checks every hash and the signature. Format: [FORMAT.md](crates/kinetic-ktc/FORM
 
 | | CPU | NVIDIA (CUDA) | Vulkan |
 |---|---|---|---|
-| Hardware | x86-64 with AVX2 | GTX 10, P100, newer | AMD, Intel, NVIDIA |
-| Models | all | all text models | Llama, Qwen, LFM3 |
-| Bigger than the GPU | | layer split, MoE offload | coming |
+| Hardware | x86-64 with AVX2, Apple Silicon | GTX 10, P100, newer | AMD, Intel, NVIDIA; Apple through Metal |
+| Models | all | all text models but Gemma 4 26B A4B | Llama, Qwen, LFM3, Inkling 2 and other MoE |
+| Bigger than the GPU | | layer split, MoE offload | MoE offload |
 | Needs | nothing | the NVIDIA driver | the graphics driver |
 
-Vulkan runs Llama, Qwen2.5, Qwen3, Qwen3.5 and LFM3 today. `--device auto`
+Vulkan runs Llama, Qwen2.5, Qwen3, Qwen3.5, LFM3 and mixture-of-experts models such as
+Inkling 2 today, also on AMD's older GCN and Vega GPUs. `--device auto`
 (the default) tries CUDA, then Vulkan, then the CPU, and prints one line
 when it skips a device and why; `--device cuda`, `vulkan` or `cpu` picks one.
 
@@ -715,8 +745,9 @@ Method and [`scripts/bench_vs_llamacpp.py`](scripts/bench_vs_llamacpp.py):
 
 ## Privacy
 
-**Kinetic never connects to the network, except when you run `kinetic pull`.**
-No telemetry, no update checks, no accounts.
+**Kinetic never connects to the network, except when you run `kinetic pull` or
+`kinetic update` or download with `-hf`.** No telemetry, no accounts, and no update checks
+unless you turn on the daily check in Settings.
 
 - The server listens on `127.0.0.1` unless you pass `--host`, and warns when
   you do; `--api-key` requires a key on every route but `/health`.
@@ -755,17 +786,19 @@ faster still.
 <details>
 <summary><b>Does it work with AMD or Intel graphics?</b></summary>
 
-Yes, through Vulkan, for Llama, Qwen2.5, Qwen3, Qwen3.5 and LFM3 today;
-more architectures are coming. Other models run on the CPU on those machines.
+Yes, through Vulkan, for Llama, Qwen2.5, Qwen3, Qwen3.5, LFM3 and
+mixture-of-experts models such as Inkling 2 today, also on AMD's older GCN and
+Vega GPUs; more architectures are coming. Other models run on the CPU on those
+machines.
 
 </details>
 
 <details>
 <summary><b>Does it run on a Mac?</b></summary>
 
-Not in 0.1. Apple Silicon support, on the CPU and on the GPU through Metal,
-is on main and ships with 0.2; until then, take the nightly build. Intel
-Macs are not planned.
+Yes, from 0.1.1, on Apple Silicon: on the CPU and on the GPU through Metal,
+with nothing else to install. The install script for Linux works on a Mac
+too. Intel Macs are not planned.
 
 </details>
 
@@ -821,9 +854,9 @@ More: [FAQ and troubleshooting](https://veloresearch.github.io/kinetic/faq.html)
 |---|---|
 | RAD-1 | block drafters: many tokens guessed per pass |
 | GPU | faster short prompts, more models on several GPUs |
-| Models | Gemma 4 26B A4B, LFM2.5 MoE, Qwen3 MoE |
+| Models | Gemma 4 26B A4B on GPUs, Qwen3 MoE, Phi-3 |
 | Formats | PrismML's 1-bit types at full speed |
-| Vulkan | MoE, layer split, faster prompts |
+| Vulkan | layer split for dense models, faster prompts |
 | Install | winget, scoop, Docker images |
 | `.ktc` | models from Velocity, tuned for your hardware |
 

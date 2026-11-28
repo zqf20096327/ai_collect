@@ -2,7 +2,7 @@
 
 How real companies solved product analytics, experimentation and machine-learning problems: case studies from engineering blogs and conference talks, grouped by topic. Each entry has the company, the year, a link to the original and a structured digest.
 
-![cases](https://img.shields.io/badge/cases-2123-6B4EE6) ![companies](https://img.shields.io/badge/companies-345-6B4EE6) ![updated](https://img.shields.io/badge/updated-2026--11--20-lightgrey) ![license](https://img.shields.io/badge/license-CC_BY_4.0-lightgrey)
+![cases](https://img.shields.io/badge/cases-3210-6B4EE6) ![companies](https://img.shields.io/badge/companies-632-6B4EE6) ![updated](https://img.shields.io/badge/updated-2026--11--27-lightgrey) ![license](https://img.shields.io/badge/license-CC_BY_4.0-lightgrey)
 
 **Jump to:** [A/B testing](topics/ab-testing.md) · [Recommendations](topics/recsys.md) · [Search](topics/search.md) · [Causal inference](topics/causal.md) · [LLM in analytics](topics/llm-in-analytics.md) · [Fraud](topics/fraud.md) · [All topics](#contents) · [By company](companies/README.md) · [CSV / JSON](data/)
 
@@ -10,12 +10,12 @@ Read the digests on **[effectsize.io](https://effectsize.io)**, or search them f
 
 ## Contents
 
-- **Experiments & causal**: [Metrics](#metrics) (50) · [A/B testing](#ab-testing) (194) · [Advanced experimentation](#advanced-experimentation) (66) · [Causal inference](#causal-inference) (121) · [Uplift](#uplift) (33)
-- **Recs & search**: [Recommendations](#recommendations) (362) · [Personalization](#personalization) (77) · [Search](#search) (224)
-- **LLM**: [LLM in analytics](#llm-in-analytics) (379)
-- **Predictive & behavior**: [Clickstream](#clickstream) (25) · [Behavior](#behavior) (42) · [Predictive models](#predictive-models) (224) · [Growth](#growth) (32)
-- **Risk**: [Fraud](#fraud) (89)
-- **Data & practice**: [Insights](#insights) (78) · [Analytics practice](#analytics-practice) (50) · [Data infrastructure](#data-infrastructure) (77)
+- **Experiments & causal**: [Metrics](#metrics) (68) · [A/B testing](#ab-testing) (297) · [Advanced experimentation](#advanced-experimentation) (86) · [Causal inference](#causal-inference) (161) · [Uplift](#uplift) (48)
+- **Recs & search**: [Recommendations](#recommendations) (460) · [Personalization](#personalization) (112) · [Search](#search) (332)
+- **LLM**: [LLM in analytics](#llm-in-analytics) (698)
+- **Predictive & behavior**: [Clickstream](#clickstream) (44) · [Behavior](#behavior) (51) · [Predictive models](#predictive-models) (333) · [Growth](#growth) (56)
+- **Risk**: [Fraud](#fraud) (145)
+- **Data & practice**: [Insights](#insights) (122) · [Analytics practice](#analytics-practice) (88) · [Data infrastructure](#data-infrastructure) (109)
 - [Top companies](#top-companies) · [FAQ](#faq) · [Use it with your AI agent](#use-it-with-your-ai-agent)
 
 ## Experiments & causal
@@ -28,14 +28,14 @@ North Star, metric trees, proxy and surrogate metrics, guardrails, LTV/unit econ
 |---|---|---|---|
 | [Metrics Board: Building an Agent-ready Metrics Layer](https://effectsize.io/cases/metrics-board-building-an-agent-ready-metrics-layer/) | Pinterest | 2026 | [original](https://medium.com/pinterest-engineering/metrics-board-building-an-agent-ready-metrics-layer-2c8fefe68756) |
 | [A shift from content and topic to presentation: how the reading pattern for articles on Habr has changed](https://effectsize.io/cases/a-shift-from-content-and-topic-to-presentation-how-the/) | MTS | 2026 | [original](https://habr.com/ru/companies/ru_mts/articles/1063884/) |
+| [Proxy This: How to Speed Up A/B Tests Without Falling into the Metrics Trap](https://effectsize.io/cases/proxy-this-how-to-speed-up-a-b-tests-without-falling-into/) | X5 Tech | 2025 | [original](https://habr.com/ru/companies/X5Tech/articles/974372/) |
 | [How to Estimate Correlation Between Metrics from Past A/B Tests](https://effectsize.io/cases/how-to-estimate-correlation-between-metrics-from-past-a-b/) | Booking.com | 2025 | [original](https://booking.ai/how-to-estimate-correlation-between-metrics-from-past-a-b-tests-0a5d99e5a11d) |
 | [How we built it: Real-time analytics for Stripe Billing](https://effectsize.io/cases/how-we-built-it-real-time-analytics-for-stripe-billing/) | Stripe | 2025 | [original](https://stripe.com/blog/how-we-built-it-real-time-analytics-for-stripe-billing) |
 | [Behind the metric: how we developed “Time Spent Learning Well”](https://effectsize.io/cases/behind-the-metric-how-we-developed-time-spent-learning-well/) | Duolingo | 2024 | [original](https://blog.duolingo.com/time-spent-learning-well) |
 | [Airbnb Brandometer: Powering brand perception measurement on social media data with AI](https://effectsize.io/cases/airbnb-brandometer-powering-brand-perception-measurement-on/) | Airbnb | 2024 | [original](https://medium.com/airbnb-engineering/airbnb-brandometer-powering-brand-perception-measurement-on-social-media-data-with-ai-c83019408051) |
 | [Learning the Covariance of Treatment Effects Across Many Weak Experiments](https://effectsize.io/cases/learning-the-covariance-of-treatment-effects-across-many/) | Netflix | 2024 | [original](https://arxiv.org/abs/2402.17637) |
-| [Why Khan Academy will be using "skills to proficient" to measure learning outcomes (and you should too!)](https://effectsize.io/cases/why-khan-academy-will-be-using-skills-to-proficient-to/) | Khan Academy | 2023 | [original](https://blog.khanacademy.org/why-khan-academy-will-be-using-skills-to-proficient-to-measure-learning-outcomes) |
 
-**[All 50 metrics cases →](topics/metrics.md)**
+**[All 68 metrics cases →](topics/metrics.md)**
 
 ### A/B testing
 
@@ -45,14 +45,14 @@ Design, power and MDE, variance reduction (CUPED, stratification), sequential te
 |---|---|---|---|
 | [The Hidden Cost of Winsorizing](https://effectsize.io/cases/the-hidden-cost-of-winsorizing-2/) | Spotify | 2026 | [original](https://confidence.spotify.com/blog/capping-vs-winsorizing) |
 | [The Hidden Cost of Winsorizing](https://effectsize.io/cases/the-hidden-cost-of-winsorizing/) | Spotify | 2026 | [original](https://confidence.spotify.com/blog/capping-vs-winsorizing.md) |
+| [Buckets instead of millions of rows: how we speed up A/B test calculations without losing accuracy](https://effectsize.io/cases/buckets-instead-of-millions-of-rows-how-we-speed-up-a-b-test/) | X5 Tech | 2026 | [original](https://habr.com/ru/companies/X5Tech/articles/1075722/) · [code](https://effectsize.io/cases/buckets-instead-of-millions-of-rows-how-we-speed-up-a-b-test/) |
 | [How we redistributed alpha in A/B tests and reduced the sample size](https://effectsize.io/cases/how-we-redistributed-alpha-in-a-b-tests-and-reduced-the/) | T-Bank | 2026 | [original](https://habr.com/ru/companies/tbank/articles/1089482/) |
 | [A problem well-defined is half solved: Measuring Hypothesis Quality at Booking.com](https://effectsize.io/cases/a-problem-well-defined-is-half-solved-measuring-hypothesis/) | Booking.com | 2026 | [original](https://booking.ai/a-problem-well-defined-is-half-solved-measuring-hypothesis-quality-at-booking-com-a85e845178a3) |
 | [Why Spotify Is Not Using Bayesian A/B Testing](https://effectsize.io/cases/why-spotify-is-not-using-bayesian-a-b-testing/) | Spotify | 2026 | [original](https://engineering.atspotify.com/2026/9/why-spotify-is-not-using-bayesian-a-b-testing) |
 | [When Can LLMs Replace Humans in A/B Tests?](https://effectsize.io/cases/when-can-llms-replace-humans-in-a-b-tests/) | Spotify | 2026 | [original](https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests) |
 | [A Recap of the 2026 Experimentation Conference at Booking.com](https://effectsize.io/cases/a-recap-of-the-2026-experimentation-conference-at-booking/) | Booking.com | 2026 | [original](https://booking.ai/a-recap-of-the-2026-experimentation-conference-at-booking-com-f43d48698fcd) |
-| [Accurate Sample Size for Always-Valid Inference](https://effectsize.io/cases/accurate-sample-size-for-always-valid-inference/) | Spotify | 2026 | [original](https://confidence.spotify.com/blog/accurate-sample-size-always-valid) |
 
-**[All 194 a/b testing cases →](topics/ab-testing.md)**
+**[All 297 a/b testing cases →](topics/ab-testing.md)**
 
 ### Advanced experimentation
 
@@ -60,6 +60,7 @@ Network effects and interference, two-sided marketplaces, switchback, cluster ra
 
 | Case | Company | Year | Source |
 |---|---|---|---|
+| [Practical Lessons in Measuring Network Effects](https://effectsize.io/cases/practical-lessons-in-measuring-network-effects/) | Meta | 2026 | [original](https://www.youtube.com/watch?v=2ziq49bGDA8) |
 | [Powering AI-led research through simulation](https://effectsize.io/cases/powering-ai-led-research-through-simulation/) | Grab | 2026 | [original](https://engineering.grab.com/powering-ai-led-research-through-simulation) |
 | [Scaling Reliable Experimentation in a Two-Sided AdTech Marketplace: ZMS Budget Split](https://effectsize.io/cases/scaling-reliable-experimentation-in-a-two-sided-adtech/) | Zalando | 2026 | [original](https://engineering.zalando.com/posts/2026/09/scaling-reliable-experimentation-in-two-sided-adtech-marketplace.html) |
 | [Variance Reduction Below the Randomization Grain](https://effectsize.io/cases/variance-reduction-below-the-randomization-grain/) | Instacart | 2026 | [original](https://tech.instacart.com/variance-reduction-below-the-randomization-grain-31719f87a7d2) |
@@ -67,9 +68,8 @@ Network effects and interference, two-sided marketplaces, switchback, cluster ra
 | [Switchback tests: infrastructure for experiments under network effects](https://effectsize.io/cases/switchback-tests-infrastructure-for-experiments-under/) | Avito | 2026 | [original](https://habr.com/ru/companies/avito/articles/1048780/) |
 | [Why an A/B test is not suitable for evaluating ranking, and what to do about it](https://effectsize.io/cases/why-an-a-b-test-is-not-suitable-for-evaluating-ranking-and/) | Avito | 2026 | [original](https://habr.com/ru/companies/avito/articles/1043880/) |
 | [Beyond A/B Testing: Using Surrogacy and Region-Splits to Measure Long-Term Effects in Marketplaces](https://effectsize.io/cases/beyond-a-b-testing-using-surrogacy-and-region-splits-to/) | Lyft | 2026 | [original](https://eng.lyft.com/beyond-a-b-testing-using-surrogacy-and-region-splits-to-measure-long-term-effects-in-marketplaces-9cb06d628f2d) |
-| [Interleaving for Accelerated Testing](https://effectsize.io/cases/interleaving-for-accelerated-testing/) | Expedia Group | 2026 | [original](https://medium.com/expedia-group-tech/interleaving-for-accelerated-testing-75adc644027b) |
 
-**[All 66 advanced experimentation cases →](topics/experimentation-advanced.md)**
+**[All 86 advanced experimentation cases →](topics/experimentation-advanced.md)**
 
 ### Causal inference
 
@@ -77,6 +77,7 @@ DiD, synthetic control, RDD, IV, matching/PSM, CausalImpact, effect estimation w
 
 | Case | Company | Year | Source |
 |---|---|---|---|
+| [DML vs PSM: how to estimate non-randomized experiments faster and more reliably?](https://effectsize.io/cases/dml-vs-psm-how-to-estimate-non-randomized-experiments-faster/) | Wildberries | 2026 | [original](https://habr.com/ru/companies/rwb/articles/1070206/) |
 | [A Human-Augmenting Agentic Workflow for Causal Inference](https://effectsize.io/cases/a-human-augmenting-agentic-workflow-for-causal-inference/) | Netflix | 2026 | [original](https://netflixtechblog.com/a-human-augmenting-agentic-workflow-for-causal-inference-4623f0a9c5af) · [code](https://effectsize.io/cases/a-human-augmenting-agentic-workflow-for-causal-inference/) |
 | [Evolution of the Databricks Commercial Motion: Building Scalable Intelligence on Databricks](https://effectsize.io/cases/evolution-of-the-databricks-commercial-motion-building/) | Databricks | 2026 | [original](https://www.databricks.com/dataaisummit/session/evolution-databricks-commercial-motion-building-scalable-intelligence) |
 | [How Developer Productivity Changed with AI4SDLC Tools](https://effectsize.io/cases/how-developer-productivity-changed-with-ai4sdlc-tools/) | T-Bank | 2026 | [original](https://www.youtube.com/watch?v=AKfcnrTZXYY) |
@@ -84,9 +85,8 @@ DiD, synthetic control, RDD, IV, matching/PSM, CausalImpact, effect estimation w
 | [The New Policy Hasn't Run Yet: Comparing It to the Old One Before an A/B Test](https://effectsize.io/cases/the-new-policy-hasn-t-run-yet-comparing-it-to-the-old-one/) | Sber | 2026 | [original](https://www.youtube.com/watch?v=UeHoi7uLT1I) |
 | [The Causality Gap: Measuring the True Impact of Voluntary Adoption in Digital Marketplaces](https://effectsize.io/cases/the-causality-gap-measuring-the-true-impact-of-voluntary/) | Booking.com | 2026 | [original](https://booking.ai/the-causality-gap-measuring-the-true-impact-of-voluntary-adoption-in-digital-marketplaces-ea68b5a35120) |
 | [Meta: A Blueprint for Valuing Content When A/B Tests Are Not an Option](https://effectsize.io/cases/meta-a-blueprint-for-valuing-content-when-a-b-tests-are-not/) | Meta | 2026 | [original](https://medium.com/@AnalyticsAtMeta/meta-a-blueprint-for-valuing-content-when-a-b-tests-are-not-an-option-7880bac721f1) |
-| [Propensity Score Matching: how to build A/B test analogues when experiments are impossible](https://effectsize.io/cases/propensity-score-matching-how-to-build-a-b-test-analogues/) | Yandex | 2026 | [original](https://habr.com/ru/companies/yandex/articles/1004060/) |
 
-**[All 121 causal inference cases →](topics/causal.md)**
+**[All 161 causal inference cases →](topics/causal.md)**
 
 ### Uplift
 
@@ -101,9 +101,9 @@ CATE, meta-learners (S/T/X/R/DR), uplift trees, communication and promo targetin
 | [Are All Wolves Scary: AUF or How to Tame Uplift?](https://effectsize.io/cases/are-all-wolves-scary-auf-or-how-to-tame-uplift/) | Alfa-Bank | 2025 | [original](https://habr.com/ru/companies/alfa/articles/895002/) · [code](https://effectsize.io/cases/are-all-wolves-scary-auf-or-how-to-tame-uplift/) |
 | [How machine learning supercharged our revenue by millions of dollars](https://effectsize.io/cases/how-machine-learning-supercharged-our-revenue-by-millions-of/) | Duolingo | 2025 | [original](https://blog.duolingo.com/machine-learning-ads/) |
 | [Experimenting with Machine Learning to Target In-App Messaging](https://effectsize.io/cases/experimenting-with-machine-learning-to-target-in-app/) | Spotify | 2023 | [original](https://engineering.atspotify.com/2023/06/experimenting-with-machine-learning-to-target-in-app-messaging) |
-| [Improving Instagram notification management with machine learning and causal inference](https://effectsize.io/cases/improving-instagram-notification-management-with-machine/) | Meta | 2022 | [original](https://engineering.fb.com/2022/10/31/ml-applications/instagram-notification-management-machine-learning) |
+| [Causal machine learning for a smart paywall at The New York Times](https://effectsize.io/cases/causal-machine-learning-for-a-smart-paywall-at-the-new-york/) | The New York Times | 2023 | [original](https://www.youtube.com/watch?v=6CmS96K6-EE) |
 
-**[All 33 uplift cases →](topics/uplift.md)**
+**[All 48 uplift cases →](topics/uplift.md)**
 
 ## Recs & search
 
@@ -122,7 +122,7 @@ Candidate generation, ranking, embeddings, sequential/session-based recommendati
 | [Measuring the Impact of Personalized Recommendations](https://effectsize.io/cases/measuring-the-impact-of-personalized-recommendations/) | Netflix | 2026 | [original](https://netflixtechblog.com/measuring-the-impact-of-personalized-recommendations-4c26be3a4d96) |
 | [Meta’s Generative Ads Model (GEM): Scaling the Central Model and Compute Engine for Frontier Ads AI](https://effectsize.io/cases/meta-s-generative-ads-model-gem-scaling-the-central-model/) | Meta | 2026 | [original](https://engineering.fb.com/2026/10/13/ml-applications/generative-ads-model-gem-scaling-frontier-ads-ai/) |
 
-**[All 362 recommendations cases →](topics/recsys.md)**
+**[All 460 recommendations cases →](topics/recsys.md)**
 
 ### Personalization
 
@@ -132,14 +132,14 @@ Personalized UX, content, notifications, pricing and offers, contextual bandits,
 |---|---|---|---|
 | [From Activity to Intent: Generating User Journeys with LLMs](https://effectsize.io/cases/from-activity-to-intent-generating-user-journeys-with-llms/) | Pinterest | 2026 | [original](https://medium.com/pinterest-engineering/from-activity-to-intent-generating-user-journeys-with-llms-9652b9417626) |
 | [Personalization without user identity](https://effectsize.io/cases/personalization-without-user-identity/) | Airbnb | 2026 | [original](https://medium.com/airbnb-engineering/personalization-without-user-identity-8e7891a1d486) |
+| [Building Ask DoorDash (Part 6): A Grocery Reorder Case Study](https://effectsize.io/cases/building-ask-doordash-part-6-a-grocery-reorder-case-study/) | DoorDash | 2026 | [original](https://careersatdoordash.com/blog/building-ask-doordash-part-6-grocery-reorder-case-study/) |
 | [MAPS: Netflix’s Multimodal Asset Personalization at Scale](https://effectsize.io/cases/maps-netflix-s-multimodal-asset-personalization-at-scale/) | Netflix | 2026 | [original](https://netflixtechblog.com/maps-netflixs-multimodal-asset-personalization-at-scale-32f96320785e) |
 | [From manual rules to a model: how to automate subsidies when you can't hurt metrics in an A/B test](https://effectsize.io/cases/from-manual-rules-to-a-model-how-to-automate-subsidies-when/) | Avito | 2026 | [original](https://habr.com/ru/companies/avito/articles/1053408/) |
 | [Thinking Fast & Slow for a Personalized Notification System](https://effectsize.io/cases/thinking-fast-slow-for-a-personalized-notification-system/) | Netflix | 2026 | [original](https://netflixtechblog.com/thinking-fast-slow-for-a-personalized-notification-system-4d89b26525cd) |
 | [TargetRun: AI-Powered Trip Prediction for Delivering Timely Offers](https://effectsize.io/cases/targetrun-ai-powered-trip-prediction-for-delivering-timely/) | Target | 2026 | [original](https://tech.target.com/blog/targetrun-shopping-offers) |
-| [What If Your Page Layout Could Learn? Optimizing with Bandits](https://effectsize.io/cases/what-if-your-page-layout-could-learn-optimizing-with-bandits/) | Target | 2026 | [original](https://tech.target.com/blog/page-layout-optimization-bandits) |
-| [Inside the Archive: The Tech Behind Your 2025 Wrapped Highlights](https://effectsize.io/cases/inside-the-archive-the-tech-behind-your-2025-wrapped/) | Spotify | 2026 | [original](https://engineering.atspotify.com/2026/3/inside-the-archive-2025-wrapped) |
+| [Offline LLMs, Online Personalization: Generating carousels at DoorDash](https://effectsize.io/cases/offline-llms-online-personalization-generating-carousels-at/) | DoorDash | 2026 | [original](https://careersatdoordash.com/blog/doordash-offline-llms-online-personalization-generating-carousels/) |
 
-**[All 77 personalization cases →](topics/personalization.md)**
+**[All 112 personalization cases →](topics/personalization.md)**
 
 ### Search
 
@@ -147,16 +147,16 @@ Ranking, learning-to-rank, query understanding, autocomplete, relevance and its 
 
 | Case | Company | Year | Source |
 |---|---|---|---|
+| [Most Search Answers Are Ready Before the Query Arrives](https://effectsize.io/cases/most-search-answers-are-ready-before-the-query-arrives/) | Wildberries | 2026 | [original](https://habr.com/ru/companies/rwb/articles/1099536/) |
 | [Robust Fusion of Semantic and Behavioural Signals for LLM Reranking in Personalised Search](https://effectsize.io/cases/robust-fusion-of-semantic-and-behavioural-signals-for-llm/) | Spotify | 2026 | [original](https://research.atspotify.com/publications/robust-fusion-of-semantic-and-behavioural-signals-for-llm-reranking-in-personalised-search) |
 | [CASTLE: training natural language search before the first real query](https://effectsize.io/cases/castle-training-natural-language-search-before-the-first/) | Airbnb | 2026 | [original](https://medium.com/airbnb-engineering/castle-training-natural-language-search-before-the-first-real-query-3818ef8b4828) |
+| [Distilling LLM Understanding into Marketplace Discovery](https://effectsize.io/cases/distilling-llm-understanding-into-marketplace-discovery/) | DoorDash | 2026 | [original](https://www.youtube.com/watch?v=ACPEpji5NV4) |
 | [Automating Search Relevance Assessment at Scale with LLM-as-a-Judge](https://effectsize.io/cases/automating-search-relevance-assessment-at-scale-with-llm-as/) | Allegro | 2026 | [original](https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html) |
 | [When captions are not enough: how we cleaned up the "gray zone" in Image Search](https://effectsize.io/cases/when-captions-are-not-enough-how-we-cleaned-up-the-gray-zone/) | Yandex | 2026 | [original](https://habr.com/ru/companies/yandex/articles/1066946/) |
 | [The Evolution of Job Search at Avito Rabota: ML Optimizations and Insights from A/B Tests](https://effectsize.io/cases/the-evolution-of-job-search-at-avito-rabota-ml-optimizations/) | Avito | 2026 | [original](https://habr.com/ru/companies/avito/articles/1064546/) |
 | [Personalizing Airbnb search by learning from the guest journey](https://effectsize.io/cases/personalizing-airbnb-search-by-learning-from-the-guest/) | Airbnb | 2026 | [original](https://medium.com/airbnb-engineering/personalizing-airbnb-search-by-learning-from-the-guest-journey-bcefd1915624) |
-| [T-Search: how we trained an agent for multi-step search](https://effectsize.io/cases/t-search-how-we-trained-an-agent-for-multi-step-search/) | T-Bank | 2026 | [original](https://habr.com/ru/companies/tbank/articles/1060262/) |
-| [How we sped up video search labeling by tens of times without losing quality: experience of deploying a VLM assessor](https://effectsize.io/cases/how-we-sped-up-video-search-labeling-by-tens-of-times/) | VK | 2026 | [original](https://habr.com/ru/companies/vk/articles/1057830/) |
 
-**[All 224 search cases →](topics/search.md)**
+**[All 332 search cases →](topics/search.md)**
 
 ## LLM
 
@@ -167,15 +167,15 @@ LLMs for data analysis, evaluating LLM features with experiments, LLM ranking an
 | Case | Company | Year | Source |
 |---|---|---|---|
 | [How Pinterest Improved Analytics Agent Compliance with Loop Engineering](https://effectsize.io/cases/how-pinterest-improved-analytics-agent-compliance-with-loop/) | Pinterest | 2026 | [original](https://medium.com/pinterest-engineering/how-pinterest-improved-analytics-agent-compliance-with-loop-engineering-d3c52d0abaa2) |
+| [Visual search: fine-tuning ColPali and ColQwen3 for the Russian domain and comparing text and multimodal retrieval](https://effectsize.io/cases/visual-search-fine-tuning-colpali-and-colqwen3-for-the/) | X5 Tech | 2026 | [original](https://habr.com/ru/companies/X5Tech/articles/1103334/) |
 | [Fact-Checking at Scale: Building a More Accurate and Efficient Synopsis Factuality System](https://effectsize.io/cases/fact-checking-at-scale-building-a-more-accurate-and/) | Netflix | 2026 | [original](https://netflixtechblog.com/fact-checking-at-scale-building-a-more-accurate-and-efficient-synopsis-factuality-system-d7d85859d808) |
 | [How we reduced T2M content from 7 days to 1 hour by applying a data-driven approach and turning a well-known meme upside down](https://effectsize.io/cases/how-we-reduced-t2m-content-from-7-days-to-1-hour-by-applying/) | Sber | 2026 | [original](https://habr.com/ru/companies/sberbank/articles/1103056/) |
 | [From Static Help Content to a RAG-Based Onboarding Agent for Partners](https://effectsize.io/cases/from-static-help-content-to-a-rag-based-onboarding-agent-for/) | Booking.com | 2026 | [original](https://booking.ai/from-static-help-content-to-a-rag-based-onboarding-agent-for-partners-f7d5a789c4f7) |
+| [The Lifecycle of LLM-as-a-Judge: Building, Aligning, and Monitoring at scale](https://effectsize.io/cases/the-lifecycle-of-llm-as-a-judge-building-aligning-and-2/) | Netflix | 2026 | [original](https://netflixtechblog.medium.com/the-lifecycle-of-llm-as-a-judge-building-aligning-and-monitoring-at-scale-c95bd8283508) |
 | [Inside LinkedIn's data context layer: curating trustworthy context for humans and agents](https://effectsize.io/cases/inside-linkedin-s-data-context-layer-curating-trustworthy/) | LinkedIn | 2026 | [original](https://linkedin.com/blog/engineering/infrastructure/inside-linkedins-data-context-layer-curating-trustworthy-context-for-humans-and-agents) |
-| [Workbench: Building an AI Content Generation and Quality Assurance System at Scale](https://effectsize.io/cases/workbench-building-an-ai-content-generation-and-quality/) | Thumbtack | 2026 | [original](https://medium.com/thumbtack-engineering/workbench-building-an-ai-content-generation-and-quality-assurance-system-at-scale-7a381b47c640) |
-| [The RAFT framework: how Microsoft's souped-up RAG works](https://effectsize.io/cases/the-raft-framework-how-microsoft-s-souped-up-rag-works/) | Microsoft | 2026 | [original](https://habr.com/ru/companies/ru_mts/articles/1089320/) |
-| [Building Gavel: AI evaluation infrastructure across Eternal](https://effectsize.io/cases/building-gavel-ai-evaluation-infrastructure-across-eternal/) | Zomato | 2026 | [original](https://zomato.com/blog/building-gavel-ai-evaluation-infrastructure-across-eternal) |
+| [Scaling AI in Legal: Building Uber's Redlining Agent](https://effectsize.io/cases/scaling-ai-in-legal-building-uber-s-redlining-agent/) | Uber | 2026 | [original](https://www.uber.com/gb/en/blog/building-ubers-redlining-agent/) |
 
-**[All 379 llm in analytics cases →](topics/llm-in-analytics.md)**
+**[All 698 llm in analytics cases →](topics/llm-in-analytics.md)**
 
 ## Predictive & behavior
 
@@ -194,7 +194,7 @@ Sessionization, paths and funnels, process mining, sequence mining, transitions 
 | [Marketing Attribution: Evaluating The Path to Purchase in the Product Ecosystem](https://effectsize.io/cases/marketing-attribution-evaluating-the-path-to-purchase-in-the/) | trivago | 2022 | [original](https://tech.trivago.com/post/2022-12-06-marketing-attribution-evaluating-the-path-to-purchase) |
 | [How a neural network outperformed boosting, and Sber's team took 1st place in the Data Fusion Contest 2022](https://effectsize.io/cases/how-a-neural-network-outperformed-boosting-and-sber-s-team/) | Sber | 2022 | [original](https://habr.com/ru/companies/sberbank/articles/674272/) · [code](https://effectsize.io/cases/how-a-neural-network-outperformed-boosting-and-sber-s-team/) |
 
-**[All 25 clickstream cases →](topics/clickstream.md)**
+**[All 44 clickstream cases →](topics/clickstream.md)**
 
 ### Behavior
 
@@ -211,7 +211,7 @@ Retention, cohorts, activation, aha-moment, engagement, behavioral segmentation 
 | [What difficulties we overcame when introducing RFM customer segmentation at Avito Real Estate](https://effectsize.io/cases/what-difficulties-we-overcame-when-introducing-rfm-customer/) | Avito | 2024 | [original](https://habr.com/ru/companies/avito/articles/863960/) |
 | [From Data to Insights: Segmenting Airbnb's Supply](https://effectsize.io/cases/from-data-to-insights-segmenting-airbnb-s-supply/) | Airbnb | 2024 | [original](https://medium.com/airbnb-engineering/from-data-to-insights-segmenting-airbnbs-supply-c88aa2bb9399) |
 
-**[All 42 behavior cases →](topics/behavior.md)**
+**[All 51 behavior cases →](topics/behavior.md)**
 
 ### Predictive models
 
@@ -223,12 +223,12 @@ Churn prediction, propensity, LTV prediction, lead scoring, metric forecasting.
 | [From Customer Flow Forecast to Optimal Staff Size](https://effectsize.io/cases/from-customer-flow-forecast-to-optimal-staff-size/) | Alfa-Bank | 2026 | [original](https://habr.com/ru/companies/alfa/articles/1085676/) |
 | [Roonomics: How Economics Helped Us to Build a Churn Prediction Model](https://effectsize.io/cases/roonomics-how-economics-helped-us-to-build-a-churn/) | Deliveroo | 2026 | [original](https://deliveroo.engineering/2026/09/22/roonomics-how-economics-helped-us-to-build-a-churn-prediction-model.html) |
 | [How we knew COVID was over (and what our models had to unlearn)](https://effectsize.io/cases/how-we-knew-covid-was-over-and-what-our-models-had-to/) | Airbnb | 2026 | [original](https://medium.com/airbnb-engineering/how-we-knew-covid-was-over-and-what-our-models-had-to-unlearn-c606b9bdb0ab) |
+| [How to compare apples with oranges: Proper evaluation of article-level demand forecasts](https://effectsize.io/cases/how-to-compare-apples-with-oranges-proper-evaluation-of/) | Zalando | 2026 | [original](https://www.youtube.com/watch?v=W4rjcvSzB1A) |
 | [Application of Object Detection Methods in the Task of Long-Term Event Forecasting](https://effectsize.io/cases/application-of-object-detection-methods-in-the-task-of-long/) | Sber | 2026 | [original](https://habr.com/ru/companies/sberbank/articles/1054286/) · [code](https://effectsize.io/cases/application-of-object-detection-methods-in-the-task-of-long/) |
 | [General Neural Network Model with Cross-Module Interaction for Personal Credit Scoring](https://effectsize.io/cases/general-neural-network-model-with-cross-module-interaction/) | Alfa-Bank | 2026 | [original](https://habr.com/ru/companies/alfa/articles/1050626/) |
 | [Graph Neural Networks for Personal Default Prediction: How We Tried a New Approach and Didn't Miss the Mark](https://effectsize.io/cases/graph-neural-networks-for-personal-default-prediction-how-we/) | Alfa-Bank | 2026 | [original](https://habr.com/ru/companies/alfa/articles/1050464/) · [code](https://effectsize.io/cases/graph-neural-networks-for-personal-default-prediction-how-we/) |
-| [Predicting Risk in Content Launches: How Data-Driven Insights can Transform Launch Planning](https://effectsize.io/cases/predicting-risk-in-content-launches-how-data-driven-insights/) | Netflix | 2026 | [original](https://netflixtechblog.com/predicting-risk-in-content-launches-how-data-driven-insights-can-transform-launch-planning-587b1f2de928) |
 
-**[All 224 predictive models cases →](topics/predictive.md)**
+**[All 333 predictive models cases →](topics/predictive.md)**
 
 ### Growth
 
@@ -241,11 +241,11 @@ Onboarding analysis, paywall/pricing experiments, reactivation, virality — whe
 | [From Data to Action: How We Scaled Direct Communications in RuStore](https://effectsize.io/cases/from-data-to-action-how-we-scaled-direct-communications-in/) | VK | 2025 | [original](https://habr.com/ru/companies/vk/articles/902056/) |
 | [How Avito Used an Interpretable WoE Scorecard to Tell Service Providers How to Get More Orders](https://effectsize.io/cases/how-avito-used-an-interpretable-woe-scorecard-to-tell/) | Avito | 2025 | [original](https://habr.com/ru/companies/avito/articles/879680/) · [code](https://effectsize.io/cases/how-avito-used-an-interpretable-woe-scorecard-to-tell/) |
 | [Buyer Journey Insights with Data-Driven Attribution](https://effectsize.io/cases/buyer-journey-insights-with-data-driven-attribution/) | LinkedIn | 2025 | [original](https://linkedin.com/blog/engineering/marketing/buyer-journey-insights-with-data-driven-attribution) |
+| [RNNs for data-driven multi-touch attribution at Booking.com](https://effectsize.io/cases/rnns-for-data-driven-multi-touch-attribution-at-booking-com/) | Booking.com | 2024 | [original](https://www.youtube.com/watch?v=Z5cdB6ntJZc) |
 | [5 product lessons we learned from building Friend Streak](https://effectsize.io/cases/5-product-lessons-we-learned-from-building-friend-streak/) | Duolingo | 2024 | [original](https://blog.duolingo.com/product-lessons-friend-streak) |
 | [Ensuring Even Ad Spend on the Zalando Homepage: How Our New Bidding Algorithm Maximizes Value for Advertisers and Shoppers](https://effectsize.io/cases/ensuring-even-ad-spend-on-the-zalando-homepage-how-our-new/) | Zalando | 2024 | [original](https://engineering.zalando.com/posts/2024/09/even-ad-spend-on-zalando-homepage.html) |
-| [How we turned an app's loading screen into a useful tool for the user. A case from the KION online cinema](https://effectsize.io/cases/how-we-turned-an-app-s-loading-screen-into-a-useful-tool-for/) | MTS | 2024 | [original](https://habr.com/ru/companies/ru_mts/articles/808105/) |
 
-**[All 32 growth cases →](topics/growth.md)**
+**[All 56 growth cases →](topics/growth.md)**
 
 ## Risk
 
@@ -258,13 +258,13 @@ Fraud and abuse detection in a product, transaction and authentication scoring, 
 | [How We Introduced LLMs into Avito Moderation](https://effectsize.io/cases/how-we-introduced-llms-into-avito-moderation/) | Avito | 2026 | [original](https://habr.com/ru/companies/avito/articles/1095230/) · [code](https://effectsize.io/cases/how-we-introduced-llms-into-avito-moderation/) |
 | [Convenient or secure? How we stopped choosing in bot protection](https://effectsize.io/cases/convenient-or-secure-how-we-stopped-choosing-in-bot/) | Yandex | 2026 | [original](https://habr.com/ru/companies/yandex/articles/1089666/) |
 | [Everything in Its Place, or How We Built a Single Metric for Hundreds of Antifraud Models](https://effectsize.io/cases/everything-in-its-place-or-how-we-built-a-single-metric-for/) | Avito | 2026 | [original](https://habr.com/ru/companies/avito/articles/1064332/) |
+| [Vector search in content moderation: fitting 200+ models into one ensemble](https://effectsize.io/cases/vector-search-in-content-moderation-fitting-200-models-into/) | Wildberries | 2026 | [original](https://habr.com/ru/companies/rwb/articles/1059776/) |
 | [Under the hood of a single slider: how bot protection works at Yandex](https://effectsize.io/cases/under-the-hood-of-a-single-slider-how-bot-protection-works/) | Yandex | 2026 | [original](https://habr.com/ru/companies/yandex/articles/1045981/) |
 | [About Anti-Fraud and Cats: How to Fight Fraud, Not Just Detect It Better](https://effectsize.io/cases/about-anti-fraud-and-cats-how-to-fight-fraud-not-just-detect/) | Yandex | 2026 | [original](https://www.youtube.com/watch?v=eCrZsHNCJ7Q) |
 | [Deploying LLMs in Moderation: From PoC to the Target Solution](https://effectsize.io/cases/deploying-llms-in-moderation-from-poc-to-the-target-solution/) | Avito | 2026 | [original](https://www.youtube.com/watch?v=MURmxFBvuxQ) |
-| [How Pinterest Built a Real‑Time Radar for Violative Content using AI](https://effectsize.io/cases/how-pinterest-built-a-real-time-radar-for-violative-content/) | Pinterest | 2025 | [original](https://medium.com/pinterest-engineering/how-pinterest-built-a-real-time-radar-for-violative-content-using-ai-d5a108e02ac2) |
-| [SafeChat: DoorDash's AI-powered safety feature](https://effectsize.io/cases/safechat-doordash-s-ai-powered-safety-feature/) | DoorDash | 2025 | [original](https://careersatdoordash.com/blog/doordash-safechat-ai-safety-feature) |
+| [How we automated product card moderation with Computer Vision at Wildberries](https://effectsize.io/cases/how-we-automated-product-card-moderation-with-computer/) | Wildberries | 2026 | [original](https://habr.com/ru/companies/rwb/articles/992716/) |
 
-**[All 89 fraud cases →](topics/fraud.md)**
+**[All 145 fraud cases →](topics/fraud.md)**
 
 ## Data & practice
 
@@ -283,7 +283,7 @@ Metric change analysis (root cause), metric decomposition, anomaly detection, au
 | [Methods for Analyzing Text Data from User Support Requests](https://effectsize.io/cases/methods-for-analyzing-text-data-from-user-support-requests/) | T-Bank | 2025 | [original](https://habr.com/ru/companies/tbank/articles/899130/) |
 | [The Quest to Understand Metric Movements](https://effectsize.io/cases/the-quest-to-understand-metric-movements/) | Pinterest | 2025 | [original](https://medium.com/pinterest-engineering/the-quest-to-understand-metric-movements-8ab12ae97cda) |
 
-**[All 78 insights cases →](topics/insights.md)**
+**[All 122 insights cases →](topics/insights.md)**
 
 ### Analytics practice
 
@@ -300,7 +300,7 @@ Data-informed processes, experimentation culture, how an analyst works with the 
 | [Data Strategy in a Large Group of Companies](https://effectsize.io/cases/data-strategy-in-a-large-group-of-companies/) | MTS | 2024 | [original](https://www.youtube.com/watch?v=8b1PbxcAyQo) |
 | [Beating Routine in Data Science: How to Stop Being Under-Programmers and Under-Researchers](https://effectsize.io/cases/beating-routine-in-data-science-how-to-stop-being-under/) | Alfa-Bank | 2024 | [original](https://habr.com/ru/companies/alfa/articles/788290/) |
 
-**[All 50 analytics practice cases →](topics/analytics-practice.md)**
+**[All 88 analytics practice cases →](topics/analytics-practice.md)**
 
 ### Data infrastructure
 
@@ -317,11 +317,11 @@ Event pipelines, event stores, feature store — only if directly tied to the to
 | [Real-Time Analytics on ClickHouse](https://effectsize.io/cases/real-time-analytics-on-clickhouse/) | X5 Tech | 2026 | [original](https://www.youtube.com/watch?v=ms4vgIf13EY) |
 | [Balancing Speed and Accuracy in Digital Order Fulfillment: The Next-Gen Solution](https://effectsize.io/cases/balancing-speed-and-accuracy-in-digital-order-fulfillment/) | Target | 2026 | [original](https://tech.target.com/blog/balancing-speed-and-accuracy-digital-fulfillment) |
 
-**[All 77 data infrastructure cases →](topics/data-infra.md)**
+**[All 109 data infrastructure cases →](topics/data-infra.md)**
 
 ## Top companies
 
-[Spotify](companies/spotify.md) (94) · [Yandex](companies/yandex.md) (91) · [Avito](companies/avito.md) (90) · [Alfa-Bank](companies/alfa-bank.md) (68) · [DoorDash](companies/doordash.md) (61) · [Sber](companies/sber.md) (59) · [VK](companies/vk.md) (51) · [Pinterest](companies/pinterest.md) (48) · [Meta](companies/meta.md) (46) · [Netflix](companies/netflix.md) (38) · [MTS](companies/mts.md) (37) · [LinkedIn](companies/linkedin.md) (36) · [T-Bank](companies/t-bank.md) (33) · [Instacart](companies/instacart.md) (31) · [Airbnb](companies/airbnb.md) (27) · [Microsoft](companies/microsoft.md) (26) · [Booking.com](companies/booking-com.md) (24) · [Grab](companies/grab.md) (22) · [Lyft](companies/lyft.md) (22) · [Walmart](companies/walmart.md) (22) · [Apple](companies/apple.md) (20) · [Databricks](companies/databricks.md) (20) · [Shopify](companies/shopify.md) (19) · [Expedia Group](companies/expedia-group.md) (19) · [Algolia](companies/algolia.md) (18) · [Etsy](companies/etsy.md) (18) · [Yandex Lavka](companies/yandex-lavka.md) (15) · [Mercari](companies/mercari.md) (15) · [Zillow](companies/zillow.md) (15) · [VTB](companies/vtb.md) (14) · [Amazon](https://effectsize.io/?company=amazon) (13) · [LY Corporation](https://effectsize.io/?company=ly-corporation) (12) · [Ramp](https://effectsize.io/?company=ramp) (12) · [Target](https://effectsize.io/?company=target) (11) · [eBay](https://effectsize.io/?company=ebay) (11) · [Thumbtack](https://effectsize.io/?company=thumbtack) (10) · [Yelp](https://effectsize.io/?company=yelp) (10) · [Zalando](https://effectsize.io/?company=zalando) (10) · [X5 Tech](https://effectsize.io/?company=x5-tech) (10) · [Celsus](https://effectsize.io/?company=celsus) (10)
+[Spotify](companies/spotify.md) (99) · [Yandex](companies/yandex.md) (91) · [Avito](companies/avito.md) (90) · [Alfa-Bank](companies/alfa-bank.md) (70) · [DoorDash](companies/doordash.md) (68) · [Sber](companies/sber.md) (60) · [Meta](companies/meta.md) (51) · [VK](companies/vk.md) (51) · [Microsoft](companies/microsoft.md) (51) · [X5 Tech](companies/x5-tech.md) (50) · [Pinterest](companies/pinterest.md) (48) · [LinkedIn](companies/linkedin.md) (43) · [Netflix](companies/netflix.md) (42) · [MTS](companies/mts.md) (39) · [T-Bank](companies/t-bank.md) (33) · [Instacart](companies/instacart.md) (33) · [Wildberries](companies/wildberries.md) (28) · [Airbnb](companies/airbnb.md) (28) · [Booking.com](companies/booking-com.md) (26) · [GetYourGuide](companies/getyourguide.md) (24) · [Nubank](companies/nubank.md) (24) · [Lyft](companies/lyft.md) (24) · [Databricks](companies/databricks.md) (24) · [Uber](companies/uber.md) (23) · [Grab](companies/grab.md) (23) · [Trendyol](companies/trendyol.md) (23) · [VTB](companies/vtb.md) (23) · [Walmart](companies/walmart.md) (23) · [Shopify](companies/shopify.md) (22) · [Amazon](companies/amazon.md) (21) · [Monzo](https://effectsize.io/?company=monzo) (21) · [Magnit Tech](https://effectsize.io/?company=magnit-tech) (20) · [Apple](https://effectsize.io/?company=apple) (20) · [Ozon Tech](https://effectsize.io/?company=ozon-tech) (20) · [Expedia Group](https://effectsize.io/?company=expedia-group) (20) · [Etsy](https://effectsize.io/?company=etsy) (19) · [Algolia](https://effectsize.io/?company=algolia) (18) · [Kuper](https://effectsize.io/?company=kuper) (18) · [Yandex Lavka](https://effectsize.io/?company=yandex-lavka) (15) · [Mercari](https://effectsize.io/?company=mercari) (15)
 
 ## FAQ
 

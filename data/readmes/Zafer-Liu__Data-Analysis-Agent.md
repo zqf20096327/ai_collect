@@ -503,12 +503,19 @@ This is especially useful when you frequently demonstrate, debug, or run multipl
 
 ## 📝 Changelog
 
-> **Current source version `v1.4.0`** · October 16, 2026 · Check [Releases](https://github.com/Zafer-Liu/Data-Analysis-Agent/releases/latest) for published installers.
+> **Current source version `v1.5.2`** · November 16, 2026 · Check [Releases](https://github.com/Zafer-Liu/Data-Analysis-Agent/releases/latest) for published installers.
+
+v1.5.2 brings governed analysis execution, remote training, and bounded datasets into the main path, and adds cluster SQL sources, team A2A messaging, and semantic definition lineage; analysis execution, tool authorization, cancellation, and evidence validation share the same boundaries. A frontend version updater is added, and the public release boundary and desktop packaging are tightened.
+
+v1.5.1 defaults standalone desktop packages to local mode, enabling cloud authentication only when `BAA_CLOUD_AUTH_URL` is explicitly configured. v1.5.0 adds the cost event ledger, workflow token caps, the Infistar model provider, and context-based discovery for low-frequency tools; the built-in tool registry grows to 73 tools.
+
+Direct `python app.py` launches and default desktop packages require no cloud login and use your own model configuration. Hosted services retain account authentication.
+
+### v1.4.0 history
 
 The public source now includes the existing private-edition features: the read-only administration console, desktop cloud authentication and model gateways, referral and quota ledgers, browser/table ingestion, browser-local persistence, PyTorch GRU/LSTM, chart themes and PNG export, in-memory SQL transformations and numeric provenance checks, canvas save recovery, Skill tags, and SSE reliability improvements.
 
-Direct `python app.py` launches and default desktop packages require no cloud login and use your own model configuration. Hosted services retain account authentication; desktop cloud authentication is enabled only by an explicitly configured `BAA_CLOUD_AUTH_URL`.
-### Local models and services (source update)
+#### Local models and services (source update)
 
 Manage HTTP and Docker connections in **Settings → Local services**. Custom HTTP connections support health checks and manual JSON requests; OpenAI-compatible services can discover models and add them to the LLM list. TimesFM is a forecasting adapter with `run_analysis`, backtesting, result tables, and chart export. See the [local services guide](./deploy/local-services/README.md) for configuration and capability boundaries. No models, model dependencies, or container images are downloaded automatically.
 

@@ -1,19 +1,19 @@
 <div align="center">
 
-# 📄 Papyrus
+<h1>Papyrus</h1>
 
-**Papyrus turns documents and web pages into Markdown, chunks and images for your LLM pipeline. It runs as one Docker service, separate from your app.**
-
-[![Version](https://img.shields.io/github/v/release/axelered/papyrus?style=for-the-badge&logo=github&logoColor=white&label=version&labelColor=18181b&color=3f3f46)](https://github.com/axelered/papyrus/releases)
-[![CI](https://img.shields.io/github/actions/workflow/status/axelered/papyrus/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=ci&labelColor=18181b)](https://github.com/axelered/papyrus/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/actions/workflow/status/axelered/papyrus/release.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=release&labelColor=18181b)](https://github.com/axelered/papyrus/actions/workflows/release.yml)
-[![License](https://img.shields.io/github/license/axelered/papyrus?style=for-the-badge&label=license&labelColor=18181b&color=3f3f46)](https://github.com/axelered/papyrus/blob/main/LICENSE)
-[![Stars](https://img.shields.io/github/stars/axelered/papyrus?style=for-the-badge&logo=github&logoColor=white&label=stars&labelColor=18181b&color=3f3f46)](https://github.com/axelered/papyrus/stargazers)
-[![Docs](https://img.shields.io/badge/docs-axelered.com-3f3f46?style=for-the-badge&labelColor=18181b)](https://docs.axelered.com/papyrus)
+**Everything your AI does with documents, behind one self-hosted API. Papyrus reads, converts and renders any file or web page from a single Docker service, so your app never touches a parser.**
 
 <img src="docs/assets/sticker.png" alt="Papyrus" width="100%">
 
 [Documentation](https://docs.axelered.com/papyrus) · [Quickstart](https://docs.axelered.com/papyrus/quickstart) · [API Reference](https://docs.axelered.com/papyrus/api) · [Python SDK](https://pypi.org/project/papyrus-sdk/) · [TypeScript SDK](https://www.npmjs.com/package/@axelered/papyrus) · [HELM Chart](chart)
+
+[![Version](https://img.shields.io/github/v/release/axelered/papyrus?style=for-the-badge&logo=github&logoColor=white&label=version&labelColor=18181b&color=3f3f46)](https://github.com/axelered/papyrus/releases)
+[![License](https://img.shields.io/github/license/axelered/papyrus?style=for-the-badge&label=license&labelColor=18181b&color=3f3f46)](https://github.com/axelered/papyrus/blob/main/LICENSE)
+[![Stars](https://img.shields.io/github/stars/axelered/papyrus?style=for-the-badge&logo=github&logoColor=white&label=stars&labelColor=18181b&color=3f3f46)](https://github.com/axelered/papyrus/stargazers)
+[![Docs](https://img.shields.io/badge/docs-axelered.com-3f3f46?style=for-the-badge&labelColor=18181b)](https://docs.axelered.com/papyrus)
+[![CI](https://img.shields.io/github/actions/workflow/status/axelered/papyrus/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=ci&labelColor=18181b)](https://github.com/axelered/papyrus/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/actions/workflow/status/axelered/papyrus/release.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=release&labelColor=18181b)](https://github.com/axelered/papyrus/actions/workflows/release.yml)
 
 </div>
 
@@ -113,7 +113,7 @@ The chart in `chart/` deploys Papyrus on Kubernetes with two replicas, a PodDisr
 <!-- todo: switch to oci://ghcr.io/axelered/charts once the chart is published on release -->
 
 ```shell
-helm install papyrus ./chart --namespace papyrus --create-namespace --set image.tag=0.3.0
+helm install papyrus ./chart --namespace papyrus --create-namespace --set image.tag=latest
 ```
 
 The install notes print the commands to read the key and reach the service. Server settings go under `config` in your values file, in the same format as `config.example.yml`. Set `networkPolicy.enabled: true` to block the pods from private and cloud metadata addresses, as a second layer behind the SSRF guard. `chart/values.yaml` documents every key.
@@ -125,6 +125,16 @@ Before you expose Papyrus to a network, read the [security checklist](https://do
 Star the repository to follow releases. If you run Papyrus in production and need support, write to [oss@axelered.com](mailto:oss@axelered.com).
 
 To report a vulnerability, see [SECURITY.md](SECURITY.md). To build and test Papyrus locally, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+<br/>
+
+<picture>
+    <source srcset="https://raw.githubusercontent.com/axelered/.github/main/assets/logo_v5_wordmark_white.svg" media="(prefers-color-scheme: dark)">
+    <source srcset="https://raw.githubusercontent.com/axelered/.github/main/assets/logo_v5_wordmark_black.svg" media="(prefers-color-scheme: light)">
+    <img src="https://raw.githubusercontent.com/axelered/.github/main/assets/logo_v5_wordmark_black.svg" alt="Axelered" width="220">
+</picture>
+
+Papyrus is the document engine of the [Axelered Platform](https://axelered.com/platform?utm_source=github&utm_medium=readme&utm_campaign=papyrus), open-sourced and maintained by the same team. The platform runs document-heavy processes from intake to write-back, with AI agents, human review and a full audit trail, in our EU cloud, your cloud or on premises. [Talk to an engineer](https://axelered.com/contact?utm_source=github&utm_medium=readme&utm_campaign=papyrus) about automating your processes.
 
 ## ⚖️ License
 

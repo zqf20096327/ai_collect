@@ -74,14 +74,15 @@ Diagnose cross-session prompt-cache instability—such as idle-gap TTL decay, tr
 - **16-Week Calendar Heatmap & Day Drill-Down**: Tracks active day streaks, Today vs. 7-day average deltas, 14-day sparkbars, and a crisp 1:1 pixel heatmap (`API-eq. $ | Tokens | Turns`). Click any day cell to drill down into that date's sessions and costs.
 - **Request Log & Speed (Module #8)**: On-demand SQL-paginated single-row request log (`GET /api/requests`) with model/source/0%-miss/slow filters and multi-field sorting, displaying `uncached/cacheRead/out`, hit %, TTFT, Decode & End-to-End TPS, and pure API-equivalent cost (never multiplied by quota calibration factors), with expandable per-turn details (`thinking/visible` split, timing, cache saved, `provider_request_id`). Its **Speed & Periods** view adds an orthogonal **`Token-Weighted` | `Per-Req P50`** switch, per-model speed comparisons, and `1h / 5h / 1d / 7d` period averages & totals.
 
-### 4. Manual Quota Alignment & Cycle Budget Inversion (Module #7)
+### 4. Quota Alignment & Cycle Budget Inversion (Module #7)
 
-Because Antigravity exposes no official Sidecar Quota API, AGY Lens keeps quota tracking 100% compliant via **2-decimal manual alignment anchors** (`e.g. 94.25%`).
+AGY Lens tracks weekly quota cycles with **2-decimal manual alignment anchors** (`e.g. 94.25%`) and an optional **Auto Quota Alignment** mode powered by the official local `agy` CLI.
 
 <p align="center">
-  <img src="assets/screenshots/quota-budget.png" alt="Manual Quota Alignment and Implied Cycle Budget" width="100%" />
+  <img src="assets/screenshots/quota-budget.png" alt="Quota Alignment and Implied Cycle Budget" width="100%" />
 </p>
 
+- **Opt-In Auto Quota Alignment (Default OFF, Cross-Platform)**: Enable anytime in **Settings → Auto Quota Alignment** to query the official local `agy -p "/usage" --output-format json` command (`0` model tokens, `0` new conversation DBs, never touches OAuth credentials or internal RPCs). Strictly gated by **all 3 conditions** (cooldown `≥ 2h` AND new turns `≥ 20` AND new API-equivalent spend `≥ $3.00`, all customizable) with exponential failure backoff and zero calls while idle. Records `7d` weekly quota at `0.01%` precision with second-level ISO reset timestamps by default (`5h` optional), coexists cleanly with manual rows (tagged `Auto`, never overwrites manual entries or degrades high-precision cycles), and includes OS-aware CLI install & login guidance (`macOS` / `Linux` / `Windows`).
 - **Independent Per-Pool `7d` Cycles & Precision-Aware Reset Boundaries**: `Gemini` (including Argon) and `Third-Party` each track their own independent `7d` cycle `[start → reset]` derived from explicit reset timestamps; two-pass cycle segmentation with precision-interval intersection prevents hour/day countdown jitter (`e.g. 6d 23h`) from falsely splitting cycles, keeps boundary-band trailing anchors from polluting new-cycle Δu, and scopes both calibration and the default anchor history strictly to each pool's active `7d` cycle (older `7d` cycles and `5h` records stay cleanly grouped and collapsed).
 - **Dynamic Reset Inheritance, Inline Editing & Single-Anchor Bootstrap**: Persists only explicit reset timestamps and derives cycle inheritance dynamically at read time (with inline reset editing/clearing and zero stale copies); when a cycle expires, archived anchors fold automatically while first-turn-triggered rollover tracks new-cycle spend alongside the previous cycle's reference budget, and a single new-cycle snapshot can immediately produce a conservative `100%` cycle-start bootstrap estimate (open upper CI bound) before smoothly switching to pure differential calibration.
 - **Orthogonal 3-Factor Weight Calibration Lab (`M / C / O` All-Subsets Selection)**: Shares default Base anchors with `pricing_defaults.json` (`defaultAnchors`) and lets you switch the `1.00×` Base model right in the UI; decouples **Model Multipliers (`M`)**, **Cache-Read Multiplier (`C`)**, and **Output Multiplier (`O`)** into 3 independent switches (so single-model cycles can still calibrate `C` or `O`), evaluates all 8 subsets with profile-grid Huber-WLS + LOOCV + `VIF < 10`, conservatively coalesces settlement lag / short gaps (`<10m` for `7d`, `<5m` for `5h`) & micro-rebounds, and transparently shows trial estimates alongside an Observed vs. Predicted (`pp`) residual chart.
@@ -110,7 +111,7 @@ Because Antigravity exposes no official Sidecar Quota API, AGY Lens keeps quota 
 | **Conversation DB Access** | Opened strictly with `new DatabaseSync(path, { readOnly: true })` (WAL-aware incremental mtime/size indexing; never writes to source DBs). |
 | **Host RPC & Auth Tokens** | **Zero** internal RPC probing, **zero** OAuth/credential file reads, **zero** undocumented host endpoint calls. |
 | **Background Execution** | Runs solely as an Antigravity-managed UI sidecar (`on-failure`); polling pauses automatically when the pane is hidden (`Off` / `15s` / `30s` / `60s` / `5m`). |
-| **Optional Network Access** | In-panel auto-update only `GET`s public GitHub Releases metadata over strict HTTPS host allowlists (zero local data uploaded; disable via `Settings → Update Policy → Off`). Remote pricing sync is disabled by default. |
+| **Optional Network Access** | In-panel auto-update only `GET`s public GitHub Releases metadata over strict HTTPS host allowlists (zero local data uploaded; disable via `Settings → Update Policy → Off`). Remote pricing sync and Auto Quota Alignment (`agy -p "/usage" --output-format json`) are both disabled by default and opt-in only. |
 | **Local Cache Storage** | Incremental index, settings, pricing overrides, update backups, and quota anchors live locally under `~/.gemini/antigravity/sidecar_data/agy-lens/lens_panel/data/` (physically isolated from plugin code). |
 | **Issue Report Export** | `Copy Issue Markdown` strips workspaces, local paths, and conversation titles—emitting only aggregated stats, model IDs, gap durations, and provider request IDs. |
 
@@ -231,6 +232,15 @@ Then open:
   npm install --no-save playwright && npx playwright install chromium
   node scripts/capture_screenshots.mjs --out assets/screenshots/live
   ```
+
+---
+
+## Feedback & Contributing
+
+Bug reports, feature ideas, model pricing updates, and platform compatibility feedback are warmly welcome!
+
+- **Report a bug or request a capability**: Open a [GitHub Issue](https://github.com/xukp20/agy-lens/issues/new/choose) (structured Bug Report & Feature Request templates are provided).
+- **Contribute code or docs**: See [CONTRIBUTING.md](CONTRIBUTING.md) for local test commands and project design principles.
 
 ---
 

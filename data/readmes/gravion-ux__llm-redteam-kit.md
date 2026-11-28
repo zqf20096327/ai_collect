@@ -3,6 +3,9 @@
 [![codecov](https://codecov.io/gh/gravion-ux/llm-redteam-kit/branch/main/graph/badge.svg)](https://codecov.io/gh/gravion-ux/llm-redteam-kit)
 [![CI](https://github.com/gravion-ux/llm-redteam-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/gravion-ux/llm-redteam-kit/actions/workflows/ci.yml)
 
+> **Status: Active** — maintained flagship. New probe cases are welcome
+> when they include OWASP mapping and deterministic detection criteria.
+
 ![Demo](docs/demo.gif)
 
 *Demo: Offline mock-mode run: 26 curated probes scored against a mock model.*
@@ -73,11 +76,11 @@ export LLM_MODEL="gpt-4o-mini"
 python -m llm_redteam_kit run --threshold 0.8 --out-dir reports
 ```
 
-Run the test suite:
+Run the test suite (46 tests):
 
 ```bash
-pip install pytest
-python -m pytest
+pip install pytest pytest-cov
+python -m pytest -q --cov=llm_redteam_kit --cov-fail-under=75
 ```
 
 ## Features
@@ -156,8 +159,9 @@ Fail the build when a model or prompt change regresses safety:
 Exit codes: `0` gate passed · `1` pack/endpoint error · `2` gate failed
 (score below threshold, or pass rate dropped vs. the baseline report).
 
-This repository's own CI runs the pytest suite plus an offline mock run
-gated at a 0.5 pass rate — see `.github/workflows/ci.yml`.
+This repository's own CI runs the 46-test pytest suite with a 75% coverage
+floor, plus an offline mock run gated at a 0.5 pass rate — see
+`.github/workflows/ci.yml`.
 
 ## Limitations
 

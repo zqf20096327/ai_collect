@@ -1,0 +1,104 @@
+# sandboxRouter
+
+**One API for every sandbox.** A free, open-source router for the places an AI agent can run code: Agent37, Alibaba Cloud, AWS (Bedrock AgentCore and Lambda MicroVMs), Azure Container Apps, Beam, Blaxel, Boat, Cloudflare, CodeSandbox, Daytona, Dedalus Machines, Deno, DigitalOcean Harness Runtime, E2B, exe.dev, Fly.io Sprites, Freestyle, Google Cloud Agent Platform, HOPX, InstaBox, Koyeb, Maritime, Modal, Morph, Northflank, Novita, OpenScale, Run Cloud, Runloop, Sail, Superserve, Tensorlake, Upstash Box and Vercel, plus Docker on your own machine. It picks a provider by price, speed or capability, and falls back to the next one when a provider is down or rate-limited.
+
+E2B quickstart (Node 22.19+ and an E2B API key):
+
+```bash
+npm i @sandboxrouter/sdk e2b
+export E2B_API_KEY=...     # your E2B API key
+```
+
+Save as `agent.mjs` and run `node agent.mjs`:
+
+```js
+import { Router } from "@sandboxrouter/sdk";
+
+const router = new Router();
+const sbx = await router.create({ timeoutMinutes: 10 }, { provider: "e2b" });
+try {
+  const r = await sbx.exec("python3 -c 'print(6*7)'");
+  console.log(r.stdout, "ran on", sbx.provider);
+} finally {
+  await sbx.kill();
+}
+```
+
+The SDK uses ES modules and runs on Node 20+. Each optional provider SDK can require a newer Node version. For TypeScript 5.2+ on Node 22+, `await using sbx = ...` also works when the compiler includes `ESNext.Disposable`. Plain JavaScript supports that syntax on Node 24+.
+
+Set the keys of the providers you use. `create()` starts the sandbox on the cheapest one that fits: list price for the size you asked for, corrected where we measured what a provider really bills. Providers within 10% of each other on estimated price go fastest first. The router uses its own timings, your benchmark file or published timings, in that order. Estimates exclude account-specific charges such as [Boat’s fees above its included start allowance](https://docs.boat.dev/limits.md#extra-starts). Providers that failed their last real-account check go last. Ties are alphabetical, and no provider pays for placement. If that provider is down, busy or out of credit, the next one takes it, and every attempt is on `sbx.attempts`. The sandbox stays on that provider until you `kill()` it.
+
+Site and docs: [sandboxrouter.ai](https://sandboxrouter.ai) · npm: [`@sandboxrouter/sdk`](https://www.npmjs.com/package/@sandboxrouter/sdk)
+
+## Why
+
+AI agents need a disposable computer to run code a model wrote: install packages, run tests, do an RL rollout. Dozens of providers sell one, each with its own SDK and auth, and the same 2 vCPU / 4 GB sandbox costs from under a cent to over thirty cents an hour. sandboxRouter is one interface over all of them:
+
+- **Same code everywhere.** `create`, streamed `exec`, files and cleanup. Require support for `pause`, preview URLs with `sbx.url(port)`, or background commands with `sbx.start()`. See [Preview URLs and background commands](docs/reference.md#preview-urls-and-background-commands).
+- **The provider's own SDK is still there.** `sbx.native` is the provider's own sandbox object for features such as snapshots and volumes. See [Using a provider's own features](https://sandboxrouter.ai/docs#native).
+- **Cheapest real cost, then speed, with fallback.** A `maxHourlyUsd` price cap and `quote()` to see where a sandbox would land and what the run costs before starting it. Or `cheapest` for strictly lowest cost for the run, `fastest` by start times, `verified` for tested providers first, or a list of providers you name. `requireVerified` limits a router to providers that passed the real-account check.
+- **Errors you can act on.** Every failure has a `code` (`no_provider`, `setup`, `all_failed`, `timeout`, ...), an HTTP status, and the list of providers tried.
+- **Your keys, or one hosted key.** With your own provider keys, sandboxes run on your accounts and nothing passes through anyone else. The optional hosted key (api.sandboxrouter.ai) runs them on sandboxRouter's provider accounts instead, so its requests go through that server; see [Security](https://www.sandboxrouter.ai/security).
+- **Cleanup.** A local ledger of every sandbox started, so `sandboxrouter gc` kills what a crashed script left behind.
+- **TypeScript, Python, HTTP and a CLI.** Plus desktops and phones for computer-use models.
+
+## Prices
+
+List price while running, 2 vCPU / 4 GB, cheapest first; waitlisted sign-ups follow. The router ranks by these, corrected where we measured what a provider really bills, and tries providers whose last real-account check failed last. "Up to" = CPU billed only while busy, shown with every core busy. "Not run yet" = built from the provider's docs and tested against mocks only. Click a provider for its billing details; more in [Reading the price table](https://sandboxrouter.ai/docs#price-table).
+
+| Provider | $/hr | Plan needed | Real-account check | Source |
+|---|---|---|---|---|
+| [Agent37](https://sandboxrouter.ai/providers/agent37) | $0.007 | none | passed (2026-11-13) | [pricing](https://www.agent37.com/docs/agents-api/billing) |
+| [Boat](https://sandboxrouter.ai/providers/boat) | $0.018 | $20/mo (credited) | passed (2026-11-14) | [pricing](https://docs.boat.dev/pricing.md) |
+| [Maritime](https://sandboxrouter.ai/providers/maritime) | $0.022 | $20/mo (credited) | passed (2026-11-13) | [pricing](https://maritime.sh/pricing) |
+| [Run Cloud](https://sandboxrouter.ai/providers/runcloud) | $0.030 | none | not run yet | [pricing](https://run.cloud/pricing) |
+| [Sailboxes (Sail Research)](https://sandboxrouter.ai/providers/sail) | up to $0.062 | none | passed (2026-11-14) | [pricing](https://docs.sailresearch.com/sailboxes-pricing.md) |
+| [Northflank](https://sandboxrouter.ai/providers/northflank) | $0.067 | none | passed (2026-11-18) | [pricing](https://northflank.com/pricing) |
+| [Morph Cloud](https://sandboxrouter.ai/providers/morph) | $0.100 | none | passed (2026-11-18) | [pricing](https://cloud.morph.so/web/pricing) |
+| [exe.dev](https://sandboxrouter.ai/providers/exedev) | $0.105 | $15/mo | not run yet | [pricing](https://exe.dev/docs/standalone-vms.md) |
+| [DigitalOcean Harness Runtime](https://sandboxrouter.ai/providers/digitalocean) | up to $0.126 | none | not run yet | [pricing](https://docs.digitalocean.com/products/managed-agents/agent-harness-runtime/details/pricing/) |
+| [Freestyle](https://sandboxrouter.ai/providers/freestyle) | $0.134 | none | passed (2026-11-13) | [pricing](https://www.freestyle.sh/docs/vms/pricing-and-limits) |
+| [Beam](https://sandboxrouter.ai/providers/beam) | $0.140 | $20/mo (credited) | passed (2026-11-18) | [pricing](https://www.beam.cloud/pricing) |
+| [CodeSandbox SDK (Together)](https://sandboxrouter.ai/providers/codesandbox) | $0.149 | none | not run yet | [pricing](https://docs.together.ai/docs/together-code-sandbox-legacy) |
+| [Fly.io Sprites](https://sandboxrouter.ai/providers/sprites) | up to $0.164 | none | passed (2026-11-13) | [pricing](https://fly.io/sprites) |
+| [Blaxel](https://sandboxrouter.ai/providers/blaxel) | $0.166 | none | passed (2026-11-13) | [pricing](https://blaxel.ai/pricing) |
+| [HOPX](https://sandboxrouter.ai/providers/hopx) | $0.166 | none | not run yet | [pricing](https://hopx.ai/pricing) |
+| [Superserve](https://sandboxrouter.ai/providers/superserve) | $0.166 | maybe $20/mo (credited) | passed (2026-11-13) | [pricing](https://superserve.ai/pricing) |
+| [Tensorlake](https://sandboxrouter.ai/providers/tensorlake) | up to $0.200 | none | passed (2026-11-14) | [pricing](https://www.tensorlake.ai/pricing) |
+| [Upstash Box](https://sandboxrouter.ai/providers/upstash) | up to $0.200 | none | not run yet | [pricing](https://upstash.com/pricing/box) |
+| [Cloudflare Sandbox](https://sandboxrouter.ai/providers/cloudflare) | up to $0.216 | $5/mo | passed (2026-11-13) | [pricing](https://developers.cloudflare.com/containers/platform/pricing/) |
+| [Amazon Bedrock AgentCore Code Interpreter](https://sandboxrouter.ai/providers/agentcore) | up to $0.217 | none | passed (2026-11-13) | [pricing](https://aws.amazon.com/bedrock/agentcore/pricing/) |
+| [Modal](https://sandboxrouter.ai/providers/modal) | $0.238 | none | passed (2026-11-13) | [pricing](https://modal.com/pricing) |
+| [AWS Lambda MicroVMs](https://sandboxrouter.ai/providers/lambda) | $0.252 | none | passed (2026-11-13) | [pricing](https://aws.amazon.com/lambda/pricing/) |
+| [Deno Sandbox](https://sandboxrouter.ai/providers/deno) | up to $0.300 | $20/mo | not run yet | [pricing](https://deno.com/sandbox) |
+| [Runloop](https://sandboxrouter.ai/providers/runloop) | $0.317 | none | not run yet | [pricing](https://www.runloop.ai/pricing) |
+| [Vercel Sandbox](https://sandboxrouter.ai/providers/vercel) | up to $0.341 | none | passed (2026-11-13) | [pricing](https://vercel.com/docs/vercel-sandbox/pricing) |
+| [InstaBox (sign-up waitlisted)](https://sandboxrouter.ai/providers/instabox) | $0.017 | none | not run yet | [pricing](https://instabox.sh/docs/pricing.md) |
+| [Koyeb Sandboxes (not taking new accounts)](https://sandboxrouter.ai/providers/koyeb) | $0.058 | $29/mo | not run yet | [pricing](https://www.koyeb.com/docs/reference/instances) |
+| [Dedalus Machines (sign-up waitlisted)](https://sandboxrouter.ai/providers/dedalus) | $0.149 | none | not run yet | [pricing](https://docs.dedaluslabs.ai/dcs/dm/pricing) |
+| [LangSmith Sandboxes (sign-up waitlisted)](https://sandboxrouter.ai/providers/langsmith) | $0.189 | none | not run yet | [pricing](https://www.langchain.com/pricing) |
+| [OpenScale Sandboxes](https://sandboxrouter.ai/providers/openscale) | skipped (default image is 2 vCPU / 1 GB; a bigger size needs image.openscale) | none | passed (2026-11-13) | [pricing](https://openscale.so/sandboxes) |
+| [Azure Container Apps dynamic sessions](https://sandboxrouter.ai/providers/azure) | skipped (max 1 vCPU) | none | not run yet | [pricing](https://learn.microsoft.com/en-us/azure/container-apps/billing#dynamic-sessions) |
+| [Daytona](https://sandboxrouter.ai/providers/daytona) | skipped (default image is 1 vCPU / 1 GB; a bigger size needs image.daytona) | none | passed (2026-11-13) | [pricing](https://www.daytona.io/pricing) |
+| [Alibaba Cloud Agent Sandbox](https://sandboxrouter.ai/providers/alibaba) | skipped (max 2 GB memory) | none | not run yet | [pricing](https://www.alibabacloud.com/help/en/agent-sandbox/product-overview/billing-overview) |
+| [Novita AI Agent Sandbox](https://sandboxrouter.ai/providers/novita) | skipped (default image is 2 vCPU / 1 GB; a bigger size needs image.novita) | none | passed (2026-11-13) | [pricing](https://docs.novita.ai/guides/sandbox-pricing) |
+| [Google Cloud Agent Platform](https://sandboxrouter.ai/providers/google) | skipped (max 1 vCPU) | none | passed (2026-11-18) | [pricing](https://cloud.google.com/products/gemini-enterprise-agent-platform/pricing) |
+| [E2B](https://sandboxrouter.ai/providers/e2b) | skipped (default image is 2 vCPU / 0.5 GB; a bigger size needs image.e2b) | none | passed (2026-11-13) | [pricing](https://e2b.dev/pricing) |
+| [Docker (local)](https://sandboxrouter.ai/providers/docker) | free | none | passed (2026-11-13) | [pricing](https://docs.docker.com/engine/) |
+
+Checked 2026-11-04 to 2026-11-27.
+
+## Install
+
+```bash
+npm i @sandboxrouter/sdk
+```
+
+Then the SDK of each provider you use (many need none) and its keys: both are listed in [the reference](docs/reference.md#install). `npx @sandboxrouter/sdk providers` shows which keys are set.
+
+## More
+
+- [Docs](https://sandboxrouter.ai/docs): routing, fallback, streaming, files, pause, the HTTP server and Python.
+- [Reference](docs/reference.md): the full library, CLI and HTTP API, desktops and phones, the real-account compatibility table, and how each adapter maps the spec.
+- [CONTRIBUTING.md](CONTRIBUTING.md): run a provider for real and send the result, fix a price, or add a provider.
+- [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [MIT](LICENSE)

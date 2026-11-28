@@ -13,7 +13,9 @@ Since we use sqlite for persistence, you must have a C compiler. Compiling the s
 Otherwise, orchard-tui is a single executable. You can install it where you prefer.
 Below are a few ways one might install to `~/bin/orchard-tui`
 
-Go get:
+*Don't forget to clone a [toolbox](https://github.com/aerth/orchard-tools) so you have some basic tools to get started.*
+
+### Compile
 
 Install to ~/bin/ directory
 ```bash
@@ -29,6 +31,20 @@ cd orchard-tui
 make && make install
 ~/bin/orchard-tui
 ```
+
+### Docker
+
+Now available in container form, built by robots (CI).
+Latest tools are included (`ORCHARD_TOOLS=/home/username/src/otools`)
+
+To get self-signed LAN LLM to work properly, you may need some volume mounts. Set up an env-file with LLM_HOST, LLM_MODEL, and give it a try in a container to get familiar before installing everywhere!
+
+```bash
+docker run -it -v /etc/ssl/certs:/etc/ssl/certs:ro -v /etc/ca-certificates:/etc/ca-certificates:ro --network host --rm --env-file ~/.config/orchard/env ghcr.io/aerth/orchard-tui:latest
+```
+
+Example dockerized wrapper script might include `-v ./:/src` volume mount to make the current (host) directory as writable in the container. The `WORKDIR` is `/src`. 
+
 
 ## Usage
 
@@ -46,9 +62,13 @@ To require confirmation on a certain tool, run with `--require-confirm [name]`. 
 
 ### Configuration 
 
-Instead of always using flags and export env to run `orchard-tui`, consider a `~/.config/orchard/env` file.
+Consider creating a `~/.config/orchard/env` file, which is loaded if it exists (unless `-e none` command line).
 
-In `~/.config/orchard/env`:
+Currently, the host and model are not easily changed at runtime. In the future, we can consider secret storage for API keys and a list of provider/model combos to easily switch between messages. Until then, with sqlite database, restarting the program resumes the conversation fully.
+
+The orchard env file does not override variables that are already set..
+
+Can use `-e none` or `-e /path/to/other/env-file` to **not** use the default location.
 
 ```bash
 # env config for orchard (https://github.com/aerth/orchard)
@@ -60,6 +80,30 @@ LLM_THINK=low
 #ORCHARD_TOOLS=~/src/otools
 # if ORCHARD_DB is used, persistence is activated.
 #ORCHARD_DB=~/.local/state/orchard/orchard.db
+```
+
+You can drop this snippet into ~/.config/orchard/env for reference:
+
+```bash
+## orchard paths (disabled if omitted)
+#ORCHARD_DB=~/.local/state/orchard/orchard.db
+#ORCHARD_TOOLS=~/src/otools
+## llama.cpp
+#LLM_HOST=http://127.0.0.1:9931 
+#LLM_API_KEY=foo
+## ollama
+#LLM_HOST=http://127.0.0.1:11434
+## nvidia example
+#LLM_HOST=https://integrate.api.nvidia.com 
+#LLM_API_KEY=foo
+#LLM_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
+#LLM_MODEL=nvidia/nemotron-3.5-super-vl-120b-a12b
+#LLM_MODEL=nvidia/nemotron-3.5-bolt-e4b 
+## openai example
+#LLM_HOST=https://api.openai.com/v1/chat/completions
+#LLM_API_KEY=foo
+#LLM_MODEL=gpt-6-luna
+#LLM_MODEL=gpt-6-sol
 ```
 
 ### llama.cpp example
@@ -83,7 +127,10 @@ orchard-tui
 
 ## Persistence (conversation history)
 
-When using a database for persistent conversations, we use `$PWD` as thread ID (as if thread flag was `orchard-tui -thread $PWD`) to automatically create a "thread ID" for each project directory. To specify the conversation thread ID, use the `-thread` flag. If thread argument is not a UUID, then it is hashed. This allows for words such as `-thread foo` to make it easy to use new threadID.
+When using a database for persistent conversations, we use `$PWD` as thread ID (as if thread flag was `orchard-tui -thread $PWD`) to automatically create a "thread ID" for each project directory. To specify the conversation thread ID, use the `-thread` flag. If thread argument is not a UUID, then it is hashed. This allows for words such as `-thread foo` to make it easy to generate new deterministic thread ID.
+
+From the command-line you can `--delete-thread confirm` to delete the thread from the database. 
+In the chat, you can `/clear` for the same.
 
 Images are not persisted to database.
 
@@ -95,7 +142,7 @@ See `/tmp/orchard.json.log` and run with `-v` for more logs.
 
 This program reads ORCHARD_TOOLS env to create a dynamic toolbox.
 
-When used, this *adds* to the default tools (`run_bash`). To use **only** the toolboxes _without_ the builtin bash tool, add `--no-bash` flag when opening orchard-tui.
+When used, this *adds* to the default tools (`run_bash`). To use **only** the toolboxes _without_ the builtin bash tool, add `--no-bash` flag when opening orchard-tui, or whitelist tools using `-tool` flag.
 
 For a nice starter pack of tools to use, try [orchard-tools](https://github.com/aerth/orchard-tools) toolbox.
 
@@ -104,43 +151,7 @@ git clone https://github.com/aerth/orchard-tools ~/src/otools
 ORCHARD_TOOLS=~/src/otools orchard-tui -db /tmp/orchard.db
 ```
 
-### ORCHARD_TOOLS directory structure
-
-```bash
-# example file tree
-${ORCHARD_TOOLS}/toolboxes/files/grep.bash
-${ORCHARD_TOOLS}/toolboxes/web/web_search.bash
-```
-
-For now, env files in a toolbox is only used for scripts in that toolbox,
-If no .env file exists in the inner toolbox, the main toolbox .env is used
-
-```bash
-# optional env files
-# used for 'web' toolbox
-${ORCHARD_TOOLS}/toolboxes/web/.env
-# used for any toolbox without their own .env file
-${ORCHARD_TOOLS}/.env
-```
-
-The tool spec is created from the comments at the top of the script.
-
-For now, the toolbox subdirectories are for organization only and all toolboxes are combined into one for LLM.
-
-```bash
-# Description: Use grep (ripgrep) to find line-numbers and filenames for keywords..
-# Param: phrase - The text to search for [string] [required]
-# Param: path - Path to the file (if omitted, all subdirectories) [string] [optional]
-# Param: case_insensitive - Add -i flag if we arent sure about spelling. Causes more false positives! [boolean] [optional]
-flags=(--line-number --word-regexp)
-if [[ "$3" == "true" ]]; then
-	flags+=("--ignore-case")
-fi
-rg "${flags[@]}" "${1}" "${2:-.}"
-```
-
-If the script spec is formatted correctly, the tool will be available to use.
-The tool calling is fully abstracted, isolating the llm from the execution logic and tool implementation.
+Refer to the *orchard* and *orchard-tools* documentation for more information on dynamic tools.
 
 ## Copyright
 

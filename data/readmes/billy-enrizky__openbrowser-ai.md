@@ -76,7 +76,7 @@ OpenBrowser is a framework for intelligent browser automation. It combines direc
   - [12.2. Tools](#122-tools)
   - [12.3. Configuration](#123-configuration)
 - [13. Benchmark: Native Local Lanes](#13-benchmark-native-local-lanes)
-  - [13.1. Native Local Benchmarks (2026-11-25)](#131-native-local-benchmarks-2026-11-25)
+  - [13.1. Native Local Benchmarks (2026-11-27)](#131-native-local-benchmarks-2026-11-27)
   - [13.2. Why OpenBrowser is faster and more efficient](#132-why-openbrowser-is-faster-and-more-efficient)
 - [14. CLI Usage](#14-cli-usage)
 - [15. Project Structure](#15-project-structure)
@@ -113,7 +113,7 @@ OpenBrowser is a framework for intelligent browser automation. It combines direc
 - **MCP Server** - Model Context Protocol for Claude Desktop, Claude Code, Codex, OpenCode, and other AI assistants.
   Modern clients use explicit contexts and isolated profiles. The server includes read-only status and reset tools.
 - **CLI Daemon** - Persistent browser daemon with `-c` flag for direct code execution from Bash, explicit startup ownership, health and recovery status, saved login state, and 10-minute auto-shutdown
-- **Fast CLI paths** - `-c` uses a standard-library thin client against a warm daemon. `scrape --no-browser` uses OpenBrowser no-browser mode: a light console entry that starts no Chrome, Blink, or V8 process and does not import the browser or configuration stack
+- **CLI frontends** - OpenBrowser 0.1.61 platform wheels send eligible warm `-c` calls through a native client. The Python backend owns startup and the remaining CLI commands. See the [CLI frontend reference](https://docs.openbrowser.me/customize/integrations/native-cli). `scrape --no-browser` uses OpenBrowser no-browser mode: a light console entry that starts no Chrome, Blink, or V8 process and does not import the browser or configuration stack
 - **Batch scraping** - `scrape_pages` and the CLI batch scrape multiple URLs with bounded concurrency. An explicit `--no-browser` or `--engine http` batch starts no browser
 - **Explicit Lifecycle State** - Browser, CDP, navigation, focus, storage, downloads, agent runs, and CodeAgent runs report typed phases that replace log inspection
 - **Workflow Recording** - Record, replay, and export browser sessions to Jupyter notebooks or API crawler code
@@ -241,6 +241,8 @@ source .venv/bin/activate
 uv pip install -e ".[all]"
 ```
 
+Source and editable installs use the Python frontend by default. Native wheel builds require a supported Rust target. See the [CLI frontend reference](https://docs.openbrowser.me/customize/integrations/native-cli) for build options and the output limit.
+
 ### 3.9. Optional Dependencies
 
 ```bash
@@ -257,6 +259,8 @@ pip install openbrowser-ai[video]      # Video recording support
 > **No separate browser install needed.** OpenBrowser auto-detects any installed Chromium-based browser (Chrome, Edge, Brave, Chromium) and uses it directly. If none is found and `uvx` is available, Chromium is installed automatically on first run. To pre-install manually (requires `uvx`): `openbrowser-ai install`
 
 ## 4. Quick Start
+
+The CodeAgent examples below use hosted providers and need the matching provider key. Local models need no hosted provider key. BrowserSession examples and `openbrowser-ai -c` need no separate OpenAI, OpenBrowser, or MCP API key.
 
 ### 4.1. Basic Usage
 
@@ -350,6 +354,8 @@ When a browser session exists, status includes `browser.cdp` with the root conne
 The same status surfaces add `browser.health` when a session exists. `health.phase` is `unknown`, `healthy`, `degraded`, `crashed`, `stopped`, or `failed`. The block records page-target crash history, the latest focus-recovery outcome, and a status-time local process check. `health.healthy=true` means setup or focus recovery was observed. A page read shows the current page state. Hydration and target readiness can differ. `process_present` is `null` when the published CDP root is not bound to the recorded local owner, or when process identity is inconclusive. That includes remote browsers, stopped sessions, and ambiguous PID reuse. `health` never performs a page probe or starts a browser. A status response without `health` means no browser session exists.
 
 ### 5.2. Environment Variables
+
+Provider keys are for Agent and CodeAgent runs that use a hosted provider. Local models need no hosted provider key. MCP, `openbrowser-ai -c`, `scrape`, `web-search`, and the browser skills need no separate OpenAI, OpenBrowser, or MCP API key.
 
 ```bash
 # Google (recommended)
@@ -536,9 +542,11 @@ For OpenClaw plugin documentation, see [docs.openclaw.ai/tools/plugin](https://d
 
 [![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io/?q=openbrowser)
 
-OpenBrowser includes an MCP (Model Context Protocol) server that exposes browser automation as tools for AI assistants like Claude. Listed on the [MCP Registry](https://registry.modelcontextprotocol.io/?q=openbrowser) as `me.openbrowser/openbrowser-ai`. The default stdio transport is a lean JSON-RPC loop that answers discovery and the tool catalog before it imports the MCP SDK. It negotiates protocol version `2026-07-28` with modern clients. Set `OPENBROWSER_MCP_TRANSPORT=sdk` to use the MCP SDK 2.3 escape hatch. Invalid values exit with code 2. No external LLM API keys required: the MCP client provides the intelligence.
+OpenBrowser includes an MCP (Model Context Protocol) server that exposes browser automation as tools for AI assistants like Claude. Listed on the [MCP Registry](https://registry.modelcontextprotocol.io/?q=openbrowser) as `me.openbrowser/openbrowser-ai`. The default stdio transport is a lean JSON-RPC loop that answers discovery and the tool catalog before it imports the MCP SDK. It negotiates protocol version `2026-07-28` with modern clients. Set `OPENBROWSER_MCP_TRANSPORT=sdk` to use the MCP SDK 2.3 escape hatch. Invalid values exit with code 2. No separate OpenAI, OpenBrowser, or MCP API key is required. The MCP client provides the intelligence.
 
 By default, each modern MCP context uses an isolated managed profile under `~/.config/openbrowser/profiles/mcp-<owner-id>`. The legacy no-handle owner uses `mcp-<server-instance-id>`. The owner ID is internal. Read the resolved path from `get_status.profile.user_data_dir`. The `context_id` handle is separate. The profile's `storage_state.json` is seeded once from `~/.config/openbrowser/profiles/default/storage_state.json`, so existing logins are available without allowing concurrent contexts to kill or corrupt one another's browser. Profiles are retained on disk after `close_context`. A new MCP server process cannot resume a context handle, and it creates a new isolated profile unless you configure an explicit shared profile. Configure `OPENBROWSER_USER_DATA_DIR` for a profile that survives restarts. `OPENBROWSER_STORAGE_STATE` is a one-time seed for managed profiles. Later changes are saved to the active profile copy. OpenBrowser also auto-cleans disposable Chromium caches in managed profiles, which keeps disk usage down without deleting cookies or login state. If you explicitly configure the same `OPENBROWSER_USER_DATA_DIR` for multiple contexts or servers, the profile lease rejects the second owner with a clear error.
+
+The native entry delegates `--mcp` to the Python server. Its stdio protocol and context lifecycle stay the same across CLI frontends. See the [CLI frontend reference](https://docs.openbrowser.me/customize/integrations/native-cli).
 
 ### 12.1. Quick Setup
 
@@ -646,9 +654,11 @@ Prefer indexed actions whenever an element index exists. Coordinate actions use 
 
 Section 13.1 reports the current native local baseline. For a local, no-LLM comparison with pinned runtimes and verified page work, use the [navigation comparison verifier](benchmarks/navigation_compare_README.md). It reports engine, IPC, wait-policy, failure, and cleanup differences. Read it as a navigation-lane result.
 
-### 13.1. Native Local Benchmarks (2026-11-25)
+### 13.1. Native Local Benchmarks (2026-11-27)
 
 Local deterministic fixtures, no LLM, and interleaved samples with exact oracles. The full method, raw JSONL, and host-load caveats are in [benchmarks/scraping/README.md](benchmarks/scraping/README.md) and [benchmarks/interactive/README.md](benchmarks/interactive/README.md). Build and host are recorded in each raw artifact. The figures below are the last clean tracked N=5 run.
+
+These interactive figures describe the configured native workflows. Every browser interface in the 2026-11-27 lanes uses the same pinned Chrome for Testing build, revision 1255, and complete executable bindings. Read the older scraping lanes within their recorded build scopes.
 
 Sequential scraping, N=10, OpenBrowser lightweight against Firecrawl Local `0.1.1`:
 
@@ -672,34 +682,45 @@ Memory depends on the surface. Values are process-tree RSS on a local fixture:
 
 The `scrape` browser fallback uses the Playwright headless shell by default. `OPENBROWSER_USE_HEADLESS_SHELL=0` restores full Chrome.
 
-Warm interactive v2, N=5, rotated arm order. Latency (ms) ↓ **Lower is better**.
+No-browser MCP memory, 2026-11-26. Peak process-tree RSS (MiB) ↓ **Lower is better**. Each observation starts a fresh MCP server.
 
-Warm-session readiness uses the native session workflow with OpenBrowser app `5a88fb97`. Each arm starts once and every task gets a fresh fixture server. All 100 observations passed the adapter, exact oracle, and keychain checks. Warm tables show milliseconds to three decimal places. The raw file keeps full precision.
+| Mode | Peak process-tree RSS | Browser processes observed | Correct results |
+| --- | ---: | ---: | ---: |
+| One `scrape_web` call | 46.188 MiB median (45.859 to 51.641, N=5) | 0 | 5 of 5 |
+| 25 concurrent `scrape_web` calls | 63.188 MiB median (60.781 to 65.250, N=5) | 0 | 25 of 25 in 5 of 5 runs |
 
-| Task | OpenBrowser MCP p50 ms | OpenBrowser CLI p50 ms | chrome-devtools-mcp p50 ms | agent-browser p50 ms | browser-use p50 ms |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `wizard` | 43.555 | 88.456 | 3441.495 | 451.787 | 471.800 |
-| `modal` | 199.144 | 244.149 | 2716.979 | 1095.635 | 912.795 |
-| `download` | 332.502 | 384.810 | 767.921 | 414.847 | 558.928 |
-| `tabs` | 62.077 | 113.553 | 1453.474 | 359.101 | 194.579 |
+[Raw memory data](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/scraping/results/results-mcp-scrape-web-resource-2026-11-26-n5.json) and [build provenance](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/scraping/results/results-mcp-scrape-web-resource-2026-11-26-n5.provenance.json). These values describe one local static fixture and the observed MCP process tree.
 
-Both OpenBrowser arms have the lowest warm p50 on all four tasks. Each arm won all 60 eligible pairs, for 120 of 120 total. The `auth` task is cold only because it restarts the browser.
+Warm interactive, N=5, rotated arm order, seven interfaces. Latency (ms) ↓ **Lower is better**. Each cell is median / p95.
 
-[Raw data](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-warm-five-arm-readiness-v2-2026-11-25-n5.jsonl), [summary](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-warm-five-arm-readiness-v2-2026-11-25-n5.summary.json), and [method provenance](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-warm-five-arm-readiness-v2-2026-11-25-n5.provenance.json).
+Warm-session readiness uses the native session workflow with OpenBrowser app `0.1.61.dev173+g9f630f7c6`. Each arm starts once and every task gets a fresh fixture page. All 140 observations passed the adapter, exact oracle, keychain, and cleanup checks.
 
-Cold interactive release baseline, N=5, rotated arm order, lower is better. The timer measures time to result. Final adapter cleanup runs once outside the timed interval for every arm.
+| Task | OpenBrowser MCP | OpenBrowser CLI | Playwright MCP | Playwright CLI |
+| --- | ---: | ---: | ---: | ---: |
+| `wizard` | 54.394 / 85.800 | 93.174 / 109.643 | 359.009 / 380.117 | 561.216 / 565.046 |
+| `modal` | 204.733 / 216.366 | 237.042 / 249.272 | 282.960 / 288.477 | 479.470 / 498.992 |
+| `download` | 342.371 / 359.854 | 364.725 / 371.380 | 371.945 / 378.389 | 570.364 / 587.300 |
+| `tabs` | 78.586 / 84.018 | 114.917 / 124.138 | 128.525 / 129.309 | 309.912 / 313.608 |
 
-| Task | OpenBrowser MCP p50 | OpenBrowser CLI p50 | chrome-devtools-mcp p50 | agent-browser p50 | browser-use p50 |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `wizard` | **569 ms** | 677 ms | 4312 ms | 1573 ms | 1111 ms |
-| `modal` | **725 ms** | 841 ms | 3471 ms | 2304 ms | 1744 ms |
-| `download` | **860 ms** | 963 ms | 1513 ms | 1484 ms | 1126 ms |
-| `tabs` | **593 ms** | 683 ms | 2220 ms | 1393 ms | 797 ms |
-| `auth` | **1305 ms** | 1604 ms | 3703 ms | 2506 ms | 2476 ms |
+OpenBrowser MCP has the lowest warm p50 on all four tasks among all seven interfaces. OpenBrowser CLI is second on all four tasks. Against the five other interfaces, OpenBrowser MCP wins all 100 pairs and OpenBrowser CLI wins 98 of 100. The two OpenBrowser CLI losses are one `modal` sample and one `tabs` sample against Playwright MCP. The two OpenBrowser interfaces split their head-to-head pairs 20 to 0 in favor of MCP. Chrome DevTools MCP, agent-browser CLI, and browser-use CLI results are in [the comparison page](https://docs.openbrowser.me/comparison).
 
-In the cold release baseline, both OpenBrowser arms have the lowest p50 on all five tasks and won 5 of 5 pairs against every other framework. All 125 runs passed the exact oracle and keychain check.
+[Raw data](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-warm-seven-arm-2026-11-27-n5.jsonl) and [summary](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-warm-seven-arm-2026-11-27-n5.summary.json).
 
-Interactive resource lane, N=5: both OpenBrowser arms have the lowest median child footprint, process-tree RSS, and CPU on all five tasks. Both arms won all 150 eligible pairs per metric. Every cell is N=5 and all 125 observations passed. See [the charted comparison](https://docs.openbrowser.me/comparison).
+Cold interactive, N=5, rotated arm order, lower is better. Each cell is median / p95. The timer measures time to result, and final adapter cleanup runs once outside the timed interval for every arm.
+
+| Task | OpenBrowser MCP | OpenBrowser CLI | Playwright MCP | Playwright CLI |
+| --- | ---: | ---: | ---: | ---: |
+| `wizard` | 699.861 / 1146.867 | 795.955 / 824.244 | 941.537 / 949.036 | 1732.262 / 1853.461 |
+| `modal` | 823.093 / 841.969 | 945.112 / 970.386 | 850.733 / 934.007 | 1709.790 / 1727.923 |
+| `download` | 978.479 / 1036.389 | 1075.754 / 1105.994 | 938.340 / 951.259 | 1738.421 / 1783.139 |
+| `tabs` | 722.224 / 768.955 | 812.648 / 814.743 | 669.406 / 691.612 | 1491.717 / 1561.706 |
+| `auth` | 1140.787 / 1188.648 | 1365.922 / 1452.703 | 1038.182 / 1078.800 | 2889.772 / 2955.748 |
+
+Against Playwright, both OpenBrowser surfaces win 63 of 100 cold pairs. OpenBrowser wins 13 of 20 median and 12 of 20 p95 comparisons. Against the two Playwright surfaces, every cold loss is against Playwright MCP. Across the five other interfaces, OpenBrowser wins 42 of 50 median and 40 of 50 p95 groups; three group losses go to browser-use. OpenBrowser MCP has the lowest p50 among all seven interfaces on 2 of 5 tasks. All losses stay in [the retained queue](https://docs.openbrowser.me/comparison).
+
+[Raw data](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-cold-seven-arm-2026-11-27-n5.jsonl) and [summary](https://github.com/billy-enrizky/openbrowser-ai/blob/main/benchmarks/interactive/results/results-cold-seven-arm-2026-11-27-n5.summary.json).
+
+Interactive resource lane, N=5: cold 175 observations and warm 140 observations across seven interfaces. Both OpenBrowser surfaces use less median RSS than each of the five other interfaces on every cold and warm task. OpenBrowser MCP has the lowest median RSS on every task. Median and maximum RSS win all 90 groups. OpenBrowser wins 899 of 900 footprint and RSS pairs; one warm `download` sample is 1.953 MiB above Chrome DevTools MCP. Cold CPU remains a Playwright MCP loss. Every cell is N=5, and all observations passed the oracle, keychain, resource, and cleanup checks. See [the charted comparison](https://docs.openbrowser.me/comparison).
 
 ### 13.2. Why OpenBrowser is faster and more efficient
 
@@ -710,11 +731,13 @@ The measured paths use four areas of work.
 3. **Strict HTTP.** Explicit `--no-browser` and `engine="http"` fetch and parse static pages in a Python process. CLI and namespace batches reuse one pooled HTTP client with bounded concurrency. The stateless MCP `scrape_web` call creates a one-shot client per call.
 4. **Targeted browser work.** Task scripts use selector and CDP helpers for known targets, which avoids a full DOM scan for those operations. Lightweight and no-render policies block selected asset types. The browser still loads Chromium, Blink, and V8.
 
-The tables above show the effect. The warm lane reaches 43.555 ms p50 on `wizard` with one long-lived MCP context. The cold lane puts both OpenBrowser arms lowest on all five tasks. The Firecrawl Local batch is 2.834 ms against 13.448 ms, a 4.75x p50 result. OpenBrowser lightweight won 50 of 50 sequential scraping pairs against Firecrawl Local.
+The tables above show the effect. The warm lane reaches 54.394 ms p50 on `wizard` with one long-lived MCP context. The cold lane gives OpenBrowser MCP the lowest p50 on 2 of 5 tasks and keeps the remaining cold losses visible. The Firecrawl Local batch is 2.834 ms against 13.448 ms, a 4.75x p50 result. OpenBrowser lightweight won 50 of 50 sequential scraping pairs against Firecrawl Local.
 
 Other frameworks also reuse sessions and batch work. These lanes measure the configured combination. The page assigns no causal share to one mechanism without an ablation. The Firecrawl Local batch uses a 10 ms job-poll workflow and returns markdown pages; OpenBrowser returns selected row dictionaries. A matched single-call Firecrawl Local memory lane remains open, as do model-driven Agent and CodeAgent lanes and matched Lightpanda cold and warm lanes.
 
 ## 14. CLI Usage
+
+OpenBrowser 0.1.61 compatible wheels provide a native frontend for the exact form `openbrowser-ai -c CODE` against a warm daemon. Source and editable installs use Python. Use `openbrowser-ai-py` to select the Python client explicitly. The [CLI frontend reference](https://docs.openbrowser.me/customize/integrations/native-cli) covers platform tags, the JSON response limit, and recovery after a send or response failure.
 
 ```bash
 # Run a browser automation task with an LLM agent
@@ -759,7 +782,7 @@ Then run the calls in the same environment. The daemon keeps Python variables be
 
 Use `--render-mode full`, `--render-mode lightweight`, or `--render-mode no-render` to choose a rendering policy for a one-shot run, or `--no-render` as a shortcut for the last one. No-render mode disables screenshots and visual-only actions. For asset control without changing the mode, use `--text-only` to block external CSS, images, fonts, media, and text tracks while keeping scripts and screenshots, or one of `--no-css`, `--no-images`, `--no-fonts`, `--no-media`, `--no-scripts`. The `scrape` command accepts `--no-css`, `--no-images`, `--no-fonts`, `--no-media`, and `--render-mode`. `--no-scripts` is available on the one-shot prompt interface. The `scrape` browser fallback uses the Playwright headless shell by default. Set `OPENBROWSER_USE_HEADLESS_SHELL=0` to force full Chrome.
 
-The `-c` flag connects to a persistent browser daemon over a Unix socket (localhost TCP on Windows). Variables persist across calls while the daemon is running. The daemon starts automatically on first use and shuts down after 10 minutes of inactivity.
+The `-c` flag connects to a persistent browser daemon over a Unix socket (localhost TCP on Windows). Variables persist across calls while the daemon is running. The daemon starts automatically on first use and shuts down after 10 minutes of inactivity. The `-c` path needs no separate OpenAI, OpenBrowser, or MCP API key.
 
 After a browser failure, run `openbrowser-ai daemon status` before retrying because the first call may have partially run. Read `browser.health` for the last crash, focus-recovery, and local process observation. `health` is not a live page-readiness probe. Wait while recovery is pending. After a failed recovery, use `openbrowser-ai daemon reset` only when no usable target exists. Reset clears the Python executor and namespace, so persist values first.
 

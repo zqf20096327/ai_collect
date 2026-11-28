@@ -284,8 +284,12 @@ aisbom scan . --format spdx --spdx-version 3.0 --output sbom.spdx.json
 The 3.0 document emits each scanned model as an `ai_AIPackage`, declared
 training datasets (from Hugging Face model-card metadata) as
 `dataset_DatasetPackage` elements linked by `trainedOn` relationships, and
-`requirements.txt` pins as `software_Package` elements. Output conforms to the
-released SPDX 3.0.1 schema.
+`requirements.txt` pins as `software_Package` elements. A declared license
+becomes a `simplelicensing_LicenseExpression` linked by `hasDeclaredLicense`:
+for a dependency, the license PyPI declares for its exact pin; for a model, the
+license its own file declares (the Hugging Face card's license is not used).
+Only valid SPDX expressions are carried, so a free-text license gets no
+element. Output conforms to the released SPDX 3.0.1 schema.
 
 AI Profile fields AIsbom has no source of truth for — energy consumption,
 metrics, safety-risk assessment, hyperparameters — are **omitted rather than
@@ -385,7 +389,8 @@ declaration from something read out of the file itself.
 - **A declaration, not a verdict.** The license never feeds the legal-risk
   status shown for model files.
 - **SPDX 2.3** output carries SPDX-valid values as `licenseDeclared`;
-  `licenseConcluded` stays `NOASSERTION`.
+  `licenseConcluded` stays `NOASSERTION`. **SPDX 3.0** output carries them as a
+  `hasDeclaredLicense` relationship; a dependency without one gets none.
 - **Cached** in `~/.aisbom/pypi_license_cache.json` — 30 days for a resolved
   license, 24 hours for a package that declares none — so repeat CI scans of the
   same pins make no requests.
@@ -507,7 +512,7 @@ aisbom comply ./models --framework fda --output-dir ./submission/sbom
 | `--framework` | Writes |
 |---|---|
 | `eu-ai-act` | `annex-xi-technical-documentation.md` (Annex XI skeleton), `art53-training-content-summary.md` (in the sections of the Commission's training-content template), `sbom.json`, `README.md` |
-| `fda` | `sbom.json`, `sbom.openvex.json`, `sbom.vex.cdx.json`, `component-support.csv` (supplier, support level and end-of-support date per component), `README.md` |
+| `fda` | `sbom.json`, `sbom.openvex.json`, `sbom.vex.cdx.json`, `component-support.csv` (supplier, support level and end-of-support date per component), `vulnerabilities.csv` (one row per dependency CVE, with its CISA KEV date-added where listed), `README.md` |
 
 A field is filled only from something the scan read, such as the model card's
 task, architecture, licence, declared datasets, base model and languages, the
@@ -518,7 +523,8 @@ gets its own "declared" row, and readings such as modality from the task or
 supplier from the repository owner are labelled *AIsbom's mapping*. For the
 FDA pack, end-of-support dates come from
 [endoflife.date](#endoflifedate-lookups-comply---framework-fda-only) for the
-packages it tracks. Everything else, including provider identity, release
+packages it tracks, and each dependency CVE is checked against
+[CISA's KEV catalogue](#cisa-kev-lookups-comply---framework-fda-only). Everything else, including provider identity, release
 dates, training process, compute and energy, is left as `TODO (provider)`
 rather than guessed. [docs/comply.md](docs/comply.md) lists every field and
 where its value comes from.
@@ -543,7 +549,7 @@ The pack describes files, not your organisation, and is not legal advice.
 A scan with an unreadable target exits `1` and writes nothing. Otherwise the
 command exits `0` whatever the findings; gate CI with `aisbom scan`. `--offline`,
 `--no-osv` and `--no-hf-lookup` work as they do for `scan`; `--no-eol-lookup`
-skips the endoflife.date lookup.
+skips the endoflife.date lookup, and `--no-kev-lookup` the CISA KEV download.
 
 ---
 
@@ -777,11 +783,15 @@ When you pass `--vex`, or run `aisbom comply --framework fda`, and the scan find
 
 ### PyPI license lookups (on by default)
 
-When a scan finds exact `requirements.txt` pins and writes CycloneDX or SPDX 2.3 output (including the SBOM `aisbom score` and `aisbom comply` build), AIsbom requests each pinned **package name and version** from the public PyPI JSON API at `https://pypi.org/pypi/<name>/<version>/json` to read its declared license and author. Nothing else is sent: no file paths, model names, hashes, findings, or identifiers. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--offline` or `AISBOM_OFFLINE=1` does. Answers are cached locally in `~/.aisbom/pypi_license_cache.json`, and deleting that file is always safe.
+When a scan finds exact `requirements.txt` pins and writes CycloneDX or SPDX output, 2.3 or 3.0 (including the SBOM `aisbom score` and `aisbom comply` build), AIsbom requests each pinned **package name and version** from the public PyPI JSON API at `https://pypi.org/pypi/<name>/<version>/json` to read its declared license and author. Nothing else is sent: no file paths, model names, hashes, findings, or identifiers. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--offline` or `AISBOM_OFFLINE=1` does. Answers are cached locally in `~/.aisbom/pypi_license_cache.json`, and deleting that file is always safe.
 
 ### endoflife.date lookups (`comply --framework fda` only)
 
 When `aisbom comply --framework fda` finds exact `requirements.txt` pins, AIsbom asks the public endoflife.date API for each distinct **package name** (`https://endoflife.date/api/v1/products/<name>`) to fill end-of-support dates in `component-support.csv`. Versions are matched on your machine and are not sent, and neither are file paths, model names, hashes, findings, or identifiers. `aisbom scan` never makes this request. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--no-eol-lookup`, `AISBOM_NO_EOL_LOOKUP=1` or `--offline` does. Nothing is cached.
+
+### CISA KEV lookups (`comply --framework fda` only)
+
+When `aisbom comply --framework fda` has dependency CVE statements from OSV, AIsbom downloads the whole public CISA Known Exploited Vulnerabilities catalogue (`https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json`) to fill `cisa_kev_date_added` in `vulnerabilities.csv`. It is one request for a public file: the CVEs are matched on your machine, so no CVE IDs, package names, versions, file paths, model names, hashes or findings are sent. No request is made when there is no CVE to match, and `aisbom scan` never makes it. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--no-kev-lookup`, `AISBOM_NO_KEV_LOOKUP=1` or `--offline` does. The CVE IDs and dates are cached locally in `~/.aisbom/kev_cache.json` for 24 hours, and deleting that file is always safe.
 
 ### Hugging Face model-card lookups (local scans)
 

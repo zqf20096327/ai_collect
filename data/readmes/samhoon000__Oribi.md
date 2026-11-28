@@ -129,7 +129,7 @@ Check `context.profile.exact_row_limit_exceeded` (also present in dictionary and
 
 Oribi uses deterministic heuristics based on observed values, data types, and supporting evidence. Column names can contribute to role inference, but they cannot establish a relationship by themselves.
 
-- A candidate key with `verified_unique=True` has no observed collisions or null components. Approximate candidates can have collisions or missing values. A verified candidate still needs domain validation before it can be used as a business key.
+- A candidate key with `verified_unique=True` has no observed collisions or null components. Approximate candidates can have collisions or missing values. For composite candidates, distinct pairs and collisions count only rows with both components present; uniqueness is the number of distinct complete pairs divided by all rows. A verified candidate still needs domain validation before it can be used as a business key.
 - A likely grain describes a pattern in the observed rows. It can remain undetermined when the evidence is weak or ambiguous.
 - A relationship within one DataFrame does not prove that a join to another table is valid or safe.
 - An exact functional dependency points from the determining column to the dependent column. Its `mapping_cardinality` distinguishes many-to-one from one-to-one. One-to-many links point from group to entity and require a verified entity key. Mapping coverage is the fraction of observed determinant values with exactly one partner. For one-to-many links the entity is the determinant, so coverage is measured from the target back to the source. Missing pairs or conflicting partners cannot establish an exact dependency.

@@ -28,7 +28,7 @@
   <a href="#兼容性">兼容性</a> ·
   <a href="docs/README.md">文档</a> ·
   <a href="#贡献者">贡献者</a> ·
-  <a href="https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.1">更新记录</a> ·
+  <a href="https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.2">更新记录</a> ·
   <a href="README.en.md">English</a>
 </p>
 
@@ -36,7 +36,7 @@
 >
 > **使用 iPhone 或 iPad？** 可以用 Safari 访问，或[添加到主屏幕作为 Web App（PWA）使用](<#iphone-与-ipad主屏幕-web-apppwa>)，无需下载原生 iOS App。
 >
-> **当前正式版本：0.9.1**。侧边栏现在跟随「移动端字号」设置（此前只影响输入框）。新增可选组件 **移动访问 skill**：向 agent 提供各通道的配置字段、状态位置、错误码含义与本机管理接口，配置和排障可在对话中完成，也可在组件列表中单独关闭（见[说明](#移动访问-skill)）。macOS 支持补齐：cpolar 与 iroh 组件新增 macOS x64/arm64，Tailscale Funnel 也首次支持 macOS，同时插件包从 74.6 MB 瘦身到 9.2 MB。插件与 Android App 独立更新；Android App 0.8.4 为当前正式版。[插件更新与下载](https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.1) · [完整更新记录](CHANGELOG.md)。
+> **当前正式版本：0.9.2**。侧边栏底部「移动访问」入口的手机图标墨迹与本排其它入口等宽；窄屏阈值对齐到 DSH 自身的 768 抽屉断点（此前 720–768 之间两套布局同时生效）。随包 skill 与各篇文档已按源码逐条核对，修正了管理接口、iroh 证书路径、通道面板按钮名等与实际不符的描述；国内 AtomGit 镜像现在同步发布页与安装包，不再停留在 0.8.2。插件与 Android App 独立更新；Android App 0.8.4 为当前正式版。[插件更新与下载](https://github.com/saya-ch/dsh-mobile/releases/tag/v0.9.2) · [完整更新记录](CHANGELOG.md)。
 >
 > **版本说明**：自插件 **0.6.2** 起，Android App 与插件改为独立发布（当时 App 仍为 0.6.1）；App 自 0.6.2 起使用独立编号，版本号无需一致；插件升级不代表 App 需要同步升级。App 图标可在设置中更换，不影响版本与配对。[兼容说明](#兼容性)。
 >
@@ -84,7 +84,7 @@ DSH Mobile 是一个 DeepSeek Harness 插件，让手机浏览器或 Android App
 
 ### 官方 DSH Desktop
 
-在应用的 **插件** 页面安装并启用 `dsh-mobile`，再打开 **移动访问** 配置局域网或远程通道。Desktop 的 profile 由应用管理，不适用下面的 `--profile web` 命令。
+在应用的 **插件** 页面安装并启用 `dsh-mobile`，再打开 **移动访问** 配置局域网或远程通道。安装请走插件管理器或 `npm install dsh-mobile`，不必指定版本号：仓库顶部写的正式版本可能与注册表相差几分钟——发布流程会先宣布版本再产出包，`npm view dsh-mobile version` 返回的就是此刻能装到的最新版。Desktop 的 profile 由应用管理，不适用下面的 `--profile web` 命令。
 
 安装或更新后，请从应用菜单正常退出并重新打开 Desktop，无需清除会话或配对数据。若仍提示 `dsh-mobile-question-fixes: failed to import`，请检查安装日志；这也可能是组件解析问题，单纯重启不一定能解决。
 
@@ -189,7 +189,7 @@ Windows 上也可以用 DSH Mobile：[Windows 客户端](apps/windows/README.md)
 
 不安装 App 也可以访问：点击 **复制配对链接**，在手机浏览器中打开。局域网使用私有证书，浏览器首次访问可能提示不受信任；只在确认这是自己的 DSH 网关后按浏览器指引继续。公开证书的远程入口不应出现证书警告，若出现请检查通道和证书，不要直接忽略。
 
-手机浏览器中的配对和重新连接页面支持简体中文、英文和意大利文。插件 0.6.16 起优先使用当前网关主机名下记住的 DSH 显示语言，没有可用偏好时再按浏览器的 `Accept-Language` 选择；清除网站数据或更换主机名可能重置偏好。Android 原生界面跟随系统语言；DSH 内的插件控制面板跟随 DSH 当前语言。
+手机浏览器中的配对和重新连接页面支持简体中文、英文、意大利文、日文、韩文、西班牙文、法文和德文。插件 0.6.16 起优先使用当前网关主机名下记住的 DSH 显示语言，没有可用偏好时再按浏览器的 `Accept-Language` 选择；清除网站数据或更换主机名可能重置偏好。Android 原生界面跟随系统语言；DSH 内的插件控制面板跟随 DSH 当前语言。
 
 浏览器手动配对时填写电脑端显示的 43 位配对码；以 `dsh1.` 或 `dsh2.` 开头的是 Android App 密钥，不要填入浏览器配对框。优先打开电脑端复制的配对链接，它会自动填写配对码；过期后在电脑端重新生成。
 
@@ -505,6 +505,7 @@ macOS 上局域网、Tailscale Funnel、cpolar、cloudflared、自建 FRP、自�
 
 | DSH Mobile 插件 | 已验证的 DeepSeek Harness 版本与范围 |
 | --- | --- |
+| `0.9.2` | 侧边栏「移动访问」图标墨迹与同排入口等宽；窄屏阈值对齐 DSH 的 768px 抽屉断点；随包 skill 与各篇文档按源码逐条核对并修正；国内 AtomGit 镜像同步发布页与安装包。Android App 为 0.8.4 |
 | `0.9.1` | 侧边栏跟随移动端字号设置（此前只影响输入框）；新增可选组件「移动访问 skill」，向 agent 提供各通道的配置接口与排障知识；随插件提供的组件在插件列表显示可读名称。 |
 | `0.9.0` | macOS 补齐 cpolar、iroh 与 Tailscale Funnel（均为双架构）；Funnel 组件改为按平台安装，插件解包体积 74.6 MB → 9.2 MB；iroh 组件升级到 0.1.0-alpha.2。Android App 为 0.8.3 |
 | `0.8.16` | 宽屏下会话列恢复全宽，左右侧栏均可拖拽调宽，侧栏打开不再顿挫（#465）；opaque-path WebView 上文件预览恢复（#415）。Android App 为 0.8.3 |

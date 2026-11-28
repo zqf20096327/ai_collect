@@ -1,12 +1,14 @@
 # NuOrb
 
-**Your own private voice assistant – self-hosted in one Docker container, used from your phone.**
+**Your own private voice assistant, self-hosted in one Docker container, used from your phone.**
 
-**→ [Install guide](INSTALL.md) · [Installationsanleitung](INSTALL.de.md) · [▶ Video tutorial](https://youtu.be/NO66dwKtCvg) · [▶ Video-Anleitung (DE)](https://youtu.be/xUsvfRHpvc8) · [Contributing](CONTRIBUTING.md) · [AI declaration](AI_DECLARATION.md)** – one command:
+**→ [Install guide](INSTALL.md) · [Installationsanleitung](INSTALL.de.md) · [▶ Video tutorial](https://youtu.be/NO66dwKtCvg) · [▶ Video-Anleitung (DE)](https://youtu.be/xUsvfRHpvc8) · [Contributing](CONTRIBUTING.md) · [AI declaration](AI_DECLARATION.md)**. One command:
 `curl -fsSL https://raw.githubusercontent.com/Anarki-LNX/nuorb/main/install.sh | bash`
 
-**NuOrb** (say "Nu-Orb") is the assistant you get: on first start it introduces itself – *"My creator named me NuOrb.
-If that's too complicated, just tell me what you'd like to call me"* – and you can rename it any time ("From now on you're Max").
+Image (amd64, arm64): `ghcr.io/anarki-lnx/nuorb` · also on [Docker Hub](https://hub.docker.com/r/anarkilnx/nuorb): `anarkilnx/nuorb`
+
+**NuOrb** (say "Nu-Orb") is the assistant you get: on first start it introduces itself: *"My creator named me NuOrb.
+If that's too complicated, just tell me what you'd like to call me"*. You can rename it any time ("From now on you're Max").
 The NuOrb server is open source. It runs a complete voice assistant on your own hardware: an agent ([Hermes Agent](https://github.com/NousResearch/hermes-agent)),
 a web UI with an animated orb, an admin panel, local speech recognition and local speech synthesis.
 The "brain" is your own [Ollama](https://ollama.com) (e.g. a gaming PC), the Claude API, or both with a switch.
@@ -24,32 +26,46 @@ Audio is processed on your server; nothing is sent anywhere unless you choose a 
 
 | Step | What |
 |---|---|
-| **1. Server** | Run the Docker container on any Proxmox VM/LXC, home server or PC (amd64 or arm64): **[`docker/README.md`](docker/README.md)** |
+| **1. Server** | Run the Docker container on any home server, VM or PC (amd64 or arm64): **[`docker/README.md`](docker/README.md)**, or use the ready-made **[Proxmox LXC](docs/proxmox.md)** |
 | **2. Brain** | In the setup wizard choose your Ollama (≥ 64k context) and/or enter a Claude API key |
-| **3. App** | Install the **NuOrb** Android app (Google Play release coming soon) – or just use any browser in your home network |
+| **3. App** | Install the **NuOrb** Android app (Google Play release coming soon), or just use any browser in your home network |
 | **4. Pair** | Admin panel → *Pair device* → scan the QR code with the app. Done. |
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Anarki-LNX/nuorb/main/install.sh | bash
-# checks Docker and the firewall, asks 2–3 questions, starts NuOrb and shows the admin address + setup code
+# checks Docker and the firewall, asks 2-3 questions, starts NuOrb and shows the admin address + setup code
 ```
 
-**You need:** Docker with Compose v2, ~4 GB free RAM, ~8 GB disk, internet once for the speech models (~530 MB),
+**Three ways to install:**
+
+| Way | For whom | How |
+|---|---|---|
+| **Installer** (Docker) | most people: any Linux machine, home server, VM or PC, amd64 or arm64 | one command, see below |
+| **Docker Compose** (manual) | people who manage their containers with Compose themselves | `compose.yaml` + `.env`, see section 6 |
+| **Proxmox LXC** | Proxmox VE users (amd64) who want NuOrb as its own container with `vzdump` backups | one command in the host shell or a ready-made template: **[docs/proxmox.md](docs/proxmox.md)** |
+
+On Proxmox VE, in the host shell:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Anarki-LNX/nuorb/main/proxmox/nuorb-lxc.sh)"
+```
+
+**You need:** Docker with Compose v2 (not for the Proxmox LXC), ~4 GB free RAM, ~8 GB disk, internet once for the speech models (~530 MB),
 and either an Ollama server or an [Anthropic API key](https://console.anthropic.com).
-Phone and server in the same network – or connected via VPN (WireGuard, Tailscale). **Never expose the ports to the internet.**
+Phone and server in the same network, or connected via VPN (WireGuard, Tailscale). **Never expose the ports to the internet.**
 
 ### Features
 
-- **Talk to it** – tap to talk with automatic end-of-speech detection, or hold to talk; answers are spoken back.
-- **Brain switch** – *local* (only your Ollama, nothing leaves your network), *auto* (Ollama, Claude as fallback), *remote* (Claude Haiku/Sonnet/Opus).
-- **German and English** – full UI in both languages, speech recognition (NVIDIA Parakeet-TDT v3, on CPU), voices (Piper).
-- **Your assistant, your name** – NuOrb greets you, learns your name and answers to whatever name you give it.
-- **Safe by design** – confirmation cards before risky actions, pairing with certificate pinning, no telemetry.
-- **Admin panel** – model & fallback, persona, memory, skills, schedules, MCP servers (connect e.g. Home Assistant), keys, logs, backups.
+- **Talk to it**: tap to talk with automatic end-of-speech detection, or hold to talk; answers are spoken back.
+- **Brain switch**: *local* (only your Ollama, nothing leaves your network), *auto* (Ollama, Claude as fallback), *remote* (Claude Haiku/Sonnet/Opus).
+- **German and English**: full UI in both languages, speech recognition (NVIDIA Parakeet-TDT v3, on CPU), voices (Piper).
+- **Your assistant, your name**: NuOrb greets you, learns your name and answers to whatever name you give it.
+- **Safe by design**: confirmation cards before risky actions, pairing with certificate pinning, no telemetry.
+- **Admin panel**: model & fallback, persona, memory, skills, schedules, MCP servers (connect e.g. Home Assistant), keys, logs, backups.
 
 **Upgrading from v0.3.x or older?** Since v0.4.0 the compose project, service and container are called `nuorb`.
 Stop the old one with `docker compose -p jarvis-lnx down` (**without** `-v`), take the new `docker/compose.yaml`, then
-`docker compose pull && docker compose up -d` – it keeps using your existing data volumes, so password and paired
+`docker compose pull && docker compose up -d`. It keeps using your existing data volumes, so password and paired
 devices stay. See [`docker/README.md`](docker/README.md#umstieg-von-einer-älteren-installation-bis-v03x).
 
 **Status:** early release. A custom wake word "Hey NuOrb" for the app is in training. See [`docker/README.md`](docker/README.md) for details, security notes and troubleshooting.
@@ -59,9 +75,9 @@ devices stay. See [`docker/README.md`](docker/README.md#umstieg-von-einer-älter
 # NuOrb on an old Xiaomi phone (bonus for tinkerers)
 
 Where this project started: an old **Xiaomi Mi 11 Lite 4G (`courbet`)**, wiped and reborn with
-**NixOS and a mainline Linux 7.3 kernel** – no Android left. A `cage` kiosk shows only the NuOrb orb UI, it listens
+**NixOS and a mainline Linux 7.3 kernel**: no Android left. A `cage` kiosk shows only the NuOrb orb UI, it listens
 for a **wake word** (openWakeWord, on-device) and executes device commands (Wi-Fi, reboot, brightness, volume)
-only after a confirmation tap. **This part is specific to that phone model and wipes it – read the safety notes.**
+only after a confirmation tap. **This part is specific to that phone model and wipes it. Read the safety notes.**
 
 <p align="center">
   <img src="docs/screenshots/admin-voice-settings.png" width="720" alt="Admin panel, voice settings">
@@ -75,8 +91,8 @@ only after a confirmation tap. **This part is specific to that phone model and w
   [Ollama](https://ollama.com) on the gaming PC (Gemma 4 26B-A4B QAT, 64k context, on an RX 7800 XT 16 GB).
 - **Brain switch: local / auto / remote.** *Local* = only Gemma, everything stays in the house. *Auto* = Gemma while
   the PC is on, otherwise Claude. *Remote* = Claude only (Haiku / Sonnet / Opus), the PC's GPU is freed. Switch from
-  the phone (tap the badge, or say "NuOrb, wechsel auf Sonnet") or the admin panel – effective from the next question.
-- **Device control with confirmation.** Wi-Fi on/off, reboot, power off, brightness, volume, screen on/off – via an
+  the phone (tap the badge, or say "NuOrb, wechsel auf Sonnet") or the admin panel, effective from the next question.
+- **Device control with confirmation.** Wi-Fi on/off, reboot, power off, brightness, volume, screen on/off, via an
   MCP tool on the backend that only expresses the *intent*; the phone executes it locally after you tap "Ja" on a
   confirmation card (real touch required, synthetic clicks are ignored). Simple commands like "heller" / "Lautstärke
   30 Prozent" are matched locally in the UI without asking the LLM.
@@ -89,7 +105,7 @@ only after a confirmation tap. **This part is specific to that phone model and w
 
 ```mermaid
 flowchart LR
-  subgraph Phone["Phone – Xiaomi Mi 11 Lite 4G (courbet), NixOS, kernel 7.3"]
+  subgraph Phone["Phone · Xiaomi Mi 11 Lite 4G (courbet), NixOS, kernel 7.3"]
     K["cage kiosk<br/>Epiphany web-app mode"] --> S["NuOrb shell :8770<br/>local UI copy + proxy"]
     S --> G["device service :8765<br/>Wi-Fi · reboot · brightness · volume · screen"]
     P["power key handler"] --> G
@@ -133,13 +149,13 @@ Audio never leaves your network: recording happens on the phone, STT and TTS run
 | LLM (local) | [Ollama](https://ollama.com) on a Ryzen 9 5950X + Radeon RX 7800 XT 16 GB; Gemma 4 26B-A4B QAT, 64k ctx, ~33 tok/s |
 | LLM (cloud, optional) | Claude Haiku / Sonnet / Opus via the Anthropic API |
 | STT | NVIDIA Parakeet-TDT-0.6B-v3 (int8) via [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx), ~1.5 s per 5 s utterance on CPU |
-| TTS | [Piper](https://github.com/OHF-Voice/piper1-gpl) with the [Thorsten](https://www.thorsten-voice.de) voice `de_DE-thorsten-medium`, first audio after 45–240 ms |
+| TTS | [Piper](https://github.com/OHF-Voice/piper1-gpl) with the [Thorsten](https://www.thorsten-voice.de) voice `de_DE-thorsten-medium`, first audio after 45-240 ms |
 
 ### Status (honest)
 
 **Works (tested on the device):**
 - NixOS boots from `boot` + `userdata`; display, touch, buttons, speaker + microphone, GPU (with the zap shader),
-  Wi-Fi, battery with a 60–80 % charge limit for 24/7 operation on a USB power supply.
+  Wi-Fi, battery with a 60-80 % charge limit for 24/7 operation on a USB power supply.
 - Kiosk comes up full-screen after every reboot (~55 s), NuOrb is the only UI.
 - Voice loop speaker → mic → STT → Hermes → TTS, about 3 s for simple questions in local mode.
 - Brain switch from phone and admin panel; Claude fallback when the PC is off.
@@ -190,27 +206,27 @@ the admin panel, stored in `~/.hermes/.env` on the backend).
    one-time setup code printed on the server.
 6. **MCP tools for Hermes:** `scripts/steuerung-geraet-install.sh` (device intents), optional
    `scripts/steuerung-claude-*` (Claude fallback, "ask Claude" project tool, limited budget).
-7. **Phone:** unlock the bootloader, build and flash NixOS – see [`nixos/README.md`](nixos/README.md). Later updates:
+7. **Phone:** unlock the bootloader, build and flash NixOS, see [`nixos/README.md`](nixos/README.md). Later updates:
    `scripts/handy-deploy.sh` over Wi-Fi.
 
 Note: the Hermes gateway unit name (`hermes-gateway-<id>.service`) is instance-specific; adjust it in
 `admin/server.py` and `admin/ctl/jarvis-admin-ctl.sh`.
 
-### Safety notes – read before touching your phone
+### Safety notes: read before touching your phone
 
 - **This wipes the phone.** `userdata` becomes the NixOS root filesystem, `boot` is overwritten and `dtbo` erased.
   Android will not start any more. Back up everything first, including the critical partitions such as `persist`,
-  `modemst1/2`, `fsg`, `boot`, `dtbo`, `vbmeta*` (see `scripts/handy-backup.sh`) – keep them safe, they contain
+  `modemst1/2`, `fsg`, `boot`, `dtbo`, `vbmeta*` (see `scripts/handy-backup.sh`). Keep them safe, they contain
   device-unique calibration data, and the original `boot`/`dtbo` are your way back.
 - **Bootloader unlock** is required (Xiaomi's official unlock procedure with a Mi account and waiting period).
   Unlocking voids warranty-related trust states and erases data.
 - **Anti-rollback:** this device reported anti-rollback index **3** (`fastboot getvar anti`). **Never flash a MIUI /
-  HyperOS fastboot ROM with a lower rollback index** – that can hard-brick the phone. Check your own value first.
+  HyperOS fastboot ROM with a lower rollback index**: that can hard-brick the phone. Check your own value first.
   The way back to Android is a ROM/firmware with index ≥ your device's.
 - `fastboot boot` (RAM boot) does not work on courbet; testing means flashing.
 - Proprietary firmware blobs (GPU zap shader, IPA, Wi-Fi/modem firmware) are **not** included; extract them from
   your own device.
-- Ollama has no authentication – do not expose port 11434 beyond the hosts that need it.
+- Ollama has no authentication. Do not expose port 11434 beyond the hosts that need it.
 - Everything here is provided as-is, without warranty. You can brick your phone. Your responsibility.
 
 ## Credits & licenses
@@ -219,25 +235,25 @@ NuOrb's own code is [MIT](LICENSE). Every third-party component keeps its licens
 obligations is in **[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)** and, inside the Docker image, in
 `/usr/share/doc/nuorb/`. The most important points:
 
-- [Hermes Agent](https://github.com/NousResearch/hermes-agent) by Nous Research – the agent and base image (MIT).
-- [Piper](https://github.com/OHF-Voice/piper1-gpl) with eSpeak NG – text-to-speech, **GPL-3.0**. It runs inside the
+- [Hermes Agent](https://github.com/NousResearch/hermes-agent) by Nous Research: the agent and base image (MIT).
+- [Piper](https://github.com/OHF-Voice/piper1-gpl) with eSpeak NG: text-to-speech, **GPL-3.0**. It runs inside the
   NuOrb container; whoever passes the image on must also pass on the GPL and its sources (links in the license file).
 - [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0) and NVIDIA
-  [Parakeet-TDT-0.6B-v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) – speech recognition, model under
+  [Parakeet-TDT-0.6B-v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3): speech recognition, model under
   **CC-BY-4.0** (attribution).
 - Voices from [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices):
   [Thorsten](https://www.thorsten-voice.de) by Thorsten Müller (German) and Joe from
-  [OHF-Voice/voice-datasets](https://github.com/OHF-Voice/voice-datasets) (English), both CC0 – free to use, also
+  [OHF-Voice/voice-datasets](https://github.com/OHF-Voice/voice-datasets) (English), both CC0: free to use, also
   commercially.
 - Orb shader noise: [webgl-noise](https://github.com/stegu/webgl-noise) by Ashima Arts and Stefan Gustavson (MIT).
 - Fonts: [Inter](https://github.com/rsms/inter), [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono),
-  [Space Grotesk](https://github.com/floriankarsten/space-grotesk) – SIL OFL 1.1, license files in `ui/static/fonts/`.
-- [Mozilla Common Voice](https://commonvoice.mozilla.org) – German sentences for the voice corpus (CC0).
+  [Space Grotesk](https://github.com/floriankarsten/space-grotesk): SIL OFL 1.1, license files in `ui/static/fonts/`.
+- [Mozilla Common Voice](https://commonvoice.mozilla.org): German sentences for the voice corpus (CC0).
 - Phone port: [ElXreno/nixos-courbet](https://github.com/ElXreno/nixos-courbet) and
-  [ElXreno/linux](https://github.com/ElXreno/linux) (`courbet-7.3`) – huge thanks; [NixOS](https://nixos.org),
+  [ElXreno/linux](https://github.com/ElXreno/linux) (`courbet-7.3`), huge thanks; [NixOS](https://nixos.org),
   [cage](https://github.com/cage-kiosk/cage), [Epiphany / WebKitGTK](https://webkitgtk.org).
-- Brains you connect yourself – [Ollama](https://ollama.com), llama.cpp, vLLM, LM Studio, the models you run there
-  (e.g. Google [Gemma](https://ai.google.dev/gemma)) and [Claude](https://www.anthropic.com) by Anthropic – are not
+- Brains you connect yourself, [Ollama](https://ollama.com), llama.cpp, vLLM, LM Studio, the models you run there
+  (e.g. Google [Gemma](https://ai.google.dev/gemma)) and [Claude](https://www.anthropic.com) by Anthropic, are not
   part of NuOrb; their own licenses and terms apply.
 
 ## License
@@ -260,9 +276,16 @@ Xiaomi, Snapdragon, Claude, Gemma and other names are trademarks of their respec
 oder PC) mit Agent, Orb-Oberfläche, Admin-Panel, lokaler Spracherkennung und Sprachausgabe. Gedacht wird mit dem
 eigenen **Ollama** oder **Claude** (oder beidem, umschaltbar). Bedient wird per **Android-App** (bald im Play Store)
 oder Browser im Heimnetz. Der Assistent heißt **NuOrb** („Nu-Orb“), stellt sich beim ersten Start vor
-(„Mein Schöpfer hat mich NuOrb getauft …“) und lässt sich jederzeit umbenennen. Container starten, Einrichtung im Admin-Panel, Smartphone per QR-Code koppeln – fertig.
-Umstieg von v0.3.x: `docker compose -p jarvis-lnx down` (ohne `-v`), neue `compose.yaml` holen, `docker compose up -d` – Daten bleiben.
-Installation mit einem Befehl: `curl -fsSL https://raw.githubusercontent.com/Anarki-LNX/nuorb/main/install.sh | bash -s -- --lang de` – Anleitung: [INSTALL.de.md](INSTALL.de.md).
+(„Mein Schöpfer hat mich NuOrb getauft …“) und lässt sich jederzeit umbenennen. Container starten, Einrichtung im Admin-Panel, Smartphone per QR-Code koppeln. Fertig.
+Umstieg von v0.3.x: `docker compose -p jarvis-lnx down` (ohne `-v`), neue `compose.yaml` holen, `docker compose up -d`. Daten bleiben.
+Installation mit einem Befehl: `curl -fsSL https://raw.githubusercontent.com/Anarki-LNX/nuorb/main/install.sh | bash -s -- --lang de`. Anleitung: [INSTALL.de.md](INSTALL.de.md).
+Auf **Proxmox VE** gibt es NuOrb auch als fertiges LXC (Einzeiler in der Host-Shell oder Template zum Herunterladen): [docs/proxmox.de.md](docs/proxmox.de.md).
+
+| Weg | Für wen |
+|---|---|
+| **Installationsskript** (Docker) | die meisten: jeder Linux-Rechner, Heimserver, VM oder PC |
+| **Docker Compose** (von Hand) | wer seine Container selbst mit Compose verwaltet |
+| **Proxmox-LXC** | Nutzer von Proxmox VE (amd64), die einen eigenen CT mit `vzdump`-Sicherung wollen |
 
 **Für Bastler:** Das Projekt begann mit einem alten **Xiaomi Mi 11 Lite 4G**, auf dem jetzt **NixOS** läuft und
 NuOrb die einzige Oberfläche ist (mit Weckwort und Gerätesteuerung). Das ist gerätespezifisch und löscht das

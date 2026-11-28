@@ -12,11 +12,12 @@
 Open source developers get a page where supporters fund the AI tokens behind their projects.<br>
 Payments go straight to the creator's own Stripe, PayPal or USDC wallet. The platform takes no cut.
 
-[Website](https://buymeatokens.com) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Local setup](docs/development.md) · [Security](SECURITY.md)
+[Website](https://buymeatokens.com) · [Discord](https://discord.gg/CbaChQphmW) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Local setup](docs/development.md) · [Security](SECURITY.md)
 
 [![CI](https://github.com/Renanuya/buymeatokens-oss/actions/workflows/ci.yml/badge.svg)](https://github.com/Renanuya/buymeatokens-oss/actions/workflows/ci.yml)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-1c1c1e)](LICENSE)
 [![Good first issues](https://img.shields.io/github/issues/Renanuya/buymeatokens-oss/good%20first%20issue?label=good%20first%20issues&color=5b6cf2)](https://github.com/Renanuya/buymeatokens-oss/labels/good%20first%20issue)
+[![Discord](https://img.shields.io/badge/Discord-join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/CbaChQphmW)
 
 [![Buy me AI tokens](https://buymeatokens.com/api/badge/renanuya?style=pill)](https://buymeatokens.com/renanuya)
 
@@ -34,8 +35,8 @@ Payments go straight to the creator's own Stripe, PayPal or USDC wallet. The pla
 
 | | |
 |---|---|
-| **Creator pages** | GitHub login and an eight-step guided setup: name, payment method, price, project link with live GitHub stats, description, "where the tokens go", a funding goal and socials. Creators can reply to and like supporters' messages. |
-| **Write with AI** | Optional: drafts the project description from the repository's README (Gemini or Groq free tiers, capped per creator and per day). |
+| **Creator pages** | GitHub login and an eight-step guided setup: name, payment method, price, project link with live GitHub stats, description, "where the tokens go" with an optional thank-you note, a funding goal (one-time, or monthly and counted per UTC month) and socials. Creators can reply to and like supporters' messages. |
+| **Write with AI** | Optional: drafts the project description from the repository's README, or from the project name and link without one (Gemini or Groq free tiers, capped per creator and per day). |
 | **Stripe** | Checkout runs on the creator's own *restricted* key (Checkout Sessions: write only), stored encrypted with AES-256-GCM. No webhooks needed; pending sessions are reconciled. |
 | **PayPal** | Classic "Buy Now" links straight to the creator, confirmed through verified IPN messages. |
 | **USDC on Base** | Wallet-to-wallet payments verified from on-chain `Transfer` logs. *Experimental:* see [known limitations](docs/payments.md#usdc-on-base-experimental). |
@@ -89,6 +90,15 @@ so nobody spends a weekend on something we can't merge. Early ideas go to
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the
 [good first issues](https://github.com/Renanuya/buymeatokens-oss/labels/good%20first%20issue).
 Using an AI coding agent? Point it at [AGENTS.md](AGENTS.md).
+
+## Community
+
+Join the [buymeatokens Discord](https://discord.gg/CbaChQphmW) to give feedback, show what you're building, and meet other open source
+developers and the people who support them. Questions about the code are welcome there too.
+
+Bugs and feature requests still belong in [issues](https://github.com/Renanuya/buymeatokens-oss/issues) and
+[Discussions](https://github.com/Renanuya/buymeatokens-oss/discussions), so they're tracked and searchable.
+Security problems never go in public channels; see [Security](#security).
 
 ## Roadmap
 

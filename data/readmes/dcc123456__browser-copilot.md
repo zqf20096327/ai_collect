@@ -18,91 +18,35 @@ you're on and takes action — clicking buttons, filling forms, scrolling,
 switching tabs, walking through a whole checkout or setup flow — while you
 watch or stay hands-off.
 
-- 🧠 **Works with the model you already use.** Any OpenAI-compatible endpoint:
-  DeepSeek, 火山方舟 Ark, OpenAI, OpenRouter, Moonshot, DashScope, SiliconFlow,
-  or a local Ollama/LM Studio. Bring your own key.
-- 🆓 **Free by default.** A fresh install starts on the keyless Pollinations
-  provider — no key, no setup. Gemini, Groq, Cerebras, SambaNova, Chutes,
-  OpenRouter, GitHub Models and Zhipu GLM-4-Flash have free tiers.
-- 🎚️ **You choose how autonomous it is.** Five modes from plain chat to full
-  auto, plus a workflow-generate mode that turns a run into a reusable
-  workflow; semi-auto asks only before risky actions — payments, passwords,
-  deletions, sending — and lets reading and scrolling run.
-- 💸 **Only the tools a step needs are sent.** The specialised page tools
-  (scrolling, keys, form controls, vision, scripts) load by group on demand
-  instead of riding on every request, and read-only mode withholds every write
-  tool outright — which cut round-one tool schemas by about a third. Settings →
-  Tools lists every switch by loading group, so it is clear what loads when.
-- 🛑 **It stops repeating itself.** Page state is sampled after every action: three identical
-  no-change results in a row get the model a "change approach" note, six get that exact call
-  refused while different arguments or a different tool still run, and a page whose state
-  cannot be read (PDFs, strict-CSP pages, `chrome://`) only counts while the URL stays put.
-  Destructive actions — submit, pay, publish, send — are never replayed: the second identical
-  call is refused before it is dispatched. Resuming a conversation folds the goal, what was
-  already done and which irreversible actions ran into the prompt instead of replaying it.
-- 🧭 **Long tasks pause instead of dying at a limit.** A task starts with a round
-  budget (default 20) and shows a goal bar; when it runs out the turn pauses with a
-  card that lists the goal, the finished steps with their evidence, what is left, the
-  stop reason and the cost — then you renew, change the budget, or end the task and
-  start a new one. Renewal continues the same task, and a task only counts as done
-  when the model declares it with locatable evidence, so it never closes itself just
-  because it went quiet. Unattended tasks extend themselves only when the finished
-  segment made progress, at most K times (default 1).
-- 🧩 **Skills** turn repeatable know-how (review checklists, style guides,
-  extraction formats) into one-tap instructions the model must follow.
-- 🎬 **Workflows run whole procedures on their own.** Record yourself doing a
-  task once, ask the assistant to generate one, or assemble it on a visual
-  canvas from 56 block types — clicking, filling, loops, condition branches,
-  even an AI-agent step — then launch it by hand, on a schedule, at startup,
-  with a keyboard shortcut, from a context menu, or when a matching page is
-  opened. Every save that changes the graph becomes a version (up to 20), and
-  the editor can switch back to any of them in one click.
-- 🧾 **The runs you launch stay manageable.** The editor's AI assistant keeps chat history
-  per workflow, the Run button turns into **Stop run** while a run is live, and run logs
-  delete one at a time or in bulk and copy out as text. A workflow that declares parameters
-  asks for them in a **Parameters required** dialog before it runs — or you store the values
-  on the workflow itself, so neither scheduled nor manual runs get interrupted.
-  Hovering any operator offers a one-step test that runs just that node.
-- 🛍️ **Share workflows through a marketplace.** Publish any workflow to the
-  public marketplace or a private team repository as a pull request; browse,
-  search and sort what others published; apply a listing with its triggers
-  disabled; and get an update reminder when the publisher moves ahead.
-- 🎯 **Point at an element instead of describing it.** The page element picker
-  in Settings puts a crosshair on every page: one click copies the CSS
-  selector, the visible text, or the HTML — or, in select-only mode, records
-  the element so the assistant or a connected coding agent can read it. The
-  crosshair is its own draggable control (independent of the minimized-plugin
-  icon, never overlapping it) and pressing it does not take focus, so
-  dropdowns that close on blur stay open while you pick inside them.
-- ✍️ **Report problems from the panel.** Settings ends with feedback: write a
-  report, optionally attach version/build/browser diagnostics, and create a
-  public GitHub issue without leaving the extension.
-- ⏰ **Runs on a schedule while you sleep.** Set a task to fire once at a date
-  and time, every few minutes, daily, or on weekdays — an unattended prompt or a
-  saved workflow, with a full run history and outputs you can hand to the next
-  task in a chain.
-- 📊 **You see what it costs.** The **Tokens** board totals spend over today /
-  7 days / 30 days / since first use, broken down by feature and by conversation,
-  task or workflow.
-- 🔄 **Mid-turn, the panel is not a pet.** Minimizing it used to leave the
-  running turn streaming into a dead port: reopening showed a frozen snapshot
-  until the round ended, and a confirmation asked for in the meantime had nobody
-  to answer it. Output now goes through a per-conversation channel that a
-  reopened panel reattaches to.
-- 💬 **Picks up work from Feishu/Lark.** Get notified in a group chat when a
-  task finishes, or DM the bot a request from your phone and watch it execute
-  in the browser on your machine and reply with the result.
-- 🤝 **Your coding agent can drive it too.** Claude Code, Codex, Trae — any
-  MCP client — gets a browser toolbox through a local adapter and operates
-  your real Chrome (see [Agent integration](#agent-integration-mcp)).
-- 🔒 **Private by construction.** No accounts, no telemetry, no cloud server of
-  ours. Keys and data stay on your machine; passwords are filled locally and
-  never shown to the model. The default free Pollinations provider does send
-  prompts to Pollinations — choose a local model or your own provider if text
-  must stay local.
-- 💾 **Own your data as files.** Pick a folder in Settings and everything —
-  conversations, skills, workflows — is written to real files on your disk and
-  nowhere else; the browser's own storage is left empty.
+## At a glance
+
+### Feature overview
+
+| Area        | Feature            | What it does                                                                            | Where                            |
+| ----------- | ------------------ | --------------------------------------------------------------------------------------- | -------------------------------- |
+| Chat        | AI side panel      | Reads the page and acts: clicks, fills, scrolls, switches tabs, and runs the whole flow | Toolbar icon → ask               |
+| Chat        | Skills             | Turns repeatable know-how into one-tap instructions                                     | Type `/` or Skills tab           |
+| Automation  | Workflow editor    | 56 block types; record, AI-generate, or hand-build                                      | Workflows → Edit                 |
+| Automation  | Scheduled tasks    | Once / daily / weekly / cron; outputs can chain into the next task                      | Tasks tab                        |
+| Automation  | Marketplace        | Publish, search, and install shared workflows                                           | More → Marketplace               |
+| Integration | Feishu / Lark      | Push results to groups; DM the bot to run tasks remotely                                | Tasks → Feishu/Lark              |
+| Integration | MCP local access   | Let coding agents such as Claude Code drive your real Chrome                            | Settings → Local agent access    |
+| Integration | Element picker     | Crosshair to copy CSS / text / HTML                                                     | More → Settings → Element picker |
+| Data        | Local file storage | Data saved as real files, beyond the browser's 10MB quota                               | Settings → Storage location      |
+| Data        | Auto-update        | Checks versions, verifies, backs up, and reloads in one click                           | Settings → Updates               |
+
+### Tips
+
+| Tip                           | How                                                                   | Effect                       |
+| ----------------------------- | --------------------------------------------------------------------- | ---------------------------- |
+| Precise input                 | Check "include selection" and send only the highlighted text          | Fewer tokens, sharper target |
+| Close the panel, keep running | Close the side panel; the task continues and catches up when reopened | Long tasks don't break       |
+| Step test                     | Hover a block to run just that node                                   | Pinpoint issues fast         |
+| Parameters without prompts    | Store parameter values on the workflow, so runs never ask again       | Truly unattended             |
+| Chain tasks                   | Use `{{upstream.<key>}}` to reference the upstream output             | Build a pipeline             |
+| Version rollback              | Every save keeps a version (up to 20)                                 | Iterate freely               |
+| Password privacy              | Passwords fill locally via `get_secret`, never visible to the model   | Keeps secrets private        |
+| Window scope                  | The panel only drives the window it is attached to                    | Isolates your workspace      |
 
 It never acts on its own initiative — every action is either part of answering
 something you just asked, a [scheduled task](#scheduled-tasks) you created, a
@@ -114,6 +58,7 @@ agent you connected over [MCP](#agent-integration-mcp).
 
 ## Contents
 
+- [At a glance](#at-a-glance)
 - [Quick start](#quick-start)
 - [What it is good for](#what-it-is-good-for)
 - [Agent modes](#agent-modes)
@@ -214,17 +159,16 @@ creates a second, empty extension.
    containing `manifest.json`) and for write permission once. Later updates
    reuse it and ask nothing.
 3. It downloads the matching variant, verifies the release's SHA-256 digest,
-   backs up the files it replaces into
-   `browser-copilot-backup-<old-version>-<timestamp>/` inside the install folder
-   (the backup's manifest is `manifest.json.bak`, so the folder cannot be loaded
-   as a second extension), then writes the new build. Chrome keeps running the
-   old version until you choose **Reload now**; **Later** leaves the files in
-   place and the banner reminds you.
-4. The backup is deleted automatically the next time the panel opens on the new
-   version — that open is the proof the reload worked. (Deleting needs the
-   folder permission granted in that browser session; otherwise it stays and is
-   retried on a later open.) You can still delete the folder by hand sooner. The
-   updater keeps your variant (ocr or no-ocr) and never touches stored data.
+   then writes the new build straight over the install folder — **no backup is
+   kept**. Files are written one at a time (large ones in 1MiB slices), with the
+   stable entry points and `manifest.json` last, so a failed write leaves the
+   previous version loadable. Chrome keeps running the old version until you
+   choose **Reload now**; **Later** leaves the files in place and the banner
+   reminds you.
+4. If a write fails, the dialog shows the browser's error and offers **Download
+   again**: download the package, copy its files over the install folder, then
+   reload in `chrome://extensions`. The updater keeps your variant (ocr or
+   no-ocr) and never touches stored data.
 
 **From 0.6.7 or earlier — one manual swap, then automatic:** builds before
 0.6.8 have no updater, so replace the files in place once:
@@ -413,14 +357,11 @@ configuration, not a code path — unlisted endpoints work too.
 | Ollama (local)       | `http://localhost:11434/v1`                         | `qwen3:8b`                           |
 | LM Studio (local)    | `http://localhost:1234/v1`                          | `local-model`                        |
 
-**Free options.** A fresh install already has Pollinations active. Settings →
-Models keeps only providers usable directly for free (no key) under **Free to
-try**; providers with a free quota or daily credits stay in **All providers**.
-Their free models still show **Free**.
+**Free quotas.** Every provider needs its own API key. Several vendors offer a
+free quota or daily credits; their free models show **Free**.
 
 | Free preset                 | Base URL                                                  | Notes                                                        |
 | --------------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
-| Pollinations                | `https://text.pollinations.ai/openai`                     | Direct free — no key; anonymous tier, rate-limited, tools    |
 | Google AI Studio (Gemini)   | `https://generativelanguage.googleapis.com/v1beta/openai` | Free quota with an AI Studio key                             |
 | Groq / Cerebras / SambaNova | vendor endpoints                                          | Free quota with a key; tool support varies                   |
 | Hugging Face                | `https://router.huggingface.co/v1`                        | Free monthly quota with an HF token                          |
@@ -444,13 +385,10 @@ machine. Page text is capped at ~12,000 characters, so prefer a large context
 window for long pages.
 
 Add multiple providers and switch with **Use this**, or pick the active model
-from the composer. Keys are stored per profile. **Round budget for a new task**
-(default 20, range 1–100) is what a new task starts with. When it is spent the
-turn stops and pauses for your decision: add rounds, change the budget, or end
-the task. Nothing runs on silently — scheduled tasks and AI-agent blocks have
-nobody to decide, so they settle and pause at the budget. Keys live on this machine only (as files once you pick a
-storage folder — not synced, not encrypted) — use a local model if that's
-unacceptable.
+from the composer. Keys are stored per profile. Chat tasks have **no round
+budget** — a long task keeps running until it finishes or you stop it. Keys
+live on this machine only (as files once you pick a storage folder — not
+synced, not encrypted) — use a local model if that's unacceptable.
 
 ---
 
@@ -1030,9 +968,9 @@ real browser.
 
 ### Does Browser Copilot require an API key?
 
-No. A new installation starts with the keyless, rate-limited Pollinations
-provider. You can instead connect an OpenAI-compatible API or a local model
-through Ollama or LM Studio.
+Yes. Add your own OpenAI-compatible provider in Settings → Models (each needs
+an API key), or connect a local model through Ollama or LM Studio with a
+placeholder key. A fresh install has no provider configured.
 
 ### Can Claude Code, Codex, or Trae control Chrome through Browser Copilot?
 
@@ -1043,9 +981,9 @@ read pages, click, fill forms, manage tabs, and run other enabled browser tools.
 ### Does Browser Copilot send browsing data to a server?
 
 The project has no account system, telemetry, or cloud server. Page content is
-sent only to the model provider required for the requested task; the default
-Pollinations provider therefore receives prompts. Use a local model when page
-text must stay on your machine. Feishu receives task results only if enabled.
+sent only to the model provider you selected for the task. Use a local model
+when page text must stay on your machine. Feishu receives task results only if
+enabled.
 
 ### Is Browser Copilot free and open source?
 
@@ -1064,17 +1002,17 @@ webhooks, Docker deployment, and a web console.
 
 ## Troubleshooting
 
-| Symptom                          | Fix                                                                                                                                                                      |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| "No model provider configured"   | More → Model settings → Add a provider.                                                                                                                                  |
-| 401 / 403                        | Wrong/expired key, or key/vendor mismatch.                                                                                                                               |
-| 404 when sending                 | Base URL missing its version segment, or unknown model; press **Test connection**.                                                                                       |
-| "Cannot read this page"          | `chrome://`, `file://`, Web Store, or extension page — not injectable.                                                                                                   |
-| Action still asks in full auto   | Reload the extension; confirm the dropdown shows ⚡ Full auto.                                                                                                           |
-| Budget used up / the task pauses | The task spent its round budget. The panel card offers renew, change budget, or end and start a new task; raising **Round budget for a new task** affects the next task. |
-| Chats but never reads/acts       | Model lacks function calling; attach the page or switch model.                                                                                                           |
-| Page text empty/partial          | Content is in an iframe, lazy-loaded, or behind "Load more"; select the relevant section.                                                                                |
-| Nothing happens on toolbar click | Reload the extension; the worker may have failed to start.                                                                                                               |
+| Symptom                                   | Fix                                                                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| "No model provider configured"            | More → Model settings → Add a provider.                                                                            |
+| 401 / 403                                 | Wrong/expired key, or key/vendor mismatch.                                                                         |
+| 404 when sending                          | Base URL missing its version segment, or unknown model; press **Test connection**.                                 |
+| "Cannot read this page"                   | `chrome://`, `file://`, Web Store, or extension page — not injectable.                                             |
+| Action still asks in full auto            | Reload the extension; confirm the dropdown shows ⚡ Full auto.                                                     |
+| Chats but never reads/acts                | Model lacks function calling; attach the page or switch model.                                                     |
+| Page text empty/partial                   | Content is in an iframe, lazy-loaded, or behind "Load more"; select the relevant section.                          |
+| Nothing happens on toolbar click          | Reload the extension; the worker may have failed to start.                                                         |
+| "Not a valid extension archive" on update | The package was built from a different version (0.6.20/0.6.21 did this). Install 0.6.22+ once; later updates work. |
 
 ---
 
@@ -1087,17 +1025,13 @@ webhooks, Docker deployment, and a web console.
   "no actionable tab in the panel's window" instead of reaching into another
   window.
 - Page text capped at ~12,000 characters; truncation is reported to the model.
-- **Budgets are explicit, and they pause rather than stop silently.** A task
-  starts with the configured round budget; when it is spent the turn pauses and
-  the panel offers renew / change budget / end and start a new task. A goal only
-  completes on an explicit `goal_complete` declaration with locatable evidence,
-  so an unfinished task stays active across your messages instead of being
-  closed for you. Unattended tasks may extend themselves: a scheduled task or
-  AI-agent block renews **only when the segment that just ran made progress**,
-  at most **K** times (default 1, `0` turns it off, range 0–10), and each
-  renewal adds one initial budget, so K renewals cap the total at the initial
-  budget x (1 + K). A manual renewal adds the budget you last set yourself. With
-  you in the chat it never happens — the task pauses for your decision.
+- **Chat tasks have no round budget.** A long task keeps running until the
+  model finishes or you press Stop. A goal completes only on an explicit
+  `goal_complete` declaration with locatable evidence, so an unfinished task
+  stays active across your messages instead of being closed for you. Unattended
+  runs (scheduled tasks, workflow AI-agent blocks, delegated specialists) do
+  carry a per-task round limit and simply end when it is reached — they never
+  pause or ask for a renewal.
 - The irreversible-action fence remembers the last **50** actions of a
   conversation: after more than 50, the oldest one would no longer be blocked on
   replay.

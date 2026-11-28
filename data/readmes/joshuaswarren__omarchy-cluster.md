@@ -255,7 +255,7 @@ with the post-merge states of PRs #150, #153, #155, #156 and #157.
 
 | Receipt path | State |
 |---|---|
-| `receipts/milestone1-jwm2-macos-solo/run.json` | missing |
+| `receipts/milestone1-<MAC_HOST>-macos-solo/run.json` | missing |
 | staged command sheet + blocker chain | documented in `receipts/milestone1-status-2026-11-26.md` (PR #155) |
 
 ### CL06 — vendor-OS EXO pair (macOS + DGX OS) — dry-run only
@@ -340,7 +340,7 @@ with the post-merge states of PRs #150, #153, #155, #156 and #157.
 | `omarchy_cluster/drill.py` + `tests/test_drill.py` (PR #138) | merged |
 | node-loss/restart drill hardening + `cli.py` rewiring and CLI tests (PR #157) | merged |
 | live drill receipt on the Omarchy-on-both cluster | missing (needs CL15) |
-| unsupported-cases matrix (the former `docs/mac-spark-proof.md` was removed in PR #143) | missing |
+| [unsupported-cases matrix](docs/unsupported-cases.md) (the former `docs/mac-spark-proof.md` was removed in PR #143) | merged |
 
 ## License
 

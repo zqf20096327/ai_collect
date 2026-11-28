@@ -6,14 +6,16 @@
 
 ### Autonomous Crypto Trading System with Multi-LLM Analysis & Deterministic Risk Control
 
-[![Release](https://img.shields.io/badge/Release-v8.6.1-00E599.svg?style=flat-square)](https://github.com/0xethanq/astra-quant-agent/releases)
+[![Release](https://img.shields.io/badge/Release-v8.9.1-FF5E2B.svg?style=flat-square)](https://github.com/0xethanq/astra-quant-agent/releases)
+[![Website](https://img.shields.io/badge/Website-astraquant.top-f59e0b.svg?style=flat-square)](https://astraquant.top/)
+[![TradeSkill](https://img.shields.io/badge/Skills_Hub-TradeSkill_103%2B-FF5E2B.svg?style=flat-square)](https://github.com/0xethanq/crypto-trading-skills)
 [![License](https://img.shields.io/badge/License-AGPLv3%20%2B%20Commons%20Clause-blue.svg?style=flat-square)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Vue 3](https://img.shields.io/badge/Vue-3.5%2B-4FC08D.svg?style=flat-square&logo=vuedotjs&logoColor=white)](https://vuejs.org/)
 
 AstraQuant combines large language models (macro, technical, and microstructure analysis) with deterministic Python risk management and OKX-native conditional order execution.
 
-[Preview](#preview) · [Quick Start](#quick-start) · [Referral](#exchange-referral--fee-rebates) · [Architecture](#system-architecture) · [Market Factors](#market-microstructure-factors) · [Risk Control](#capital-management--risk-control) · [Deploy](#deploy) · [Code Map](#code-map)
+[Website](https://astraquant.top/) · [Preview](#preview) · [Quick Start](#quick-start) · [Referral](#exchange-referral--fee-rebates) · [Architecture](#system-architecture) · [Market Factors](#market-microstructure-factors) · [Risk Control](#capital-management--risk-control) · [Deploy](#deploy) · [Code Map](#code-map) · [TradeSkill](https://tradeskill.si/en/)
 
 </div>
 
@@ -23,17 +25,17 @@ AstraQuant combines large language models (macro, technical, and microstructure 
 
 | | |
 |---|---|
-| **Quant Trading Workstation**<br>![Live Workstation](backend/docs/images/v850_live_dashboard.png) | **Chain-of-Thought (CoT) Decision Drawer**<br>![Chain of Thought](backend/docs/images/v850_trajectory_cot.png) |
-| **Execution Risk Control Center**<br>![Risk Control](backend/docs/images/v850_risk_control.png) | **Multi-Model Committee Board**<br>![Council Board](backend/docs/images/v850_council_board.png) |
+| **Quant Trading Workstation (Signal Orange)**<br>![Live Workstation](backend/docs/images/v871_live_dashboard.png) | **AI Signal & Decision Radar**<br>![AI Radar](backend/docs/images/v871_factors_radar.png) |
+| **Closed-Loop Self-Evolution Hub**<br>![Self Evolution](backend/docs/images/v871_self_evolution.png) | **Live Trade Ledger & Position Lifecycle**<br>![Trade Ledger](backend/docs/images/v871_ledger.png) |
 
 <details>
-<summary><b>Additional Interface Previews</b> (Click to expand: Prompt Studio, Evolution, Admin, Security)</summary>
+<summary><b>Additional Interface Previews</b> (Click to expand: CoT Drawer, Risk Control, Prompt Studio, Admin, Security)</summary>
 
 | | |
 |---|---|
-| **Prompt Engineering Studio**<br>![Prompt Studio](backend/docs/images/v850_prompt_studio.png) | **Closed-Loop Self-Evolution Hub**<br>![Self Evolution](backend/docs/images/v850_self_evolution.png) |
-| **LLM Gateway & Thinking Config**<br>![LLM Hub](backend/docs/images/v850_llm_hub.png) | **System Governance & Admin Overview**<br>![Admin Overview](backend/docs/images/v850_admin_overview.png) |
-| **Security & Credential Plaza**<br>![Security Plaza](backend/docs/images/v850_security_plaza.png) | **Factor Telemetry Table**<br>![Factor Matrix](backend/docs/images/v850_calculus_factors.png) |
+| **Chain-of-Thought (CoT) Decision Drawer**<br>![Chain of Thought](backend/docs/images/v850_trajectory_cot.png) | **Execution Risk Control Center**<br>![Risk Control](backend/docs/images/v850_risk_control.png) |
+| **Prompt Engineering Studio**<br>![Prompt Studio](backend/docs/images/v850_prompt_studio.png) | **LLM Gateway & Thinking Config**<br>![LLM Hub](backend/docs/images/v850_llm_hub.png) |
+| **System Governance & Admin Overview**<br>![Admin Overview](backend/docs/images/v850_admin_overview.png) | **Security & Credential Plaza**<br>![Security Plaza](backend/docs/images/v850_security_plaza.png) |
 
 </details>
 
@@ -232,6 +234,12 @@ backend/.venv/bin/ruff check backend
 | [`tests/audit/test_directory_docs_current.py`](tests/audit/test_directory_docs_current.py) | Ensures all modules are registered in `__init__.py` and documented |
 | [`tests/core/test_readme_baseline_numbers.py`](tests/core/test_readme_baseline_numbers.py) | Keeps test count baselines aligned with actual test suites |
 | [`tests/audit/test_doc_paths_are_committed.py`](tests/audit/test_doc_paths_are_committed.py) | Ensures all source paths referenced in documentation exist and are tracked |
+
+---
+
+## Ecosystem: TradeSkill (AI Agent Crypto Skills)
+
+Looking for on-demand crypto exchange skills inside **Claude Code**, **Cursor**, **Codex CLI**, or **Windsurf** to complement AstraQuant's 24/7 autonomous execution? Pair it with our sister open-source repository **[TradeSkill (`tradeskill.si`)](https://tradeskill.si/en/)** ([`0xethanq/crypto-trading-skills`](https://github.com/0xethanq/crypto-trading-skills)) — 103 bundled MIT/Apache-2.0 skills and 164 official catalog entries across 16 exchanges & DEXs.
 
 ---
 

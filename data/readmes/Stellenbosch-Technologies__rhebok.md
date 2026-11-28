@@ -52,7 +52,7 @@ S3 bucket or Google Drive.
   agent isn't flooded with noise.
 - **It remembers your past sessions.** Your Claude Code and Codex
   transcripts are indexed too, so "how did we fix this last time?" has an
-  answer when the agent searches with `rhebok_search` or you run
+  answer when the agent searches with `rhebok_search_knowledge` or you run
   `rhebok search`. Finished sessions are also distilled into short episode
   memories. The automatic prompt context prefers your notes and keeps raw
   transcripts out by default.
@@ -107,6 +107,58 @@ model (about 2.5 GB). With [Homebrew](https://brew.sh), install it with
 `brew install stellenbosch-technologies/tap/rhebok`, then run `rhebok install`.
 Other ways to install, including building from source, are in the
 [install guide](docs/install.md).
+
+### Let your coding agent install it
+
+Paste this prompt into Claude Code, Codex or another coding agent that can run
+commands on your machine. It installs rhebok, asks you what to search, and
+opens the app.
+
+```text
+Install rhebok for me (https://github.com/Stellenbosch-Technologies/rhebok).
+Its install guide is docs/install.md in that repository. Do these steps in
+order, and do not use sudo unless I agree.
+
+1. Check my machine. rhebok needs a Mac with Apple silicon, or Linux on x86_64
+   or arm64 with glibc 2.39 or newer. On Windows it runs only inside WSL. If my
+   machine is not supported, tell me why and stop.
+2. Run `ollama list` to check that Ollama is installed and running. If it is
+   not, tell me how to install it on my system, and wait until I say it runs.
+3. Ask me these questions together, before you install anything:
+   - Which folders should rhebok search (notes, papers, documents)? Or do I
+     want to pick them myself in the app?
+   - Which embedding model: Qwen3-Embedding 0.6B (`qwen3`, the default, about
+     640 MB) or EmbeddingGemma 2 (`gemma`, about 575 MB, needs Ollama 0.40 or
+     newer)?
+   - Which of the coding agents you find installed (Codex, Gemini CLI, Cursor,
+     Claude Desktop) should rhebok connect to? Claude Code is always connected.
+   - Do I want the optional session distillation model (about 2.5 GB)?
+4. If I want Claude Desktop connected and it is running, ask me to quit it
+   first, because rhebok cannot change its config while it runs. Then install.
+   Your shell cannot answer the installer's questions, so run it unattended:
+   curl -fsSL https://github.com/Stellenbosch-Technologies/rhebok/releases/latest/download/install.sh | sh -s -- --yes --embed-model <qwen3 or gemma>
+   `--yes` downloads the embedding model and connects every agent it finds.
+   Run `rhebok disconnect <agent>` for each agent I did not want. If the
+   output ends with an `export PATH=...` line, add it to my shell profile.
+5. If I want the distillation model, run `ollama pull qwen3:4b-instruct`.
+6. If I gave you folders, run `rhebok config set sources '["<folder>", ...]'`,
+   then `rhebok config check`, then `rhebok index`. The first index can take a
+   few minutes.
+7. Open the app. It keeps running, so start it in the background, or your
+   shell waits until I close it:
+   - on a Mac: `nohup rhebok app >/dev/null 2>&1 &`
+   - on Linux: `nohup rhebok dashboard >/tmp/rhebok-dashboard.log 2>&1 &`,
+     then give me the URL that the log shows.
+   If I chose to pick my folders in the app, tell me to follow its three-step
+   setup (folders, agents, first index).
+8. Run `rhebok status`. The `install:` line must end in `ok`, and the
+   `ollama:` line must say the embedding model is present. If I gave you
+   folders, `documents:` must be more than zero. If a line shows a problem,
+   run `rhebok install` again and read docs/troubleshooting.md.
+9. Tell me what you installed and connected. Then tell me to restart Claude
+   Code and Claude Desktop, and to run `/hooks` once in Codex to trust
+   rhebok's hook.
+```
 
 rhebok used to be called br8n. If you used br8n, install rhebok the same way:
 `rhebok install` moves your br8n index, memories and config, and your agent

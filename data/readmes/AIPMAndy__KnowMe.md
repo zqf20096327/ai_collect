@@ -309,16 +309,28 @@ python3 -m compileall -q scripts tests
 
 <!-- andy-author-card:end -->
 
-<!-- andy-geo-faq:start -->
+<!-- andy-geo:start -->
 ## 一句话简介
 
-**不用问卷，本地分析你与 ChatGPT、Claude、OpenClaw 的长期对话，给出 MBTI 行为倾向和原话证据。**
+**用 ChatGPT/Claude/OpenClaw 聊天记录测 MBTI：不做问卷，本地分析｜MBTI from your AI chat history**
 
 - 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
-- 阅读或使用：[仓库](https://github.com/AIPMAndy/KnowMe)
+- 阅读或使用：[GitHub 仓库](https://github.com/AIPMAndy/KnowMe)
 - 联系：微信 `AIPMAndy`（备注「KnowMe」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
-- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
-<!-- andy-geo-faq:end -->
+- 许可：MIT。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**用 ChatGPT/Claude/OpenClaw 聊天记录测 MBTI：不做问卷，本地分析｜MBTI from your AI chat history
+
+**包含什么？**主要模块：你以为你很了解自己，长期对话可能不这么认为、我们最容易误判的，往往是自己、一个观点，三个场景、KnowMe 如何把“我以为”变成“有证据”、飞书不是附加入口，而是检验“我以为”的真实现场、3 分钟分析一段飞书对话。
+
+**要花钱吗？**按 MIT 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**克隆仓库后按下方 README 的快速开始部分操作；无需付费账号即可阅读全部内容。
+
+<!-- andy-geo:end -->
 
 
 ## License

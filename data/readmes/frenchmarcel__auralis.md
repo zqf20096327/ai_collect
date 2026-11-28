@@ -21,7 +21,7 @@ parameters.
 
 ## How it works
 
-Auralis is a hybrid engine. Below a transition frequency, a **wave solver**
+Below a transition frequency, a **wave solver**
 (FDTD, on the GPU) captures room modes, interference and diffraction. Above
 it, **ray tracing and image sources** cover the rest of the audible range. A
 crossover joins the two into one impulse response, rendered for headphones
@@ -36,9 +36,6 @@ Simulation of TU Berlin: four rooms, and the reflection and diffraction
 scenes. Materials come from the BRAS data. They are never tuned to the
 measurements. Results, metrics and known errors are on the
 [validation page](https://auralis.readthedocs.io/en/latest/validation/index.html).
-
-![Seminar room CR2: Auralis against the BRAS measurement](BRAS/CR2/figures/validation.png)
-*Seminar room CR2: Auralis (teal) against the measurement (black). Grey: ± 1 JND.*
 
 ## Performance
 

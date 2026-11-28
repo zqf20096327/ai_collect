@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/bilzeng/cartoon-studio"><img alt="GitHub 仓库" src="https://img.shields.io/badge/GitHub-24292f?style=flat-square&amp;logo=github&amp;logoColor=white"></a>
+  <a href="https://github.com/bilzeng/cartoon-studio"><img alt="GitHub Star 数" src="https://img.shields.io/github/stars/bilzeng/cartoon-studio?style=flat-square"></a>
   <a href="https://github.com/bilzeng/cartoon-studio/issues"><img alt="GitHub Issues 问题反馈" src="https://img.shields.io/badge/Issues-24292f?style=flat-square&amp;logo=github&amp;logoColor=white"></a>
   <a href="LICENSE"><img alt="Apache-2.0 许可证" src="https://img.shields.io/badge/License-Apache%202.0-315f5c?style=flat-square"></a>
   <a href="https://nodejs.org/"><img alt="Node.js 24 或更新版本" src="https://img.shields.io/badge/Node.js-24%2B-315f5c?style=flat-square"></a>
@@ -12,7 +13,7 @@
 
 镜场是一款运行在本机的开源短片与 AI 漫剧工作台。你可以在节点画布上组织参考素材，按剧本拆分和编排镜头，用自己的 ComfyUI 工作流生成图像、视频与旁白，再从分镜台导出 MP4。
 
-[快速开始](#快速开始) · [制作一集](#制作一集) · [连接 ComfyUI](#连接-comfyui) · [开源项目与致谢](#开源项目与致谢) · [开发与测试](#开发与测试)
+[快速开始](#快速开始) · [制作一集](#制作一集) · [连接 ComfyUI](#连接-comfyui) · [工作流共创](#工作流共创) · [开源项目与致谢](#开源项目与致谢) · [开发与测试](#开发与测试) · [GitHub Star 统计](#github-star-统计)
 
 ## 功能一览
 
@@ -103,6 +104,14 @@ npm start
 
 PoseSwap 外部图库需要联网，来源和授权范围见 [第三方来源](THIRD_PARTY_NOTICES.md)。
 
+## 工作流共创
+
+如果你手上有在实际创作中验证过的 ComfyUI 工作流，比如角色一致性、图生视频、口型同步、配音或高清修复，欢迎接入镜场，让其他创作者也能在自己的画布里复用。可以先按[导入自己的工作流](#导入自己的工作流)跑通一遍。
+
+分享时建议附上工作流 JSON、适用场景和可公开分享的成品示例。注明依赖的自定义节点、模型或 LoRA，以及在镜场里要映射的素材输入、成品输出和常用参数，方便大家复现。
+
+如果工作流在 ComfyUI 里已经跑通，但还需要适配镜场，也欢迎发 Issue 一起讨论。已经完成适配、希望贡献预设或示例的朋友，可以提交 Pull Request。[提议或分享工作流](https://github.com/bilzeng/cartoon-studio/issues/new) · [贡献预设或示例](https://github.com/bilzeng/cartoon-studio/pulls)
+
 ## 开源项目与致谢
 
 感谢以下项目。镜场通过 ComfyUI API 调用生成能力，所需插件由使用者按工作流安装。
@@ -149,6 +158,16 @@ npm run test:sites
 ```
 
 遇到问题可在 [GitHub Issues](https://github.com/bilzeng/cartoon-studio/issues) 提交复现步骤、系统与运行时版本、所用预设和脱敏错误信息。欢迎提交问题修复和可复用的工作流改进。
+
+## GitHub Star 统计
+
+谢谢为镜场点下前 23 颗 Star 的朋友！
+
+| 记录日期 | GitHub Stars |
+| --- | ---: |
+| 2026-11-27 | 23 |
+
+[![镜场 GitHub Star 增长曲线](https://api.star-history.com/svg?repos=bilzeng/cartoon-studio&type=Date)](https://www.star-history.com/#bilzeng/cartoon-studio&Date)
 
 ## 许可证
 

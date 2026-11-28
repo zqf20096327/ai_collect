@@ -25,8 +25,8 @@
     - [Docker Compose](#docker-compose)
     - [一键脚本（systemd）](#一键脚本systemd)
   - [多节点部署](#多节点部署)
+  - [二进制启动示例](#二进制启动示例)
   - [环境变量](#环境变量)
-    - [二进制启动示例](#二进制启动示例)
   - [HTTPS](#https)
   - [从源码构建](#从源码构建)
   - [常见问题](#常见问题)
@@ -105,6 +105,70 @@ docker compose -f docker-compose.worker.yml up -d   # Worker
 > - `NODE_ADDRESS` 写 `IP:端口` 即可，Worker 会自动补协议前缀。
 > - 自签证书场景需设 `NODE_TLS_INSECURE=true`，或用 `NODE_CA_FILE` 分发 CA，否则跨节点调用会因证书校验失败。
 
+## 二进制启动示例
+
+面板全部配置通过环境变量读取，变量含义查「环境变量」一节表格。
+
+> [!IMPORTANT]
+> **配置文件唯一约定位置：`./data/secrets.env`**（数据目录下，每行一个 `KEY=VALUE`，支持 `#` 注释）。二进制启动时**自动读取该文件**——不需要 `source`、不需要 systemd `EnvironmentFile`。优先级：显式环境变量（`docker -e`、shell export）> 文件。程序自动生成的密钥也追加存放在同一文件（不会覆盖你的配置）。路径跟随启动时的工作目录，请固定在同一个目录下启动。
+
+**直接运行（Linux / macOS）**
+
+```bash
+# 最简启动：什么都不用配
+./rabbit-panel-linux-amd64
+```
+
+首次启动自动生成 `JWT_SECRET` / `NODE_SECRET` 写入 `./data/secrets.env`（0600 仅属主可读），重启密钥不变。查看：
+
+```bash
+cat ./data/secrets.env    # 配 Worker 时取这里面的值
+```
+
+需要自定义配置时往同一个文件里写（不存在就自己建），重启生效：
+
+```bash
+mkdir -p data
+cat >> data/secrets.env <<'EOF'
+TLS_ENABLED=true
+PORT=3958
+EOF
+./rabbit-panel-linux-amd64
+```
+
+**一键脚本部署（systemd）**
+
+配置写进 `./data/secrets.env` 后 `systemctl restart rabbit-panel` 即生效——程序启动时自己读文件，无需在 unit 里配 `EnvironmentFile`。
+
+**Windows**
+
+与 Linux 完全一致：配置写在 exe 同级 `data\secrets.env`（用记事本编辑即可），然后直接运行 exe。
+
+**Worker 节点示例**
+
+在 Worker 机器上把配置写进数据目录，然后直接启动：
+
+```bash
+mkdir -p data
+cat > data/secrets.env <<'EOF'
+MODE=worker
+MASTER_URL=http://x.x.x.x:3958
+JWT_SECRET=与Master完全相同的值
+NODE_SECRET=与Master完全相同的值
+NODE_NAME=worker-1
+PORT=10001
+EOF
+
+./rabbit-panel-linux-amd64
+```
+
+密钥从 Master 上抄：`cat ./data/secrets.env`。注意**完整复制，漏一个字符都会导致认证失败**。
+
+- `MASTER_URL` 是 Master 的地址；`NODE_ADDRESS` 是本 Worker 的地址（`IP:端口`，Worker 会自动补协议前缀），要填 Master 能访问到的地址；二进制直接部署时可留空自动探测，Docker 部署必须显式填宿主机 IP
+- `JWT_SECRET`、`NODE_SECRET` 必须与 Master 完全一致且至少 32 字符，Worker 不设会拒绝启动
+- Master 是自签 HTTPS 时加 `NODE_TLS_INSECURE=true`
+- Docker 部署时用 `-e` 传参或写进挂载数据目录的 `secrets.env` 均可，`-e` 优先
+
 ## 环境变量
 
 | 变量 | 说明 |
@@ -112,63 +176,13 @@ docker compose -f docker-compose.worker.yml up -d   # Worker
 | `MODE` | `master`（默认）或 `worker` |
 | `HOST` / `PORT` | 监听地址与端口，默认 `0.0.0.0` / `3958` |
 | `DOCKER_HOST` | Docker 守护进程地址，未设置时沿用 Docker CLI 当前 context（默认本机 socket） |
-| `JWT_SECRET` | 登录令牌密钥。Master / 单机可不设，未设置时每次启动随机生成并打印到日志（重启后会话失效）；设置时至少 32 个字符且不能是示例值，可用 `openssl rand -hex 32` 生成。Worker 必填 |
-| `NODE_SECRET` | 节点通信密钥，规则同 `JWT_SECRET`。Worker 必填，且与 Master 一致；Master 重启后随机值会变，导致 Worker 连不上，多节点请显式设置 |
+| `JWT_SECRET` | 登录令牌密钥。Master / 单机可不设：**首次启动自动生成并保存到 `./data/secrets.env`（0600 权限），之后每次启动从文件读回**——重启不掉登录态、密钥固定。设置时至少 32 个字符且不能是示例值，可用 `openssl rand -hex 32` 生成。Worker 必填 |
+| `NODE_SECRET` | 节点通信密钥，规则同 `JWT_SECRET`。Worker 必填，且与 Master 一致；Master 端未设置时同样自动持久化，配置 Worker 前用 `cat ./data/secrets.env` 查看即可 |
 | `MASTER_URL` | Worker 连接的 Master 面板地址，如 `http://x.x.x.x:3958`；Master 启用 HTTPS 时写 `https://x.x.x.x:3958` |
 | `NODE_NAME` / `NODE_ADDRESS` | Worker 显示名称（如 `worker-1`）/ Master 能访问到的 Worker 地址（如 `x.x.x.x:10001`）。`NODE_ADDRESS` 可留空，此时自动探测通往 Master 的本机出口 IP；**Docker 部署必须显式设置**否则探到的是容器 IP，Master 无法回连 |
 | `RABBIT_UPDATE_CHECK_DISABLED` | 设为 `true` 跳过更新检查，界面不显示更新提示 |
 | `RABBIT_UPDATE_MANIFEST_MIRROR_URL` | 更新清单镜像源，默认 jsDelivr，设为 `off` 禁用。jsDelivr 对分支内容最长缓存约 12 小时，新版本提示可能延迟 |
 | `RABBIT_UPDATE_DOWNLOAD_PROXY` | 可选，GitHub 下载加速前缀（如 `https://ghfast.top/`），仅对 github.com 下载地址生效。二进制仍会校验 sha256，缺少 sha256 的清单会拒绝更新 |
-
-### 二进制启动示例
-
-面板全部配置通过环境变量读取（没有配置文件和命令行参数），不同启动方式的写法：
-
-**直接运行（Linux / macOS）**
-
-```bash
-# 单行写法：变量只对这一次启动生效
-JWT_SECRET=$(openssl rand -hex 32) ./rabbit-panel-linux-amd64
-
-# 或先 export 再启动
-export JWT_SECRET=$(openssl rand -hex 32)
-./rabbit-panel-linux-amd64
-```
-
-**一键脚本部署（systemd）**
-
-环境变量统一写在 `/etc/rabbit-panel.env`（每行一个 `KEY=VALUE`），修改后重启服务生效：
-
-```bash
-cat >> /etc/rabbit-panel.env <<'EOF'
-JWT_SECRET=粘贴 openssl rand -hex 32 的输出
-TLS_ENABLED=true
-EOF
-systemctl restart rabbit-panel
-```
-
-**Windows**
-
-```powershell
-$env:JWT_SECRET="至少32个字符的随机串"; .\rabbit-panel-windows-amd64.exe
-```
-
-**Worker 节点示例**
-
-```bash
-MODE=worker \
-MASTER_URL=http://x.x.x.x:3958 \
-JWT_SECRET=与Master完全相同的值 \
-NODE_SECRET=与Master完全相同的值 \
-NODE_NAME=worker-1 \
-PORT=10001 \
-./rabbit-panel-linux-amd64
-```
-
-- `MASTER_URL` 是 Master 的地址；`NODE_ADDRESS` 是本 Worker 的地址（`IP:端口`，Worker 会自动补协议前缀），要填 Master 能访问到的地址；二进制直接部署时可留空自动探测，Docker 部署必须显式填宿主机 IP
-- `JWT_SECRET`、`NODE_SECRET` 必须与 Master 完全一致且至少 32 字符，Worker 不设会拒绝启动
-- Master 是自签 HTTPS 时加 `NODE_TLS_INSECURE=true`
-- systemd 部署时把上面这些 `KEY=VALUE` 逐行写进 `/etc/rabbit-panel.env` 即可
 
 ## HTTPS
 

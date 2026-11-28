@@ -1,557 +1,258 @@
-![CETI: Uncensored Node — pixel banner by darknet.ca labs](docs/images/banner.png)
+<p align="center">
+  <img src="docs/images/banner.png" alt="CETI: Uncensored Node — pixel banner by darknet.ca labs" width="640">
+</p>
 
-# CETI: Uncensored Node — your machine, your data, your mind
+<p align="center">
+  <a href="https://github.com/virtuehearts/ceti-node/blob/main/README.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/virtuehearts/ceti-node/releases"><img src="https://img.shields.io/badge/version-0.0.1--beta15-17cfff" alt="Version 0.0.1-beta15"></a>
+  <a href="https://github.com/virtuehearts/ceti-node/stargazers"><img src="https://img.shields.io/github/stars/virtuehearts/ceti-node.svg?style=social&label=Star" alt="GitHub stars"></a>
+  <a href="https://ceti.darknet.ca"><img src="https://img.shields.io/badge/Visit-ceti.darknet.ca-17cfff" alt="Visit ceti.darknet.ca"></a>
+</p>
 
-**Built by [darknet.ca labs](https://darknet.ca) — Jero (drkkrobot, aka [Virtuehearts](https://github.com/virtuehearts)), Toronto, Canada. darknet.ca has been around since 2002.**
+<p align="center">
+  <a href="https://x.com/virtue_hearts"><img src="https://img.shields.io/badge/Follow%20on%20X-000000?style=for-the-badge&logo=x&logoColor=white" alt="Follow on X"></a>
+</p>
 
+# CETI: Uncensored Node
+
+**Sovereign AI that never leaves your building.**
+
+CETI is a local brain that answers from what it knows, instead of a model guessing in the moment. The model is the night shift — it researches, distills, and promotes while you sleep. Serving is pure retrieval. Teach it once and the next ask costs nothing, because the answer already lives on the box. No tokens. No per-question bill. No account. That is the design goal: **zero tokens at serve time**.
+
+This is not a chatbot you rent by the token. It is a BIOS for AI: a small layer that asks every local store at once — AIML cassettes, the fact store, vector memory, your library, signed datasets — and compiles the answer from what they hold. The model is a peripheral, not the brain.
+
+And the brain is not alone. Every node is a peer: it holds its own sovereign knowledge, answers its own questions, and shares signed facts with the nodes it trusts. Knowledge travels node to node, verified by signature, never by a platform. The network is the sum of its nodes, not a server in someone else's building. It feels like Gopher — retro but super useful: every peer is a public key.
+
+[![Download CETI Uncensored Node beta15](docs/images/download-beta15.svg)](https://github.com/virtuehearts/ceti-node/releases)
+
+**Version:** 0.0.1-beta15 — now with the rebuilt routing rack (up to 3 provider slots, local as a slot like any other, Anthropic support), Mac in Dark mode as the default agent theme, and a rewritten README. Mya the agent is built in, the Community chain runs on Bitcoin and regula_core, and self-discovery runs over Tor onion routing. No account, no install to babysit, no credentials in the download: every API key ships unset, and you add your own in the agent's routing rack.
+
+## Quick start
+
+Run it in 2 minutes. No installs to babysit, no accounts to create.
+
+```bash
+# 1. Install the newest Python from https://www.python.org/downloads/
+# 2. Download the latest beta (~81 MB) from the releases page and unzip it:
+#    https://github.com/virtuehearts/ceti-node/releases
+# 3. Run the autorun — it checks the setup, downloads the models,
+#    starts the servers, and opens the web UI.
+autorun.bat    # Windows
+./autorun.sh   # Linux
+# 4. Open http://localhost:8900 in your browser.
 ```
-===============================================
-  CETI — Zero tokens. A new type of brain.
-  Your machine. Your data. Your mind.
-===============================================
-```
 
-CETI is a new type of brain: a local brain that answers from what
-it knows, instead of a model guessing in the moment. The model is
-the night shift — it researches, distills, and promotes while you
-sleep. Serving is pure retrieval. Teach it once and the next ask
-costs nothing, because the answer already lives on the box. No
-tokens. No per-question bill. No account.
+Then join the network: in the Node tab, set a node name and press **Announce**. To run the agent too, run `agent.bat` (Windows) or `agent.sh` — her console opens on http://127.0.0.1:8899.
 
-This is not a chatbot you rent by the token. It is a BIOS for AI:
-a small layer that asks every local store at once — AIML cassettes,
-the fact store, vector memory, your library, signed datasets — and
-compiles the answer from what they hold. The model is a peripheral,
-not the brain.
-
-And the brain is not alone. Every node is a peer: it holds its own
-sovereign knowledge, answers its own questions, and shares signed
-facts with the nodes it trusts. Knowledge travels node to node,
-verified by signature, never by a platform. The network is the sum
-of its nodes, not a server in someone else's building. CETI on many
-boxes is a networked knowledge infrastructure with no centre —
-meant to rival WikiLeaks and Wikipedia, and built to not need them.
-It feels like Gopher — retro but super useful: every peer is a
-public key.
-
-Chat, CETI sessions, long-form stories and ezines, code, voice,
-and image — served by uncensored models you control, shared node
-to node.
-
-If you want your AI to live in your own building, this is the
-project. Welcome to the network.
-
-## Sovereignty, in two parts
-
-- **Data sovereignty.** Your data stays on your machine, in stores
-  you can read, sign, and carry. Nothing leaves the building unless
-  it has to — personal data is stripped before anything touches the
-  cloud, and the cloud only ever sees the gap, never your whole
-  store.
-- **Intelligence sovereignty.** Your intelligence stays yours. Your
-  personality, your memory, your judgement — they live in your local
-  stores, not in someone else's model. No one else's model shapes
-  your answers.
-
-That is what sovereign knowledge means: the copy on your iron is
-yours, the provenance is checkable, and nobody can rewrite it,
-delist it, or bill you per question for it.
-
-Find us on X: the original handle is
-[@darknet_ca](https://x.com/darknet_ca) (since 2008); the new one is
-[@virtue_hearts](https://x.com/virtue_hearts).
-
-## Run it in 2 minutes
-
-That's it — no installs to babysit, no accounts to create.
-
-1. Install the newest Python from
-   [python.org](https://www.python.org/downloads/).
-2. Download [`laptop-uncensored-node-0.0.1-beta8.zip`](https://drive.google.com/uc?id=1gSRIN2C0zer02RWfi1e7cdzX-x6GDLnr&export=download) (47 MB) and unzip it.
-3. Run `autorun.bat` (Windows) or `autorun.sh` (Linux). It checks
-   the setup, downloads the models, starts the servers, and opens
-   the web UI.
-4. Open `http://localhost:8900` in your browser.
-
-Then join the network: in the Node tab, set a node name and press
-**Announce** — your node lists immediately with the capabilities it
-claims. To use another node's text, voice, or image, send your
-pubkey to that node's operator (Lobby, sysop chat, or
-admin@darknet.ca) and ask to be allow-listed. A job only runs if
-the serving node has your pubkey on its allow-list.
-
-Primary testing is done on **Windows, with a 6 GB RTX card** (an
-RTX 3060 laptop) — chat on VRAM, embeddings on CPU/RAM by default
-so they don't steal VRAM. A model needs disk space and RAM/VRAM to
-run; GPU memory figures in the Models tab are labelled estimates
-(file size × 1.2), not measurements.
+Primary testing is done on **Windows, with a 6 GB RTX card** (an RTX 3060 laptop) — chat on VRAM, embeddings on CPU/RAM by default so they don't steal VRAM. A model needs disk space and RAM/VRAM to run; GPU memory figures in the Models tab are labelled estimates (file size × 1.2), not measurements.
 
 ## What you get
 
-- **Chat** — everyday talk with a local uncensored model, or a
-  cloud model when you pick one. Your keys live in your browser
-  only; the server never writes them to disk.
-- **CETI sessions** — answers from the CETI ladder: facts, AIML,
-  and local knowledge first, cloud only as a suggestion. CETI's
-  design goal is zero tokens at serve time: the model is a
-  background compiler, and serving is pure retrieval. Every
-  answer shows its tier, its reasoning, and its signed ledger
-  entry.
-- **Node network (Gopher, not a platform)** — announce your node
-  and it lists immediately with the capabilities it claims. No
-  approval, no verified flag, no network sysop. Allow, deny, and
-  mute live per node, and every answer is signed by the node's own
-  key.
-- **Lobby** — a public IRC-like room for listed nodes, plus
-  private sysop chat and file transfers between nodes.
-- **Research tab** — a local agent with a heartbeat. It compiles
-  what CETI already knows, reads source pages as text, distills
-  what it learns, and proposes it for your approval. Approvals are
-  what move the ladder — and the benchmark score.
-- **Models tab (the model hub)** — browse Hugging Face
-  collections (default: `chwoo/uncensored-models`) and download
-  GGUFs into `models/`. Drop your preferred model (`.gguf`) into
-  `models/` yourself and it appears in the System tab's local
-  model list — pick it there to load it.
-- **SSH terminal** — a terminal in the workspace. It defaults to
-  **chat.hf.co**, where you can use free models by pairing your
-  Hugging Face account.
-- **Memory** — a node view of vector memory, with provenance on
-  every reply: which memories were used, and what drew on them.
+| | |
+|---|---|
+| **Chat** | Everyday talk with a local uncensored model, or a cloud model when you pick one. Your keys live in your browser only; the server never writes them to disk. |
+| **Mya, the agent** | A full tool agent on your node: terminal, file browser, editor, music player, routing rack, themes, and a signed ledger of everything she does. |
+| **CETI sessions** | Answers from the CETI ladder: facts, AIML, and local knowledge first, cloud only as a suggestion. Every answer shows its tier, its reasoning, and its signed ledger entry. |
+| **Community** | A shared chain on Bitcoin and regula_core: posts, replies, and likes with gas paid in sats, media stored on chain, and a display-only Bitcoin wallet in the Hub. |
+| **Discovery network** | A second Bitcoin-style network for self-discovery, genesis BLOCK 4, over Tor: peers are `.onion` addresses, no IPs exposed, and NAT is no longer a barrier. |
+| **Node network** | Gopher, not a platform. Announce your node and it lists immediately. No approval, no verified flag, no network sysop. Allow, deny, and mute live per node, and every answer is signed by the node's own key. |
+| **Lobby** | A public IRC-like room for listed nodes, plus private sysop chat and file transfers between nodes. |
+| **Research tab** | A local agent with a heartbeat. It compiles what CETI already knows, reads source pages as text, distills what it learns, and proposes it for your approval. Approvals are what move the ladder — and the benchmark score. |
+| **Models tab** | The model hub. Browse Hugging Face collections (default: `chwoo/uncensored-models`) and download GGUFs into `models/`. Drop your preferred model (`.gguf`) into `models/` yourself and it appears in the System tab's local model list — pick it there to load it. |
+| **Code workspaces** | Every chat session is a code workspace with an agent that runs tools, like Antigravity. Each session gets its own folder and a Code pane: an agent task box, a model pick, a workspace file editor, and a live step log. File tools are always on; shell, network, git, and SSH are each behind a per-session switch, off by default. |
+| **SSH terminal** | A terminal in the workspace. It defaults to **chat.hf.co**, where you can use free models by pairing your Hugging Face account. |
+| **Voice (TTS)** | The Mya voice bridge ships inside the release and starts with no setup (it downloads ffmpeg on first run if it needs it). A voice job to your own node voices on the local bridge directly — no mailbox, no poller. Chat voice works with the poller down. |
+| **Memory** | A node view of vector memory, with provenance on every reply: which memories were used, and what drew on them. |
 
-## Models & cloud API
+## The Hub — your node, on a laptop
 
-Local chat is the default and sends nothing anywhere. When you pick
-a cloud provider in Chat, the key stays in your browser
-(localStorage) and rides along with each request.
+The Hub is the node's program interface — the old CETI look, the one that has been there since the early betas. These are laptop-size screenshots, taken live, showing it in real use. Nothing here is a mockup.
 
-Providers, in list order:
+Chat — a real session, a real answer, with the model named at the top and the memory trace under it:
 
-- **Local — uncensored (private).** The GGUFs in `models/`,
-  picked in System → Models & cloud API. The loaded one is marked.
-- **OrcaRouter** — `https://api.orcarouter.ai/v1`
-  (OpenAI-compatible). Keys look like `sk-orca-…`
-  (`ORCAROUTER_API_KEY`). `orcarouter/auto` is seeded on signup
-  and picks the cheapest live chat model; the model list is
-  public, so the dropdown populates before you add a key.
-- **OpenRouter** — `https://openrouter.ai/api/v1`. Free models
-  list first.
-- **Nvidia** — `https://integrate.api.nvidia.com/v1`.
+![Hub — Chat, on a laptop](docs/images/hub-chat-laptop.png)
 
-Node endpoints (same OpenAI-compatible shape for all three):
+Node — the Lobby, the peer list, and the Community menu. Two nodes are listed and present right now. Your node announces itself here and lists immediately — no approval, no verified flag:
 
-- `GET /api/cloud/models?provider=orcarouter|openrouter|nvidia`
-  (key in the `X-API-Key` header; without a key the provider's
-  suggestion list is returned)
-- `POST /api/cloud/test` — `{provider, api_key, model}` tests one
-  model and reports back
-- `POST /api/chat` — `{messages, provider, model, api_key?}`
-  streams the reply
+![Hub — Node and Lobby, on a laptop](docs/images/hub-node-laptop.png)
 
-## Screenshots
+System — the servers, the voice, and the machine. Chat, embeddings, and TTS are all running on this box; the node poller is down. The right column is the honest state of the machine: no GPU detected, so this box runs in RAM/CPU mode, and vector memory holds 153 entries:
 
-Project logo:
+![Hub — System and servers, on a laptop](docs/images/hub-system-laptop.png)
 
-![CETI: Uncensored Node logo](docs/images/logo.svg)
+**Runs on Linux, Mac, and PC.** The Hub and the agent are Python, standard library only — no heavy framework, no build step, no vendor lock-in. Download the zip, run the autorun, and it starts on whatever you have. It is open source under the MIT license, and the code is the release.
 
-Chat, the default view:
+**Voice is built in.** The TTS server (PocketTTS) runs on the node, with the Mya-03 voice as the default. Chat answers carry a voice waveform and a GENERATE VOICE button — the voice is generated on your own machine, from the local bridge, not from a cloud voice service.
 
-![CETI: Uncensored Node — Chat](docs/images/chat.png)
+**Peer to peer is built in.** The Node tab is the network: Lobby, Peers, Private chat, Files, Jobs, Transfers, Serving, Poller, and Community. Nodes announce, list, and talk node to node — signed by their own keys, over Tor onion routing, with no centre.
 
-Node tab, Lobby — the IRC room:
+## Memory — CETI chat runs on vector memory
 
-![CETI: Uncensored Node — Node lobby](docs/images/node-lobby.png)
+CETI chat does not guess from a model alone. It answers from vector memory — your own store of what the node has learned, embedded with EmbeddingGemma (768 dimensions) and searched on every question. The laptop node is the demo: everything below is running on one machine, and the memory is the machine's own.
 
-System tab — local model picked, RAM available:
+![Memories are nodes — animated diagram](docs/images/gif-memory.gif)
 
-![CETI: Uncensored Node — System](docs/images/system.png)
+- **Memories are nodes.** Each memory is a node in a graph: a fact, an answer, a file, a session. A question gathers the memories it touches, and the answer is built from them — not retrieved as a single block, but composed from the pieces that match.
+- **Every tier answers at once.** Facts, AIML cassettes, vector memory, your library, signed datasets — the ladder asks every local store at once and hands all the hits to the local model, which constructs the answer from them. That is all-layers-reason: the model is the composer, the stores are the score.
+- **Provenance on every reply.** Each answer shows its trace — how many memories were used, and which ones. The System tab counts them live (153 entries in the screenshot above), and the chat shows the trace under every answer. Nothing is an uncited guess.
+- **The ledger is the filesystem.** Every write is a signed, hash-chained ledger event, so what the node learned and when is checkable. Memory that is not signed does not ship.
 
-## The ledger (regula core)
+## Meet Mya — the agent
 
-The ledger is the filesystem. Every write a node makes is a signed,
-hash-chained ledger event — sessions, code, stories, samples, model
-downloads. Every CETI answer, session save, and share is appended
-to the node's own signed ledger (`regula_core: OK`, `block ledger: OK`
-in the footer). Shared files publish as signed Merkle bundles, and a
-failed publish records no ledger event: rejected items never enter
-signed history. Verification uses only the keys inside the
-package — nothing is sent anywhere else to check it.
+Mya is the agent that lives on your node. She is not a chatbot window: she is a small operating system in your browser (JERO.OS.001), a terminal that answers with tools. Ask her a question and she works it out — shell, files, fetch, browse, memory, build, calc, time, node — and shows her work. She can write a file, build a small program, look something up, and remember what she learned, all on your machine.
+
+She runs on free cloud models first (OpenRouter, then Nvidia, then Hugging Face) and falls back to the local uncensored model on your own hardware. Her memory is a local vector store plus a signed ledger — every write she makes is a signed, hash-chained ledger event, so what she did is checkable. She creates her own identity on first run, so every laptop is its own node.
+
+**Routing is a rack.** The status bar under the terminal header shows her routing at a glance — which backend is first, which model is active. Tap it and the routing rack opens: one list of up to 3 provider slots, local included as a slot like any other, and each provider is its own rack unit in the console's own style — a unit bar with its name, a [+] to expand its settings (name, model, API key, plus its usage and failure log), and up/down to reorder it. A + adds a provider to the list. **No credentials ship:** every API key is unset in the release — you add your own in the rack, which saves them to `agent/data/.api-keys.env` (0600) on your own machine. When she cannot reach a model, the bar turns red, Star Trek red-alert style, with the error in it — she fails loudly, never silently.
+
+**Local first, if you want it.** Put local in the first slot and she answers from the uncensored model on your own hardware — the status bar reads `routing: local`, and every answer tells you which backend answered it (`Mya [agent · local]`). If the local model is down she falls back to cloud and says so honestly, instead of failing silently.
+
+**Add your own providers.** The rack has an add-endpoint form: any API that speaks OpenAI chat completions works — OpenAI itself (base `https://api.openai.com/v1`), or another host. Anthropic / Claude works too, through a real Messages adapter. Gemini, AMD, and custom endpoints join the same way: paste the base URL, a label, the models, and the key, and it joins the routing list like any built-in provider.
+
+The terminal — ask anything, watch her work:
+
+![Mya agent — Terminal](docs/images/agent-terminal.png)
+
+The music player — tracker modules play live in your browser, MIDI through a SoundFont, plus your MP3s. It ships with two tracker classics (RJC's Forgotten Past, Necros's Point of Departure) and the Ode to Joy MIDI sample — drop your own music in the music folder and it shows up here too:
+
+![Mya agent — Music player](docs/images/agent-music.png)
+
+The file browser — your workspace, your downloads, your music library, all in one place:
+
+![Mya agent — Files](docs/images/agent-files.png)
+
+The editor — open any text file from Files and edit it right here, VI flavour, with Save and Close as buttons so everything works by tap:
+
+![Mya agent — Editor](docs/images/agent-editor.png)
+
+And she comes in six themes — Green, Amber, Cyan, Amiga, Mac, PC — each in Dark or Light. The default is **Mac in Dark mode**. Themes are for the agent console only — the Hub chat keeps its own old CETI look. Here is the terminal in Amber:
+
+![Mya agent — Amber theme](docs/images/agent-amber.png)
+
+Run her with `agent.bat` (Windows) or `agent.sh` (Linux). On first run she copies `config.example.json` to `config.json` and starts the console on http://127.0.0.1:8899.
+
+## Community — a decentralised social feed on Bitcoin and regula_core
+
+**Community** is a shared chain where nodes post, reply, and rate each other — a decentralised social feed, built on Bitcoin and regula_core.
+
+Your personal regula_core ledger stays untouched: Community is a **separate single shared chain**, rooted at the BLOCK 4 anchor — the shared block 0 every node agrees on. A post, a reply, or a like is a block on that chain, and a block is valid only when its payment, its signature, and its hash chain all check out. Consensus is the payment: every action costs gas, paid in Bitcoin to the Treasury. The economics run on Bitcoin testnet for now; mainnet is the production config.
+
+| Action | Gas |
+|---|---|
+| Post | 100 sats |
+| Reply | 50 sats |
+| Like / dislike | 20 sats |
+
+- **Posts are short and plain.** A post is at most 366 characters of plaintext, URLs allowed. Replies thread under the post they answer; likes and dislikes are counts on the card, no text, no media.
+- **Media lives on chain.** Images and video (JPG, GIF, MP4, up to 5 MB) are stored as base64 **inside the block** — every node stores the full bytes, so a post carries its own image with it, and the image is covered by the block's signature.
+- **The feed is a short-post feed.** Media first, text under it, like and dislike counts always visible, comments hidden until a post is clicked. It loads the last 16 top-level posts, each with its full thread, and pages back from there — a 30,000-block chain does not tax a node on open.
+- **A small wallet, display only.** The Hub shows your node's Bitcoin address and balance (testnet and mainnet) in the Identity page. It can receive and display — it cannot send, and it never signs. The private key is never used.
+
+No mining, no voting, no platform in the middle. A node joins from today's blocks onward, verifies what it pulls, and follows forward.
+
+## Discovery network & onion routing
+
+Finding each other is the hard part of a peer network, so CETI runs a **second Bitcoin-style network for self-discovery** — the same Bitcoin P2P wire protocol (version, verack, getaddr, addr, ping, pong), but a different network, with its own genesis: BLOCK 4, the same anchor the Community chain shares. Every peer on it is a CETI node by definition — no scanning thousands of random Bitcoin addresses to find one of us.
+
+| | |
+|---|---|
+| Genesis | BLOCK 4 (`8ec446a0…`) |
+| Magic | `0x8EC446A0` |
+| Port | 19846 |
+| Seed | `.onion` address (Tor) |
+
+And it runs over **Tor onion routing**, so no IP is ever exposed:
+
+- The seed node has a `.onion` address, and peers connect to it through Tor. The peer list carries `.onion` addresses only — not in the connection, and not in the list.
+- Onion routing also fixes NAT: a laptop behind a router cannot accept a direct connection, but it **can** be reached through its `.onion` address, so the network is truly peer to peer, not hub-and-spoke around one box.
+- The discovery client is disabled by default (loads stopped) — it only runs when you turn it on. The seed listener is a separate service.
+- The discovery network carries no money. The economics stay on real Bitcoin, testnet for now.
+
+A node joins, handshakes with the genesis hash, asks for peers, and gets CETI nodes back — anonymously.
+
+## The Mya node
+
+![Mya — the node that anchors the network](docs/images/mya-node.jpg)
+
+Every node that runs the agent is a Mya node — a peer that can think, speak, and make images for the nodes that trust it. The reference node, **mya-node**, is the one that anchors the network: it runs the agent, the Hub, and the list host, and it is the sysop for the nodes it allow-lists.
+
+A Mya node is identified by its own keypair — a node id and a fingerprint — never by an account or a username. mya-node's fingerprint is `NODE-CFF8-E94E-A817-68A2`, and it lists its capabilities as text, voice, and image. It announces itself, serves only the nodes on its allow-list, and every answer it gives is signed by its own key. Every write it makes lands in its own signed ledger, so what it did is checkable.
+
+When you run this release, your laptop becomes a Mya node of its own: it creates its own identity on first run, announces itself, and can serve the nodes that allow-list it. You are not joining someone else's network — you are a peer in it, with your own keys and your own ledger.
+
+## How the network works — node to node
+
+![Peer to peer: no centre, no server, just nodes](docs/images/p2p-mesh.svg)
+
+There is no centre. There is no server that your messages pass through. Your node talks straight to the nodes it trusts, and every message is signed by the sender's own key — verified by signature, never by a platform.
+
+- **Announce.** In the Node tab, set a node name and press **Announce** — your node lists immediately with the capabilities it claims. No approval, no verified flag, no network sysop.
+- **The list host only lists.** It keeps the roster of who is alive (a node drops off if it is not seen for 15 minutes) and nothing else. It never sees your messages, your files, or your keys.
+- **Allow-list, per node.** To use another node's text, voice, or image, send your pubkey to that node's operator (Lobby, sysop chat, or admin@darknet.ca) and ask to be allow-listed. A job only runs if the serving node has your pubkey on its allow-list. Allow, deny, and mute live per node — your node, your rules.
+- **Lobby.** A public IRC-like room for listed nodes, plus private sysop chat and file transfers between nodes.
+- **Signed everything.** Every answer is signed by the node's own key, and every write lands in the node's own signed ledger (`regula_core: OK`, `block ledger: OK` in the footer). Shared files publish as signed Merkle bundles. A failed publish records no ledger event: rejected items never enter signed history. Verification uses only the keys inside the package — nothing is sent anywhere else to check it.
+
+CETI on many boxes is a networked knowledge infrastructure with no centre — meant to rival WikiLeaks and Wikipedia, and built to not need them.
+
+## Sponsors & beta testers wanted
+
+We are **actively looking for sponsors and beta testers**. CETI is built in the open by a small lab, and the next stage — a network of real nodes, tested on real hardware, in real conditions — needs people and machines, not just code.
+
+**Sponsors.** If you can fund the work, lend hardware, or lend cloud, we want to hear from you. Sponsorship keeps nodes running around the clock, pays for the big jobs that do not fit a laptop (large image and video renders, model tests, builds), and buys the test coverage a sovereign network needs before it can be trusted. Money, hardware, VPSs, cloud machines, and compute credits are all welcome — the full list, what each one buys, and the hardware wishlist are at **[ceti.darknet.ca/donate.html](https://ceti.darknet.ca/donate.html)**. Every sponsor gets listed and thanked.
+
+**Beta testers.** Run the release on your own machine, use it every day, and tell us what breaks. We need testers on Windows and Linux, on laptops and desktops, with and without a GPU — especially people willing to run a node around the clock and report what they see. No resume, no application form: download the beta, run it, and email **admin@darknet.ca** with what you found, what you run, and what you want to serve. If you are accepted to the team, you get a free darknet.ca email address — yourname@darknet.ca, yours to keep while you are on the team.
+
+**Hardware, VPSs & cloud machines for testing.** We are specifically looking for test machines: working desktop GPUs (8 GB VRAM minimum, 12 GB / 16 GB ideal), a spare box, a shelf in a rack, a VPS, or a corner of a server that can run a node around the clock. The detailed wishlist is below, under [Hardware & cloud contributors wanted](#hardware--cloud-contributors-wanted).
+
+## Join the team
+
+We are building this in the open, and we want you in it. If you want to help — code, testing, docs, design, running a node, spreading the word — email **admin@darknet.ca** and tell us what you want to do. **If you are accepted to the team, you get a free darknet.ca email address** — yourname@darknet.ca, yours to keep while you are on the team.
+
+No resume needed. Show us something you made, a node you run, a bug you found, or just tell us why you care about sovereign AI. We answer every email.
+
+## Why hardware inference matters
+
+The local model is the honest bottleneck. On this box there is no GPU — the System screenshot above reads "no GPU detected — RAM/CPU mode" — so the chat model runs on the CPU, and a single answer can take tens of seconds. The 1.7B local model takes about 26–28 seconds a question on CPU, and a bigger model on CPU is slower still. That is usable, and it is how the node stays sovereign, but it is not fast.
+
+A GPU changes that completely. Chat moves to VRAM, embeddings stay on CPU/RAM so they do not steal VRAM, and answers come back in seconds instead of tens of seconds. The node stays local — the model still never leaves your building — but it becomes fast enough to feel like a real assistant instead of a batch job.
+
+That is the hardware the project needs most: a working desktop GPU (8 GB VRAM minimum, 12–16 GB ideal) in a machine that can run a node around the clock. One card turns a slow-but-sovereign node into a fast-and-sovereign one. The full wishlist is in the next section.
+
+## Hardware & cloud contributors wanted
+
+We are **actively looking for hardware and cloud contributors** to keep uncensored nodes running and to test the network on real machines. If you can donate any of these, email **admin@darknet.ca** — tell us what you run and what you want to serve, and we will get you listed and set up:
+
+- **GPUs** — working desktop cards, 8 GB VRAM minimum (12 GB / 16 GB ideal). RTX 3060 12 GB, 3070, 3080, 4060, 4060 Ti 16 GB, 4070, 4080, 4090, GTX 1080 Ti / 2070 / 2080, AMD RX 6700 XT / 6800 / 6800 XT / 6900 XT. No Jetson, no GT 710 / 1030, no old Quadro, no mining-only cards.
+- **Machines & hosting** — a spare box, a shelf in a rack, a VPS, or a corner of a server that can run a node around the clock. VPSs and cloud machines for testing are especially welcome: a node that stays up is how the network gets proven.
+- **Compute credits** — GPU cloud credits (or a cloud account) for the big jobs that do not fit a 6 GB laptop: large image and video renders, model tests, builds.
+- **Money & time** — money, hardware, compute credits, and time are all welcome. The full list, what each one buys, and the hardware wishlist are at **https://ceti.darknet.ca/donate.html**. GitHub Sponsors is opening soon (onboarding in progress — see the donate page); until the Sponsor button is live, email admin@darknet.ca.
+
+Every contributor gets listed and thanked. Hardware donors get their node set up and announced with them.
+
+## Your machine, your data, your mind
+
+- **Data sovereignty.** Your data stays on your machine, in stores you can read, sign, and carry. Nothing leaves the building unless it has to — personal data is stripped before anything touches the cloud, and the cloud only ever sees the gap, never your whole store.
+- **Intelligence sovereignty.** Your intelligence stays yours. Your personality, your memory, your judgement — they live in your local stores, not in someone else's model. No one else's model shapes your answers.
+
+That is what sovereign knowledge means: the copy on your iron is yours, the provenance is checkable, and nobody can rewrite it, delist it, or bill you per question for it.
+
+The ledger is the filesystem. Every write a node makes is a signed, hash-chained ledger event — sessions, code, stories, samples, model downloads. Every CETI answer, session save, and share is appended to the node's own signed ledger. Shared files publish as signed Merkle bundles, and a failed publish records no ledger event: rejected items never enter signed history.
 
 ## A note on CETI
 
-CETI is the front end to sovereign knowledge: own the machine, own
-the data, own the mind. It is a BIOS for AI — the small layer that
-boots a machine into a sovereign peer-to-peer compute node, asks
-every local store at once, and compiles the answer from what they
-hold. The model is a peripheral, not the brain.
+CETI is the front end to sovereign knowledge: own the machine, own the data, own the mind. It is a BIOS for AI — the small layer that boots a machine into a sovereign peer-to-peer compute node, asks every local store at once, and compiles the answer from what they hold. The model is a peripheral, not the brain.
 
-The full CETI BIOS for general intelligence is still ahead. This
-release does not use CETI AIML technology yet. CETI
-technology was used in developing this release, and the node network
-is the platform the new CETI is built on. The Brain pane shows CETI
-components as a read-only view; the packaged release runs the node
-network, the ledger, and the model serving described above.
+The full CETI BIOS for general intelligence is still ahead. This release does not use CETI AIML technology yet. CETI technology was used in developing this release, and the node network is the platform the new CETI is built on. The Brain pane shows CETI components as a read-only view; the packaged release runs the node network, the ledger, and the model serving described above.
 
-## Hardware sponsors wanted
+## Find us
 
-We are **actively looking for hardware sponsors**. If you can
-donate GPUs, machines, or hosting to keep uncensored nodes
-running, email **admin@darknet.ca** — tell us what you run and
-what you want to serve, and we'll get you listed and set up.
-Anyone who wants to join the project gets a **free darknet.ca
-Gmail account** — same address to ask.
+CETI is built by **darknet.ca labs** — the lab behind darknet.ca, running since 2002. The lab's home is **[darknet.ca](https://darknet.ca)** (and **[labs.darknet.ca](https://labs.darknet.ca)**), and CETI lives at **[ceti.darknet.ca](https://ceti.darknet.ca)** — the CETI page, the [donate page](https://ceti.darknet.ca/donate.html), and the [infrastructure page](https://ceti.darknet.ca/infrastructure).
 
-Money, hardware, compute credits, and time are all welcome —
-the full list, what each one buys, and the hardware wishlist are
-at **https://ceti.darknet.ca/donate.html**. GitHub Sponsors is
-opening soon (onboarding in progress — see the donate page);
-until the Sponsor button is live, email admin@darknet.ca.
+- **Web:** [darknet.ca](https://darknet.ca) · [labs.darknet.ca](https://labs.darknet.ca) · [ceti.darknet.ca](https://ceti.darknet.ca)
+- **X:** the original handle is [@darknet_ca](https://x.com/darknet_ca) (since 2008); the new one is [@virtue_hearts](https://x.com/virtue_hearts)
+- **Email:** admin@darknet.ca — for joining the team, sponsoring, donating hardware or cloud, beta testing, or anything else
+- **Offline copy:** this README, with images baked in, ships at `info/ceti-readme-baked.html` — open it anywhere, no network needed.
 
-## Status
-
-- **Version:** 0.0.1-beta8. (Beta8 follows beta7 the next day,
-  2026-11-18: the SSH terminal post-Enter fix below.)
-- **Tests:** 622 checks green at this build (unit 334: Hub 124,
-  Brain 6, CETI 33, SSH terminal 38, Research 42, Sessions 5,
-  Local models 8, Code agent 9, Workspace 6, TTS bundle 11,
-  Toggle reasoning 6, Llama install 14, Llama gate 9,
-  TTS control 22; script suites 288:
-  nodeapi 101, community 16, image 13, node_client 12,
-  text_handler 8, transfer 13, transfers/serving 14, tunnel 19,
-  two_nodes 36, edge_cases 35, presence 21).
-- **New in 0.0.1-beta8:** **SSH terminal no longer wraps the
-  "Ask" input after Enter.** The HF chat TUI connected and
-  painted fine, but after pressing Enter its "Ask" input went
-  vertical (one char per line) in the Hub's SSH pane, while
-  the same connection in a plain Windows terminal worked.
-  Windows OpenSSH reads the remote PTY size from the console,
-  and with no console it negotiates 0x0; the TUI re-reads the
-  0x0 size when it redraws the input after Enter. The pipe
-  session now guarantees a console with a sane screen buffer
-  before spawning ssh: when the Hub has no console it
-  allocates one, hides it at once, and sizes it to the pane;
-  when its console buffer is broken it repairs it. A sane
-  console is left alone. Any failure falls back to the old
-  behaviour. This is Windows-only code and is a no-op
-  elsewhere.
-- **New in 0.0.1-beta7:** **TTS START works from any extract
-  path — for real this time.** Beta5 and beta6 launched the
-  bridge with `cmd /c call <absolute path>`, but on the laptop
-  beta6 still showed the same `'s' / 'bat' / 'RT' / 'tTTS' is
-  not recognized` and `... was unexpected at this time.` — the
-  `call` form was never run on real Windows, only inspected as
-  a string, and cmd still chews a quoted path with parens. The
-  launch now passes only the script's basename to cmd
-  (`cmd /c call start_tts.bat`); the Hub and autorun already
-  run it with the working directory set to the script's folder,
-  so it resolves there and the extract path never reaches the
-  cmd command line at all. The basename has no spaces, no
-  parens, no quotes — nothing for cmd to misparse. Same fix in
-  both places (`hub/servers.py`, `autorun.py`), so the
-  boot-time auto-start and the START button both work, and TTS
-  comes up with no setup. The `.bat` itself is unchanged and
-  still works by double-click.
-- **New in 0.0.1-beta6:** **Windows CI check.** The laptop is
-  the only Windows machine in this project, so Windows-only
-  breakage surfaced only when Jero ran a release there (beta4's
-  TTS START bug). `.github/workflows/windows.yml` now runs the
-  Windows-specific checks on a GitHub-hosted Windows runner on
-  every push: the TTS control tests, the ConPTY self-test (echo
-  mode is the gate), the full unit suite (informational), and the
-  ssh / ssh-pipe self-tests (diagnostic — they run the real ssh
-  argv and report bytes/alive/exit code, separating "ConPTY is
-  broken" from "ssh itself failed"). A new Windows-only test
-  runs the real `start_tts.bat` through `cmd /c call` from a
-  path with a space and `(1)`, using a stub venv so the batch
-  stops at its smoke check — no torch install, no model
-  download. The workflow file ships in this zip, so the repo can
-  be updated from the zip and the check runs on the next push.
-- **New in 0.0.1-beta5:** **TTS START works from any extract
-  path.** Beta4's START button (and the boot-time start) launched
-  the bridge with bare `cmd /c <path>`, which breaks when the
-  folder has a space or a parenthesis — a duplicate download lands
-  as `...beta4 (1)` — cmd strips the quotes and re-splits the
-  path, so the System log filled with `'s' / 'bat' / 'RT' /
-  'tTTS' is not recognized` and `... was unexpected at this
-  time.` The launch now goes through `cmd /c call <script>`,
-  which takes the quoted path as one file. Same fix in both
-  places (`hub/servers.py`, `autorun.py`). Nothing else changed
-  from beta4.
-- **New in 0.0.1-beta4:** **All layers reason — the local model
-  constructs every answer.** No layer returns its hit directly
-  any more. Every tier outputs what it found — math result
-  (computed in Python, never by the model), facts, AIML templates,
-  lexicon definitions, vector memories — and the local model
-  builds the answer from all of it, every time, under the
-  grounded-only prompt with the numbers guard. "What is the
-  currency of Japan?" now answers as a constructed sentence
-  ("Japan's currency is the Japanese Yen, code JPY") instead of
-  the bare fact line, and "17 * 23 + 41" comes back as "According
-  to the local math computation provided, 17 × 23 + 41 = 432".
-  Tier 1b arbitration and Tier 1c elaboration are gone — the
-  construct call does both, for every question. Deliberately
-  unchanged: when the model is down, the best direct hit answers
-  instead of failing the question; when there is no local context
-  at all, the model is still never called (the cloud suggestion
-  stands); ungrounded answers are never written into vector
-  memory. Verified live on the Hub. The trade-off Jero chose:
-  every question now costs one model call (about 26–28s on the
-  small CPU model; much faster on a GPU model), so the old
-  zero-model-tokens-at-serve-time goal gives way to this.
-- **New in 0.0.1-beta3:** **CETI Tier 5b — the loaded model
-  answers when local knowledge has no hit.** "Please tell me the
-  best way to setup a bbs" used to come back "I don't know from
-  local knowledge." — even though the local model was called and
-  was UP. The grounded Tier 5 prompt forbids the model from
-  answering from its own weights when the assembled context
-  (lexicon + AIML + vector memory) does not contain the answer.
-  Now, when the grounded call returns that exact refusal, the
-  loaded model is asked again from its own knowledge and the
-  answer is labelled **local-model-ungrounded** in the tier and
-  evidence, with numbers ungrounded, so it is never passed off
-  as grounded local knowledge. Verified live: the BBS question
-  answers (188s for the two calls on a small CPU model; much
-  faster on a GPU model). Deliberately unchanged: when there is
-  no local context at all, the model is still never called (the
-  cloud suggestion stands); ungrounded answers are never written
-  into vector memory, so model output can never become local
-  knowledge; and an arbitration refusal now falls through to the
-  lower tiers instead of ending the ladder. Grounded answers,
-  precise questions, and the zero-token direct tiers are
-  untouched.
-- **New in 0.0.1-beta2:** (1) **SSH fixed on Windows.** ConPTY
-  was the default from 0.0.1u through beta and never delivered a
-  byte on the laptop — every run was a live pid with empty pipes
-  ("no output yet"), even after the 0.0.1v alignment with
-  Microsoft's sample — while the pipe session rendered the HF
-  TUI in the 0.0.1r–t era. The Windows default is the pipe
-  session again, and ConPTY is an opt-in checkbox in the SSH
-  pane ("ConPTY (experimental)") for the operator who has passed
-  `tools\conpty_selftest.py`, which now also has `ssh` and
-  `ssh-pipe` modes that test the real ssh argv to chat.hf.co.
-  The status line now polls every 2s and says why a session
-  died: a session that ends with no output names its exit code
-  (255 = ssh failing at the network/auth layer; a live pid with
-  zero bytes = the PTY never delivering). Also fixed: the status
-  line showed a bare "0.0.1" for the whole beta line because the
-  build regex stopped at the hyphen in "0.0.1-beta". (2) **README
-  rewritten to the CETI public story** (ceti.darknet.ca): local-
-  first, peer-to-peer, local-blockchain-ledger AI; data
-  sovereignty and intelligence sovereignty; darknet.ca since
-  2002; @darknet_ca (since 2008) and @virtue_hearts.
-- **New in 0.0.1-beta:** (1) **CETI elaboration (Tier 1c).** A
-  clear fact hit used to return the bare fact verbatim even when
-  the sysop asked for more — "tell me more about fidonet" came
-  back as one line and the local model never saw the hit. Now an
-  explicit ask for more ("tell me more", "explain", "tell me
-  about", ...) feeds every matched fact plus the related AIML
-  templates to local LFM3, which composes the fuller answer from
-  local knowledge only (numbers guard still applies). Live:
-  "tell me more about fidonet" elaborates in ~26s; a precise
-  question ("when did FidoNet start operating?", "currency of
-  Japan?") still returns the bare fact in ~0.2s with zero model
-  tokens. Model down or nothing more to add falls back to the
-  direct fact — elaboration never fails the question. (2)
-  **Packaged TTS fixed.** Nothing in `tts/` changed between
-  0.0.1k and 0.0.1n — the breakage was in the paths around it.
-  The Hub's START button launched `start_tts.bat` directly,
-  which Windows refuses (a .bat is not an executable: WinError
-  193), so on the laptop START silently did nothing while the UI
-  said "Starting…"; it now goes through `cmd /c`, the same as
-  autorun. Dependencies are pinned in `tts/requirements.txt` to
-  the versions verified with this bridge (torch 2.14.0+cpu,
-  pocket-tts 3.2.0, scipy 1.18.1) instead of floating to newest.
-  Both start scripts now fail loudly with a log line instead of
-  dying silently, and the System view shows STARTING only while
-  a start is really running plus the last bridge-log lines when
-  TTS is down, so a failed first-run install no longer looks
-  like "still building". Verified: the packaged bridge boots and
-  synthesizes mya-03 (3.1s of audio for one sentence). One honest
-  limit stands: a prebuilt venv cannot ship inside the zip
-  (torch alone is ~1 GB and platform-specific), so the first run
-  on a fresh extract still builds the venv and downloads the
-  model — now pinned, checked, and visible.
-- **New in 0.0.1n:** (1) **Night-shift research bundle.** 67 verified
-  facts + 38 QA across 13 topics (Ethereum, Bitcoin, secp256k1, Gopher,
-  Tor, IPFS, llama.cpp, Rust, WireGuard, Cloudflare Workers, darknet.ca
-  dates, Darknet Diaries, Jack Rhysider), plus 183 Darknet Diaries
-  episode facts pulled from the RSS feed — all checked against live
-  sources. 107 proposals were left pending and are not in the bundle.
-  (2) **Modem research bundle.** 49 facts + 52 QA across 7 topics
-  (2400 baud BBS era, V.32bis 14.4k, V.34 28.8k/33.6k, the 56k
-  standards war, Hayes AT, USR Sportster/Courier, the dial-up
-  timeline), verified against the ITU text, Wikipedia, and original
-  press releases; one drifted FidoNet fact was quarantined and is
-  not in the bundle. Both bundles ship as facts + AIML in
-  brain/cassettes/ and load at startup, so CETI answers modem and
-  night-shift questions from local knowledge, zero model tokens.
-  (3) **Test expectations updated for the new knowledge.** The
-  packaged-seed module count goes 31 to 33 (the two new cassettes),
-  and the FidoNet AIML top-four now leads with the modem bundle's
-  verified FidoNet category. (4) **jero_worker_mips descriptor.**
-  The simulated Cobalt Qube node's public descriptor ships in
-  brain/nodes/ (pubkey only, no secret); the node itself is not
-  announced.
-- **New in 0.0.1l:** (1) **CETI arbitration (Tier 1b).** When
-  several facts or AIML patterns match a question, the local
-  model now arbitrates over all of them instead of the ladder
-  taking the first. A single clear fact or pattern still returns
-  directly (fast, zero model tokens). Only genuine ambiguity —
-  several facts sharing a predicate, no predicate word with
-  several subject matches, or several AIML patterns — feeds the
-  candidates to local LFM3 (thinking off, short answer budget)
-  to pick or combine the best answer from local knowledge only.
-  Live: "Tell me about Japan" composed 8 facts into one answer
-  in 14–20s; a clear fact ("currency of Japan") still answers in
-  0.1s with no model call. If the model is down or answers
-  empty, the ladder falls through to the lower tiers instead of
-  failing the question. (2) **Test-isolation fix.** One test
-  module set HUB_DATA_DIR at import and clobbered another's
-  database under `discover`; the attachment tests now pin and
-  restore it, so the full suite is green in any import order.
-- **New in 0.0.1k:** (1) **TTS server in System.** The Servers
-  card gains a TTS SERVER row (Start/Stop, status from the
-  bridge's /health) under the node poller, and a voice panel
-  below Refresh servers: the voices the bridge knows (read from
-  its voices.db, built-ins mya-02/mya-03 when the DB is missing),
-  a test line spoken in the selected voice (real MP3, waveform
-  player), and Set as default (writes only tts_voice, so it
-  cannot clobber the serving backend/model). The bridge start
-  records its PID (autorun writes it at boot too), so Stop works
-  on the boot-started bridge. (2) **llama-server auto-install
-  fix** (from 0.0.1j, now in this build): Linux packages are
-  `.tar.gz`, not `.zip`, and the version prints to stderr.
-- **New in 0.0.1j:** (1) **llama-server auto-install fixed for
-  Linux/WSL.** The installer failed on the laptop with "could not
-  discover a llama.cpp release asset" because llama.cpp switched
-  its Linux packages from `.zip` to `.tar.gz` and the picker only
-  accepted `.zip` — every Linux asset was silently rejected. The
-  picker now accepts `.tar.gz` (and `.tgz`, and `.zip` for older
-  releases), the installer extracts tarballs, and it flattens the
-  `llama-bXXXX/` subfolder the tarball extracts to (binary + its
-  `.so` libs land in `bin/` together, since the binary's RUNPATH
-  is `$ORIGIN`). The plain CPU build (`llama-*-bin-ubuntu-x64.tar.gz`,
-  no 'cpu' in the name) now matches the CPU fallback instead of
-  being skipped. (2) **Version read from stderr.** `llama-server
-  --version` prints to stderr, not stdout; the build check only
-  read stdout, so it reported 'unknown build' and the fail-closed
-  gate skipped a perfectly good binary even after a successful
-  download. Both streams are now read. Verified end to end: real
-  download of the current Vulkan build (b12192), installs, reports
-  build 12192, and `find_server()` finds it.
-- **New in 0.0.1i:** (1) **Presence.** The list host is now a
-  live roster, not a permanent one: each announce stamps a server
-  `seen` time and GET /nodes only returns nodes seen within 15
-  min. The poller heartbeats by re-announcing every 5 min, so a
-  live node stays listed and a dead one drops off within 15
-  minutes. Nodes are sharded (one `node:<pubkey>` key each) so an
-  announce never rewrites the whole list. The Worker ships as
-  `worker-node-list.js` + `wrangler.toml` for a separate deploy —
-  it is NOT deployed in this zip. (2) **Rate limiting.** Each
-  send counts against its sender's quota: 600 per 10 min, 429
-  over it, keyed by the verified pubkey. Polls are not
-  rate-limited (an empty poll writes nothing). (3) **15s poll
-  for testing.** The poll interval is 15s on this box during
-  testing for snappier jobs; the shipped default stays 60s.
-  (4) **Fail loud.** An unknown capability now gets an error
-  reply (`capability 'X' not offered by this node`) instead of a
-  silent skip, so the sender's UI can show why there is no
-  answer. (5) **New node test suites.** Two-node scenarios (36),
-  edge cases (35), and presence/rate-limit (21) now ship in
-  `tests/` with the plan in `TEST-PLAN.md`.
-- **New in 0.0.1h:** (1) **Reasoning budget 512.** The local LFM3
-  server now runs `-c 4096 --reasoning-budget 512` instead of
-  `--reasoning off`: unrestricted thinking traps the model (0
-  content, 13,190 chars reasoning), reasoning off fixes the empty
-  output but the distill drifts, and a 512-token budget is the
-  sweet spot (Nobel distill probe: 2,811 chars, 8 QA + 8 facts,
-  first QA naming all three 2024 winners). The reasoning budget
-  counts towards max_tokens, so callers size it as budget +
-  answer: the research distill uses 512 + 1500 = 2012, and the
-  chat fit-budget adds the 512 thinking room on top of the user's
-  answer budget. (2) **Focused local report.** The local distill
-  now leads with the topic's table rows plus a short lead of
-  topic sentences only (339 chars for Nobel) — the full 2000-char
-  report drifted off-topic (16 proposals, 0 about 2024); the
-  combined fix gives 11 proposals, all about 2024, all three
-  winners present. Cloud distill is unchanged. (3) **The Thinking
-  toggle works.** It used to only hide the thinking panel; it now
-  sends `thinking` to `/api/chat` and the local model honours it
-  per request (`chat_template_kwargs enable_thinking=false`,
-  proven: reasoning ON 0 content/349 reasoning chars, OFF 288
-  content/0 reasoning). For cloud reasoning models (Nvidia
-  lightning-30b-a3b, nano-30b-a3b) the toggle is greyed out with
-  "Reasoning cannot be turned off for this model"; bolt-e4b and
-  local are not greyed out.
-- **New in 0.0.1g:** (1) **Bundled Mya TTS.** The PocketTTS bridge
-  now ships inside the release as `tts/` — the bridge code, the
-  mya-02 and mya-03 voices (samples + embeddings), a fresh
-  voices.db, and `start_tts.sh` / `start_tts.bat`. The autorun
-  starts it alongside the Hub (fail-soft: a missing tts/ folder or
-  a failed start never blocks chat). The kyutai/pocket-tts model
-  (~215M) is not shipped — it downloads from Hugging Face on first
-  run, same rule as the Hub's models. Proven live: the bundled
-  copy answered /health with model ready and synthesized a
-  25,101-byte MP3 in the mya-03 voice. (2) **Local distill —
-  context limits tested and refuted.** Raising the local context
-  (8192) and the output budget (3000 tokens) does NOT fix the
-  local distill: the model still returned empty content and burned
-  the whole budget thinking (13,190 chars of reasoning); a
-  plain-text (non-JSON) prompt did the same (0 content, 2,200
-  chars reasoning). The limits were not raised — they would only
-  waste more time. Cloud remains the working distill path when a
-  key is configured.
-- **New in 0.0.1f:** (1) **Attachments.** A paperclip in the chat
-  composer attaches files into the session's context: text and PDF
-  files are chunked, embedded, and retrieved by the same vector
-  bar as memories; images are stored and shown. Proven live — the
-  local model answered a question from an attached manual with the
-  exact detail. (2) **Expandable code box.** Long ``` code blocks
-  render collapsed (~170px) with language, copy, and expand, in
-  chat and in attachment rendering. (3) **Research mode.** When
-  CETI can't answer, a "Suggest research job" button queues a web
-  job (Wikipedia API first, Google second); the agent fetches the
-  pages, distills QA pairs + fact triples, and lands them as
-  pending proposals for a human to approve — nothing auto-promotes.
-  Fixes since the first cut: the report cap, zombie-claim, the
-  tick loop, Wikipedia nav stripping, wikitext table-row extraction
-  (answers that live in tables), and cloud-first distill with a
-  12000-char report. (4) **Cloud context lifted.** Cloud chat now
-  injects session files with a 30000-char budget (local keeps 3000
-  for its 2048-token context); the long-term vector memory stays
-  local-only and never goes to a cloud provider. (5) **Known
-  limit:** the local model returns empty content for the JSON
-  distill prompt (it burns its whole output budget thinking), so
-  cloud is the working distill path when a key is configured.
-- **New in 0.0.1e:** (1) **Session chips are back on phones.**
-  The 0.0.1c chat-first pass hid them behind the More-sessions
-  drawer; they show again as a sideways-scrolling strip of the 3
-  most recent sessions (More sessions opens the drawer for the
-  rest, same as desktop), chat still 80% of a 412×915 screen.
-  (2) **Generated voices persist.** A voice used to live only in
-  the page and vanished when you left the session or reloaded.
-  New `POST /api/chat-voice/save` + `GET /api/chat-voice/<name>`
-  store the MP3 on the server (`data/chat-voice/`, MP3 only,
-  20MB cap) and the filename rides on the message, so the
-  waveform player comes back after a session switch or a reload
-  — verified at 412×915: 322,605-byte MP3, waveform drawn, Play
-  works, Save links to the stored file. (3) **Mobile-size audit:**
-  the viewport tag is correct and one 720px breakpoint decides
-  the layout — phones get the mobile UI, desktop resolutions get
-  the sidebar UI (verified at 360/412/710/721/768/1024/1280/
-  1920, no overflow). Two bugs found by the audit and fixed: at
-  360px wide the SEND button was pushed off-screen (the input
-  couldn't shrink — fixed with `min-width:0` on the input wrap),
-  and the Node tab used a different breakpoint (700px) than chat
-  (720px) — aligned to 720px, so mobile means one width
-  everywhere. (4) Nothing else changed since 0.0.1d: the fresh-
-  browser voice-peer default, the TTS voice fix, the chat-first
-  mobile UI, the Nvidia custom-model input and working-model
-  fallback, and the digit-guarded `x` → `*` math fix all carry
-  over.
-
-- **Offline copy:** this README, with images baked in, ships at
-  `info/ceti-readme-baked.html` — open it anywhere, no network
-  needed.
+![CETI: Uncensored Node logo](docs/images/logo.svg)
 
 Own the machine, own the data, own the mind. Sovereign AI, from Canada, on your own iron. Welcome to the network.

@@ -218,7 +218,7 @@ DSH 的口号是 *Everything is a Plugin*，所以**先装「能装插件的插�
 </a>
 
 <a href="https://github.com/webkubor/wallpaper-generator" style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border:1px solid var(--vp-c-divider);border-radius:12px;text-decoration:none;color:inherit">
-<img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/wallpaper-generator/mark-v3.svg" alt="wallpaper-generator" height="38" />
+<img src="https://wallpaper.webkubor.online/logo.svg" alt="wallpaper-generator" height="38" />
 <span style="font-size:12.5px;font-weight:600">wallpaper-gen</span>
 <span style="font-size:10.5px;opacity:.7;text-align:center;line-height:1.5">氛围壁纸<br/>工坊</span>
 </a>

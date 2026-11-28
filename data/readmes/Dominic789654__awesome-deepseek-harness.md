@@ -383,6 +383,11 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [sergey-akhalkov/dsh-setup](https://github.com/sergey-akhalkov/dsh-setup) — A portable DeepSeek Harness setup: sixteen plugins that make an agent work in small verified steps (second-model review, loop recovery, lazy MCP, local memory), plus a one-command installer.
 
 - [slz233/dsh-enhance-mode](https://github.com/slz233/dsh-enhance-mode) — A conversation-level "enhance mode": on top of the standard mode it only appends a paragraph you write to the end of the system prompt.
+- [michael-berardi/steak-dsh](https://github.com/michael-berardi/steak-dsh) — Plugin bundle and launcher for DSH: verify-after-edit, owned paths and model flags, with a benchmark harness for comparing DSH setups.
+- [MadeSpark/dsh-codex-preset](https://github.com/MadeSpark/dsh-codex-preset) — Brings Codex's PTC preset into DSH and fixes scoped WorkBuddy prompt compatibility.
+- [MadeSpark/dsh-workbuddy-preset](https://github.com/MadeSpark/dsh-workbuddy-preset) — WorkBuddy-style agent preset for DSH: PTC composition, a fully rewritten persona and a mandatory sub-agent dispatch guide.
+- [NEVSTOP-LAB/dsh-nevstop-lab-flavor](https://github.com/NEVSTOP-LAB/dsh-nevstop-lab-flavor) — Localization and customization plugin that tunes DSH to NEVSTOP-LAB's working habits.
+- [thenist/moeseek](https://github.com/thenist/moeseek) — Anime moe voice styles for the DSH assistant: pick a style and a prompt language in the composer model menu, and chat prose turns sweet, cat-like, prickly, quiet, explosive or doting while staying technically accurate.
 
 
 ## Harnesses & Runtimes
@@ -543,9 +548,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [zzh-newlearner/dsh-postmortem](https://github.com/zzh-newlearner/dsh-postmortem) — Local-first failure postmortems for DeepSeek Harness sessions.
 - [vibeinging/dsh-trace](https://github.com/vibeinging/dsh-trace) — Telemetry backend that exports turns, model steps, and tool calls to yiTrace over HTTP.
 - [omdsh-dev/dsh-hub](https://github.com/omdsh-dev/dsh-hub) — Community extension catalog and profile-generation manager, adding transactional installation, recovery, catalog browsing, and a settings UI on top of official contracts.
-- [fakechris/dsh-harness-ops](https://github.com/fakechris/dsh-harness-ops) — Ops toolbox: A/B dual-slot snapshot upgrades with atomic switch and one-click rollback, a watchdog that auto-restarts web/agent, and a self-rescue doctor command.
-- [omdsh-dev/session-teleport](https://github.com/omdsh-dev/session-teleport) — Multi-device session handoff with PostgreSQL as the single online authority; only one device holds write credentials at a time.
-- [Tieboyh/dsh-session-search](https://github.com/Tieboyh/dsh-session-search) — Index-free cross-agent session search for DeepSeek Harness.
-- [21hbguo/dsh-thinking-counter](https://github.com/21hbguo/dsh-thinking-counter) — Thinking-phrase detection and statistics for DeepSeek Harness: full-session reasoning-phrase hit counts, grouping, and a "smartness" score.
-- [KYinCode/dsh-hot-installer](https://github.com/KYinCode/dsh-hot-installer) — Hot plugin manager for DeepSeek Harness (dsh): install once, restart once, then install/remove/upgrade plugins take effect instantly without further restarts.
-- [lzx-Bill/dsh-plugins]
+- [fakechris/dsh-harness-ops]

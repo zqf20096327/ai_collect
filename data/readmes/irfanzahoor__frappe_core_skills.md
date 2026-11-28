@@ -17,7 +17,7 @@ that can never run. This package gives the assistant the rules a senior Frappe
 developer would enforce — in the right file, with the framework's own APIs — and
 only loads the rules for the task at hand.
 
-**Tokens:** at session start only 22 one-line descriptions load. A skill's body loads only when
+**Tokens:** at session start only 23 one-line descriptions load. A skill's body loads only when
 its task comes up.
 
 > [!NOTE]
@@ -30,6 +30,7 @@ its task comes up.
 | Skill | Use for |
 |---|---|
 | `frappe-core` | All Frappe coding: placement, controllers, JS, hooks, permissions, review |
+| `frappe-code-review` | Review code against Frappe Sensei’s 79 deterministic checks (FR-001–FR-082): placement, APIs, security, performance |
 | `frappe-server-scripts` | Server Scripts in the UI (sandbox, no imports) |
 | `frappe-reports-print` | Script/Query reports, print formats, Jinja |
 | `frappe-performance` | Slow code, N+1, caching, enqueue |
@@ -76,7 +77,7 @@ Available when the plugin is installed in Claude Code (not with a manual copy):
 
 | Agent / command | Does |
 |---|---|
-| `frappe-reviewer` (agent) | Reviews Frappe code against the `frappe-core` rules, outputs a severity-ordered findings table |
+| `frappe-reviewer` (agent) | Reviews Frappe code against the `frappe-code-review` skill (Sensei’s 79 checks), outputs a severity-ordered findings table |
 | `frappe-migrator` (agent) | Plans a v14 -> v15 -> v16 upgrade: deprecated APIs, patches, backup, test plan |
 | `/frappe-review` | Review a file or folder (defaults to git-changed files) |
 | `/frappe-upgrade-check` | Scan the project for removed APIs for a target version (default v16) |
@@ -154,7 +155,7 @@ frappe.throw(_("Row {0}: Qty cannot be negative").format(row.idx))
 ├── templates/
 │   └── CLAUDE.md                      Project template — copy into your Frappe project
 ├── .claude-plugin/
-│   ├── plugin.json                    Claude Code plugin (v2.3.0)
+│   ├── plugin.json                    Claude Code plugin (v2.4.0)
 │   └── marketplace.json               Plugin marketplace entry
 ├── .github/workflows/
 │   └── quality.yml                    Validates skill frontmatter, JSON, README links, relative links, markdown style
@@ -176,6 +177,7 @@ frappe.throw(_("Row {0}: Qty cannot be negative").format(row.idx))
     │       ├── hooks-and-customization.md
     │       ├── review-checklist.md
     │       └── field-layout.md
+    ├── frappe-code-review/            79-rule review checklist (Frappe Sensei)
     ├── frappe-debug/
     │   └── references/
     │       └── common-errors.md       Debug workflow + worked fixes
@@ -194,10 +196,19 @@ frappe.throw(_("Row {0}: Qty cannot be negative").format(row.idx))
     ├── frappe-upgrade/
     │   └── references/
     │       └── upgrade-v15-v16.md
-    └── frappe-server-scripts/ ...     19 more focused branches
+    └── frappe-server-scripts/ ...     14 more focused branches
 ```
 
 The skills are plain Markdown. They run no scripts, make no network calls and collect no data.
+
+## What's new in v2.4.0
+
+- New skill: `frappe-code-review` — the 79 deterministic review checks from
+  [Frappe Sensei](https://github.com/irfanzahoor/frappe-sensei) (FR-001–FR-082:
+  placement, APIs, security, performance, server vs client) as the
+  agent-usable checklist, with a pointer to the canonical rules and the live
+  review tool. The `frappe-reviewer` agent and `/frappe-review` command now
+  use this skill instead of the smaller `frappe-core` checklist.
 
 ## What's new in v2.3.0
 
@@ -261,7 +272,7 @@ Yes — see [CONTRIBUTING.md](CONTRIBUTING.md). One change per PR, against `deve
 
 |  | This repo | NexTash frappe-code-standards | Impertio Frappe Claude Skill Package |
 |---|---|---|---|
-| Skills | 22, branched | 1 | 61 |
+| Skills | 23, branched | 1 | 61 |
 | Token-light (loads only the task's branch) | ✅ | ✅ | ❌ (one big skill) |
 | Agents / slash commands | 4 / 3 | — | — |
 | CI quality checks | ✅ | — | — |

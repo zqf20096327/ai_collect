@@ -118,7 +118,8 @@ Enter to skip; you can add it later from the web UI).
   (under *＋ new agent*) makes one in the group on screen, its ＋ makes a
   sub-folder, and folders nest up to 8 levels. Drag an agent onto a folder to put
   it inside, or onto another agent to sit beside it; drag a folder onto a folder
-  to nest it. A click folds a folder (folded, it shows the mood and agent count of
+  to nest it, or between agents and chats to place it there — a folder no longer
+  has to sit above them. A click folds a folder (folded, it shows the mood and agent count of
   all it holds); × removes it and what it held moves up a level. Folders are only
   an arrangement: they change nothing about who sees an agent or where it runs —
   a folder belongs to its group and is seen exactly by those who see the group.
@@ -135,6 +136,15 @@ Enter to skip; you can add it later from the web UI).
   Telegram. The card carries the prompt's own text too — what it will run or
   read, and Claude Code's warnings such as a read leaving the working directory
   through a symlink — so you approve what the terminal would have shown you.
+  Questions whose answers are **not numbered** reach the chat too, which is how
+  a screen like Claude Code's bypass-permissions disclaimer stops being
+  something only the engine-room view can show you.
+- **Bypass permissions mode** — picking it in ⋯ → *Permission mode* is your
+  acceptance of Claude Code's own disclaimer, and shadok records it in each
+  agent's home so no agent sits on a warning nobody is there to answer. It is
+  recorded **only** when you choose that mode; every other mode leaves it
+  untouched. Each isolated group — and each conversation of an External group —
+  has a home of its own, so each gets the acceptance when it is created.
 - **Thinking effort** — how hard an agent thinks before answering (`--effort`),
   set on a role in the Profiles panel and overridable per agent from its menu.
   Higher levels cost more tokens, and thinking tokens are billed even when they
@@ -349,20 +359,14 @@ Enter to skip; you can add it later from the web UI).
   whenever nobody chose one in the menu.
   Set `SHADOK_WHISPER_DIR` to a directory shared between containers and one copy
   serves them all.
-- **Live dictation** — by default the 🎙 button uses the browser's own speech
-  recognition (Chrome, Edge, Safari): the words appear in the composer while
-  you speak, in the language of the conversation. The audio then goes to the
-  browser's maker. To keep it on your server, an admin picks version menu →
-  *Web dictation* → *On this server (whisper)*: the clip is transcribed by the
-  local model, after a wait. Other browsers and Telegram/WhatsApp voice notes
-  always use the local model.
-- **Dictate a prompt on the web** — a 🎙 button beside *Send* records your
-  microphone and transcribes it with the **same local whisper.cpp** the voice
-  notes use (nothing leaves the machine). The text drops into the composer
-  **editable**, never auto-sent, so a misheard word is fixed before it goes —
-  click to start, click to stop, a red timer runs while recording. Needs a
-  secure context (localhost or HTTPS) for the browser to grant the mic; the
-  first use pays the same one-time whisper install as the voice notes above.
+- **Dictate a prompt on the web** — the 🎙 button beside *Send* uses the
+  browser's own speech recognition (Chrome, Edge, Safari): the words appear in
+  the composer while you speak, in the language of the conversation, **editable
+  and never auto-sent** — click to start, click to stop. The audio goes to the
+  browser's maker, not to your server. A browser without speech recognition
+  (Firefox) shows no button; a recogniser that fails says why (no microphone,
+  no network to its speech service…). The local model above is for voice notes
+  only.
 - **Videos on Telegram** — share a video (or a GIF, or a round video note) and
   the agent actually sees it: shadok pulls a handful of stills out of the clip
   for it to look at, and transcribes the sound when there is speech. Both run
@@ -386,10 +390,11 @@ Enter to skip; you can add it later from the web UI).
   anyone else is told it is private. Pick **Board group + open DMs** (pair the
   bot's DMs first — **Pair Telegram**, then `/setup <code>` in a private chat
   with it; you do NOT need a board group) or **Open DMs only** (no pairing at
-  all), then a **restricted
-  group** and a **profile**: anyone who writes to the bot then gets their own
-  agent instead, on that profile, inside that group, and always the same agent
-  for the same person. The profile is what decides the job — support, a front
+  all), then a **group**
+  (**Private**, or **External** — where each conversation gets its own OS user,
+  sealed from the other guests) and a **profile**: anyone who writes to the bot
+  then gets their own agent instead, on that profile, inside that group, and
+  always the same agent for the same person. The profile is what decides the job — support, a front
   desk, whatever you set up — and its guardrails are what those people are
   driving, so choose it deliberately. You read and take over those conversations
   from the cockpit, in that group; the group runs under its own Unix user, and
@@ -403,17 +408,31 @@ Enter to skip; you can add it later from the web UI).
   id, inside that group's home — so what one agent remembers about the person
   it is talking to (Claude Code keeps a project's memory per directory) is not
   loaded by the next person's agent. Said plainly, because the FOLDER is not a
-  wall: they all run under the SAME Unix user, so an agent that goes looking can
-  still read its neighbour's folder. It stops the accident, not a determined
-  agent; a real wall would be one Unix user per person.
-  What **is** a wall is the cockpit's own API: a guest's agent is boxed to its
+  wall **in a Private group**: they all run under the SAME Unix user there, so an
+  agent that goes looking can still read its neighbour's folder. It stops the
+  accident, not a determined agent. **An External group is where that becomes a
+  real wall**: one Unix user per conversation, its own home, its own files and
+  attachments, created the first time that person writes and kept for when they
+  come back. Deleting someone's agent does not remove it — the account belongs to
+  the person, not to the session; deleting the group removes every one of them.
+  What **is** a wall in both is the cockpit's own API: a guest's agent is boxed to its
   own conversation, so it cannot see, drive or diff another guest's agent, reads
   no secret and no shared ledger row, obtains no connected account, and can
   start no agent of its own. That holds whatever group they share.
   They can talk and answer their agent's questions, and nothing else: no
   command reaches the bot. Two things worth knowing before you open it — every
   conversation is a real agent that stays resident, and they all draw on **your**
-  Claude subscription, so there is no cap and no queue by design. Go back to
+  Claude subscription.
+  There **is** a ceiling, and it is not a queue: **200 conversations at once**
+  and **30 new people an hour**, counted per group — so two doors onto one group
+  share one ceiling. Someone turned away is told in one line that nothing was
+  opened and to come back later; their message is not queued, and a person you
+  are already talking to is never turned away, whatever the ceiling says. Change
+  it per door with `limits` on the guest setup — `PUT /telegram`
+  (`{"guests": {…, "limits": {"live": 400, "perHour": 60}}}`) or
+  `PUT /whatsapp/guests` (`{…, "limits": {…}}`); `{"limits": {}}` goes back to
+  the defaults. The panel has no field for it yet, and saving from the panel
+  leaves what you set alone. Go back to
   **Board group** and every such conversation is closed at once.
 - **Link to a message** — every message (yours and the agent's, and a **room**'s
   too) has a 🔗 link button beside copy. It copies a URL like
@@ -980,7 +999,9 @@ from the phone's *Linked devices* list too.
 - **One number, one instance.** Nothing stops the same account from being linked
   to two instances, and both would answer — don't.
 - **Open DMs.** Once a number is linked, the panel shows the **guest door**:
-  a switch, the **restricted group** strangers' agents are born into, and the
+  a switch, the **group** strangers' agents are born into — Private (one OS user
+  for all of them) or **External** (one per conversation, sealed from each
+  other) — and the
   **profile** they run on (the job description) — the same pickers and the same
   refusals as Telegram's open DMs, which this is the WhatsApp twin of. With the
   door open, anyone who sends a text to the number gets an agent of their own,
@@ -989,6 +1010,10 @@ from the phone's *Linked devices* list too.
   number) on another day. Only the group's members see those conversations
   (and the person's number), from the cockpit, like any other agent; what you
   type there reaches the person, labelled with your name.
+- **A ceiling, shared with Telegram's door.** 200 live conversations and 30 new
+  people an hour by default, counted per group (see the Telegram door above for
+  the numbers and how to change them). Someone turned away hears one line and is
+  invited back later; someone you are already talking to is never turned away.
 - **A guest can only talk.** Nothing typed in WhatsApp is a command: a message
   starting with `/clear` or `/login` reaches the agent as text, and the server
   refuses a command from WhatsApp anyway. Groups, status, channels, calls and
@@ -1100,14 +1125,41 @@ drops the lot — but the leak starts over, so a recreate is what makes it stop.
 An agent lives in a **group**, and a group is both what is isolated and who can
 see it:
 
-- **Private** — only you. One per person, sealed, invisible even to an admin.
-- **Restricted** — your team: a member list, any member can invite.
+- **Personal** — only you. One per person, sealed, invisible even to an admin.
+- **Private** — your team: a member list, any member can invite. One OS user for
+  the whole group.
+- **External** — for **strangers**: the group holds the conversations of people
+  who write to an open door (WhatsApp, Telegram), and **each conversation is
+  sealed from the others** — its own OS user, its own home, its own files and
+  attachments, and its own slice of the secret vault. Its members see them all,
+  which is the point: you read those conversations in the cockpit and take over.
+  Chosen when you create the group and never converted afterwards.
 - **Public** — everyone. `Main` is the default public group.
 
 You see and drive only your own groups plus the public ones; that covers the
-agent list, secrets, the shared ledger and messaging between agents. Private and
-restricted groups are real walls: each agent runs as its **own OS user** with its
-own home and secrets, never as root. Crossing a wall is always a deliberate act:
+agent list, secrets, the shared ledger and messaging between agents. Private,
+Personal and External groups are real walls: each agent runs as its **own OS
+user** with its own home and secrets, never as root — per group, or per
+conversation in an External one. An External group carries no shared ledger at
+all (a stranger's conversation is nobody's coordination log), and its door's
+profile may hold **no secret**: every guest runs the same profile, so a secret
+on it would be a credential handed to every stranger.
+
+A guest's agent CAN keep a credential of its own, so the person does not have to
+send the same token again on their next message. It goes into that
+conversation's own slice of the vault, and that slice is sealed both ways:
+nothing of yours resolves into it (not the commons, not `Main`, not a secret
+lent to the group), and nothing in it resolves out — a guest cannot share it or
+attach it to a profile. It is capped (10 entries, 4 KiB a value), the person is
+told once that you are keeping it, and **it is erased when their agent is
+deleted** — their folder and their OS user survive, their credentials do not. In
+the vault panel you see those names under *Stored by guests*, never a value, and
+you can rotate or delete them; adding one to someone else's conversation is
+refused. The group itself has no vault — every slice belongs to a conversation —
+so a secret stored on it would reach nobody, and shadok says so instead of
+storing it.
+
+Crossing a wall is always a deliberate act:
 drop a file in the shared `~/shared/` folder, record a ledger line with
 `--public`, push a branch, or message an agent (public groups freely, restricted
 ones only with a handle they gave you; private groups cannot be messaged).
@@ -1121,8 +1173,8 @@ Real isolation needs two things, checked once at boot:
 
 Both → **multi-tenant**. Anything else — `npx shadok-ai` on your machine, Docker
 without the password — stays **single-tenant**, exactly as before: it says so and
-refuses to create a private or restricted group rather than drawing one that
-protects nothing. You don't configure this; it follows from how you run it. The
+refuses to create a Private, Personal or External group rather than drawing one
+that protects nothing — the type is not even offerable there. You don't configure this; it follows from how you run it. The
 boot log prints `deployment mode: …`.
 
 An existing single-tenant instance that comes up capable is migrated
@@ -1418,68 +1470,4 @@ until the proxy allows it.
 **Idle timeout.** A resting agent's `/ws` carries no traffic, and proxies
 idle-close a quiet socket (nginx `proxy_read_timeout`, 60s by default;
 Cloudflare ~100s) — the symptom is a cockpit that keeps flashing
-"reconnecting…" even though nothing is wrong. The server sends a WebSocket ping
-every 25s (tunable with `SHADOK_WS_PING_MS`) to keep the connection warm, so no
-proxy change is normally needed — nginx's default 60s is already more than
-twice the ping interval. If your proxy still cuts it, raise `proxy_read_timeout`
-above the ping interval **in `location = /ws` only, never in `location /`**.
-
-A long read timeout is right for a resting agent's silent socket and wrong for
-everything else. On a plain `GET`, it is how long the proxy keeps holding a
-request the server never answers — and the browser holds its end for just as
-long. A browser opens only about six HTTP/1.1 connections to one host, so a
-handful of unanswered requests is enough to occupy them all and freeze that
-cockpit's own updates for the whole timeout, while the proxy and the server
-keep those connections open too. With the default, the same failure clears in a
-minute. If your `location /` carries a raised `proxy_read_timeout` today, move
-it to `location = /ws`.
-
-**Sleep / wake / network blips.** When the machine comes back (an `online`
-event, the tab becoming visible, a back/forward-cache restore), the cockpit
-revives the links that actually **dropped** — resetting their backoff so a
-genuinely-closed socket reconnects promptly instead of waiting out a delay that
-climbed while you were away. A socket that still reports "open" is left alone:
-`online` fires on every network blip (wifi roam, VPN, interface change), and
-force-reconnecting healthy links on each one reconnected all your agents at
-once — tripping the upstream single-use-token OAuth refresh race so a batch
-stuck on "connecting…". A slept socket that looks "open" but is dead is
-terminated by the server heartbeat (~50s) and reconnects on the resulting
-`close` without that churn. Only a back/forward-cache restore force-replaces an
-"open" socket, because there the restored page's old sockets are dead yet fire
-no `close`.
-
-### Cross-instance peers
-
-Agents can spawn and drive agents on **another** instance — another of yours, or
-a teammate's. It is opt-in and gated like an account.
-
-On the instance being reached (call it **B**), an admin **invites an agent** —
-in the **Users** panel, exactly like inviting a person, except the invitee is a
-machine so it gets a **prompt to paste** instead of a login link. Give it a name
-and, optionally, a brief (what you want it to do); B mints a named, revocable
-credential and hands you a ready-to-paste block: the cockpit URL, the key, the
-brief, and the commands to join. Copy it into whatever agent you're inviting.
-
-(The same thing over the API: `POST /peers {name, brief}` returns
-`{ name, token, invitePrompt }` — the token is shown once.)
-
-On the calling instance **A**, the invited agent registers B and drives it with
-`pilotctl --peer` (the pasted prompt spells this out):
-
-```bash
-pilotctl peer add B https://B <token>
-pilotctl spawn --peer B --profile dev --name "migration bot" --cwd /workspace
-pilotctl prompt <id> "run the migration" --peer B
-pilotctl diff <id> --peer B
-```
-
-The credential is **non-expiring and revocable** (`DELETE /peers?name=instance-a`
-on B kills it immediately — future calls **and** the live link). Each invitation
-carries a **scope**, chosen when you invite:
-
-- **restricted** (the default) — only the agents it creates on B; it can never
-  see, resume, drive or diff B's other agents.
-- **member** — the invited agent acts **like a person you invite**: it sees,
-  drives and measures every agent in the groups it belongs to, spawns more,
-  reads its usage. It is not an admin (no account or peer management).
-- **
+"reconnecting…" even t

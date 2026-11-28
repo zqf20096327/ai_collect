@@ -8,6 +8,7 @@ A single Rust binary, no runtime and no extra services.
 ![version](https://img.shields.io/badge/version-0.2.3-blue)
 ![msrv](https://img.shields.io/badge/msrv-1.89%2B-orange)
 ![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)
+[![downloads](https://img.shields.io/github/downloads/ihsan-ramadhan/freepi-bridge/total?label=downloads)](https://github.com/ihsan-ramadhan/freepi-bridge/releases)
 
 </div>
 

@@ -9,12 +9,15 @@
 **Free, open-source AI meeting assistant, with a workspace for every client, class and project.**
 It transcribes both sides of a call live and answers from your own notes, with local models or the AI you already use. No bot joins.
 
-[![Latest release](https://img.shields.io/github/v/release/naxhq/NexQ?style=flat-square&color=2f81f7)](https://github.com/naxhq/NexQ/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/naxhq/NexQ/total?style=flat-square&color=orange)](https://github.com/naxhq/NexQ/releases)
-[![CI](https://img.shields.io/github/actions/workflow/status/naxhq/NexQ/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/naxhq/NexQ/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%28beta%29-lightgrey?style=flat-square)](https://github.com/naxhq/NexQ/releases/latest)
-[![Stars](https://img.shields.io/github/stars/naxhq/NexQ?style=flat-square&color=yellow)](https://github.com/naxhq/NexQ/stargazers)
+<!-- Badges are drawn by the site (website/src/pages/badges), rebuilt daily, because shields.io's often time out. -->
+[![Latest release](https://getnexq.com/badges/release.svg)](https://github.com/naxhq/NexQ/releases/latest)
+[![Installer downloads](https://getnexq.com/badges/downloads.svg)](https://github.com/naxhq/NexQ/releases)
+[![CI](https://github.com/naxhq/NexQ/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/naxhq/NexQ/actions/workflows/ci.yml)
+[![License: MIT](https://getnexq.com/badges/license.svg)](LICENSE)
+[![Platform](https://getnexq.com/badges/platform.svg)](https://github.com/naxhq/NexQ/releases/latest)
+[![Built with Tauri 2](https://getnexq.com/badges/tauri.svg)](https://tauri.app)
+[![Stars](https://getnexq.com/badges/stars.svg)](https://github.com/naxhq/NexQ/stargazers)
+[![Discussions](https://getnexq.com/badges/discussions.svg)](https://github.com/naxhq/NexQ/discussions)
 
 **[Website](https://getnexq.com/)** ·
 **[Download](https://github.com/naxhq/NexQ/releases/latest)** ·

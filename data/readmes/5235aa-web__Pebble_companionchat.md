@@ -22,9 +22,16 @@
 
 ## 📋 Changelog
 
-**Current Version: `v1.0.2`** — View full release notes in [CHANGELOG.md](CHANGELOG.md).
+**Current Version: `v1.0.4`** — View full release notes in [CHANGELOG.md](CHANGELOG.md).
 
-`v1.0.2` hardens **CHARX asset tag recovery** (repairing or stripping malformed LLM image tags, inline backticks, and drifted asset names), fixes **scroll-to-bottom and message jumps** in image-heavy chats, restores the **right-hand stage & Stage HUD** to the clean Gaussian-blurred portrait backdrop, and **lazy-loads Inochi2D `numpy` imports** so CI and packaged builds pass without heavy ML dependencies.
+`v1.0.4` adds **Card-Aware Media Tag Protection** (preserving custom card tags like `<pimg="...">`), **Lore Panel Overhaul & Isolated Translation** (full embedded character-book import defaulting to media-only activation, per-entry toggles, true depth injection, and display-only Chinese/English translation), and **Stage HUD Affection & Portrait Fixes** (healing annotated affection values, filtering noisy multi-character assets, and syncing custom inline tags to the stage).
+
+<details>
+<summary>Previous release summary (<code>v1.0.3</code>)</summary>
+
+`v1.0.3` adds **Group Chat Voice Input** (direct voice messages with tap-to-pick or automatic speaker routing, plus transcribe-to-draft editing and native audio/transcript fallback) and fixes **Voice Call Interruption** during AI speech playback (restoring Silero VAD barge-in, non-streaming playback interruption, and adding a manual **Interrupt** button).
+
+</details>
 
 ---
 
@@ -40,10 +47,10 @@ Whether running local GGUF weights, calling cloud LLM APIs, holding live voice c
 
 <p align="center">
   <img src="docs/png1.png" alt="Single chat" width="49%" />
-  <img src="docs/png2.png" alt="Script mode" width="49%" />
+  <img src="docs/png2.png" alt="group room for 2" width="49%" />
 </p>
 <p align="center">
-  <img src="docs/png3grouproom.png" alt="Group room" width="49%" />
+  <img src="docs/png3.png" alt="Single chat" width="49%" />
   <img src="docs/png4grouproom.png" alt="Group room detail" width="49%" />
 </p>
 
@@ -182,11 +189,17 @@ cd frontendV2
 npm run dev
 ```
 
-Open `http://localhost:5176` in your browser and open **Backstage** to configure your LLM, Voice (TTS), Ears (ASR), Paths, and Pictures settings.
+Open `http://localhost:5176` in your browser to get started:
+
+1. **Import a character**: Open **Cast** in the top bar and import your character card (`PNG` / `JSON` / `CHARX` / `.risum`).
+2. **Import chat history (optional)**: To bring over an existing SillyTavern conversation for that character, open the **Branches** menu in the top bar and select **+ import JSONL**.
+3. **Configure your model & chat**: Open **Backstage** (`Model` tab) to set up a local LLM (`llama.cpp`, Ollama, LM Studio, etc.) or enter a cloud API key (along with optional Voice, Ears, Paths, and Pictures settings), then start chatting right away!
 
 ### 3. Desktop Build (Tauri 2)
 
-With the Rust toolchain installed, run inside `frontendV2`:
+> **Windows Users:** You can skip building from source and download the pre-built Tauri desktop installer directly from the [Latest Release](https://github.com/5235aa-web/Pebble_companionchat/releases/latest) page (always redirects to the newest release).
+
+To build from source with the Rust toolchain installed, run inside `frontendV2`:
 
 ```bash
 cd frontendV2
@@ -213,4 +226,4 @@ You can override default locations with environment variables:
 
 ## 💬 Support & Feedback
 
-This is an independent personal project. If you happen to be using it and find it enjoyable, a **Star** is a great way to support the author; and if you run into issues or have suggestions to make it better, feel free to open an **Issue** anytime!
+If you happen to be using it and find it enjoyable, a **Star** is a great way to support the author; and if you run into issues or have suggestions, feel free to open an **Issue** anytime!

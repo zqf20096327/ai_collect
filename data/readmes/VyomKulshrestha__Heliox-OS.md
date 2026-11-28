@@ -60,7 +60,7 @@ v0.16.0 adds a to-do list, "tell me when" watchers, repeating reminders and remi
 | -------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | Action schema        | 162 declared action types                                                                     | Availability depends on OS, dependencies, permissions, credentials, and policy                 |
 | Specialist mesh      | 21 executable specialists with providers for 162/162 declared actions                         | Provider coverage is not universal environment compatibility                                   |
-| Outcome verification | 22 actions have an independent observed post-condition verifier                               | The other 140 currently rely on the executor result                                            |
+| Outcome verification | 85 of 106 actions that change something have an independent post-condition check, plus 15 checked when a plan declares a check; 56 read-only actions need none | The other 6 rely on the executor result; a read that fails now fails its action instead of returning an error message as data |
 | Guarded fast path    | 25.234 ms median, 26.930 ms p95 across 100 non-LLM CPU-usage iterations; zero model calls (26 October 2026) | This is not provider, browser, voice, camera, TTS, neural, or full-workflow latency            |
 | Subscription planning | 3/3 fixed Codex CLI cases; 14.708 s median; zero executed or destructive actions             | One account and planning only; not action-execution, Claude, or universal provider evidence     |
 | Intent dispatch      | 59/59 curated bounded-intent and ambiguous-fall-through regression cases                     | Fixed corpus; not population-level language-understanding accuracy                            |
@@ -399,6 +399,22 @@ adaptive_enabled = false     # learned choices from the second session; also nee
 learn_across_sessions = false
 ambiguity_threshold = 0.25   # may only be made stricter; never learned
 ```
+
+Mail, GitHub and chat actions are connected in Settings. Mail uses the account under **Settings > Email integration** (both mail actions send from it); Slack, Discord and GitHub are under **Settings > Connections**. Every secret goes to the operating system's credential store (Windows Credential Manager, macOS Keychain, or a Secret Service keyring on Linux) and is never shown again: Settings shows only whether a connection is set and, for a webhook, its host and last four characters. A plan never needs a token, password or webhook address.
+
+The daemon's environment variables still work for setups that already use them. Settings comes first; a variable is read only when nothing is saved in Settings for that service, and Settings says when both are set. On Linux with no Secret Service (a headless or minimal desktop) Settings cannot save a connection and says so; the variables are then the way to connect.
+
+| Settings | Environment variable (fallback) | Used by |
+| --- | --- | --- |
+| Email integration: SMTP host, port, user name, app password | `SMTP_SERVER`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | `api_send_email`, `email_reply` (the email agent uses Settings only) |
+| Connections > GitHub: personal access token | `GITHUB_TOKEN` | `api_github`; without a token only public reads work |
+| Connections > Slack: webhook address | `SLACK_WEBHOOK_URL` | `api_slack` (an incoming webhook) |
+| Connections > Slack: bot token and channel ID | `SLACK_BOT_TOKEN`, `SLACK_CHANNEL_ID` | optional: read a sent Slack message back from the channel to confirm it arrived. The token needs `channels:history` (or `groups:history` for a private channel) and the app must be in the channel the webhook posts to. Without them a Slack send is reported, not verified |
+| Connections > Discord: webhook address | `DISCORD_WEBHOOK_URL` | `api_discord` |
+
+When a service is not connected, or it refuses the saved secret, the action fails and names the Settings place to fix it. "Post a test message" in Connections posts a real message to the connected Slack or Discord channel and asks first; the GitHub check only reads the token's own user; opening Settings sends nothing.
+
+A webhook address is itself a password: anyone who has it can post. Wherever Heliox shows or keeps a plan (the approval, the audit log, receipts, task history, a saved plan, its logs) the address appears masked as the host and its last four characters, and so does any address with a user, a password or a token in it, and any GitHub token, mail password or credential header (`Authorization`, `Cookie`, `X-Api-Key` and similar; the scheme word such as `Bearer` and the last four characters stay) a plan carries. The approval still says which host receives a credential. A saved plan that holds such a value keeps the real value in the credential store, tied to that plan, so the plan can be continued after an interruption or a later approval; the entry is removed when the plan finishes or is turned down, and after seven days at most. Without a credential store, or when the value is too large for it, the value is kept in memory until Heliox restarts, and a step resumed after that fails before sending anything and says why.
 
 OpenRouter uses its OpenAI-compatible endpoint. Settings and first-run setup offer automatic routing, DeepSeek V4 Pro, the latest DeepSeek V4 Flash alias, and other current aliases; an exact OpenRouter catalog model ID can also be entered manually. Provider keys remain in the operating-system credential store.
 

@@ -139,7 +139,7 @@ It can be in both, but the notes are not shared. Each library is an independent 
 
 This is deliberate. A library stands for one topic, and the same paper is read differently under different topics: the notes you took on it in A may be of no use in B, and B may not even need its full text, just the abstract. So most of the time one paper belongs in one library.
 
-If you cannot decide how to split, start with one library. For example a “Learning” library just for reading papers and picking things up: its topics can be a mix, told apart by tags. When one direction grows into a project of its own, create a new library and use “Move to library…” in a paper's right-click menu to move the relevant papers over; the PDF, the annotations and the conversations about the paper go with it.
+If you cannot decide how to split, start with one library. For example a “Learning” library just for reading papers and picking things up: its topics can be a mix, told apart by tags. When one direction grows into a project of its own, create a new library and use “Move to library…” in a paper's right-click menu to move the relevant papers over; the PDF, the annotations and the conversations about the paper go with it. A paper both libraries need can be copied with “Copy to library…”, which leaves the original where it is.
 
 ### Why are there no groups (folders, collections) inside a library?
 

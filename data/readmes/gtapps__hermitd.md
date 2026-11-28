@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.43-green.svg" alt="Version 1.4.43" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.45-green.svg" alt="Version 1.4.45" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -122,7 +122,7 @@ Optional [Docker security controls](plugins/hermitd/docs/docker-security.md) cov
 
 - **Token efficiency.** With Claude Code’s [Monitor](https://code.claude.com/docs/en/tools-reference#monitor-tool), heartbeat checks and optional routine prechecks run outside the model. Quiet checks and skipped routines use no model tokens; eligible routines due together can share a wake.
 
-- **Lasting knowledge.** Turn source material in `raw/` into maintained knowledge in `compiled/`, alongside Claude Code's auto memory. `/recall` searches past sessions, knowledge, proposals, and captured channel conversations.
+- **Lasting knowledge.** Turn source material in `raw/` into a maintained LLM wiki in `compiled/`, alongside Claude Code's auto memory. `/recall` searches past sessions, knowledge, proposals, and captured channel conversations.
 
 - **Learning from experience.** The agent reviews evidence from its work and operation, saves useful lessons, and verifies proposed behavior changes before bringing them to you for approval.
 
@@ -322,6 +322,8 @@ You can run separate agents for different responsibilities, each with its own wo
 **Tool sign-ins.** Anyone admitted may ask to reconnect a tool or claude.ai connector; the agent tells an admin, who finishes the sign-in with `/mcp` at the agent's terminal. The account used serves every chat and routine, so prefer a dedicated account over a personal login, and forward the link `/mcp` shows if the tool belongs to someone else's account.
 
 **Scheduled backups.** Optional backups preserve the agent’s knowledge, session reports, settings, and Claude Code memory in Git, with an optional private remote copy. Backups run without model tokens.
+
+**Instruction file audit.** Claude Code's `/doctor prompt-audit`, typed in the agent's terminal or the Claude app, checks the agent's CLAUDE.md, rules, skills and subagents for outdated, redundant or conflicting instructions and proposes edits. It can't be started from chat.
 
 ## Upgrading
 

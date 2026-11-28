@@ -1,74 +1,115 @@
+<!-- ==================== 置顶：内测微信群 START（不需要时整段删除即可） ==================== -->
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="140">
+        <img src="screenshots/wechat_beta_qr.png" alt="hsMuse 内测微信群" width="120" />
+      </td>
+      <td align="left" width="460">
+        <strong>💬 加入 hsMuse 内测交流群（微信）</strong><br /><br />
+        • 抢先体验最新内测版本与新功能预告<br />
+        • Bug 优先反馈、模型配置答疑与提示词/词库分享<br />
+        • 微信扫码直接入群（若二维码过期，可添加微信号 <code>hshi2026</code> 备注 <code>hsMuse</code> 拉群）
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- ==================== 置顶：内测微信群 END ==================== -->
 <div align="center">
 
 <h1>
   <a href="hoshi/" title="Meet Hoshi (Star) — Mascot of HshiKoi"><img src="hoshi/Hoshi05.png" alt="Hoshi" height="54" align="absmiddle" /></a>&nbsp;hsMuse
 </h1>
 
-**零显存、自进化的本地模块化 AI 绘画提示词工作台（ComfyUI / Flux / Krea 2 / SDXL）**  
-**Zero-VRAM Local AI Art Prompt Generator & Danbooru Tag Cleaner for ComfyUI, Flux, SDXL & Krea 2**
+**本地模块化 AI 绘画提示词工作室 & 离线识图与训练集批量打标工作台**  
+**Local Visual Prompt Studio & Offline Dataset Captioning Workbench**
 
-[![Release](https://img.shields.io/github/v/release/hshiKoi/hsMuse?include_prereleases&style=for-the-badge&label=Release&color=0DA5E8)](https://github.com/hshiKoi/hsMuse/releases/latest)
+[![Release](https://img.shields.io/github/v/release/hshiKoi/hsMuse?style=for-the-badge&label=Release&color=0DA5E8)](https://github.com/hshiKoi/hsMuse/releases/latest)
+[![HuggingFace Models](https://img.shields.io/badge/HuggingFace-hsMuse--models-F59E0B?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/hshiKoi/hsMuse-models)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20x64-1E4E8C?style=for-the-badge)](#)
 [![Languages](https://img.shields.io/badge/UI-简%20|%20繁%20|%20EN%20|%20日本語%20|%20한국어-10B981?style=for-the-badge)](#)
 [![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-64748B?style=for-the-badge)](TERMS.md)
 
-[简体中文](#-简体中文) • [English](#-english) • [📥 下载最新版 / Download](https://github.com/hshiKoi/hsMuse/releases/latest) • [📋 更新日志 / Changelog](CHANGELOG.md) • [⚖️ 使用条款 / Terms](TERMS.md)
+[简体中文](#-简体中文) • [English](#-english) • [📥 下载最新版 / Download](https://github.com/hshiKoi/hsMuse/releases/latest) • [🤗 视觉模型库 / Models](https://huggingface.co/hshiKoi/hsMuse-models) • [📋 更新日志 / Changelog](CHANGELOG.md) • [⚖️ 使用条款 / Terms](TERMS.md)
 
 </div>
 
-> [!TIP]
-> **下载建议：** 优先下载安装向导版 **`hsMuse_*_Setup.exe`**（`--onedir` 低误报目录架构，冷启动更快，覆盖升级 100% 保留本地数据）；`hsMuse_*.exe` 仅作绿色便携备用。
+> [!IMPORTANT]
+> **重大跨代版本 V2.2 已发布（V1.51 → V2.2 全面重构）：** 本次更新彻底重塑底层架构与视觉体验，不仅新增双核离线识图反推、AI 训练集批量打标体检与流式无损音乐引擎，界面质感与交互流畅度也已全面跃升，**强烈建议所有老用户立即升级体验！** 欢迎通过 [GitHub Issues](https://github.com/hshiKoi/hsMuse/issues) 随时反馈使用体验或问题。
 >
-> **Download Note:** Download the setup installer (**`hsMuse_*_Setup.exe`**) first for faster `--onedir` startup, fewer antivirus false positives, and full local data preservation on upgrade. Use the standalone **`hsMuse_*.exe`** for portable single-file use only.
+> **下载建议：** 优先下载安装向导版 **`hsMuse_*_Setup.exe`**（`--onedir` 低误报目录架构，冷启动更快，覆盖升级与卸载永久保留 6 大用户目录及外置模型）；`hsMuse_*.exe` 仅作绿色便携备用。主程序保持**零内置模型轻量化**，所有功能完全公开。
+>
+> ---
+>
+> **Major Generational Release V2.2 (V1.51 → V2.2 Complete Overhaul):** Rebuilt from the ground up with a unified modern UI, dual-core offline image tagging, dataset batch captioning, and a native lossless streaming BGM engine. **Immediate upgrade is strongly recommended for all users.** Download **`hsMuse_*_Setup.exe`** first for faster startup, fewer antivirus false positives, and 100% preservation of local data & models on upgrade (`hsMuse_*.exe` is for portable single-file use only).
+
+<a id="preview"></a>
+
+## 🖼️ 界面预览 / Interface Preview
+
+<p align="center">
+  <sub>4 套常驻皮肤 0ms 瞬切 · 支持 12 套随机灵感配色与自定义主题色（点击图片可查看大图）<br/>4 Built-in Skins with Instant Switching · 12 Random Palettes & Custom Theme Colors (Click to zoom)</sub>
+</p>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="screenshots/theme_01_night.png" width="100%" alt="暗夜 Night" />
+      <br />
+      <sub><b>暗夜 · Night</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="screenshots/theme_02_pure.png" width="100%" alt="留白 Pure" />
+      <br />
+      <sub><b>留白 · Pure</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="screenshots/theme_03_sakura.png" width="100%" alt="落樱 Sakura" />
+      <br />
+      <sub><b>落樱 · Sakura</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="screenshots/theme_04_cobalt.png" width="100%" alt="沧澜 Cobalt" />
+      <br />
+      <sub><b>沧澜 · Cobalt</b></sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## 🇨🇳 简体中文
 
-> **【使用建议】** 推荐优先点击顶栏 **【网页版】**：大屏排版与滚动更流畅，数据与桌面端实时同步。
-
 ### 简介
-**hsMuse** 是一款纯本地运行、零显存占用的 AI 绘画提示词引擎与资产管理工作台，深度适配 **ComfyUI / Flux / Krea 2 / SDXL**。一键同步输出 **「8 级规范排序 Tag 序列」** 与 **「电影级自然语言长句」**，通过四大世界观隔离、室内外空间锁与自进化词库/角色生态，告别跨时代串戏与提示词凌乱。
+**hsMuse** 是一款面向 AI 绘画创作者与模型训练师的本地模块化工作台，全面适配主流标签系与自然语言绘画工作流及 LoRA / 微调模型训练。采用全新 **「一核双端」** 架构，桌面客户端与本地浏览器网页版共享同一套实时界面与数据，支持严格唯一窗口互斥，并针对 **1K / 2K / 4K / 8K** 全分辨率提供护眼弹性排版。
 
-### 界面预览
-
-| 暗夜 (Night) | 留白 (Pure) |
-| :---: | :---: |
-| ![Night](screenshots/theme_01_night.png) | ![Pure](screenshots/theme_02_pure.png) |
-
-| 落樱 (Sakura) | 沧澜 (Cobalt) |
-| :---: | :---: |
-| ![Sakura](screenshots/theme_03_sakura.png) | ![Cobalt](screenshots/theme_04_cobalt.png) |
-
-<details>
-<summary>🎨 点击展开查看随机灵感配色预览（Random Themes）</summary>
-<br>
-<table>
-  <tr>
-    <td><img src="screenshots/random_theme_01.png" alt="Random Theme" /></td>
-    <td><img src="screenshots/random_theme_02.png" alt="Random Theme" /></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/random_theme_03.png" alt="Random Theme" /></td>
-    <td><img src="screenshots/random_theme_04.png" alt="Random Theme" /></td>
-  </tr>
-</table>
-</details>
-
-### 核心功能亮点
-- **可成长的动态角色库**：最高支持 500 位角色（内置 51 位三元组角色：纯净外貌 + 独立原版官服，支持多套官服自动轮换），支持自定义 OC、LoRA 触发词、AI 提炼指令与联网自动去重收录；支持中英文实时搜索与单/双人空间隔离。
-- **自进化模块化知识库**：独立 JSON 架构（支持扩展至 40 套、单栏 500 词条），内置 9 套精修美学库（含高通透花庭库 **「晴风花庭」**）与【灵感潮汐】池，支持 10 格可视化编辑、AI 一键造库导入及全库智能混搭。
-- **四大世界观隔离 + 空间锁 + 16 套电影机位**：严格隔离「现代 / 东方仙侠 / 物哀哥特 / 自然水畔汤泉」生态及室内外/水系边界，约 6:4 明亮通透光影配比、前景奶油虚化、滑动防重复队列、支持 `{A|B}` 随机通配符与单次最高 100 条批量去重输出。
-- **多源并发灵感直采 & 批量清洗转换**：支持 SFW / 纯欲 / R18 分级并发抓取并沉淀至本地池；支持单次最高 200 行批量清洗，按需剥离 LoRA、权重、废词、外貌或基础服装（保留景别与神态词），一键转安全预览 / NSFW 并合成自然语言。
-- **高 DPI 全分辨率适配与双端协同**：高 DPI/小屏自适应防裁切、8 向自由缩放、空白区拖拽、记忆尺寸位置与双击/托盘一键复原；桌面端 + 本地 WebUI 实时同步、并发分段四引擎翻译（Youdao / MyMemory / Google / 自定义 AI）、GitHub Private Gist 增量云同步、支持单曲循环（`🔂`）的本地 BGM 播放器与 5 国语言实时切换。
+### 核心主打功能
+- **🎯 双核离线识图反推（零内置模型轻量化架构）**
+  - **0ms 全链路原图元数据秒读**：拖入、点选或 `Ctrl+V` 粘贴 PNG / WebP / JPEG 图片，0ms 秒读 SD WebUI / ComfyUI / NovelAI 内嵌正负面提示词与采样参数，深度兼容复杂连线拼接节点与工作流兜底解析。
+  - **本地 ONNX 标签词条反推**：外置 `models/tagger/`，自动嗅探 GPU 加速并零显存回退 CPU；提供 4 档评级分布、可单击剔除/恢复的条形置信度排行、一键提取为角色档案、送入清洗台及 2~5 张参考图提炼共性画风配方。
+  - **可选自然语言视觉大模型（本地 GGUF / 视觉 API）**：主程序保持轻盈不捆绑大模型权重；可选在软件内通过官方 **[HuggingFace 模型库](https://huggingface.co/hshiKoi/hsMuse-models)**（支持官方源与国内 HF-Mirror 断点续传）或 **[国内夸克网盘](https://pan.quark.cn/s/c141e7abfce0)** 获取 `models/vlm/` 扩展包（建议 6.5~8GB 空闲显存），无独显亦可直连本地推理服务或云端视觉 API。支持 **4 种描写风格 + 5 档输出篇幅 + 固定前后缀 + 标签锚点联合反推**，卸载瞬间 100% 清空显存。
+- **🗂️ AI 模型训练集批量打标 & 数据体检工作台**
+  - 支持递归扫描子目录、独立输出路径、4 种冲突模式（断点续跑跳过 / 覆盖 / 追加 / 前置）、触发词前置、角色 LoRA 外貌剥离、颜文字豁免下划线转换、括号转义、批量参数自动记忆及完成后自动卸载模型。
+  - 同步支持 **标准标签序列 `.txt`** 与 **英文自然语言 `.txt`** 双轨落盘，广泛适配各类标签系与自然语言大模型训练。
+  - 内置 **全库词频体检**（点击 `🔍` 反查对应图片、一键筛未标、`Shift` 多选子集改标）、**图文逐张微调（`Ctrl+S` + 一键双语翻译核对）**，以及零体积 **数据体检三件套**（坏图/低分辨率/透明通道体检、透明底一键铺白/浅灰底、两阶段安全原子配对重命名）。
+- **🧬 双轨角色库 · 世界观隔离 · 纯净美学基调与通用语法方言**
+  - 内置 **81 位双轨角色**（含原创角色「林听雪」，旧版存档无损继承），同时具备标准角色词条与自然语言外貌描述；关闭「穿搭服饰」即精准锁定角色原版官服轮换。
+  - 四大世界观隔离锁（现代 / 东方仙侠 / 物哀哥特 / 水畔汤泉）+ 室内外空间锁 + 6 套纯净美学基调 + 3 种输出语法方言（`标准标签` / `NovelAI` / `自然语言`）+ **词条文本 ↔ 权重编排** 双向切换、历史快照与本地/自定义 AI 润色。
+- **✨ 极简画廊交互 · 流式无损音乐 · 数据中心与全生态便利**
+  - **丝滑零负担交互**：4 套常驻皮肤（`暗夜` / `留白` / `落樱` / `沧澜`）0ms 瞬切 + 12 套随机灵感配色 + 自定义主题色；全站物理弹簧滑动胶囊、`暗夜 ↔ 留白` 顶栏昼夜掠影、识图顶栏「双核就绪」LED 胶囊。
+  - **HTML5 原生流式背景音乐**：零后台线程、无体积限制，通吃 `.mp3 / .wav / .flac / .m4a / .aac / .ogg / .opus` 及大体积无损音轨，支持四态切换（`🔁/🔀/🔂/🔇`）、长按 0.5 秒切歌与双端防重音。
+  - **清洗、翻译与云同步**：200 行批量清洗与权重剥离（完整覆盖 `()` / `[]` / `{}`）、独立 4 引擎双语对照翻译弹窗（Youdao / MyMemory / Google / 自定义 AI）、对称双栏 **云同步与数据中心**（GitHub Private Gist 加密漫游，支持 2000 角色 / 80 词库 / 2000 收藏 / 200 配方）及 **5 国语言** 双端全同步。
 
 ### 快速开始与快捷键
-1. 前往 [**Releases 页面**](https://github.com/hshiKoi/hsMuse/releases/latest) 下载最新版安装向导（`hsMuse_*_Setup.exe`）双击安装（免管理员权限，支持自由选盘，覆盖升级/卸载 100% 保留个人数据）。
-2. 打开后推荐点击顶栏 **【网页版】** 使用浏览器工作台。
-3. 常用快捷键：`F5` 一键抽卡 ｜ `Ctrl + Z` 智能回退 ｜ `Ctrl + D` 收藏 Tag ｜ `Ctrl + M` 切换背景音乐（`🔁/🔀/🔂/🔇`）；双击空白区或右键托盘一键恢复默认窗口尺寸。
+1. 前往 [**Releases 页面**](https://github.com/hshiKoi/hsMuse/releases/latest) 下载最新版安装向导（`hsMuse_*_Setup.exe`）双击安装（免管理员权限，支持自由选盘，覆盖升级 100% 保留个人数据与 `models/`）。
+2. 如需离线识图反推：在软件内打开 **「识图反推」** → **「模型扩展包」** 或 **「视觉大模型配置」** 一键下载，或前往 **[HuggingFace 模型库](https://huggingface.co/hshiKoi/hsMuse-models)** / **[国内夸克网盘](https://pan.quark.cn/s/c141e7abfce0)** 获取模型包放入对应 `models/` 目录即可。
+3. 常用快捷键：`F5` 抽卡 ｜ `Ctrl + Z` 智能回退 ｜ `Ctrl + D` 收藏 Tag ｜ `Ctrl + M` 切换音乐 ｜ `Alt + 1~4` 极速切页 ｜ `Ctrl + V` 贴图识图 ｜ `Ctrl + S` 保存训练标注；双击空白区或右键托盘一键恢复默认窗口尺寸。
 4. 想用 AI 扩展自定义词库或角色？请查看 [`templates/`](templates/) 目录中的范例与指令。
 
 ### 支持与交流
+- **HuggingFace 模型仓库**：[huggingface.co/hshiKoi/hsMuse-models](https://huggingface.co/hshiKoi/hsMuse-models)
 - **Patreon**：[patreon.com/c/hshiKoi](https://www.patreon.com/c/hshiKoi)
 - **Ko-fi**：[ko-fi.com/hshikoi](https://ko-fi.com/hshikoi)
 - **Civitai**：[civitai.red/user/HshiKoi](https://civitai.red/user/HshiKoi)
@@ -79,25 +120,34 @@
 
 ## 🌐 English
 
-> **[Tip]** Click **[WebUI]** in the top bar for a smoother widescreen layout and scrolling—synced in real time with the desktop app.
-
 ### Overview
-**hsMuse** is a 100% local, zero-VRAM visual prompt engine and creative asset studio built for **ComfyUI, Flux, Krea 2, and SDXL**. It generates **8-level sorted Tag sequences** and **cinematic natural language prose** simultaneously in one click, powered by a Four-Era Worldview Isolation Engine, Indoor/Outdoor Space Lock, and a self-growing library of characters and modular knowledge bases.
+**hsMuse** is a local modular visual prompt studio and offline dataset captioning workbench designed for AI artists and LoRA / fine-tuning model trainers. Built on a unified **Desktop + Local WebUI** architecture with strict single-window exclusivity and responsive eye-care typography for **1K / 2K / 4K / 8K** displays, it unifies coherent prompt engineering with professional offline image tagging and dataset management.
 
-### Key Highlights
-- **Self-Growing Character Archive**: Manages up to 500 profiles (51 built-in presets structured as pure traits + independent canonical outfits with multi-outfit rotation). Supports custom OCs, LoRA triggers, AI trait extraction, live search, canonical-outfit locking, and spatially separated Solo/Dual framing.
-- **Modular Knowledge Bases**: Portable JSON packs (up to 40 packs, 500 entries per slot), shipping with 9 refined aesthetic packs (including the airy *Sunlit Garden*) + the dynamic *Muse Tide* pool. Visually edit across 10 slots, import AI-generated packs in seconds, and mix custom packs seamlessly.
-- **4-Era Isolation, Space Lock & 16 Adaptive Angles**: Strictly separates *Modern*, *Eastern Fantasy (Xianxia)*, *Wabi-Sabi/Gothic*, and *Nature/Onsen* worlds with indoor/outdoor & water isolation, ~6:4 bright-to-moody balance, foreground bokeh, anti-repeat pooling, `{A|B}` wildcards, and up to 100 unique batch prompts per run.
-- **Multi-Source Live Fetch & Batch Cleaner**: Concurrent rating-aware inspiration fetching (SFW / Sensual / R18) and a 200-line batch cleaner that strips LoRAs, weights, quality filler, traits, or base outfits while preserving framing and expressions.
-- **High-DPI Ergonomics & Full WebUI Parity**: Auto-fits 125%/150%+ scaling & compact screens; 8-way resize, blank-area drag, window size/position memory & one-click reset; concurrent chunked 4-engine translation (including custom AI LLMs), private GitHub Gist incremental sync, local BGM player with Repeat One (`🔂`), and instant 5-language switching.
+### Flagship Features
+- **🎯 Dual-Core Offline Image Tagger (Zero-Bloat External Architecture)**
+  - **0ms Full-Chain Metadata Reader**: Drag, select, or `Ctrl+V` PNG / WebP / JPEG images to read embedded SD WebUI / ComfyUI / NovelAI parameters in 0ms—including complex linked string-join node graphs and workflow fallbacks.
+  - **Local ONNX Tag Extraction**: External `models/tagger/` models with automatic GPU acceleration and zero-VRAM CPU fallback. Features 4-tier rating distribution, clickable confidence ranking bars, one-click Character Profile extraction, and multi-image Style Recipe distillation.
+  - **Optional Vision LLM Captioning (Local GGUF / Vision API)**: Keep the installer lightweight—optionally download external GGUF packs directly in-app from **[HuggingFace (`hshiKoi/hsMuse-models`)](https://huggingface.co/hshiKoi/hsMuse-models)** with resumable downloads (~6.5–8 GB VRAM recommended), or connect any OpenAI-compatible Vision API with zero local VRAM. Supports **4 styles, 5 length presets, hard prefix/suffix wrapping, tag-anchor guidance**, and instant 100% VRAM release on unload.
+- **🗂️ Dataset Batch Captioning & Audit Studio**
+  - Recursive folder scanning, custom output directory, 4 conflict modes (Ignore/Resume, Overwrite, Append, Prepend), trigger words, character-LoRA appearance stripping, kaomoji-safe underscore replacement, bracket escaping, persistent preferences, and auto-unload after completion.
+  - Dual-format `.txt` export (**Standard Tags** or **Natural Language**) compatible with both tag-based and natural-language image models.
+  - Includes **Dataset Tag Frequency Audit** (`🔍` filter images by tag, filter untagged, `Shift` multi-select subset editing), **Side-by-Side Image Review (`Ctrl+S` + instant bilingual translation)**, and a zero-dependency **Dataset Toolkit** (corrupt/low-res/alpha inspection, one-click transparent PNG flattening, and 2-phase atomic pair renaming).
+- **🧬 Dual-Track Characters, Worldview Isolation & Aesthetic Studio**
+  - Ships with **81 dual-track character profiles** (preserving legacy saves), locking canonical outfits when Outfit is toggled off.
+  - 4-Era Worldview Isolation + Space Lock + 6 Pure Aesthetic Tones + 3 Universal Syntax Dialects (`Standard Tags` / `NovelAI` / `Natural Language`) + **Tag Editor ↔ Weight Board** switching, snapshots, and local/custom AI polishing.
+- **✨ Gallery Ergonomics, Lossless Streaming Audio & Data Center**
+  - 4 resident themes with 0ms optimistic switching + 12 inspiration palettes + custom accent color, spring-sliding pill tracks, Day/Night topbar sweep, and `Alt+1–4` instant tab switching.
+  - **Native HTML5 Streaming BGM Engine**: Zero background threads and no file size limit; streams `.mp3 / .wav / .flac / .m4a / .aac / .ogg / .opus` with 4-state cycling (`🔁/🔀/🔂/🔇`), hold-0.5s skip, and dual-client anti-overlap.
+  - 200-line batch prompt cleaner (`()` / `[]` / `{}` weight stripping & syntax switching), dedicated 4-engine translation popup (Youdao / MyMemory / Google / Custom AI), Private GitHub Gist sync + local backup Data Center (2,000 characters / 80 KBs / 2,000 favorites / 200 recipes), and full 5-language parity.
 
 ### Quick Start & Shortcuts
-1. Download the latest setup installer (`hsMuse_*_Setup.exe`) from the [**Releases Page**](https://github.com/hshiKoi/hsMuse/releases/latest) (`--onedir` low-false-positive installer; no admin rights required; personal data is 100% preserved across upgrades).
-2. Click **[WebUI]** in the top bar for the smoothest daily workflow.
-3. Shortcuts: `F5` Roll ｜ `Ctrl + Z` Smart Undo ｜ `Ctrl + D` Save Tag ｜ `Ctrl + M` Toggle Music (`🔁/🔀/🔂/🔇`); double-click blank area or use tray menu to reset window size.
+1. Download `hsMuse_*_Setup.exe` from the [**Releases Page**](https://github.com/hshiKoi/hsMuse/releases/latest) (no admin rights required; upgrades preserve all personal data and `models/`).
+2. Download optional local ONNX taggers or the Vision LLM GGUF pack in-app, or visit **[huggingface.co/hshiKoi/hsMuse-models](https://huggingface.co/hshiKoi/hsMuse-models)**.
+3. Shortcuts: `F5` Roll ｜ `Ctrl + Z` Smart Undo ｜ `Ctrl + D` Save Tag ｜ `Ctrl + M` Toggle Music ｜ `Alt + 1–4` Switch Tabs ｜ `Ctrl + V` Paste Image ｜ `Ctrl + S` Save Dataset Caption; double-click blank area or use tray menu to reset window size.
 4. Check [`templates/`](templates/) for sample JSON packs and AI builder prompts.
 
 ### Links & Support
+- **HuggingFace Models**: [huggingface.co/hshiKoi/hsMuse-models](https://huggingface.co/hshiKoi/hsMuse-models)
 - **Patreon**: [patreon.com/c/hshiKoi](https://www.patreon.com/c/hshiKoi)
 - **Ko-fi**: [ko-fi.com/hshikoi](https://ko-fi.com/hshikoi)
 - **Civitai**: [civitai.red/user/HshiKoi](https://civitai.red/user/HshiKoi)

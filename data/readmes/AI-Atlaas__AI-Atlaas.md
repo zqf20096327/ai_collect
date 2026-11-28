@@ -1,5 +1,5 @@
 # AI-Atlas
-[<img alt="GitHub" src="https://img.shields.io/badge/dynamic/json?logo=github&label=GitHub+Followers&labelColor=282c34&color=181717&query=%24.data.totalSubs&url=https%3A%2F%2Fapi.spencerwoo.com%2Fsubstats%2F%3Fsource%3Dgithub%26queryKey%3DAI-Atlaas&longCache=true"/>](https://github.com/AI-Atlaas)    <img src="https://img.shields.io/github/stars/AI-Atlaas?label=Stars" alt="stars">
+[![GitHub Followers](https://img.shields.io/github/followers/AI-Atlaas?label=GitHub%20Followers&logo=github&labelColor=282c34&color=181717)](https://github.com/AI-Atlaas) [![Stars](https://img.shields.io/github/stars/AI-Atlaas/AI-Atlaas?label=Stars&logo=github&labelColor=282c34&color=181717)](https://github.com/AI-Atlaas/AI-Atlaas/stargazers)
 
 This is an atlas of AI tools that are available on the web. This directory contains both free and paid tools.
 
@@ -756,6 +756,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 - [Pulse](https://pulsecorp.co)  
    AI-moderated market research platform that runs customer interviews at scale.
 
+- [QuestionPunk](https://www.questionpunk.com/)  
+   Survey builder that also runs AI-moderated voice and chat interviews, which ask follow-up questions, with response reports and cross-tabs.
+
 - [Asyntai](https://asyntai.com)  
    AI chatbot for your website that answers visitors from your own pages, documents and products, captures leads, and hands the chat to a human when needed.
 
@@ -1176,6 +1179,9 @@ This is an atlas of AI tools that are available on the web. This directory conta
 
 - [XMACNA Funcionarios Digitais](https://xmacna.ai/)
    AI/IA-powered Funcionarios Digitais for WhatsApp, phone, CRM updates, lead qualification, follow-up, and human handoff.
+
+- [Scalekit](https://www.scalekit.com/)  
+   AI agent integrations platform and MCP gateway that connects AI agents to 1,100+ apps and 55,000+ tools, with each call made on behalf of the end user, tools scoped per agent and every call logged.
 
 ---
 

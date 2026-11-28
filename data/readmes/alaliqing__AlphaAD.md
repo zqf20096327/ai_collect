@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--26-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1405-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--27-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1400-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1405 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1400 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 218 | 2026-11-24 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 216 | 2026-11-24 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 117 | 2026-11-24 | [View papers](#category-prediction-world-models) |
 | Planning & Decision-Making | 95 | 2026-11-22 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 59 | 2026-11-24 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 167 | 2026-11-25 | [View papers](#category-end-to-end-vla) |
 | Safety, Security & Verification | 201 | 2026-11-25 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 154 | 2026-11-24 | [View papers](#category-systems-deployment-connectivity) |
+| Systems, Deployment & Connectivity | 153 | 2026-11-24 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 32 | 2026-11-19 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 314 | 2026-11-25 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 312 | 2026-11-25 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,13 +45,13 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Dataset | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 193 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Synthetic Data | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 92 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 128 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| World Model | 127 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 141 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
@@ -63,7 +63,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 218 papers
+## Perception & Sensor Fusion · 216 papers
 
 <a id="paper-2611-32042"></a>
 
@@ -150,7 +150,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-27097"></a>
 
-### UDA-Restoration: Bridging Unsupervised Domain Adaptation and Multi-Degradation Denoising for Enhanced AV Semantic Segmentation ![New](https://img.shields.io/badge/New-red)
+### UDA-Restoration: Bridging Unsupervised Domain Adaptation and Multi-Degradation Denoising for Enhanced AV Semantic Segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Zainab Bibi, Mohsin Kamal<br>
 **Published:** 2026-11-19<br>
@@ -160,7 +160,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-26730"></a>
 
-### SparseHPS: A Unified Model for Human Pose and Shape Estimation across Depth Cameras and LiDARs ![New](https://img.shields.io/badge/New-red)
+### SparseHPS: A Unified Model for Human Pose and Shape Estimation across Depth Cameras and LiDARs ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Ilya Zaychuk<br>
 **Published:** 2026-11-19<br>
@@ -170,7 +170,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-26191"></a>
 
-### Backbone Matters: Benchmarking Encoder-Decoder Networks for Semantic Segmentation of Driving Scenes on BDD100K ![New](https://img.shields.io/badge/New-red)
+### Backbone Matters: Benchmarking Encoder-Decoder Networks for Semantic Segmentation of Driving Scenes on BDD100K ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Ehsan Rassekh<br>
 **Published:** 2026-11-19<br>
@@ -427,7 +427,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-37153"></a>
 
-### FastBEVFusion: Simple Multi-Modal Fusion for 3D Object Detection at 50 FPS ![Recent](https://img.shields.io/badge/Recent-orange)
+### FastBEVFusion: Simple Multi-Modal Fusion for 3D Object Detection at 50 FPS ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Tom Sanitz, Emre Gülsoylu, Simone Frintrop, Christian Wilms<br>
 **Published:** 2026-10-27<br>
@@ -1252,7 +1252,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-29000"></a>
 
-### Coding What Matters: A Semantic-Aware Memory Interface for Energy-Efficient Perception in Autonomous Vehicles ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Coding What Matters: A Semantic-Aware Memory Interface for Energy-Efficient Perception in Autonomous Vehicles
 
 **Authors:** Haohua Que, Handong Yao<br>
 **Published:** 2026-08-28<br>
@@ -1651,4 +1651,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### A2RL V\textsubscript{max}: The A2RL autonomous racing dataset for long-range, high-speed perception and multi-vehicle interaction
 
-**Authors:** Marvin Klemp, Dominic Ebner, Cornelius Schröder, Davide Malvezz
+**Authors:** Marvin Klemp, Dominic Ebner, Cornelius Schröder, Davide Malvezzi, László Turányi, et al.<br

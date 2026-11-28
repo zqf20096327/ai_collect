@@ -538,6 +538,22 @@ If a session cookie disappears anyway, `audit_site` says so instead of reporting
 
 The check compares which cookies the crawled URLs carry, not their values, so a rotating CSRF token never reads as a lost session. A cookie the browser deleted at its own stated expiry is ignored for the same reason — Cloudflare's `__cf_bm` lives 30 minutes and would otherwise warn on any longer crawl. Beyond that no attempt is made to tell an authentication cookie from any other: nothing in a cookie marks it as one, so any cookie the crawl started with and later lost is reported. Monitoring does not stop at the first loss — each cookie is reported once, at the URL where it vanished, so an analytics cookie expiring early cannot mask the session cookie being dropped later. URLs discovered mid-crawl join the cookie tracking before they are visited, so a session cookie scoped to a path below the start URL (say `/app`) is watched too.
 
+## Skills over MCP
+
+The server also publishes [Agent Skills](https://agentskills.io/specification) alongside its tools, using the MCP skills extension (`io.modelcontextprotocol/skills`, SEP-2640). A client that supports skills, such as Claude or Claude Code, loads a skill only when the task needs it. The skill teaches the client the audit workflow, so you don't have to spell it out in every prompt.
+
+| Skill | What it covers |
+|-------|----------------|
+| `accessibility-audit` | How to scope, run and report a WCAG audit with this server's tools: single pages, interactive flows and whole sites. Includes a reference list of the success criteria automation cannot check, for the report's "not covered" section. |
+
+The skills are served in every server mode (stdio and HTTP, standalone, `--extension`, `--connect-tool` and `--vscode`) and by `createConnection`. The server declares the extension, with `directoryRead`, next to `tools` and `resources`, and answers:
+
+- `skills/list` and `skills/get`, with a SHA-256 digest of every file;
+- `resources/read` for `skill://accessibility-audit/SKILL.md` and its supporting files;
+- `resources/directory/read` to browse a skill's folder.
+
+`SKILL.md` also appears in `resources/list`, so clients without skills support can still read it as an ordinary resource. The skill sources are in the [`skills/`](skills/) folder of the package. The root `SKILL.md` is different: it is a separate skill for driving the CLI's `interactive` REPL, and it is not served over MCP.
+
 ## Available Tools
 
 ### Page-registered WebMCP tools
@@ -777,15 +793,4 @@ Text input follows browser key/input event sequences without randomized timing. 
 
 Supply selectors for the fields and feedback in the main document; expected feedback may appear after validation. The audit examines native/ARIA invalid state, same-root error associations, feedback visibility, focus and changes to live-region content. Unfocused status feedback needs a change within the same live region, with polite or assertive semantics in both the pre-submit and post-submit samples. The JSON report records the current region’s pre-submit value as `baselineLive` when the region was exposed. A message inserted into a pre-existing, exposed live region counts when that same container survives submission. Changes between samples can still be missed. It reports programmatic feedback evidence, **not actual NVDA/VoiceOver announcements**. An associated error does not also have to be a live region; native browser validation and focus-managed feedback must be considered. Human review is still needed to judge whether an error explains the problem and suggests an appropriate correction (WCAG 3.3.1/3.3.3), and whether status feedback is announced usefully (4.1.3).
 
-**Parameters and bounds:** `fields` and `expectedFeedback` each accept 1–20 entries. Field `value` is a string (up to 10,000 characters); supported fields are editable text/email/url/tel/password/search inputs and textareas. CSS selectors are limited to 500 characters and must be unambiguous. Feedback `kind` is `error` or `status`. `timeoutMs` sets the post-activation observation window (100–10,000 ms, default 3000); feedback is read once at its end. Keyboard actions have a 30-second budget; very long inputs may be incomplete. Direct mode retains its observation window plus 5-second overall budget and 1-second individual action bounds. Feedback text follows rendered descendants through open shadow roots and slots, excludes hidden or collapsed disclosure content and slot fallback replaced by assigned content, and retains visually clipped screen-reader-only text. Each target is bounded to 10,000 visited nodes and 10,000 exposed characters; exceeding either limit sets `textTruncated` and makes the audit incomplete. Native validation is reported as a possible browser-managed feedback route, not a verified announcement. Findings describe observed gaps; `completed` means the scenario was measured, not that the form conforms to WCAG. Other frames, transient feedback and message quality need separate review.
-
-This is a **state-changing** tool: supplied values are entered and the submit control is activated. An unexpectedly accepted value can submit the form. Use a test environment and reset its state between cases; the audit cannot undo submissions. Reports omit submitted values and feedback text. Both new interaction audits accept `reportFile` for a JSON report, use the normal MCP output directory and never overwrite an existing explicitly named report.
-
-While either interaction audit runs, overlapping MCP tool calls routed to the same browser context are rejected with a busy error before their actions start. Starting an interaction audit while another tool is active is also rejected; calls are not queued for later mutation. `browser_handle_dialog` is the one exception: a dialog pauses the page, so it is admitted to answer one. Calls routed to other browser sessions can proceed independently. This coordinates MCP calls, not page scripts, manual browser use, or independently connected clients.
-
-#### `audit_screen_reader`
-Inspects the browser's accessibility tree (`page.ariaSnapshot`), accessible names and element geometry for potential accessibility issues. No actual screen reader is installed or driven, and its announcements and interactions are not tested.
-
-**Checks (`checkNames`)**
-- `missing-accessible-name`: controls and images exposed with no accessible name (WCAG 4.1.2)
-- `unin
+**Parameters and bounds:** `fields` and `expectedFeedback` each accept 1–20 entries. Field `value` is a string (up to 10,000 characters); supported fields are editable text/email/url/tel/password/search inputs and textareas. CSS selectors are limited to 500 characters and must be unambiguous. Feedback `kind` is `error` or `status`. `timeoutMs` sets the post-activation observation window (100–10,000 ms, default 3000); feedback is read once at its end. Keyboard actions have a 30-second budget; very long inputs may be incomplete. Direct mode retains its observation window plus 5-second overall budget and 1-second individual action bounds. Feedback text follows rendered descendants through open shadow roots and slots, excludes hidden or collapsed disclosure content and slot fallback replaced by assigned content, and retains visually clipped screen-reader-only text. Each target is bounded to 10,000 visited nodes and 10,000 exposed characters; exceeding either limit sets `textTruncated` and makes the audit incomplete. Native validation is reported as a possible browser-managed feedback route, not a verified announcement. Findings describe observed gaps; `completed` means the scenario was measured, no

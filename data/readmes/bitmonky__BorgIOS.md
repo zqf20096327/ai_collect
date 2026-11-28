@@ -6,6 +6,7 @@
 I have a seven node test network running you can access the network using the BorgHUI nodeJS client: [Available Here](https://github.com/bitmonky/borgHUI)  
 
 Disclaimer: This project is experimental and under active development. BorgIOS and BorgHUI Conduit may contain bugs, incomplete features, or breaking changes. It is not intended for production use, and no guarantees are made regarding reliability, data integrity, or security.
+BorgIOS is a work in progress some dependencies may still exist.  The ftreeFileMgrObj.js in particular is far from complete.
 
 ![main](images/borgGit.jpg)
 

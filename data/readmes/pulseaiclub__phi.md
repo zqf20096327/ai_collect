@@ -6,6 +6,7 @@
   <a href="https://pulseaiclub.github.io/"><img alt="Docs" src="https://img.shields.io/badge/docs-58A6FF?style=flat&colorA=222222&colorB=58A6FF" /></a>
   <a href="https://discord.gg/UnyHB3tvRk"><img alt="Discord" src="https://img.shields.io/badge/discord-community-5865F2?style=flat-square&logo=discord&logoColor=white" /></a>
   <a href="README.zh-CN.md"><img alt="中文" src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-58A6FF?style=flat&colorA=222222&colorB=58A6FF" /></a>
+  <a href="README.tr.md"><img alt="Türkçe" src="https://img.shields.io/badge/T%C3%BCrk%C3%A7e-58A6FF?style=flat&colorA=222222&colorB=58A6FF" /></a>
   <a href="https://github.com/pulseaiclub/phi/blob/main/LICENSE"><img src="https://img.shields.io/github/license/pulseaiclub/phi?style=flat&colorA=222222&colorB=58A6FF" alt="License"></a>
   <a href="https://github.com/pulseaiclub/phi/actions"><img src="https://img.shields.io/github/actions/workflow/status/pulseaiclub/phi/ci.yml?style=flat&colorA=222222&colorB=3FB950" alt="CI"></a>
   <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.26-00ADD8?style=flat&colorA=222222&logo=go&logoColor=white" alt="Go"></a>
@@ -43,23 +44,6 @@ Interested in sponsoring phi? Reach out at <a href="mailto:zhengel2022@163.com">
 
 <table>
 <tr>
-<td align="center" width="50%"><a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link"><img src="assets/infistar.png" alt="Infistar.cc" width="100%" /></a></td>
-<td valign="top" width="50%"><strong>phi is sponsored by <a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link">Infistar.cc</a></strong> — one API key for every major model, priced for people who run agents all day.<br/><br/>⚙️ <strong>Plug and play</strong>: set the base URL, API key, and model name, then call it directly.<br/>🧩 <strong>One key, every model</strong>: switch between Claude, GPT, Gemini, DeepSeek, and other leading models without editing config again.<br/>💰 <strong>Cheap and simple</strong>: some models cost as little as 1% of official rates, with RMB billing and invoices.<br/>🎁 <strong>phi perk</strong>: <a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link">register through our link</a> and get <strong>$5 in trial credits</strong> 👉<br/><br/><strong>Free <code>~/.phi/config.yaml</code></strong> — phi ships the whole model block; paste it, swap in your key, start.<br/><br/><pre>
-models:
-    - name: claude-opus-5-5
-      api_key: ""
-      base_url: https://infistar.cc
-      api: Anthropic
-    - name: gpt-6-astra
-      api_key: ""
-      base_url: https://infistar.cc/v1
-      api: OpenAIResponses
-    - name: gemini-3-pro
-      api_key: ""
-      base_url: https://infistar.cc
-      api: Gemini
-</pre></td>
-</tr>
 <tr>
 <td align="center" width="50%"><a href="https://mozhenzhen.com/go/phi"><img src="assets/sponsor/mozz-en.png" alt="Mozhenzhen" width="100%" /></a></td>
 <td valign="top" width="50%">🐼 <strong>Partner Pick: Stop overpaying for AI! Overpriced APIs? Fake models? Getting ripped off? Check <a href="https://mozhenzhen.com/go/phi">Mozhenzhen</a> before you buy:</strong><br/><br/>🏷️ <strong>Tired of overpaying for tokens? [Price Check]</strong> 2,000+ models · 350K+ listings. Compare official subscriptions, API relays, and pay-as-you-go rates side-by-side.<br/>🛡️ <strong>Worried about fake or nerfed models? [Verification]</strong> 5,000+ API relays · 100K verification reports. Check real developer reviews and audit model authenticity.<br/>🧭 <strong>Looking for reliable accounts or top-ups? [Account &amp; Top-Up Directory]</strong> 1,200+ sellers · 20K+ products (accounts, top-ups, team seats) with upfront pricing, delivery speed, and warranty terms.<br/>🎁 <strong>Looking for free API credits? [Free Perks]</strong> Daily updated free tiers, promos, and community relay hubs you can claim anytime.<br/>⭐ <strong>Always Free · Mozhenzhen doesn't sell AI services — rankings are purely data-driven</strong> 👉 Check now: <a href="https://mozhenzhen.com/go/phi">mozhenzhen.com</a></td>

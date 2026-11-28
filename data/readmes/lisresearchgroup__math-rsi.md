@@ -4,7 +4,7 @@
 
 **A self-improving agent harness for mathematical discovery and proof.**<br>Readable Markdown skills and domain verifiers for Claude Code and Codex.
 
-[![Website / EN + 中文](figures/mathrsi/badges/visual-tour.svg)](https://lisresearchgroup.github.io/math-rsi/ "Website / EN + 中文")&nbsp; [![Quick Start / Start here](figures/mathrsi/badges/quick-start.svg)](#quick-start)&nbsp; [![Results / 6 domains](figures/mathrsi/badges/results.svg)](case-studies/README.md)&nbsp; [![Agent Guide / Workflow + wiki](figures/mathrsi/badges/agent-guide.svg)](docs/WORKFLOWS.md)&nbsp; [![Contributors / Team](figures/mathrsi/badges/contributors.svg)](#contributors)&nbsp; [![CN / 中文](figures/mathrsi/badges/lang-cn.svg)](README.zh-CN.md)
+[![Website / EN + 中文](figures/mathrsi/badges/visual-tour.svg)](https://lisresearchgroup.github.io/math-rsi/ "Website / EN + 中文")&nbsp; [![Quick Start / Start here](figures/mathrsi/badges/quick-start.svg)](#quick-start)&nbsp; [![Results / 7 cases](figures/mathrsi/badges/results.svg)](case-studies/README.md)&nbsp; [![Agent Guide / Workflow + wiki](figures/mathrsi/badges/agent-guide.svg)](docs/WORKFLOWS.md)&nbsp; [![Contributors / Team](figures/mathrsi/badges/contributors.svg)](#contributors)&nbsp; [![CN / 中文](figures/mathrsi/badges/lang-cn.svg)](README.zh-CN.md)
 
 </div>
 
@@ -12,7 +12,7 @@ MathRSI pairs a shared base workflow with domain plugins and a per-problem resea
 
 [![Historical MathRSI v0 through v6 homepage evolution](figures/mathrsi/media/evolution.gif?v=6-q7-20261120)](figures/mathrsi/media/evolution.mp4?v=6-q7-20261120)
 
-*Historical v0 → v6 homepage replay; “Current” in the recording refers to v6 at that time. Click for MP4; [interactive homepage](https://lisresearchgroup.github.io/math-rsi/) · [six case studies and verification status](case-studies/README.md).*
+*Historical v0 → v6 homepage replay; “Current” in the recording refers to v6 at that time. Click for MP4; [interactive homepage](https://lisresearchgroup.github.io/math-rsi/) · [seven case studies and verification status](case-studies/README.md).*
 
 **43-bit code research replay**
 
@@ -27,6 +27,7 @@ MathRSI pairs a shared base workflow with domain plugins and a per-problem resea
 [November 2026 mathematical results](https://lisresearchgroup.github.io/math-rsi/november-2026.html)
 
 
+- **Alon–Jaeger–Tarsi (AJT) preprint** · 2026-11-27 — SII MathRSI Team proves the AJT theorem for every invertible n × n matrix over every prime field Fₚ with p ≥ 5 and n ≤ 11, with Lean formalization. Over F₅, this extends the cited n ≤ 9 result to dimensions 10 and 11. Over F₅, the general 12-dimensional case remains open, while symmetric 12 × 12 matrices are covered. [Preprint (PDF)](case-studies/ajt/paper.pdf) · [Case & Lean source](case-studies/ajt/README.md) · [Discussion](https://github.com/lisresearchgroup/math-rsi/pull/67)
 - **[v8](https://github.com/lisresearchgroup/math-rsi/releases/tag/v8)** · 2026-11-23 — Download binary linear codes for 18 improved lower bounds. On the upper-bound side, 32 new deductions settle nine optimal distances. Two further entries await final acceptance in the source project.
 - **[v7](https://github.com/lisresearchgroup/math-rsi/releases/tag/v7)** · 2026-11-22 — The working proof now extends every matching in the seven-dimensional cube to a Hamilton cycle. The Happy Ending manuscripts give ES(8) ≤ 294, ES(9) ≤ 1,100 and ES(10) ≤ 3,980.
 - **[v6](https://github.com/lisresearchgroup/math-rsi/releases/tag/v6)** · 2026-11-20 — The Q₇ matching threshold fell from 57 edges to 56. For square-free subgraphs of Q₈, the maximum number of edges was narrowed to 682 or 683.
@@ -65,9 +66,11 @@ Choose your problem directory in the wizard. For the MathRSI repository, select 
 
 ## 2. 🧮 Mathematical Results
 
-Research across six domains supplies results and reusable methods. [Public homepage](https://lisresearchgroup.github.io/math-rsi/) · [Local viewing instructions](docs/HOMEPAGE.md). The **[bilingual visual tour](https://lisresearchgroup.github.io/math-rsi/)** shows their problems, results and evolution; the **[six-case index](case-studies/README.md)** links proofs, verification scopes and runnable tools.
+Seven mathematical case studies supply results and reusable methods across six domain plugins. AJT draws on methods from the ECC plugin. [Public homepage](https://lisresearchgroup.github.io/math-rsi/) · [Local viewing instructions](docs/HOMEPAGE.md). The **[bilingual visual tour](https://lisresearchgroup.github.io/math-rsi/)** shows their problems, results and evolution; the **[seven-case index](case-studies/README.md)** links proofs, verification scopes and runnable tools.
 
-[![Six-domain mathematical results overview](figures/mathrsi/results-overview/results-overview.en.svg?v=8-ecc)](case-studies/README.md)
+[![Historical six-case mathematical results overview](figures/mathrsi/results-overview/results-overview.en.svg?v=8-ecc)](case-studies/README.md)
+
+*The figure shows the six earlier cases. AJT appears in the list below.*
 
 - **Property B:** bounds for $k=5,\ldots,12$ and exponentially growing additive gains for every $k\ge12$. [Results & proof scope](case-studies/property-b/README.md)
 - **Error-correcting codes.** Download generators for 18 improved lower bounds. Of 37 supported upper-bound updates, 13 meet the distance of a known code and settle the optimum. Two further entries await final acceptance in the source project. [Codes and matrices](https://lisresearchgroup.github.io/math-rsi/ecc-intervals.html#lower) · [Upper bounds and proofs](https://lisresearchgroup.github.io/math-rsi/ecc-intervals.html#upper)
@@ -75,6 +78,7 @@ Research across six domains supplies results and reusable methods. [Public homep
 - **Erdős Problem 86:** a square-free subgraph of $Q_7$ has [at most 304 edges, and the bound is attained](https://arxiv.org/abs/2611.27284), $682\le\mathrm{ex}(Q_8,C_4)\le683$, and asymptotic density improved from $0.60318$ to $\le0.5912405943$ (`T3`) / $\le0.5912405942$ (`T4`). [Results & verification scope](case-studies/erdos-86/README.md)
 - **Ruskey–Savage:** a complete author working proof covers every matching in $Q_7$, including empty and perfect matchings; the universal $Q_6$ result is retained. External peer review pending; no Lean. [Proof, local checks & release history](case-studies/ruskey-savage-q7/README.md)
 - **Happy Ending & $N(m,r,s)$:** new same-input sector-deficit manuscripts give working planar corollaries $\mathrm{ES}(7)\le77$, $\mathrm{ES}(8)\le294$, $\mathrm{ES}(9)\le1100$ and $\mathrm{ES}(10)\le3980$; independent mathematical review remains incomplete. Earlier replayable finite certificates retain their separate scope and provenance. [Current results, evidence & replay](plugins/happy-ending/archive/nmrs-20261120/HANDOFF.md) · [Case guide](case-studies/happy-ending/README.md)
+- **Alon–Jaeger–Tarsi (AJT):** Lean proofs cover every invertible matrix over prime fields $\mathbb F_p$ with $p\ge5$ in dimensions $n\le11$, extending the cited $\mathbb F_5$ result to dimensions 10 and 11. The general 12-dimensional case over $\mathbb F_5$ remains open. [Case & Lean source](case-studies/ajt/README.md) · [Preprint (PDF)](case-studies/ajt/paper.pdf)
 
 <a id="three-layers"></a>
 
@@ -122,7 +126,7 @@ v0 records the Property B and coding research that preceded the shared workflow.
 
 ## 6. 📚 Documentation
 
-**[Choose a reading path](docs/README.md)** · [Six research cases](case-studies/README.md) · [Repository map](docs/README.md#repository-map) · [Validation records](development/README.md#validation-and-implementation) · [Skill acceptance](docs/SKILL_ACCEPTANCE.md) · [Contributing](CONTRIBUTING.md)
+**[Choose a reading path](docs/README.md)** · [Seven research cases](case-studies/README.md) · [Repository map](docs/README.md#repository-map) · [Validation records](development/README.md#validation-and-implementation) · [Skill acceptance](docs/SKILL_ACCEPTANCE.md) · [Contributing](CONTRIBUTING.md)
 
 Built on **[ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)** and the research artifacts preserved in the plugins and cases. The bundled ARIS snapshot is `c485faa59a68e51c6575dea67ca57abc7a6a2b9c`. [Provenance](docs/PROVENANCE.md) · [Snapshot manifest](base/ARIS_SNAPSHOT.json) · [Bridge sources](mcp-servers/SOURCE.md)
 

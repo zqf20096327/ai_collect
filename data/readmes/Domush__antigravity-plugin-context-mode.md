@@ -29,7 +29,7 @@ npx antigravity-plugin-context-mode install
 npx antigravity-plugin-context-mode install --workspace
 ```
 
-Restart or open the **Google Antigravity App**, and Context Mode is active immediately.
+Restart or open the **Google Antigravity App**, and Context Mode is active immediately (installed into `~/.gemini/config/plugins/context-mode`, or `.gemini/plugins/context-mode` for workspace installs).
 
 ---
 
@@ -118,7 +118,7 @@ Tested live on real-world build logs and source files in the Antigravity App:
 
 ## Available MCP Tools
 
-Once installed, Context Mode provides 7 specialized tools for your agent:
+Once installed, Context Mode provides 7 specialized tools under `context-mode_ctx` that return clean, readable Markdown summaries for your agent:
 
 | Tool | What It Does |
 | :--- | :--- |

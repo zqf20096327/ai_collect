@@ -126,6 +126,7 @@ My view on LLM Evaluation: [Deck 24](LLMEvaluation.pdf), and [SF Big Analytics a
 - [MTEB ](https://huggingface.co/spaces/mteb/leaderboard)
 - [SWE Bench ](https://www.swebench.com/)
 - [The Aggregate](https://theaggregate.ai/), an aggregate LLM leaderboard that fits a robust IRT model across public benchmark leaderboards, rates every model on one Elo scale with a standard error, and links each score to its source leaderboard, [methodology](https://theaggregate.ai/how-it-works)
+- [Models Rank](https://modelsrank.org/en/), compiles public third-party model evaluations into one table comparing intelligence, cost and speed, with sourced per-model pages, updated weekly. Default ranking uses Artificial Analysis; Arena human-preference scores are listed separately and not merged into the composite, [source code](https://github.com/Samuel-Shek/modelsrank)
 - [Benchouse](https://benchouse.ai/benchmark), independent leaderboard of analytics agent products (Snowflake Cortex, Databricks Genie, Hex, nao, Lightdash, Supersimple) answering the same 300 questions over a warehouse with withheld ground truth, scored on accuracy, completeness and restraint
 - [Personal Agent Bench](https://personalagentbench.com/), independent benchmark of consumer personal AI agent products (Meta Muse, Instinct, Pine, Town and others): runtime teardowns plus a repeatable task exam, completion rates reported with 95% intervals and sample sizes, no combined score or ranking, [dataset](https://huggingface.co/datasets/personalagentbench/personal-agent-bench)
 - [AlpacaEval leaderboard](https://tatsu-lab.github.io/alpaca_eval/) Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators, Apr 2024, [arxiv](https://arxiv.org/abs/2404.04475)  [code](https://github.com/tatsu-lab/alpaca_eval)
@@ -174,6 +175,7 @@ My view on LLM Evaluation: [Deck 24](LLMEvaluation.pdf), and [SF Big Analytics a
 - LM-PUB-QUIZ: A Comprehensive Framework for Zero-Shot Evaluation of Relational Knowledge in Language Models, [arxiv pdf](https://arxiv.org/abs/2408.15729) [github repository](https://lm-pub-quiz.github.io/)
 - [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) records the HTTP traffic between an eval harness and its model server, then serves it back, so a published eval result can be re-derived with no endpoint reachable, no key and no spend. Re-running an EvalScope eval against the recording with the model server killed reproduced every metric byte-for-byte; only latency differed. Apache-2.0.
 - [YYLO Benchmark](https://github.com/yylo-dev/yylo-benchmark) Benchmark harness for coding agents: user-supplied task suites, explicit scoring protocol, transcript-verified per-attempt results. MIT.
+- [EvalShift](https://github.com/evalshift/evalshift-cli) Regression testing for model changes: runs the same test cases, or agent runs recorded in production, on the current and a candidate model and reports per-case output and tool-call regressions with paired statistics. Apache-2.0.
 
 ﻿---
 ### LLM Evaluation articles
@@ -775,9 +777,4 @@ agents that answer business questions over a data warehouse: schema discovery, q
 ---
 ### Agent LLM Architectures
 Agentic Tasks
-- ClawBench: Can AI Agents Complete Everyday Online Tasks?, Apr 2026, [arxiv](https://arxiv.org/abs/2604.08523) [github](https://github.com/TIGER-AI-Lab/ClawBench)
-- Demystifying evals for AI agents, Anthropic, Jan 2026, [Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
-- DeliveryBench: Can Agents Earn Profit in Real World?, Dec 2025, [arxiv](https://arxiv.org/abs/2512.19234)
-- Crumbling Under Pressure: PropensityBench Reveals AI’s Weaknesses, Nov 2025, [arxiv](https://scale.com/blog/propensitybench)
-- AdvancedIF: Rubric-Based Benchmarking and Reinforcement Learning for Advancing LLM Instruction Following, Nov 2025, [arxiv](https://arxiv.org/abs/2511.10507)
-- MCPVerse: An
+- ClawBench: Can AI Agents Complete Everyday Onli

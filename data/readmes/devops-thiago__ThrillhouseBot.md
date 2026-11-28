@@ -46,7 +46,7 @@ guide, configuration reference, architecture, comparison, and the hosted
 - Follow-up reviews track whether earlier findings were fixed, declined or are still open, and re-check a maintainer's decline against the code
 - One summary comment per pull request, edited in place every round, with a risk breakdown, a changed-files walkthrough and every finding still open
 - Comment commands (`/review`, `/summary`, `/describe`, `/changelog`, `/add-docs`, `/improve`, `/generate-tests`, `/resolve`, `/pause`, `/resume`, `/help`, and with learnings on `/learnings`, `/remember`, `/forget`) and conversational replies to `@thrillhousebot`
-- Auto-review triggers: skip drafts, gate on labels or authors, filter by base branch, and optionally space out reviews of one PR (`AUTO_REVIEW_MIN_INTERVAL`)
+- Auto-review triggers: skip drafts, gate on labels or authors, filter by base branch, space out reviews of one PR (`AUTO_REVIEW_MIN_INTERVAL`) and limit how many run per repository
 - Maintainer 👍/👎 reactions and "not useful" replies are recorded as [finding feedback](https://devops-thiago.github.io/ThrillhouseBot/feedback/)
 - Optional review context, each off by default: the issues a PR links and their acceptance criteria, failing CI checks and test names, patch coverage from your own coverage report, and review learnings (maintainer declines and `/remember` conventions from earlier reviews of the same repository)
 - Optional deterministic scan of added lines for leaked credentials and risky Terraform, Kubernetes, CloudFormation and Dockerfile settings, with no model call and every matched secret redacted
@@ -81,7 +81,7 @@ Enterprise plan; see the
 [Inference Providers pricing](https://huggingface.co/docs/inference-providers/pricing).
 NVIDIA has a free tier, useful for trying the bot. `AI_API_KEY` is a key from
 build.nvidia.com, and the free tier is limited to about 40 requests per minute,
-so set `AI_MAX_CONCURRENT_CALLS` low (for example `2`). Check each provider's
+so set `AI_MAX_CONCURRENT_CALLS` (default `16`) low, for example `2`. Check each provider's
 current terms; both change them.
 
 Ollama's cloud endpoint (`https://ollama.com/v1`) limits how many requests one
@@ -100,8 +100,9 @@ to use another provider.
 
 <!-- docs:commands:start -->
 Comment one of these on a pull request. Each also has a mention form, such as
-`@Thrillhousebot review`. The bot reacts with 👀 to acknowledge a command and
-does the work in the background. A plain `@thrillhousebot` mention with no
+`@Thrillhousebot review`. The bot reacts with 👀 to acknowledge a command from
+someone allowed to use it and does the work in the background. A command from
+anyone else gets no reaction and no reply. A plain `@thrillhousebot` mention with no
 command word gets a written answer instead.
 
 | Command | What it does | Access |
@@ -127,8 +128,13 @@ command word gets a written answer instead.
 repository, or a login listed in
 `THRILLHOUSEBOT_REVIEW_MANUAL_TRIGGER_ALLOWED_LOGINS`, because the commands spend
 the operator's AI budget. The `resolved` and `declined` directives always need
-write access, judged by the comment's GitHub `author_association` (`OWNER`,
-`MEMBER` or `COLLABORATOR`); the allowlist does not extend to them.
+write access, confirmed with GitHub's collaborator-permission answer for the
+comment's author (write, maintain or admin); the allowlist does not extend to
+them. The comment's `author_association` is only a first check: an organization
+`MEMBER` or an invited `COLLABORATOR` who has read or triage access cannot close
+or decline a finding. `/help` is open to anyone, but for a commenter without
+write access the bot answers it once per pull request per hour and ignores the
+repeats.
 
 **Directives.** `@thrillhousebot resolved` and `@thrillhousebot declined` are
 not slash commands. They have no `/` form and are applied by the next review,
@@ -234,13 +240,16 @@ Create the GitHub App before starting the bot; its credentials go in `.env`.
    **Create ThrillhouseBot GitHub App**. For local development with
    [Smee.io](https://smee.io/), enter your Smee channel URL: the webhook is then
    registered at the channel root, and the smee client forwards it to the bot's
-   local `/api/webhook`.
+   local `/api/webhook`. After registration GitHub redirects to
+   `http://localhost:8080` with the one-time code, never to smee.io.
 
    The installer also has two optional fields. **Organization** registers the
    App under that organization instead of your personal account. **GitHub
    address** (default `https://github.com`) takes a plain `https://host` and
-   changes where the manifest is sent. The bot's support for other addresses is
-   still in progress and untested on a real instance
+   changes where the manifest is sent. For another address the page also shows
+   the `GITHUB_URL` line to set in the bot's `.env`, from which the bot derives
+   its API addresses. Other addresses have not been tested on a real GitHub
+   Enterprise instance
    ([#1487](https://github.com/devops-thiago/ThrillhouseBot/issues/1487)).
 
    <details>
@@ -368,6 +377,13 @@ already there. It makes no model call. File-level threads do not get the block.
 The description is repeated up to 1,000 characters, and a comment the block
 would push past GitHub's size limit is posted without it.
 
+`REVIEW_SHOW_EVIDENCE=true` adds a **Basis** block under each finding's
+description on its inline or file-level comment: the path-scoped rules covering
+the file, the failing check the finding cites, what the second pass did with it,
+and the review learning that demoted it. A line is left out when the review has
+nothing for it. It says what the review had, not what the model was thinking, and
+makes no model call.
+
 `REVIEW_BATCHED_INLINE_REVIEW_ENABLED=true` opens one pending pull request review
 per round, attaches each inline finding to it and submits it once, instead of
 posting each inline comment on its own. If GitHub does not take the submit, the
@@ -403,6 +419,44 @@ path is in the string are kept. A finding verification call that returns no
 response body is made once more before the findings are kept unverified. These
 calls are not counted by `REVIEW_MAX_AI_CALLS`; they record their usage against
 `REVIEW_MAX_TOKENS_PER_REVIEW` and are skipped at that ceiling.
+
+The spend ceiling ships at `1000000` tokens, about one and a half times what a
+full review uses at the default budget (six calls of up to 48,000 input and
+8,192 output tokens, plus a verifier call per batch, is roughly 620,000 before
+retries). If you raise `REVIEW_MAX_INPUT_TOKENS` or `REVIEW_MAX_AI_CALLS`, raise
+`REVIEW_MAX_TOKENS_PER_REVIEW` with them; the bot logs a warning at startup when
+the planned input alone is above the ceiling. `0` turns the ceiling off.
+
+### Limits on automatic reviews
+
+Anyone who can open a pull request on a repository starts automatic reviews, so
+the bot bounds them without any setting:
+
+| Limit | Setting | Default | `0` means |
+|---|---|---|---|
+| Time between automatic reviews of one PR | `AUTO_REVIEW_MIN_INTERVAL` | `1m` | review every event |
+| Automatic reviews of one repository running at once | `AUTO_REVIEW_MAX_CONCURRENT_PER_REPO` | `4` | no limit |
+| Automatic reviews of one repository waiting for a slot | `AUTO_REVIEW_MAX_QUEUED_PER_REPO` | `50` | no limit |
+| Tokens one review may spend | `REVIEW_MAX_TOKENS_PER_REVIEW` | `1000000` | no ceiling |
+| Model calls in flight, whole process | `AI_MAX_CONCURRENT_CALLS` | `16` | no limit |
+
+- **Interval.** For this long after an automatic review of a PR is posted, a
+  push, a reopen or a repeated ready-for-review of that PR is skipped
+  (`reason=RATE_LIMITED`). A skipped event is not reviewed later: the next push
+  after the window, or a `/review`, reviews the PR. That is why the default is
+  short. A longer window saves more model spend and leaves more pushes without
+  a review or a check run on the new head. Marking a draft ready is reviewed
+  inside the window once per head commit, so converting a PR to draft and back
+  does not start another review of the same commit.
+- **Per repository.** When four automatic reviews of a repository are running,
+  the next ones wait for a slot, one per pull request, so a burst (a dependency
+  bot opening a dozen pull requests) is reviewed a few at a time and nothing is
+  lost. Only past fifty waiting reviews is a new one skipped
+  (`reason=REPOSITORY_QUEUE_FULL`).
+- **Manual commands.** `/review` and `/summary` need write access, so they
+  ignore the interval, take no slot and never wait.
+
+These limits are kept in memory in the one bot process and reset on restart.
 
 ### Dimension routing
 
@@ -629,6 +683,32 @@ organization-owned app), tick **Check suite** and **Status**, and save. The
 existing `Checks: Read & write` and `Commit statuses: Read` permissions cover
 both.
 
+### Withdrawing an earlier approval
+
+GitHub keeps counting a reviewer's approval after the same reviewer posts a
+later `COMMENT` review. So when a review does not end in an approval, the bot
+first dismisses every approval it still has on the pull request, with a message
+naming the head it just reviewed. This covers a review with findings, one with
+an earlier finding still open, a CI hold and a partly reviewed diff. Only the
+bot's own approvals are dismissed, never a person's or another app's, and a
+review that approves again dismisses nothing. An approval held on CI is
+dismissed too and comes back when the checks turn green.
+
+The call needs the `Pull requests: Read & write` permission the App already
+has. On a protected branch, GitHub's API reference says the caller must also be
+a repository administrator or on the rule's "Restrict who can dismiss pull
+request reviews" list, so GitHub may refuse the dismissal there. The bot then
+logs a warning naming the review, posts its own review as usual, and the old
+approval stays until someone dismisses it. If you see that warning, add the App
+to the rule's list.
+
+The approval is withdrawn when a review finishes, not when commits are pushed,
+and not at all when no review runs for the new head (a draft, a label or path
+skip, a paused bot, a failed run). Where the bot's approval counts towards a
+required review, also turn on "Dismiss stale pull request approvals when new
+commits are pushed" in the branch protection rule or ruleset, so GitHub drops
+it on the push itself.
+
 ### Summary comment
 
 With `REVIEW_AGENT_NEXT_STEPS_ENABLED` on, the summary also carries a short
@@ -650,7 +730,8 @@ findings and review bodies stay per round. With `REVIEW_FOLLOW_UP_SUMMARY_ENABLE
 the review body also carries new, resolved and still-open counts, naming each closed
 finding once instead of posting a second delta comment. It also names the threads a
 round posted for earlier "Things to double-check" items, and says how many new findings
-went only under "Things to double-check". The review keeps its verdict;
+went only under "Things to double-check". A review that raises findings while
+earlier ones are open then lists the open ones under those counts. The review keeps its verdict;
 a definite review refusal preserves the same outcome as a regular comment.
 
 The comment also carries one hidden, machine-readable line listing the open
@@ -681,7 +762,10 @@ is computed over the same open set, so an earlier CRITICAL still open keeps a
 follow-up round at `REQUEST_CHANGES` under the configured strictness. When a
 follow-up opens nothing new while earlier findings are open, its review body
 leads with "No new issues in this revision, but N previous finding(s) remain
-unresolved".
+unresolved" and lists those N by `path:line` and title, most severe first, each
+with a link to its review thread or a mark saying it has none. A list too long for
+GitHub's comment limit says how many rows it left out. A round with no stored
+response to read the findings from states only the count.
 
 The Description vs. Implementation section appears only when the PR
 description and the change disagree. A summary with model prose ("What this PR
@@ -709,7 +793,21 @@ each earlier file summary and the diagram that its answer leaves out.
 ### Re-checking declines
 
 When a maintainer replies to a finding to decline it, the next review records
-the finding justified. A decline is a claim, though, and a correct finding
+the finding justified. Only someone with write access to the repository can
+decline a finding. Each review asks GitHub for the permission of the people who
+replied or wrote a directive, once per person, and counts a reply as a
+maintainer's only when the answer is write, maintain or admin. A reply from
+anyone else, such as a pull request author without write access, is shown to
+the model marked "no write access, context only" and declines nothing: if a
+review still reports such a finding justified, the bot keeps it open and the
+review body says
+"Decline not accepted, finding kept open: …" with the two ways to keep the
+decline (a reply on the thread from someone with write access, or their
+`@thrillhousebot declined` comment). When GitHub cannot be asked, or the call
+fails, nobody is confirmed for that review, so findings stay open and the next
+review asks again.
+
+A decline is a claim, though, and a correct finding
 can be closed by a wrong rebuttal that names the very mechanism making the bug
 real ("it only runs after the webhook is acked, so there's no race", on an
 executor that starts a thread per event).
@@ -789,9 +887,12 @@ strict, and an ambiguous comment leaves the finding held:
   clears nothing. The path is written from the repository root and matched
   whole, so `Widget.java:42` never closes `Widget.java:4`. The locator and title
   may be in backticks.
-- **Hold write access.** The comment's `author_association` must be `OWNER`,
-  `MEMBER` or `COLLABORATOR`. Comments from fork authors, drive-by commenters
-  and the bot itself are ignored.
+- **Hold write access.** The review confirms the author's permission on the
+  repository with GitHub (write, maintain or admin). An `author_association` of
+  `OWNER`, `MEMBER` or `COLLABORATOR` is needed first but is not enough: a
+  member or collaborator with read or triage access clears nothing. Comments
+  from fork authors, drive-by commenters and the bot itself are ignored, and so
+  is every directive in a review that could not reach GitHub for the answer.
 - **Quoted text never counts.** Blockquotes and fenced code are dropped before
   matching, so a *Quote reply* of the summary names nothing.
 
@@ -865,8 +966,9 @@ lines a pull request adds, for leaked credentials and risky
 infrastructure-as-code settings. It is a fixed list of regular expressions: no
 model call, no extra dependency, and the same input always gives the same
 findings. Both halves are off by default, because each adds findings that can
-request changes. General linter integration is tracked separately in
-[#34](https://github.com/devops-thiago/ThrillhouseBot/issues/34).
+request changes. Linter and Code Scanning annotations are a separate opt-in,
+the [static-analysis context](#static-analysis-context)
+([#34](https://github.com/devops-thiago/ThrillhouseBot/issues/34)).
 
 Secret rules (high confidence):
 
@@ -931,7 +1033,11 @@ token formats are reported wherever they appear. To
 accept a line, put `thrillhousebot:allow-secret` (or `thrillhousebot:allow-iac`)
 in a comment on that line or the line above; above is the only place a
 Dockerfile instruction can take one. JSON cannot hold a comment, so put such a
-JSON file in the skipped globs.
+JSON file in the skipped globs. Anyone who can push to the pull request can
+write the marker, so the summary's review scope note counts the lines it
+exempts and names them by `path:line` and marker (never by content): the first
+30 are named and the rest are given as a count. Check that each one is
+deliberate.
 
 IAM list elements use their file format: YAML ARN/URL slashes, non-whitespace
 `#` fragments, and quotes or parentheses inside plain scalars do not start
@@ -1070,6 +1176,41 @@ and the open findings that cite it, and a finding that cites it is raised from
 low to medium confidence. A CI failure after the review is posted does not start
 a new one; comment `/review` to get a review whose findings see it.
 
+### Static-analysis context
+
+`REVIEW_STATIC_ANALYSIS_ENABLED=true` gives the review the annotations that
+completed checks attached to the files the PR changes. GitHub publishes Code
+Scanning alerts on a pull request as annotations of a check run named after the
+tool (such as "CodeQL"). That check passes unless an alert reaches its failure
+threshold, so the CI-failure context, which reads only failing checks, usually
+never sees them. Linters that annotate (ESLint, Checkstyle, reviewdog and the
+like) are covered the same way. With `REVIEW_CI_CONTEXT_ENABLED` on, a failing
+check run whose annotations the CI-failure section already reads (one of the
+five it describes in full) is not repeated here; every other failing run, and
+all of them with that context off, is kept.
+
+The checks come from the CI gate's own read (with `REVIEW_CI_GATING=off` that
+read is still made for this, and never holds approval). For up to five completed
+checks that report annotations, other apps before GitHub Actions jobs (a passing
+job often carries only the runner's notices), one page of annotations is read.
+Only those on a reviewable changed file are kept, up to ten per check, failures
+first, less an Actions job's runner notices on the workflow, so an alert on a
+file the PR does not touch never reaches the prompt.
+`REVIEW_STATIC_ANALYSIS_MAX_CHARS` caps the section (500 to 20000, default
+3000). The extra cost is one annotations request per annotated check (at most
+five), and the `Checks: Read` permission the app already has covers it: no new
+permission.
+
+Tool output can quote the PR's code, so it is handled like check output: control
+and bidi characters are stripped, each field is clipped, and the list sits
+inside the untrusted-data fence. The model is told to use an annotation only to
+find a defect the changed code itself shows, to argue the finding from that
+code (naming the tool as attribution at most, never one that is not in the
+list), and not to repeat a style remark the tool already reports. Only the review call gets the section, and the
+audit pass does not see it, so a finding raised from it stands on the diff. A
+review that starts before the analysis finishes sees nothing from it; comment
+`/review` once the checks are done.
+
 ### Linked-issue context
 
 `REVIEW_TICKET_CONTEXT_ENABLED=true` gives the review the issue the PR says it
@@ -1078,11 +1219,12 @@ implements. Issues are read from GitHub Issues through a provider interface
 are taken in this order:
 
 1. Closing keywords in the PR body (`Closes #57`, `fixes owner/repo#57`,
-   `resolves https://github.com/owner/repo/issues/57`), in order. Code spans,
-   fenced blocks and HTML comments are skipped, so a template's commented-out
-   `Closes #` is not a link. GitHub records these links only when the base is
-   the default branch, so for a PR into a release branch the body is the only
-   source.
+   `resolves https://github.com/owner/repo/issues/57`), in order. An issue URL
+   counts only on the configured GitHub web address (`GITHUB_URL`,
+   `https://github.com` by default). Code spans, fenced blocks and HTML
+   comments are skipped, so a template's commented-out `Closes #` is not a
+   link. GitHub records these links only when the base is the default branch,
+   so for a PR into a release branch the body is the only source.
 2. GitHub's closing references for the PR (one GraphQL read), which add issues
    linked from the Development panel.
 3. The head branch name (`issue-57`, `fix/57-short-name`), only with
@@ -1353,7 +1495,8 @@ and its sessions are flagged "no pricing" in the dashboard instead of showing
 
 After you sign in with GitHub, the dashboard shows an overview with summary
 cards and a live activity feed, plus cost charts by model, input and output token
-breakdowns, and a paginated session history with PR links.
+breakdowns, and a paginated session history with PR links on the configured
+GitHub web address (`GITHUB_URL`).
 
 The dashboard asks GitHub, with your own sign-in, which installations of the
 app you can access and which of their repositories you can read: as a
@@ -1478,8 +1621,9 @@ here and in the deployment setting:
 
 `*` never crosses a `/`; use `**` to span directories. Negation (`!path`) is not
 supported and is dropped with a warning, since nothing may put back an excluded
-file. A glob that matched no file in the PR is named in the review summary, so a
-declaration that does nothing is visible.
+file. A glob longer than 500 characters is dropped with a warning too, like one
+that cannot be parsed. A glob that matched no file in the PR is named in the
+review summary, so a declaration that does nothing is visible.
 
 **Review rules: global instructions plus every matching path scope.** The prose
 in `.github/thrillhousebot.md` (or whichever file the fallback lands on) applies
@@ -1535,192 +1679,4 @@ whole mechanism off.
 <!-- docs:pr-labels:start -->
 ## PR labels
 
-With `REVIEW_LABELS_ENABLED=true`, the summary call suggests a few labels (area,
-change type, risk) from the repository's existing labels. A suggestion that
-matches no existing label is dropped, unless `REVIEW_LABELS_ALLOW_CREATE=true`
-lets the bot create it. `REVIEW_LABELS_APPLY` decides what happens next:
-
-- `false` (default): the labels are posted as a one-line comment on the first
-  review for a maintainer to apply.
-- `true`: the labels are added to the PR.
-
-`REVIEW_LABELS_MAX` caps the number of labels (default `3`).
-`REVIEW_LABELS_BLOCKED` lists labels the bot never suggests, applies or creates
-(comma-separated, case-insensitive), such as a label your team sets by hand to
-ask for a review. Labelling never blocks or fails a review.
-<!-- docs:pr-labels:end -->
-
-## Observability
-
-Traces and metrics are exported over OTLP (gRPC) to `OTEL_EXPORTER_ENDPOINT`
-(default `http://localhost:4317`). A Quarkus per-signal variable such as
-`QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` sends that one signal elsewhere.
-
-| Signal | Metric |
-|---|---|
-| Traces | One trace per review: a `review` span, linked to the webhook deliveries it serves (the first 32; `thrillhouse.review.requests` counts all of them), with a span per LLM call (request and response events) inside it |
-| `gen_ai.client.token.usage` | Histogram: input and output tokens |
-| `gen_ai.client.operation.duration` | Histogram: latency in seconds |
-| `thrillhouse.ai.cost.total` | Counter: USD cost by model |
-| `thrillhouse.review.skips` | Counter: automatic reviews skipped, tagged with `reason` and `repository` |
-| `thrillhouse.reviews.total` | Counter: finished reviews by `outcome` (`completed`/`failed`) |
-
-Spans and metrics carry `gen_ai.provider.name`, derived from `AI_BASE_URL`
-(`deepseek`, `openai`, `groq`, `openrouter`, …). Loopback and unrecognized
-endpoints report `unknown`; set `AI_PROVIDER` to name them (a local `ollama` or
-`vllm` server, a proxy, a gateway).
-
-Quarkus also records JVM metrics (`jvm.*`) and HTTP server metrics
-(`http.server.request.duration`). They are exported over OTLP and, with the
-Prometheus endpoint on, served on `/metrics` too. Turn them off with
-`OTEL_JVM_METRICS_ENABLED=false` and
-`OTEL_HTTP_SERVER_METRICS_ENABLED=false`.
-
-Log records stay on the console. Set `OTEL_LOGS_ENABLED=true` to export them
-over OTLP to the same endpoint as well.
-
-Every span, metric and log record carries `service.name` (`thrillhousebot`),
-`service.version` and `service.instance.id`. The instance id is the `HOSTNAME`
-environment variable (the pod name on Kubernetes, the container hostname under
-Docker), or a random id generated at startup when `HOSTNAME` is unset, so two
-instances exporting to one backend keep separate series and sums across them add
-up. To choose it, or to add other resource attributes, set
-`OTEL_RESOURCE_ATTRIBUTES`, for example
-`OTEL_RESOURCE_ATTRIBUTES=service.instance.id=bot-eu-1,deployment.environment.name=prod`.
-A random id changes on every restart, which starts new series; set `HOSTNAME` or
-`service.instance.id` to something stable where that matters.
-
-OTLP export is at-least-once: when an export fails after the collector has
-received it, Quarkus sends the batch again (up to three attempts, not logged),
-so a span or metric point can reach the backend twice. Quarkus also uses the
-export timeout as the connection's idle timeout, and below the collector's
-60-second HTTP/2 keep-alive that closes a connection right after an export
-written after a quiet spell, which duplicates it
-([quarkusio/quarkus#57107](https://github.com/quarkusio/quarkus/issues/57107)).
-`OTEL_EXPORTER_TIMEOUT` therefore defaults to `65s` for traces, metrics and
-logs; keep it above 60 seconds.
-
-### Prometheus
-
-With `PROMETHEUS_METRICS_ENABLED=true`, the same metrics are also served in
-Prometheus text format at `GET /metrics` on the main HTTP port — no OTLP
-collector needed:
-
-```yaml
-scrape_configs:
-  - job_name: thrillhousebot
-    static_configs:
-      - targets: ["your-bot-host:8080"]
-```
-
-Metric names follow the Prometheus conversion of the OTel names above (e.g.
-`thrillhouse_ai_cost_total`, `gen_ai_client_token_usage`,
-`thrillhouse_reviews_total`).
-
-The endpoint is off by default because it is unauthenticated and reveals model
-names, token counts, and spend. On an internet-facing deployment, restrict
-`/metrics` at your reverse proxy or firewall before enabling it. While it is
-disabled, scrapes return `404`; OTLP export is unaffected.
-
-### Turning telemetry off
-
-Set `OTEL_SDK_DISABLED=true` to turn telemetry off. Nothing is exported, the
-bot makes no connection to `OTEL_EXPORTER_ENDPOINT`, and `/metrics` returns
-`404` even with `PROMETHEUS_METRICS_ENABLED=true`. The dashboard's cost and
-token figures come from the database, so they still work.
-
-## Restricted-network deployment
-
-To keep code inside your network, run the model yourself and allow only the
-connections the bot needs. The bot is a GitHub App for GitHub.com, so it can
-never be fully offline: it must reach GitHub. GitHub Enterprise Server is not
-supported.
-
-### Outbound connections
-
-| Destination | When | Required |
-|---|---|---|
-| `api.github.com` | Every review: reading the pull request and posting the review | Yes |
-| `AI_BASE_URL` | Every review and command. Diffs and context are sent here | Yes. Point it inside your network to keep code there |
-| `github.com/login/oauth` (`GITHUB_OAUTH_URL`) | Dashboard login | Only with the dashboard (`GITHUB_CLIENT_ID` set) |
-| The Actions artifact and log storage GitHub redirects to | Patch coverage and CI-failure logs | Only with `REVIEW_PATCH_COVERAGE_ENABLED` or `REVIEW_CI_CONTEXT_ENABLED` |
-| `NOTIFICATIONS_WEBHOOK_URL` | After a review | Only when set |
-| `OTEL_EXPORTER_ENDPOINT` | Telemetry export | No. Point it at your own collector, or set `OTEL_SDK_DISABLED=true` |
-
-The database is the only other connection. The bot does not phone home or check
-for updates. GitHub must also be able to send webhooks to the bot, so its
-`/api/webhook` must be reachable from GitHub (directly, or through a relay such
-as Smee).
-
-### Local model
-
-Run [Ollama](https://ollama.com/) (or any OpenAI-compatible server such as vLLM)
-on your network and point the bot at it:
-
-```bash
-AI_BASE_URL=http://ollama.internal:11434/v1
-AI_MODEL=llama3.2
-AI_API_KEY=unused   # required at boot; Ollama ignores it
-AI_PROVIDER=ollama  # label for telemetry; loopback and unknown hosts report "unknown"
-OTEL_SDK_DISABLED=true
-```
-
-From Docker Compose, a server on the host is `http://host.docker.internal:11434/v1`
-(on Linux, add `extra_hosts: ["host.docker.internal:host-gateway"]` to the bot's
-service). Do not use Ollama's cloud endpoint (`https://ollama.com/v1`) here: it
-sends the code off your network. Size `REVIEW_MAX_INPUT_TOKENS` for the local
-model's context window, and raise `AI_TIMEOUT` if it is slow.
-
-### Dashboard
-
-The dashboard is served by the bot itself and loads no fonts, scripts or styles
-from a CDN. In the viewer's browser, two things reach GitHub: the signed-in
-user's avatar (`avatars.githubusercontent.com`) and the links to pull requests.
-Login goes through GitHub OAuth, so leave `GITHUB_CLIENT_ID` and
-`GITHUB_CLIENT_SECRET` unset to run without the dashboard.
-
-### Installing
-
-The [manifest install](#option-a-manifest-install-recommended) can be served
-locally (see **Offline alternative** there). The container images come from
-`ghcr.io`; mirror them into your own registry and set the image in
-`docker-compose.yml` if the host cannot pull from it.
-
-## Troubleshooting
-
-### PR opened but no review posted
-
-When a `pull_request` webhook arrives but no review is posted, the bot logs
-`Automatic review skipped [reason=...]`, increments `thrillhouse.review.skips`,
-and counts skips per reason in the dashboard summary
-(`GET /api/dashboard/summary`, field `skippedReviewsByReason`). Check in order:
-
-1. **Is the app installed on the repository?** No delivery at all means the app
-   is not installed or the webhook URL or secret is wrong. See the app's
-   **Advanced → Recent Deliveries** page.
-2. **Draft** (`reason=DRAFT`): with `WEBHOOK_SKIP_DRAFTS=true`, drafts wait until
-   marked ready.
-3. **Paused** (`reason=PAUSED`): someone commented `/pause`; comment `/resume`.
-4. **Label and author gates** (`reason=MISSING_REQUIRED_LABEL` /
-   `EXCLUDED_LABEL` / `EXCLUDED_AUTHOR`): check `WEBHOOK_REQUIRED_LABELS`,
-   `WEBHOOK_EXCLUDED_LABELS` and `WEBHOOK_EXCLUDED_AUTHORS`.
-5. **Base-branch filters** (`reason=BASE_BRANCH_NOT_ALLOWED` /
-   `IGNORED_BASE_BRANCH`): check `WEBHOOK_BASE_BRANCHES` and
-   `WEBHOOK_IGNORED_BASE_BRANCHES`.
-6. **Rate window** (`reason=RATE_LIMITED`): an automatic review already ran
-   within `AUTO_REVIEW_MIN_INTERVAL`.
-7. **Redelivery** (`reason=DUPLICATE_DELIVERY`): GitHub redelivered a webhook
-   the bot already handled. This is normal.
-8. **Executor saturated** (`reason=DISPATCH_REJECTED`): the review executor
-   refused the task (overload or shutdown); redeliver the webhook from GitHub.
-
-A `/review` from a user with write access bypasses the draft, label,
-base-branch and rate-window gates, but not `/pause`, and it does not review a
-closed or merged pull request.
-
-## Responsible use and security
-
-AI review is advisory. The model raises false positives and misses real bugs, so
-confirm a finding before acting on it.
-
-Pull request diffs go to the 
+With 

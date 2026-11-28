@@ -11,10 +11,30 @@
 [![CI](https://github.com/essmos/nonodb/actions/workflows/ci.yml/badge.svg)](https://github.com/essmos/nonodb/actions/workflows/ci.yml)
 [![Release](https://github.com/essmos/nonodb/actions/workflows/release.yml/badge.svg)](https://github.com/essmos/nonodb/actions/workflows/release.yml)
 
-**The all-in-one JSON document database for small VMs and edge boxes.**
+**One process for six everyday database roles.**
 
-**Idle daemon: ~5 MB RAM** with 1M documents and three indexes; crash-safe
+NonoDB is the all-in-one JSON document database for small VMs and edge boxes:
+documents, SQL, full-text search, vector search, graph traversal, and
+time-series in one Rust daemon. One backup, one auth model, no JVM and no
+sidecar database servers.
+
+**Verified RAM:** ~5 MB idle with 1M documents and three indexes; ~26 MiB
+process RSS in the 206M-row benchmark (OS page cache excluded). Crash-safe
 LMDB storage and production features in one binary.
+
+### What it replaces
+
+| Everyday role | Usually a separate tool | Coverage in NonoDB | Not a drop-in replacement for |
+|---|---|---|---|
+| Documents | MongoDB Community | CRUD, indexes, aggregation, TTL, watch, MongoDB wire subset | the full MongoDB ecosystem and every wire-protocol feature |
+| SQL | PostgreSQL | `SELECT`, `INSERT`, `UPDATE`, `DELETE` over one collection | joins, cross-collection transactions, and PostgreSQL extensions |
+| Search | Elasticsearch / OpenSearch | BM25 full-text, fuzzy, filters | cluster features, every analyzer, and search-time aggregation |
+| Vectors | Qdrant / Milvus | exact/ANN vector search, metrics, hybrid ranking | advanced quantization and large-scale sharding |
+| Graph | Neo4j Community | adjacency traversal, shortest paths, analytics, read-only Cypher | write Cypher, APOC, and the full Neo4j ecosystem |
+| Time-series | TimescaleDB / InfluxDB | time-series profile, columnar buckets, retention, rollups | the maturity and scale of dedicated time-series databases |
+
+Coverage means everyday workloads, not full API parity. One process replaces
+six separate operational surfaces, not six complete product ecosystems.
 
 One Rust daemon for small VMs and edge boxes: owns the LMDB files, speaks
 HTTP/JSON, exposes an optional MongoDB-compatible endpoint for official drivers,
@@ -54,6 +74,7 @@ feature gates:
 - **[Asynchronous webhooks](docs/webhooks.md)** — filtered HTTP delivery with count/sum/avg thresholds, retries, HMAC signing, dead-letter queuing, CLI/API management, and a GUI for deliveries.
 - **SQL when you need it** — [SQL queries and writes](docs/sql.md) alongside the document API, plus a [SQL + JSON playground](docs/gui.md#playground-sql--json) in the GUI, without a separate SQL database.
 - **[TTL at both levels](docs/ttl.md)** — collection defaults, date-field MongoDB TTL, and per-document overrides, with immediate read-time hiding.
+- **[Time-series collections](docs/timeseries.md)** — `profile: "timeseries"` buckets samples per series and window, encodes every column with the cheapest of delta, delta-of-delta, Gorilla XOR, dictionary, bit-packing, or byte-shuffle+deflate, aggregates/downsamples with normal pipelines, deletes rows with tombstones, retains by cutoff without decoding old buckets, and reclaims space with `nonodb-cli compact`. The bundled benchmark stores 50k IoT samples in 4.21 bytes/row (43.6x smaller than JSON), inserts at ~25k rows/s, reads a one-hour slice ~10x faster than a document-per-row collection, and takes ~10.7 bytes/row on disk versus ~436 bytes/row for the same 100k-document workload (compacted).
 - **Versioned capabilities endpoint** — `GET /v1/capabilities` for clients and migration tools.
 - **[Simple encrypted backups](docs/backup.md#encryption)** — [native or restic backups](docs/backup.md#restic-engine), gzip/age encryption, local/S3/R2 destinations, verification, and restore drills.
 - **[Instant CI database branches](docs/branching.md)** — clone a stopped database or data-only snapshot into an independent, writable database with `nonodb-cli branch`; CoW reflink/clonefile keeps it cheap, sidecars are copied or rebuilt, and the source is never modified.
@@ -489,7 +510,7 @@ docker run -d --name nonodb \
   --group-add "$(id -g)" \
   -v "$NONODB_AUTH_FILE:/etc/nonodb/auth.json:ro" \
   -v nonodb-data:/var/lib/nonodb \
-  ghcr.io/essmos/nonodb:0.33.0
+  ghcr.io/essmos/nonodb:0.35.0
 ```
 
 Check health and logs:
@@ -573,7 +594,7 @@ listener, so the Windows daemon requires TCP plus `NONODB_AUTH_FILE`.
 Download, verify, and extract the x86_64 archive:
 
 ```bash
-TAG=v0.33.0
+TAG=v0.35.0
 curl -LO "https://github.com/essmos/nonodb/releases/download/$TAG/nonodb-$TAG-linux-x86_64.tar.gz"
 curl -LO "https://github.com/essmos/nonodb/releases/download/$TAG/nonodb-$TAG-linux-x86_64.tar.gz.sha256"
 sha256sum -c "nonodb-$TAG-linux-x86_64.tar.gz.sha256"
@@ -661,7 +682,7 @@ connection failures, or `5xx`. You can also set `write_url` explicitly. See
 Download the archive matching your CPU (`uname -m` prints `arm64` or `x86_64`):
 
 ```bash
-TAG=v0.33.0
+TAG=v0.35.0
 ARCHIVE="nonodb-$TAG-macos-arm64.tar.gz"   # use macos-x86_64 on Intel
 curl -LO "https://github.com/essmos/nonodb/releases/download/$TAG/$ARCHIVE"
 curl -LO "https://github.com/essmos/nonodb/releases/download/$TAG/$ARCHIVE.sha256"
@@ -841,6 +862,7 @@ See [Benchmarks](docs/benchmarks.md) for methodology and full tables.
 | Index-only sort at 1M docs | 1–2 ms |
 | Full sort at 1M docs (no index) | 250–420 ms |
 | Idle daemon RSS at 1M docs, 3 indexes | ~5 MB |
+| Process RSS in the 206M-row benchmark | ~26 MiB |
 | Live backup of 8M docs + 1M text docs | 5.1 GB in ~10 s |
 
 ## Sponsors
@@ -859,7 +881,7 @@ results. Visit [liveapisec.com](https://liveapisec.com) to learn more.
 
 ## Status
 
-nonodb is an early-stage project (`0.33.0`). Its core storage, query, index,
+nonodb is an early-stage project (`0.35.0`). Its core storage, query, index,
 search, batching, security, snapshot, and operational paths are covered by unit,
 property-based, end-to-end, concurrency, crash, and large-data tests. The API
 may still change before a stable release.

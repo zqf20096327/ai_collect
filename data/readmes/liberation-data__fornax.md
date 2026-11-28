@@ -1,8 +1,29 @@
+<a href="https://fornax4j.org/"><img src="https://raw.githubusercontent.com/liberation-data/fornax/main/website/public/images/splash.jpg" alt="fornax4j: open generative models for the JVM"></a>
+
 # Fornax
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![GitHub stars](https://img.shields.io/github/stars/liberation-data/fornax?style=social)](https://github.com/liberation-data/fornax/stargazers)
+
+<p align="center">
+  <a href="https://fornax4j.org/#video" target="_blank">
+    <img src="https://raw.githubusercontent.com/liberation-data/fornax/main/website/public/video/explainer-poster.jpg" alt="Watch: Fornax in two minutes (2:31)" width="700">
+  </a>
+  <br>
+  <a href="https://fornax4j.org/#video" target="_blank">▶ Watch Fornax in two minutes</a> (2:31, with captions)
+</p>
 
 **Call open-weight models (language, vision, speech, images, songs, video) as plain Java methods, running on your GPU, inside your JVM.**
+
+Try it with one line, with nothing installed but [JBang](https://www.jbang.dev) (from Fornax 0.3.0; JBang fetches a Java
+22 or newer if you have none):
+
+```sh
+jbang fornax@fornax4j chat qwen3-4b "Write a haiku about a kiln"   # downloads the model on first use
+```
+
+`jbang image@fornax4j flux2-klein "a brick kiln at dusk"`, `song@`, `speak@`, `transcribe@`, `see@` and `server@` work the same
+way: they are the [`fornax` command](https://fornax4j.org/docs/guides/cli/), run from Maven Central.
 
 > Fornax was called **Kiln** until 0.1.0. Here's what changed:
 > - **Maven:** `org.kiln4j:kiln-*` is now `org.fornax4j:fornax-*`.
@@ -75,7 +96,9 @@ The natives jars:
 |---|---|---|
 | `fornax-natives-linux-x86_64-vulkan` | Linux x86-64 (glibc 2.39+: Ubuntu 24.04, Fedora 40 or newer) | Vulkan (AMD, Intel, NVIDIA) |
 | `fornax-natives-macos-aarch64-metal` | macOS 13.3+ on Apple silicon | Metal |
-| `fornax-natives-macos-x86_64-metal` | macOS 13.3+ on Intel | Metal |
+
+No Windows natives jar yet: `native/build.sh` builds the engines in MSYS2's UCRT64 shell, experimentally
+([#83](https://github.com/liberation-data/fornax/issues/83)).
 
 On Linux, the GPU's Vulkan driver must be installed (it usually is; if not, see
 [Installing GPU drivers](https://fornax4j.org/docs/gpu-drivers/)). With no GPU, Fornax stops rather than run on the CPU,
@@ -114,11 +137,8 @@ that builds (Maven activates its profiles by OS and arch):
 Gradle (`build.gradle.kts`), which doesn't run Maven's profiles, so it names the natives jar for the machine that builds:
 
 ```kotlin
-val fornaxNatives = when {
-    !System.getProperty("os.name").startsWith("Mac") -> "linux-x86_64-vulkan"
-    System.getProperty("os.arch") == "aarch64" -> "macos-aarch64-metal"
-    else -> "macos-x86_64-metal"
-}
+val fornaxNatives =
+    if (System.getProperty("os.name").startsWith("Mac")) "macos-aarch64-metal" else "linux-x86_64-vulkan"
 
 dependencies {
     implementation(platform("org.fornax4j:fornax-bom:0.2.0"))
@@ -132,11 +152,12 @@ natives jar into a per-version cache (`~/.cache/fornax/<version>/` on Linux, `~/
 macOS; move it with `-Dfornax.cache.dir`) and loads it from there.
 
 **Choosing a backend.** Each natives jar is one platform and one GPU backend, so the jar you add is the choice.
-Natives jars for different platforms can sit side by side (to ship one build for every platform, add all three);
+Natives jars for different platforms can sit side by side (to ship one build for every platform, add both);
 Fornax loads the one for the machine it runs on. If jars for several backends of the same platform are on the
 classpath, `-Dfornax.backend=vulkan` (or `FORNAX_BACKEND`) picks one; otherwise Fornax prefers Metal, then CUDA, HIP and
 Vulkan. For ROCm (HIP), CUDA or anything else, build the libraries yourself (see [Building](#building)) and point
-`-Dfornax.library.path` at them, which always wins over a natives jar.
+`-Dfornax.library.path` at them, which always wins over a natives jar
+([Set up on your platform](https://fornax4j.org/docs/platforms/) has the steps).
 
 ## Quick start (from source)
 
@@ -160,7 +181,7 @@ Early. Everything below runs from Java on Linux with an AMD Radeon 8060S (Ryzen 
 
 | Model | Result |
 |---|---|
-| Qwen3 4B Instruct (Q4_K_M) | ~60 tokens/s, streamed through a Java callback |
+| Qwen3 4B Instruct (Q4_K_M) | ~75 tokens/s, streamed through a Java callback: as fast as llama.cpp's own `llama-bench` |
 | Qwen3-Embedding 0.6B (Q8_0) | ~420 embeddings/s (20-token passages, 256 to a batch), matching `llama-embedding`'s vectors (cosine 1.000000) |
 | Qwen3-VL 4B Instruct (Q4_K_M) | a 1000×1300 invoice to schema-checked JSON (vendor, date, 4 line items, totals) in ~6 s; images read in 0.4 to 1.6 s, then ~60 tokens/s |
 | PaddleOCR-VL 1.6 (0.9B) | the same invoice's text (prompt "OCR:") in ~1.5 s, ~200 tokens/s |
@@ -173,9 +194,16 @@ Early. Everything below runs from Java on Linux with an AMD Radeon 8060S (Ryzen 
 | FLUX.2 [klein] base 4B (fp8) | 768×768, 12 steps in ~130 s |
 | Qwen-Image 2512 (fp8) | 1024×1024, 20 steps in ~13 min |
 
-The build script also knows the **ROCm (HIP)**, **CUDA** and **Metal** backends of the underlying engines. HIP has
-run LTX-2.5 video on the same machine (about 2.7× faster per step than Vulkan, and the way to render long clips; see
-[engine notes](docs/engine-notes.md)), and Fornax Studio's CI builds Metal for macOS. CUDA hasn't been tested yet. The Java code is the same for every backend: you pick one when you
+[Benchmarks](https://fornax4j.org/docs/benchmarks/) sets these against each engine's own tool and against ComfyUI, with
+the command behind every figure.
+
+The build script also knows the **ROCm (HIP)**, **CUDA** and **Metal** backends of the underlying engines. HIP passes
+the test suite on the same machine (one rerank score drifts,
+[#80](https://github.com/liberation-data/fornax/issues/80)) and has run LTX-2.5 video there (about 2.7× faster per
+step than Vulkan, and the way to render long clips; see
+[engine notes](docs/engine-notes.md)), and Metal passes the test suite on an Apple M2 Max with 32 GB (macOS 27.2: chat, vision, embeddings and reranking, speech,
+transcription, stem separation, FLUX.2 [klein] images and upscaling, isolated workers and Dispatch; songs and video
+haven't been run on a Mac yet). Intel Macs aren't supported. CUDA hasn't been tested yet. The Java code is the same for every backend: you pick one when you
 build the native libraries. Reports and fixes welcome.
 
 ## How it works
@@ -196,7 +224,9 @@ private. The engines pin different ggml versions, so this is what lets several o
 Engine quirks and how to debug them: [docs/engine-notes.md](docs/engine-notes.md).
 
 Every model class is `AutoCloseable`; weights are freed on `close()`, which is idempotent and safe while a call runs.
-A model takes calls from any thread and runs them one at a time. The blocking methods run on your thread; the
+A model takes calls from any thread and runs them one at a time (a language model loaded with
+[slots](https://fornax4j.org/docs/guides/language-models/#many-requests-at-once-slots) runs several together, in one
+batch). The blocking methods run on your thread; the
 `...Async` ones (`chatAsync`, `speakAsync`, `generateAsync`, ...) run on the model's own platform thread and return a
 `CompletableFuture`, so virtual threads never pin a carrier through a generation, and streaming goes to a
 `Flow.Subscriber` through a bounded buffer. `cancel()` works for every engine, and a callback that throws stops the
@@ -210,7 +240,7 @@ costs about 15 µs a call and a microsecond a streamed token. See [Isolation](ht
 
 `ModelPool` keeps models resident between uses, the way ComfyUI does: it unloads idle models least recently used
 first to stay within a memory budget, optionally unloads after an idle timeout, and gives each model one user at a
-time.
+time (or as many as its slots).
 
 For servers, `Dispatch` serves many models from a few worker processes: it routes each request to the worker that
 already has its model loaded, loads models on demand within one memory budget (least recently used out first), queues
@@ -256,11 +286,19 @@ native/build.sh vulkan            # or hip | cuda | metal | cpu; optionally list
 
 `native/build.sh` clones the engines at the commits pinned in `native/engines.properties` into `engines-src/`,
 applies Fornax's patches from `native/patches/` (when a pin or a patch changes, it first resets that engine's tracked
-files, so keep no edits of your own there), and writes the libraries to `build/native/<os>-<arch>-<backend>/`.
+files and its submodules', so keep no edits of your own there), and writes the libraries to
+`build/native/<os>-<arch>-<backend>/`.
 The Gradle build points the examples and tests at that folder; pick another backend with `-Pfornax.backend=hip`.
 Without it, `./gradlew build` still compiles every module and runs the tests that need no engine library and no
 model (the rest skip themselves): what CI runs on every pull request (`.github/workflows/ci.yml`), along with a
 canary that publishes to a local repository and builds `samples/hello-fornax` against it.
+The integration tests skip any model that isn't downloaded; `scripts/test-models.sh` fetches the ones they use
+(about 20 GB, small enough for a 32 GB machine).
+
+From Linux, `./gradlew testOnMac -Pfornax.macHost=<host>` (or `scripts/test-on-mac.sh <host>`) runs the tests on a Mac
+over SSH against Metal: it copies the working tree there, builds the Metal libraries, runs `./gradlew test` and brings
+the reports back to `build/mac-test/` (Gradle arguments go after the host, or in
+`-Pfornax.macTestArgs='--tests *LlamaModelIT'`). The Mac needs Xcode's command-line tools, JDK 25, CMake and Ninja.
 
 To use your own build in an application, put the libraries on `-Dfornax.library.path=<dir>` (or `FORNAX_LIBRARY_PATH`,
 or the platform loader path) and run with `--enable-native-access=ALL-UNNAMED`; an explicit path wins over a
@@ -332,12 +370,13 @@ fornax song ace-step-turbo "acoustic folk, warm vocal" --lyrics words.txt --seco
 fornax speak "Hello from Fornax"                  # kokoro -> speech.wav; --voice, --list-voices
 fornax transcribe speech.wav                      # whisper-base.en; --words for each word's times
 fornax see qwen3-vl-4b image.png "What is by the door?"
+fornax server -m qwen3-4b                         # an OpenAI-compatible API at http://127.0.0.1:54154/v1
 fornax test flux2-klein                           # load, generate a little, report speed
 fornax info                                       # Java, native libraries, cache, token
 ```
 
-`image`, `song`, `speak`, `transcribe` and `see` download a model that isn't in the cache yet, as `fornax pull` would,
-and write to `--out` (else `image.png`, `song.wav` or `speech.wav` here, numbered rather than overwrite one).
+Every command that runs a model downloads it first if it isn't in the cache yet, as `fornax pull` would. `image`, `song`
+and `speak` write to `--out` (else `image.png`, `song.wav` or `speech.wav` here, numbered rather than overwrite one).
 A reasoning model's `<think>` blocks (Qwen3's) are hidden in `fornax chat`; `--think` shows them. A gated repo
 (LTX-2.5) needs its terms accepted on huggingface.co and `HF_TOKEN` (or `hf auth login`); the error says so.
 
@@ -360,6 +399,33 @@ at other native libraries. The launcher, `bin/fornax`, takes its Java, its jars 
 
 Check each model's license before you use what it makes. Some are non-commercial: YuE2's weights are
 CC BY-NC 4.0, for example.
+
+## The OpenAI-compatible server
+
+*On `main`, shipping in 0.3.0; not in 0.2.0.*
+
+`fornax server` (or `FornaxServer`, in the `fornax-server` module, JDK only) serves Fornax's models over an
+OpenAI-compatible HTTP API, so any OpenAI client, agent framework or tool can use them with no Java code:
+
+```sh
+fornax server -m qwen3-4b
+curl -s localhost:54154/v1/chat/completions -d '{"messages":[{"role":"user","content":"Hi"}]}'
+```
+
+<!-- snippet: OpenAiServer#readme -->
+```java
+try (var server = FornaxServer.builder().model("qwen3-4b").build().start()) {
+    server.await();   // OpenAI base URL: server.url(), http://127.0.0.1:54154/v1
+}
+```
+
+It serves `POST /v1/chat/completions` (streaming, tools and `tool_calls`, `response_format` JSON schemas, `stop`,
+images for a vision model), `GET /v1/models`, `POST /v1/embeddings`, `POST /v1/images/generations` (base64 PNGs),
+`POST /v1/audio/speech` (WAV) and `POST /v1/audio/transcriptions` (a WAV file). A request may name the `-m`
+models and catalogue models already downloaded (with `--allow-downloads`, any model Fornax loads: alias,
+`org/name:TAG` or path, downloaded on first use), kept loaded in a `ModelPool` within `--budget-gb`. It listens on 127.0.0.1, refuses a foreign `Host` (DNS rebinding) and web pages unless `--cors`
+allows their origin, and with `--api-key` needs `Authorization: Bearer`. See
+[OpenAI-compatible server](https://fornax4j.org/docs/guides/openai-server/).
 
 ## Examples
 
@@ -410,10 +476,9 @@ error says what to install) unless `FORNAX_ALLOW_CPU=true` is set in the server'
 
 ## Roadmap
 
-- Test and document the HIP, CUDA and Metal builds; natives jars for HIP and CUDA.
+- Test and document the CUDA build, and songs and video on Metal; natives jars for HIP and CUDA.
 - Video through stable-diffusion.cpp (`sd_generate_video`: Wan, LTX).
 - `fornax-embabel`: an Embabel Agent `LlmService` and `LocalModelSource` (needs tool-call parsing in `fornax-llama`).
-- An optional OpenAI-compatible server.
 - An MLX module for Apple silicon, through `mlx-c`.
 - A Kotlin layer with coroutine `Flow` streaming.
 

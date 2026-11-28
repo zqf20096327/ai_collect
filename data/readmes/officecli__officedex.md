@@ -6,6 +6,8 @@
 
 **VibeCoding writes code. VibeOfficing writes documents. Powered by OfficeDex.**
 
+<sub>OfficeDex is the official desktop app for the <a href="https://officecli.io/officecli/">OfficeCLI command-line tool</a>.</sub>
+
 <br/>
 
 <p>
@@ -16,7 +18,7 @@
 </p>
 
 <p>
-  <a href="https://officecli.io"><img src="https://img.shields.io/badge/website-officecli.io-0f766e?style=flat-square" alt="Website" /></a>
+  <a href="https://officedex.ai/"><img src="https://img.shields.io/badge/website-officedex.ai-0f766e?style=flat-square" alt="OfficeDex website" /></a>
   <a href="https://github.com/officecli/officecli"><img src="https://img.shields.io/badge/GitHub-officecli%2Fofficecli-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub officecli" /></a>
   <a href="https://discord.gg/ezAHMkdG"><img src="https://img.shields.io/badge/community-Discord-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord" /></a>
   <a href="https://x.com/officecli"><img src="https://img.shields.io/badge/follow-%40officecli-000000?style=flat-square&logo=x&logoColor=white" alt="X" /></a>

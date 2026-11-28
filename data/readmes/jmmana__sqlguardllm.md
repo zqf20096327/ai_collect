@@ -1,8 +1,8 @@
 <div align="center">
 
-[![PyPI](https://img.shields.io/pypi/v/sqlguardllm?include_prereleases&label=PyPI&color=10B981)](https://pypi.org/project/sqlguardllm/)
-[![npm](https://img.shields.io/npm/v/sqlguardllm/alpha?label=npm&color=CB3837)](https://www.npmjs.com/package/sqlguardllm)
-[![NuGet](https://img.shields.io/nuget/vpre/SqlGuardLlm?label=NuGet&color=004880)](https://www.nuget.org/packages/SqlGuardLlm)
+[![PyPI](https://img.shields.io/badge/PyPI-pip_install-10B981)](https://pypi.org/project/sqlguardllm/)
+[![npm](https://img.shields.io/badge/npm-npm_install-CB3837)](https://www.npmjs.com/package/sqlguardllm)
+[![NuGet](https://img.shields.io/badge/NuGet-dotnet_add-004880)](https://www.nuget.org/packages/SqlGuardLlm)
 [![Docs](https://img.shields.io/badge/docs-jmmana.github.io%2Fsqlguardllm-3B82F6)](https://jmmana.github.io/sqlguardllm/)
 
 [![English](https://img.shields.io/badge/English-10B981?style=for-the-badge)](README.md)
@@ -28,7 +28,7 @@ Your model writes SQL. **sqlguardllm** makes sure it can only read what it's all
 </div>
 
 > [!NOTE]
-> **Status: alpha.** `0.5.0a2` is on [PyPI](https://pypi.org/project/sqlguardllm/) (`pip install sqlguardllm`, `import sqlguardllm`), with the rules of [docs/DESIGN.md](docs/DESIGN.md), optional complexity limits and a 148-case development corpus. The API may still change before 1.0; violation codes are stable. ⭐ Star the repo to follow along, and tell us what you think in [Discussions](https://github.com/jmmana/sqlguardllm/discussions).
+> **Status: alpha.** `0.5.0a7` is on [PyPI](https://pypi.org/project/sqlguardllm/) (`pip install sqlguardllm`, `import sqlguardllm`), with the rules of [docs/DESIGN.md](docs/DESIGN.md), optional complexity limits and a 148-case development corpus. The API may still change before 1.0; violation codes are stable. ⭐ Star the repo to follow along, and tell us what you think in [Discussions](https://github.com/jmmana/sqlguardllm/discussions).
 
 ---
 
@@ -42,25 +42,25 @@ Full documentation: https://jmmana.github.io/sqlguardllm/
 pip install --pre sqlguardllm
 ```
 
-**Node.js / TypeScript** 18+: a client for `sqlguardllm serve`.
+**Node.js / TypeScript** 18+: runs the embedded engine (no Python, no server) or talks to `sqlguardllm serve`.
 
 ```bash
 npm install sqlguardllm
 ```
 
-**.NET** 8 or 10: a client for `sqlguardllm serve`, on NuGet from 0.5.0-alpha.2.
+**.NET** 8 or 10: runs the embedded engine (no Python, no server) or talks to `sqlguardllm serve`.
 
 ```bash
 dotnet add package SqlGuardLlm --prerelease
 ```
 
-**The server** that the Node.js and .NET clients talk to, in another terminal (Python 3.10+). No Docker image is published; the [Dockerfile](Dockerfile) builds one if you need it.
+**The server** is optional for Node.js and .NET: their packages carry the engine and run it locally (`SqlGuard.local` / `SqlGuard.CreateLocalAsync`). Run it, in another terminal (Python 3.10+), when several services share one policy or your platform has no embedded engine. No Docker image is published; the [Dockerfile](Dockerfile) builds one if you need it.
 
 ```bash
 uvx sqlguardllm serve --policy policy.json --port 8787    # or: pipx run sqlguardllm serve ...
 ```
 
-**Step by step** for each language, from install to a program and its exact output: [Python](https://jmmana.github.io/sqlguardllm/guide-python/) · [Node.js / TypeScript](https://jmmana.github.io/sqlguardllm/guide-node/) · [.NET](https://jmmana.github.io/sqlguardllm/guide-dotnet/) · [which package to choose](https://jmmana.github.io/sqlguardllm/packages/). Embedded engines for Node.js ([#85](https://github.com/jmmana/sqlguardllm/issues/85)) and .NET ([#86](https://github.com/jmmana/sqlguardllm/issues/86)), with no server, are planned.
+**Step by step** for each language, from install to a program and its exact output: [Python](https://jmmana.github.io/sqlguardllm/guide-python/) · [Node.js / TypeScript](https://jmmana.github.io/sqlguardllm/guide-node/) · [.NET](https://jmmana.github.io/sqlguardllm/guide-dotnet/) · [which package to choose](https://jmmana.github.io/sqlguardllm/packages/). The Node.js and .NET guides use the embedded engine: no Python and no server.
 
 ## Try it: input, decision and returned SQL
 
@@ -286,7 +286,7 @@ One engine, many clients. The engine is Python because it is built on [sqlglot](
 - **.NET:** `dotnet add package SqlGuardLlm --prerelease` ([`clients/dotnet`](clients/dotnet/README.md)), on NuGet from 0.5.0-alpha.2: net8.0 and net10.0, fails closed.
 - **Any other language:** the [HTTP API](docs/SERVER.md), the [MCP server](docs/MCP.md) or the CLI.
 
-Install steps for each language are in [Install](#install). Embedded engines, so the Node.js and .NET packages work with no Python and no server, are planned in [#85](https://github.com/jmmana/sqlguardllm/issues/85) and [#86](https://github.com/jmmana/sqlguardllm/issues/86).
+Install steps for each language are in [Install](#install). The Node.js and .NET packages carry the engine for linux-x64, linux-arm64, macOS (x64, arm64) and win-x64, so they work with no Python and no server; elsewhere they use the remote mode.
 
 ## Playground: try to break it
 

@@ -11,7 +11,7 @@ Part of the Limnex family of AI-security tools ([limnex-uie](https://github.com/
 > tested on real-world malicious model files.
 
 **Quick start:** `pip install limnex-preflight`, then `limnex-preflight path/to/model-or-folder`. Exit code 1 means a
-finding at MEDIUM or above. In GitHub Actions: `uses: youssefismail-dev/limnex-preflight@v0.1.0`
+finding at MEDIUM or above. In GitHub Actions: `uses: youssefismail-dev/limnex-preflight@v0.1.2`
 ([setup](https://github.com/youssefismail-dev/limnex-preflight#use-in-github-actions)); before a commit: [pre-commit](https://github.com/youssefismail-dev/limnex-preflight#pre-commit).
 
 > Why this exists: a model file I published contained my Kaggle user name inside a file path that the training
@@ -43,7 +43,13 @@ my-model/config.json
       where: $._name_or_path
       value: f********    fingerprint: 9be4c0a1d27f6e35
 
-limnex-preflight 0.1.0: scanned 3 file(s): 1 critical, 1 high, 3 medium, 1 low
+my-model/data/train.csv
+  [MEDIUM  ] email-address  37 findings
+      E-mail address
+      first: line 2    value: a***@e***.org
+      ... and 36 more in this file (-v lists each one with its fingerprint)
+
+limnex-preflight 0.1.2: scanned 4 file(s): 1 critical, 1 high, 40 medium, 1 low
 ```
 
 (Output shortened. Every value above is invented. Reports **never** contain a full secret or personal value.)
@@ -66,6 +72,14 @@ limnex-preflight model.pt --deep            # also carve provider-specific secre
 limnex-preflight -- -file-starting-with-a-dash.pkl
 limnex-preflight --list-rules
 ```
+
+In the human report, 4 or more findings at MEDIUM or below of the same rule and severity in one file are shown as one block
+with a count and the earliest one as an example (the earliest line, or the smallest byte offset); `-v` lists each of
+them with its fingerprint. HIGH and CRITICAL findings and unsafe-code findings are never grouped, because which secret or
+which callable it is matters. Grouping is per file, so a folder of many files with one finding each still lists every
+one. The totals, the exit code and the JSON and SARIF reports always count and list every finding, and the Action's job
+summary lists each group's fingerprints in a fold-out list (up to 200 per group and 2000 in all; the rest are in the
+SARIF and JSON reports).
 
 `--format json|sarif` without `--output` writes only that report to stdout. A report file never replaces a path being
 scanned or a file that is not a report of this tool (exit 2, nothing written), so a FILE right after `--json` or
@@ -155,7 +169,7 @@ value and fingerprint.
 | **Secrets**, provider-specific | AWS access key ID and secret key/session token; Google API key, OAuth client secret, service-account key id; Azure storage/shared-access keys, SAS tokens, AD client secrets; GitHub (classic + fine-grained), GitLab; Hugging Face; OpenAI; Anthropic; Kaggle (`kaggle.json`, `KAGGLE_KEY`, `KGAT_`); Weights & Biases; Replicate; Groq; Databricks; Slack tokens + webhooks; Stripe; Twilio; SendGrid; npm; PyPI; DigitalOcean; Telegram; PEM / OpenSSH / PGP private keys; JWTs (header must decode and contain `alg`); passwords inside URLs; `Authorization:` headers (HIGH; PEM is CRITICAL; Stripe test keys MEDIUM) |
 | Secrets, generic | `password`/`secret`/`api_key`/`token`-style assignments, also through environment variables in code (`os.environ['DB_PASSWORD'] = ...`, `os.environ.setdefault(...)`, `os.putenv(...)`), and `--password=...` style command lines (MEDIUM); high-entropy strings (LOW) |
 | **Personal data** | user name in `C:\Users\<name>`, `/home/<name>`, `/Users/<name>`, WSL, `/kaggle/input/{datasets,models,notebooks}/<owner>/` (MEDIUM); `/kaggle/...` and `/content/drive/...` paths naming a dataset or folder (MEDIUM; the bare Kaggle working directory LOW); e-mail addresses (MEDIUM; role mailboxes such as `info@` LOW); IPv4 (private ranges always, public only with host-like context) and full-form IPv6 (LOW); internal/machine host names (`*.internal`, `*.corp`, `*.local`, cloud VM names, `runs/<date>_<host>` Trainer directories) (LOW); user-name and host-name fields |
-| **Unsafe code** (a separate category and severity track) | pickle imports that run code: `os`, `posix`, `nt`, `subprocess`, `builtins.eval/exec/compile/__import__`, `runpy`, `importlib`, `ctypes`, `types.FunctionType`, ... (CRITICAL); network/file-system access: `socket`, `urllib`, `shutil`, `sys`, `builtins.open` (HIGH); `getattr(x, name)` is judged by its attribute name, fail-closed (see below): known-dangerous or computed names (`system`, `execvp`, `spawnvp`, `posix_spawn`, `run_path`, `exec_module`, `write_text`, any `__dunder__` ...) HIGH, a tiny allow-list (`forward`) quiet, **every other name a MEDIUM `pickle-getattr-review` finding**; loaders such as `torch.load`/`pickle.loads` on data that could not be analysed (HIGH); Keras `Lambda` layers (HIGH); a pickle that could not be analysed to its end, or an import that cannot be resolved (MEDIUM); data after the last pickle (LOW); an archive member name that leaves the extraction folder, `../` or an absolute path (MEDIUM `archive-path-traversal`) |
+| **Unsafe code** (a separate category and severity track) | pickle imports that run code: `os`, `posix`, `nt`, `subprocess`, `builtins.eval/exec/compile/__import__`, `runpy`, `importlib`, `ctypes`, `types.FunctionType`, ... (CRITICAL); network/file-system access: `socket`, `urllib`, `shutil`, `sys`, `builtins.open` (HIGH); `getattr(x, name)` is judged by its attribute name, fail-closed (see below): known-dangerous or computed names (`system`, `execvp`, `spawnvp`, `posix_spawn`, `run_path`, `exec_module`, `write_text`, any `__dunder__` ...) HIGH, a tiny allow-list (`forward`) and exact fastai (module, class, method) triples quiet (see "fastai learners" below), **every other name a MEDIUM `pickle-getattr-review` finding**; loaders such as `torch.load`/`pickle.loads` on data that could not be analysed (HIGH); Keras `Lambda` layers (HIGH); a pickle that could not be analysed to its end, or an import that cannot be resolved (MEDIUM); data after the last pickle (LOW); an archive member name that leaves the extraction folder, `../` or an absolute path (MEDIUM `archive-path-traversal`) |
 | **Not the file** | a Git LFS pointer instead of the file it stands for (MEDIUM `git-lfs-pointer`: `actions/checkout` fetches LFS files only with `lfs: true`) |
 
 ### Detection thresholds (all constants in `limnex_preflight/detectors.py`)
@@ -177,20 +191,67 @@ publisher's e-mail.
 
 **How `getattr` is handled (fail-closed).** `getattr` cannot be banned by import: pickle stores an unbound method as
 `getattr(Class, "forward")`, and common detection-model checkpoints contain exactly that. So it is judged at every
-call opcode (`REDUCE`, `INST`, `OBJ`, `NEWOBJ`) by its attribute name: allow-listed name → quiet; known-dangerous name,
-`__dunder__` name, module alias (`_os`) or a *computed* name → HIGH `unsafe-pickle-io`; **any other name → MEDIUM
+call opcode (`REDUCE`, `INST`, `OBJ`, `NEWOBJ`) by its attribute name: known-dangerous name, `__dunder__` name, module
+alias (`_os`) or a *computed* name → HIGH `unsafe-pickle-io` (checked first, so no allow-list can make it quiet);
+allow-listed name → quiet; **any other name → MEDIUM
 `pickle-getattr-review`, never silently dropped** (so the default `--fail-on medium` stops until a human looks or accepts the
 fingerprint). A `getattr` or loader that is merely *handed over* (e.g. to `functools.partial`) and never called directly is
 reported as well. The allow-list (`GETATTR_ALLOWED` in `pickle_scan.py`) is `{"forward"}`, derived from data: the 80
 evaluation repositories contain exactly three `getattr` calls, all of this benign `getattr(<model class>, "forward")` kind,
 in the tuning set (none in the held-out set). It is small on purpose; extend it only with a benign checkpoint to point at.
-The dangerous-name list is a prioritisation aid, not the safety net: the safety net is the review finding.
+
+**fastai learners (0.1.1).** fastai keeps some of its own methods on the objects it saves (`dataloaders`, a transform's
+`before_call`, a U-Net hook's `hook_fn`) or takes them from a class (`PILMask.create`), so a fastai export holds
+`getattr(<fastai object or class>, <method>)` (fastai 2.7 and earlier, saved with Python's pickle) or a bound method
+written by cloudpickle (fastai 2.8, below), and in 0.1.0 every one of them failed the default threshold. The quiet
+pairs now come from fastai's own source (2.7.19 and 2.8.12, read as text, never run): every fastai method that fastai's
+code uses as a value, on every fastai class that reaches it by normal attribute lookup, 193 exact (module, class,
+method) triples (`FASTAI_GETATTR_ALLOWED`; the list is generated, see `fastai_pairs.py`). A method that fastai adds to a
+class from another module (fastcore's `@patch`) is listed under both modules, because Python 3.13 and later name the
+class through the method's module. Only exact pairs count, and only on an object the pickle
+creates by naming that class (`NEWOBJ`, `OBJ`, `INST`, `copyreg._reconstructor`) or on the class itself, and only while
+its saved state cannot have changed its class (a `__class__` key in a state the scan can read, or a state it cannot
+see, puts it back under review): fastcore's `GetAttr` hands a name that a class does not define to another object, which a
+file could choose. The scan follows names as the file writes them; a file built to change what a name means while it
+loads is outside what it models, the same limit as protocol-4 dotted names (below). A dangerous name stays HIGH on any class, a user's own subclass
+(`__main__.MyLearner`) stays under review, and calling the method from the pickle is still `pickle-computed-callable`.
+This gives a malicious file nothing new: fastai is not on the deny-list, so a pickle could already name the same fastai
+function directly. Text models that tokenize with spaCy keep up to four review findings (`spacy`'s `pipe`, and the
+regular-expression `search`, `match` and `finditer` that spaCy's tokenizer stores), all outside fastai.
+
+**fastai 2.8 saves with cloudpickle.** From fastai 2.8, `Learner.export` uses cloudpickle, which writes the same bound
+methods as `_builtin_type('MethodType')(<function>, <object>)`, a call on what a call returned. That is quiet under the
+same rule: the function is named through its class with a listed triple, and the object was made by naming a class
+listed for that name (and its state cannot have changed its class). Any other use of `_builtin_type`, functions and classes stored as code, bindings outside fastai, and
+calling the bound method stay `pickle-computed-callable`. **fastai 2.8 image and segmentation learners still fail the
+default threshold:** cloudpickle cannot write fastai's `PILImage.create` / `PILMask.create` (a classmethod that
+`ImageBlock` and `MaskBlock` keep) by name, so it stores the compiled code of `PILBase.create` in the file:
+one `pickle-computed-callable` finding for the code and one for each image or mask class it is bound to (2 for an
+image classifier, 3 for a segmentation learner). A static scan cannot tell fastai's compiled code from anyone else's,
+and that code runs when the model is used, so it stays reported. Functions and classes the model's author wrote (a
+label function, a lambda in a `DataBlock`, a custom transform) are stored as code too, and are reported the same way.
+For a model you exported yourself, look at the findings and accept their fingerprints; they include the position in
+the file, so they can change when you export again (see the ignore file below). For someone else's fastai 2.8 image
+model, Preflight cannot tell fastai's code from a modified version: accept it only if you trust where it comes from.
+With the first list (11 pairs seen in 20 public repositories), on 20 held-out fastai repositories (23 files) that were
+picked before the fix and opened only after it, files failing the default threshold went from 23 to 4. With the list
+from fastai's source, on 20 further held-out repositories (20 files, picked by rank after the list was fixed), they went
+from 20 to 1; the one left is a regular expression's `search`, outside fastai. On 20 public fastai 2.8 exports, opened
+only after the cloudpickle rule was written, `pickle-computed-callable` findings went from 225 to 42 and no fastai method
+was left under review, but all 20 still fail: 10 only on the stored `create` code, the others also on spaCy, their
+author's own code or personal data. No other finding changed in any of the 110 files checked (the 64 of the earlier
+sets, 24 of the fastai 2.8 study and 22 of its held-out set; the file lists are kept private) (CHANGELOG, 0.1.1).
+The dangerous-name list is a prioritisation aid; the review finding is the safety net for surprises in honest files, not a
+barrier that a file written to avoid it cannot get around (protocol-4 dotted names, below).
 
 **Calls a static scan cannot identify (fail-closed, added in the pre-release review).** When a pickle calls an object that is
 itself the *result of another call* (a resolver or factory returns a function, which is then called), what runs cannot be
 known without executing it, so it is reported as a MEDIUM `pickle-computed-callable` review finding. Protocol-4 dotted names
-(`pathlib.Path.unlink`) are judged by the method they reach, by the same list `getattr` is judged by, and the C-module
-names of listed callables (`_operator.methodcaller`) are listed too. These rules were added in review after probing the
+(`pathlib.Path.unlink`) are judged by the method they reach, by the same dangerous-name list `getattr` is judged by, and
+the C-module names of listed callables (`_operator.methodcaller`) are listed too. Unlike `getattr`, a dotted name that
+reaches any *other* method is not sent to review: a pickle can name and call such a method with no finding, in 0.1.0
+and 0.1.1 alike. So the `getattr` review tier catches surprises in honest files; a file written to avoid it can, and is
+caught only if what it reaches is on the dangerous-name lists. These rules were added in review after probing the
 deny-list; they hold on this repository's benign fixtures (scikit-learn, PyTorch, joblib), but, like the `getattr` review
 tier, they have no real-world evidence yet.
 
@@ -206,6 +267,9 @@ f20fdec205d55c2c   # my own Colab folder is public on purpose
   name, a glob or anything but 16 hex digits is rejected (exit code 2). There is no way to switch a rule off.
 * The fingerprint covers rule + file name (+ archive member) + value, not the directory and not the offset, so it
   survives moving the checkout and re-saving the file, but a *different* value in the same file is still reported.
+  Two pickle rules have no value to name and use the opcode's position instead (`pickle-computed-callable`,
+  `pickle-unresolved-global`): their fingerprints change when anything before them in the file changes length, for
+  example when a model is exported again, and the finding comes back for review.
 * `--show-ignored` lists what was suppressed; entries that matched nothing are reported as stale.
 * The ignore file is read from the scanned folder, so when you scan **someone else's** repository or a downloaded model,
   add `--no-ignore`: its author could otherwise have accepted their own findings in advance. The summary always shows
@@ -215,7 +279,7 @@ f20fdec205d55c2c   # my own Colab folder is public on purpose
 
 The scanner is also a **composite GitHub Action** (`action.yml` at the root of the repository). It installs the scanner from
 the action's own checkout (not from PyPI) into a private virtual environment, so your own Python and dependencies are not
-touched. The examples use the `v0.1.0` tag for readability; in real workflows pin actions to a full commit SHA.
+touched. The examples use the `v0.1.2` tag for readability; in real workflows pin actions to a full commit SHA.
 
 **Minimal** (scan `models/` on every pull request; fails on MEDIUM and above, the default):
 
@@ -230,7 +294,7 @@ jobs:
           fetch-depth: 0               # on pull requests the ignore file is read from the base commit
           persist-credentials: false   # the job's token is not left in .git/config
           lfs: true                    # weights kept in Git LFS are checked, not their pointers
-      - uses: youssefismail-dev/limnex-preflight@v0.1.0
+      - uses: youssefismail-dev/limnex-preflight@v0.1.2
         with: { path: models/ }
 ```
 
@@ -246,7 +310,7 @@ permissions:
 steps:
   - uses: actions/checkout@v7
     with: { fetch-depth: 0, persist-credentials: false, lfs: true }   # history for changed-only; LFS files
-  - uses: youssefismail-dev/limnex-preflight@v0.1.0
+  - uses: youssefismail-dev/limnex-preflight@v0.1.2
     with:
       path: models/
       fail-on: medium
@@ -365,7 +429,7 @@ hook as well, add `files: '.*'` under the hook in your config:
 ```yaml
 repos:
   - repo: https://github.com/youssefismail-dev/limnex-preflight
-    rev: v0.1.0
+    rev: v0.1.2
     hooks:
       - id: limnex-preflight
         files: '^models/.*'                        # optional

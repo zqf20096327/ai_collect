@@ -2,7 +2,6 @@
 > The Lodash for GenAI: Consistent + Model-Agnostic
 
 [![Gem Version](https://badge.fury.io/rb/active_genie.svg?icon=si%3Arubygems)](https://badge.fury.io/rb/active_genie)
-[![Ruby](https://github.com/roriz/active_genie/actions/workflows/benchmark.yml/badge.svg)](https://github.com/roriz/active_genie/actions/workflows/benchmark.yml)
 
 **ActiveGenie** is a toolkit for building GenAI features in Ruby. Its modules are model-agnostic and work across providers. `ActiveGenie::Comparator` settles subjective comparisons by staging a structured debate between the two inputs. `ActiveGenie::Scorer` grades content with a jury of domain experts. `ActiveGenie::Ranker` orders large datasets with a tournament system.
 
@@ -71,8 +70,10 @@ Full documentation is at [activegenie.ai](https://activegenie.ai):
 
 - [Quickstart](https://activegenie.ai/introduction/quickstart)
 - [Configuration](https://activegenie.ai/reference/config)
+- [Evaluating your features](https://activegenie.ai/guides/evals): golden-set evals for your own LLM
+  features, with `rake "active_genie:eval:new[name]"`
 - [Benchmark results](https://activegenie.ai/benchmark/latest)
-- [Eval: how changes are measured](eval/README.md)
+- [Eval: how changes to the gem are measured](evals/README.md)
 
 ## Contributing
 

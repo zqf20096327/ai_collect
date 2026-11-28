@@ -14,10 +14,13 @@ Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [R
 ## Quick start
 
 - [ ] Clone [FaceRecognition-LivenessDetection-DotNet-MAUI](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-DotNet-MAUI)
-- [ ] Install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), then `dotnet workload install maui`
 - [ ] Place the native runtimes — [Get the runtimes](#get-the-runtimes)
-- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone connected
+- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone plugged in
 - [ ] The demo ships with license keys for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS)
+
+That is the whole setup. The scripts do the rest: the restore, the `dotnet build`, and the install
+onto the phone. They need the .NET 8 SDK with `dotnet workload install maui` on PATH, and stop
+with a named hint if anything is missing.
 
 ## Introduction
 
@@ -109,22 +112,20 @@ Device arm64 only. Each framework is linked only when that folder is present.
 ## Run the demo
 
 ```bash
-git clone https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-DotNet-MAUI.git
-cd FaceRecognition-LivenessDetection-DotNet-MAUI
-dotnet workload install maui
-# place the AAR and the iOS frameworks — see above
-python run_android.py
-python run_ios.py          # macOS
+python run_android.py     # downloads Releases assets if missing; or: python run_ios.py on macOS
 ```
 
-`global.json` keeps the build on .NET 8 when a newer SDK is the default. The run scripts are the same as:
+The runner checks for a device, restores, builds and installs the app. `global.json` keeps the
+build on .NET 8 when a newer SDK is the default. By hand:
 
 ```bash
 # Android — phone connected, USB debugging on
 dotnet build src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj -f net8.0-android -t:Run
 
-# iOS — macOS + Xcode 15+, iPhone connected
-dotnet build src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj -f net8.0-ios -r ios-arm64 -t:Run
+# iOS — prefer the runner (mlaunch -t:Run often fails with MT1044 / --devname on CoreDevice phones)
+python3 run_ios.py
+# Or build only, then install with Xcode / devicectl:
+# dotnet build src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj -f net8.0-ios -r ios-arm64
 ```
 
 Keep the demo ids so the included license activates:

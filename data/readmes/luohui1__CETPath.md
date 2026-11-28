@@ -206,16 +206,20 @@ npm run dev
 | 压缩包 | 解压路径 | 内容说明 |
 | --- | --- | --- |
 | `cetpath-papers.tar.gz` | `public/papers/` | 137 套完整试卷（四级 68 套、六级 68 套、考研英语一 1 套，含原版 PDF、题目 JSON、解析、译文与长难句） |
+| `cetpath-ielts.tar.gz` | `public/ielts/`、`public/dict/books/ielts.json` | 144 套雅思真题（剑雅 4–21 A 类、G 类、听力/阅读机经）、242 道写作机经、100 个口语题库话题、202 张本地图表及雅思核心词书 |
 | `cetpath-dict.tar.gz` | `public/dict/` | 离线词典（ECDICT）、词根词缀（OpenEtymology）与易混词数据（Lexkite） |
 | `cetpath-audio.tar.gz` | `public/audio/` | 四六级真题听力音频（可选下载；不含单词真人发音，背词默认使用浏览器语音） |
+| `cetpath-ielts-audio.tar.gz` | `public/audio/speaking/` | 雅思口语题库真人示范与考官提问音频（可选下载） |
 
 命令行一键解压示例：
 
 ```bash
 # 下载压缩包后在项目根目录执行
 tar -xzf cetpath-papers.tar.gz -C public
+tar -xzf cetpath-ielts.tar.gz -C public         # 可选，需要雅思题库时解压
 tar -xzf cetpath-dict.tar.gz -C public
-tar -xzf cetpath-audio.tar.gz -C public   # 可选，需要听力音频时解压
+tar -xzf cetpath-audio.tar.gz -C public         # 可选，需要四六级听力音频时解压
+tar -xzf cetpath-ielts-audio.tar.gz -C public   # 可选，需要雅思口语音频时解压
 ```
 
 #### 方式二：从原始资料自行构建

@@ -66,9 +66,11 @@ You stay in charge. Every change to a port needs your approval, and every line t
 - ✍️ Multi-line text or HEX with a choice of line ending. `Enter` sends, `Shift+Enter` adds a line, `↑` recalls history. Data goes out as raw bytes, exactly as typed: only the line ending you pick is added.
 - 🧮 Checksums appended to HEX data: CRC-8, CRC-16 (Modbus, CCITT), CRC-32, XOR, SUM8, LRC.
 - ⏲️ Timed send, 📋 saved command lists (click to send, or run a group in order; ⧉ opens them in their own window with its own target port), and 📄 file send: in chunks, or with XMODEM (128 / 1K) and YMODEM to an MCU bootloader (`/send-file --ymodem fw.bin` in the terminal, `serialbot-cli send <port> --file fw.bin --protocol ymodem`).
+- 🧩 **Frames window** (the ▤ button above the log): what a port sent and received, decoded as **Modbus RTU** or **SLCAN** (CAN adapters), one message per row: function, slave, registers by address, CAN ID and data, with the CRC checked. A row opens its fields and the bytes each one takes. Choosing a protocol later still decodes what came before. **Your own protocols** are a small TOML file (header, length, checksum, fields with names, units and scaling): see [docs/protocols.md](docs/protocols.md).
+- 🧪 **Test sequences** (🔁 above the log): a script of `send`, `expect` (a regex the reply must match in time), `wait`, `dtr` / `rts` and `mark` steps, run N times or until stopped, for soak tests and production checks. It counts passed and failed runs, shows run times and the failed steps, and copies a plain-text report; a command group can be turned into a script with one click. The same scripts run in the terminal: `serialbot-cli run <port> test.txt --runs 100`.
 
 **AI agents, under your control**
-- 🤖 A built-in MCP server lets Claude Code, Claude Desktop and other agents list and open ports, send data, wait for replies and drive DTR / RTS, on the same sessions you see in the window.
+- 🤖 A built-in MCP server lets Claude Code, Claude Desktop and other agents list and open ports, send data, wait for replies and drive DTR / RTS, on the same sessions you see in the window. Agents can read traffic already decoded (`io.read` with `decode`: Modbus RTU, SLCAN or your own protocol files), so they see fields and checksums instead of counting bytes.
 - ✅ Before an agent sends data, toggles a line or opens, closes or reconfigures a port, SerialBot asks you: **allow once**, **allow for the session**, or **deny** (unanswered requests are refused after 60 s).
 - 🟣 Everything an agent did is tagged **AI** in the log; **AI access** in the status bar keeps a session away from agents.
 - 🔒 The server is off until you turn it on, listens on `127.0.0.1` by default and always needs a token. It can also serve the local network (`0.0.0.0`) when you choose to.
@@ -165,7 +167,7 @@ Get the file for your system from [Releases](https://github.com/jerry-token/seri
 3. Ask Claude Code: *"List the serial ports, open the ESP32 one and send `version`."* 🎉
 4. ✅ SerialBot asks before the agent opens the port or sends anything. Pick **Allow for this session** to stop being asked for that port, or untick "Ask before AI agents send data or change a port" on the AI page.
 
-**Claude Desktop, Cursor, VS Code, Codex, Gemini CLI, opencode**: on the AI page, press the client's button under *Add SerialBot to* and restart the client. Only the `serialbot` entry is written; the rest of the file is kept and the old file is backed up. If the file cannot be changed (VS Code allows comments in it), the page shows the entry to paste. From a terminal: `serialbot-cli mcp install cursor` (or `claude-desktop`, `vscode`, `codex`, `gemini`, `opencode`).
+**Claude Desktop, Cursor, VS Code, Codex, Gemini CLI, opencode**: on the AI page, pick the client under *Connect a client*. The page shows the file it reads by default (yours may be elsewhere) and the settings to copy into it; if the file already lists servers, add only the `serialbot` entry, then restart the client. SerialBot never writes another program's files. From a terminal: `serialbot-cli mcp config cursor` (or `claude-desktop`, `vscode`, `codex`, `gemini`, `opencode`) prints the same settings; the default file and tips go to standard error.
 
 By hand, for Claude Desktop (and other clients that only start stdio servers): copy the second snippet on the AI page into `claude_desktop_config.json`. It runs `serialbot mcp`, a small bridge to the running app, so SerialBot must be open with the MCP server on:
 
@@ -206,8 +208,10 @@ Or from source: `cargo install --git https://github.com/jerry-token/serialbot se
 serialbot-cli ports                                   # list ports (--json too)
 serialbot-cli send /dev/ttyUSB0 AT --expect OK       # send, wait for the reply; exit code 1 on timeout
 serialbot-cli monitor /dev/ttyUSB0 --until 'boot ok'  # receive only (text, --hex or --json lines)
+serialbot-cli monitor /dev/ttyUSB0 --decode modbus-rtu # one line per message (slcan, or your .toml)
 serialbot-cli signal /dev/ttyUSB0 dtr=0 100ms dtr=1   # DTR/RTS steps, BREAK
 serialbot-cli run /dev/ttyUSB0 boot.txt               # a script: send, expect, wait, dtr, rts, mark …
+serialbot-cli run /dev/ttyUSB0 boot.txt --runs 100  # 100 runs, then the tally (--keep-going)
 serialbot-cli open /dev/ttyUSB0 -b 921600             # interactive terminal, minicom keys (Ctrl+A Z)
 serialbot-cli tui /dev/ttyUSB0 /dev/ttyUSB1           # full screen: several ports, waveform, AI panel
 serialbot-cli mcp serve                               # MCP server without the app; asks in the terminal
@@ -231,6 +235,8 @@ serialbot-cli mcp serve                               # MCP server without the a
 - [x] Command list in its own window
 - [x] Terminal mode (VT100, interactive shells)
 - [x] Waveform plots of received numbers
+- [x] Test sequences: send / expect scripts run N times, with a report
+- [x] Frame decoding: Modbus RTU, SLCAN and your own protocols in TOML
 - [ ] Built-in AI assistant "Bo"
 - [ ] JS scripts
 - [ ] BLE

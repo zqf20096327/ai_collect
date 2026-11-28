@@ -84,21 +84,55 @@ The OpenAI-compatible backends all use the OpenAI client with a different `base_
 | `.openai_compatible` | `OPENAI_BASE_URL` | `OPENAI_API_KEY` |
 
 ```zig
-const ai = try zenai.provider.Client.init(io, allocator, .llama_cpp, "llama.cpp", .{});
+const ai = try zenai.provider.Client.init(io, allocator, .{ .backend = .llama_cpp, .key = "llama.cpp" }, .{});
 defer ai.deinit(allocator);
 ```
 
-The first argument after the allocator is a `provider.Backend`: a tag, plus the settings only that provider takes (`.{ .vertex = .{ .project = "p" } }`, `.{ .codex = .{ .account_id = id } }`). The options struct holds what every provider takes: `base_url`, `retry_policy`, `request_timeout_ms`, `http_client` and `extra_headers` (sent on every request, e.g. Hugging Face's `X-HF-Bill-To`).
+The first argument after the allocator is a `provider.Endpoint`, what the client talks to:
 
-`init` reads no environment variables. `zenai.provider.fromEnv(environ, tag)` returns what the conventional ones configure for a tag: its key, its backend settings and, for `.openai_compatible`, the base URL:
+- `backend`: a tag, plus the settings only that provider takes (`.{ .vertex = .{ .project = "p" } }`, `.{ .codex = .{ .account_id = id } }`).
+- `key`, and `base_url` to override the provider's default.
+- `extra_headers`, sent on every request (e.g. Hugging Face's `X-HF-Bill-To`), and `capture_headers`, response headers kept for `Client.lastHeaders()`.
+- `default_model`, and `models`, a fixed list `listChatModelIds` returns instead of asking the server.
+
+The options struct holds how the client talks over HTTP: `retry_policy`, `request_timeout_ms` and `http_client`.
+
+`init` reads no environment variables. `zenai.provider.fromEnv(environ, tag)` returns what the conventional ones configure for a tag: its key, its backend settings and, for `.openai_compatible`, the base URL. `endpoint(key)` turns that into an `Endpoint`:
 
 ```zig
 const cfg = zenai.provider.fromEnv(environ, .openai_compatible);
-const ai = try zenai.provider.Client.init(io, allocator, cfg.backend, cfg.key orelse return error.MissingApiKey, .{
-    .base_url = cfg.base_url,
-});
+const ai = try zenai.provider.Client.init(io, allocator, cfg.endpoint(cfg.key orelse return error.MissingApiKey), .{});
 defer ai.deinit(allocator);
 ```
+
+A proxy or gateway that speaks one of these protocols at its own URL is an `Endpoint` too:
+
+```zig
+const ai = try zenai.provider.Client.init(io, allocator, .{
+    .backend = .gemini,
+    .key = gateway_token,
+    .base_url = "https://gateway.example.com/gemini",
+    .default_model = "default",
+    .models = &.{"default"},
+}, .{});
+defer ai.deinit(allocator);
+```
+
+When the gateway itself says which protocol, path and model each use goes to, `zenai.gateway.Gateway` builds those endpoints from its config. Define the config's shape with `gateway.Route` fields. `config` fetches it with the key as a bearer token and caches it on disk for `ttl_ms` (6 hours by default), falling back to an older cached copy when the gateway is down:
+
+```zig
+const gw: zenai.gateway.Gateway = .{ .url = "https://gateway.example.com", .key = gateway_token };
+const Config = struct { agent: zenai.gateway.Route, decisions: zenai.gateway.Route };
+const config = try gw.config(Config, io, arena, .{
+    .path = "/v1/config",
+    .cache_path = "/home/me/.local/share/app/gateway.json",
+});
+const ai = try zenai.provider.Client.init(io, allocator, try gw.endpoint(arena, config.agent), .{});
+defer ai.deinit(allocator);
+try pool.setCredentials(try gw.decisionCredentials(arena, config.decisions));
+```
+
+`endpoint` and `decisionCredentials` fail with `error.UnsupportedProtocol` for a protocol zenai can't speak at another URL, so an older client can tell the user to update before the first request. A route with a `model` serves only that model, which `listChatModelIds` then returns. The cache is keyed by the config URL and the gateway's `extra_headers`, so a client that sends its version there refetches after an upgrade.
 
 `zenai.provider.info(tag)` gives each tag's default base URL, key variable, default model and whether it is a local server.
 
@@ -262,7 +296,7 @@ defer client.deinit();
 
 Generation, streaming, `Chat` and `countTokens` work in both modes. Model listing needs project/location mode, because Google's `ListPublisherModels` rejects API keys. Embeddings and decisions are Developer-API-only and return `error.UnsupportedByBackend` on Vertex.
 
-Through the provider abstraction, the backend is `.{ .vertex = .{ .project = "my-project", .location = "global" } }`, or plain `.vertex` for express mode. `provider.detectKeys` picks `.vertex` when `GOOGLE_GENAI_USE_VERTEXAI=1` (or `true`) is set, and express mode reads `GOOGLE_API_KEY`. `provider.fromEnv(environ, .vertex)` fills project mode from `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION`/`GOOGLE_CLOUD_REGION` (default `"global"`), but you still pass the access token explicitly as the credential.
+Through the provider abstraction, the backend is `.{ .vertex = .{ .project = "my-project", .location = "global" } }`, or plain `.vertex` for express mode. `provider.detectKeys` picks `.vertex` when `GOOGLE_GENAI_USE_VERTEXAI=1` (or `true`) is set, and express mode reads `GOOGLE_API_KEY`. `provider.fromEnv(environ, .vertex)` fills project mode from `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION`/`GOOGLE_CLOUD_REGION` (default `"global"`). With `VERTEX_API_KEY` also set, the express key is sent project-scoped (`.credential = .api_key`), which reaches models only served on `"global"`, like Gemini 4, that the unscoped express endpoint answers with 404. Otherwise you pass an access token explicitly as the credential.
 
 </details>
 
@@ -339,7 +373,7 @@ The `.codex` provider talks to the backend Codex CLI uses (`chatgpt.com/backend-
 zenai doesn't run the OAuth login. Get the token yourself (the browser's `lightpanda agent` does it in `src/agent/auth/codex.zig`), then go through the provider abstraction:
 
 ```zig
-const ai = try zenai.provider.Client.init(io, allocator, .{ .codex = .{ .account_id = account_id } }, access_token, .{});
+const ai = try zenai.provider.Client.init(io, allocator, .{ .backend = .{ .codex = .{ .account_id = account_id } }, .key = access_token }, .{});
 defer ai.deinit(allocator);
 
 var result = try ai.generateContent("gpt-5.5", &.{

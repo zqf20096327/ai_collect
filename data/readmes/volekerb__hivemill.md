@@ -65,7 +65,7 @@ The runner does the rest, with no model in the loop: the spec gate, the Stop-hoo
 1. **You write the spec.** Each acceptance criterion names its proof: `test:`, `cmd:`, `flow:` or `manual:`. The spec gate refuses a task with a criterion that names none. The planner can write and split tasks for you.
 2. **One session builds it.** The task session implements the change in its own clone, runs the affected tests, runs `/code-review`, fixes the findings and opens the PR.
 3. **Code checks the work.** Before the session may stop, the Stop-hook gate checks the tree, the PR body, the findings and the evidence, and re-runs every `test:` and `cmd:` proof itself. Red CI goes back to the same session.
-4. **A fresh judge reads it.** It maps every behaviour change in the diff to a criterion. MERGE, REJECT (back to the same session, two rounds at most) or HOLD (an unasked change, parked for you).
+4. **A fresh judge reads it.** It maps every behaviour change in the diff to a criterion. MERGE, REJECT (back to the same session, two rounds at most) or HOLD (parked for you). A plausibly fine unasked change merges and is listed for you afterwards (a PR comment and the digest); an unasked change in a risk-tier path, or one the judge cannot call safe or unsafe, is a HOLD.
 5. **Code merges it.** On MERGE the runner checks the exact head, green checks, the risk tier, main's state and authorship, then merges. A T3 diff waits for you.
 
 ## Quickstart
@@ -122,7 +122,7 @@ flowchart LR
     merge --> main["merged to main"]
 ```
 
-**Why the judge matters.** The judge does not only check that the asked-for change is there. It must also list every behaviour change in the diff (failure paths, defaults, limits, timers, shared functions) and quote the criterion that asks for each one. A change with no criterion turns a MERGE into a REJECT. A change that is probably fine but was not asked for becomes a HOLD for you. The judge packet also flags files changed outside the task's declared scope. This rule exists because the first version missed things: in the second pilot the judge passed three side effects that no criterion asked for. The fix shipped in [#904](https://github.com/volekerb/hivemill/pull/904) ([ADR 0009](docs/adr/0009-option-b-runner.md#pilot-results)).
+**Why the judge matters.** The judge does not only check that the asked-for change is there. It must also list every behaviour change in the diff (failure paths, defaults, limits, timers, shared functions) and quote the criterion that asks for each one. A change with no criterion turns a MERGE into a REJECT, unless the judge marks it plausibly fine and says why: then it merges and is listed for you. In a risk-tier path, or where the judge cannot tell safe from unsafe, it is a HOLD for you. The judge packet also flags files changed outside the task's declared scope. This rule exists because the first version missed things: in the second pilot the judge passed three side effects that no criterion asked for. The fix shipped in [#904](https://github.com/volekerb/hivemill/pull/904) ([ADR 0009](docs/adr/0009-option-b-runner.md#pilot-results)).
 
 **Model choice comes from files, not words.** Sessions run Sonnet 5.5 at medium effort. A task whose declared files, or for the judge whose changed files, match a sensitive path runs Opus 5.5, as does an explicit T3 task.
 
@@ -161,7 +161,7 @@ Each feature has its own file under docs/ (all pages: [docs/README.md](docs/READ
 | | One Claude Code session | A chain of chat agents | Hivemill runner |
 |---|---|---|---|
 | Definition of done | The agent says so | Reviewer and QA verdicts | Every `test:` and `cmd:` proof re-run by code, then a judge |
-| Unasked changes | Unchecked | Up to the reviewer | Every behaviour change mapped to a criterion, or REJECT or HOLD |
+| Unasked changes | Unchecked | Up to the reviewer | Every behaviour change mapped to a criterion; plausibly fine ones merge and are listed, others REJECT or HOLD |
 | Merge | You merge by hand | An agent merges | Deterministic checks, then `--match-head-commit` |
 | Cost control | None | Agent caps | A budget per task, per project per day and per week, and plan usage caps |
 | Sessions per task | 1 | 4–6 | 2 (task and judge) |
@@ -244,12 +244,8 @@ The read-only web UI (`factory serve`, [docs/web-ui.md](docs/web-ui.md)) belongs
 
 ## Herdr desktop dashboard
 
-The Herdr desktop dashboard ([docs/herdr-app-dashboard.md](docs/herdr-app-dashboard.md)) also belongs to the legacy pipeline and reads the same legacy API as the web UI.
+The Herdr desktop dashboard ([docs/herdr-app-dashboard.md](docs/herdr-app-dashboard.md)) shows every factory you run in one tab and in the status bar: what waits for you, the factories as one table, and every machine's resources. It reads each runner's `hivemill obs` API.
 
-<p align="center">
-  <img src="docs/film/herdr/panel-factory.png" width="420" alt="The Hivemill dashboard tab in the Herdr desktop app: lanes and tiles for the factory">
-  <img src="docs/film/herdr/panel-status-bar.png" width="420" alt="The Hivemill status bar across the bottom of the Herdr desktop app">
-</p>
 
 ## Status and limits
 

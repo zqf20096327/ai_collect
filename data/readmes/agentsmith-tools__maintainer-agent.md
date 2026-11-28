@@ -386,7 +386,7 @@ each one asks you to trust.
 
 ## Where it runs
 
-One machine, six user timers, <!-- fig:profiles -->2<!-- /fig --> profiles, each posting to GitHub as
+One machine, eight user timers, <!-- fig:profiles -->3<!-- /fig --> profiles, each posting to GitHub as
 `vladimirrott`.
 
 | Profile | Repository | Posts | Tasks | Cadence |
@@ -396,6 +396,8 @@ One machine, six user timers, <!-- fig:profiles -->2<!-- /fig --> profiles, each
 | | | | `ci` | every 3 days |
 | | | | `audit` | every 5 days |
 | `magent` | this repository | on | `review` | daily |
+| | | | `issues` | every 2 days |
+| `mojo-dllm` | [`dllm-labs/mojo-dllm`](https://github.com/dllm-labs/mojo-dllm) | on | `review` | twice a day |
 | | | | `issues` | every 2 days |
 
 The Posts column is each profile's `POST` default, and a test holds it to
@@ -407,6 +409,10 @@ Both `magent` timers are enabled, `maintainer@magent-review.timer` and
 unattended writers: the review task files its findings through
 `maintainer file-issue`, and the issues task files and places issues on its
 own cadence. `maintainer status` shows each task's last run.
+
+The `mojo-dllm` profile has no verify suite, so it never merges a contributor's pull request:
+it reviews, comments and labels, and reports the ones ready for the maintainer. It runs nothing
+from a pull request and holds back a Dependabot bump of the Mojo toolchain.
 
 Each profile reviews a checkout it owns under
 `~/.local/state/<profile>-maint/checkout`, cloned from `REPO_ORIGIN` on first
@@ -640,7 +646,7 @@ The short version follows.
 ./scripts/check_drift.py    # the docs agree with the code
 ```
 
-<!-- fig:tests floor=100 -->1,800+<!-- /fig --> offline tests: no network, no GitHub, no model call. Every case tests a
+<!-- fig:tests floor=100 -->1,900+<!-- /fig --> offline tests: no network, no GitHub, no model call. Every case tests a
 *refusal*, because that is where this agent's safety lives. The suite is
 mutation-proved; removing a deny rule turns it red naming that rule, planting a
 home path turns the leak check red, restoring the renamed command in a prompt

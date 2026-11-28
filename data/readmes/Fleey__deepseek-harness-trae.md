@@ -12,7 +12,7 @@ v0.3 起插件自己直连 Trae 的 `llm_raw_chat` 接口（和 trae2api 的 dir
 
 <img width="1126" height="338" alt="image" src="https://github.com/user-attachments/assets/174f1592-8132-432f-ab31-cfc6d1f3f96c" />
 
-模型配置只需要添加traecli令牌继续使用，配置上企业额度可实时读取企业额度信息，支持tob与toc额度显示（toc无需登录企业账号即可获取额度）
+模型配置只需要添加traecli令牌继续使用，配置上企业额度可实时读取企业额度信息，支持tob与toc额度显示（toc无需登录企业账号即可获取额度）。私有化部署的企业版在同一张卡片的「部署地址」里填自己的地址（见[私有化部署：先填部署地址](#私有化部署先填部署地址)）
 
 <img width="1598" height="1536" alt="image" src="https://github.com/user-attachments/assets/3d35d44e-dd11-44ce-a370-ec186e44f0fb" />
 
@@ -124,10 +124,10 @@ v0.3 起插件自己直连 Trae 的 `llm_raw_chat` 接口（和 trae2api 的 dir
 
 ### 用 tgz 安装（发给别人）
 
-`dsh-trae2api-0.12.1.tgz` 是预构建好的包，不需要构建权限：
+`dsh-trae2api-0.13.0.tgz` 是预构建好的包，不需要构建权限：
 
 ```sh
-dsh plugin --profile desktop add ./dsh-trae2api-0.12.1.tgz
+dsh plugin --profile desktop add ./dsh-trae2api-0.13.0.tgz
 ```
 
 装完同样去 **设置 → 模型 → Trae** 填 PAT。tgz 方式下插件自带全部代码，和项目目录无关。
@@ -140,15 +140,38 @@ dsh plugin --profile desktop add ./dsh-trae2api-0.12.1.tgz
 > 如果你手上已经有一个现成的 Cloud-IDE JWT（例如 `~/.trae/cli/auth.json` 里的 `access_token`），
 > 也可以直接填进 PAT 框——插件识别出是 JWT 就原样使用，过期后需要你自己更新。
 
+### 私有化部署：先填部署地址
+
+企业版不只有公网 SaaS 一种形态。公司自建的部署有自己的域名和控制台，它签发的 PAT 拿到公网的
+`api.enterprise.trae.cn` 去兑换**一定失败**，而且失败得很迷惑：HTTP 200，`30021: 网络异常`
+——随便编一个令牌去问，回的也是这一句。所以兑换失败的报错里会写明「当前请求的是哪个 host」。
+
+这种情况在 **设置 → 模型 → Trae** 卡片的「部署地址」里填你们自己的地址，和 PAT 一起保存即可：
+
+| 卡片字段 | 配置项 | 留空时 | 私有化部署填什么 |
+|---|---|---|---|
+| 接口地址 | `host` | `https://api.enterprise.trae.cn` | Trae 客户端 `storage.json` 里的 `iCubeHostInfo.apiHost` |
+| 控制台地址 | `consoleHost` | 接口地址是自定义的就跟随它，否则 `https://console.enterprise.trae.cn` | `iCubeHostInfo.consoleHost`；和接口地址相同就不用填 |
+
+`storage.json` 在 Trae 客户端的用户目录下，macOS 是
+`~/Library/Application Support/<Trae 客户端>/User/globalStorage/storage.json`。地址可以不带
+`https://`，末尾的 `/` 会去掉。
+
+这两项不是热更新字段：保存时卡片通过 dsh 的 configEditor 写进**当前 profile 的 patch**，插件随即
+重载，用新地址重新兑换令牌、拉模型列表、读额度。清空再保存就回到公网企业版，profile 里不留覆盖。
+如果 home patch 或命令行覆盖里也写了 `trae2api` 的 config，它们优先级更高，界面写不进去——卡片会
+把这个拒绝原因显示出来，去那里改即可。
+
 ## 配置项
 
-界面里只有 PAT 一个字段。其余都是写死的默认值，只有在 Trae 以后改了接口、而插件还没更新时，
-才需要在 profile 的 `cordis.patch.yml` 里覆盖 `id: trae2api` 这一行：
+界面里能改的是 PAT、部署地址（私有化部署才用得到）和下一步卡片的两个开关。其余都是写死的默认值，
+只有在 Trae 以后改了接口、而插件还没更新时，才需要在 profile 的 `cordis.patch.yml` 里覆盖
+`id: trae2api` 这一行：
 
 | 字段 | 默认 | 说明 |
 |---|---|---|
 | `patEnv` | `TRAE_PAT` | PAT 在凭据库里的名字 |
-| `host` | `https://api.enterprise.trae.cn` | Trae 接口地址 |
+| `host` | `https://api.enterprise.trae.cn` | Trae 企业版接口地址。私有化部署填自己的（`iCubeHostInfo.apiHost`），卡片的「部署地址 → 接口地址」改的就是它，保存后插件重载 |
 | `shareHost` | `https://trae-api-cn.mchost.guru` | 分享接口地址（TRAE SOLO CN 客户端自己的写接口）。链接固定拼在 `share.traecontent.cn` 上；企业版与消费版是两套分享空间，互相读不到 |
 | `clientId` | `app_EMoamEEZ73f0CkXaXp7hrann` | PAT 兑换用的 OAuth client id（traecli 的） |
 | `appId` / `ideVersionCode` / `clientVersion` | 20260908 那一代 | 身份头，和模型名后缀（`__dev`）配对 |
@@ -159,7 +182,7 @@ dsh plugin --profile desktop add ./dsh-trae2api-0.12.1.tgz
 | `consoleEmailEnv` | `TRAE_CONSOLE_EMAIL` | 控制台邮箱在凭据库里的引用名（卡片写这里） |
 | `consoleEmail` | 空 | 控制台邮箱的配置兜底（凭据库里没有时才用） |
 | `consolePasswordEnv` | `TRAE_CONSOLE_PASSWORD` | 控制台密码在凭据库里的引用名 |
-| `consoleHost` | `https://console.enterprise.trae.cn` | 企业控制台地址 |
+| `consoleHost` | 空 | 企业控制台地址（GetUserInfo、企业席位额度）。空 = `host` 是自定义的就跟随它，否则 `https://console.enterprise.trae.cn`；卡片的「部署地址 → 控制台地址」改的就是它 |
 | `readTimeoutMs` | `300000` | 上游两次数据之间的最长间隔 |
 | `emptyRetries` | `1` | 空回合/瞬时故障的额外重试次数 |
 | `loopGuardChars` | `600` | 重复塌缩截断的触发长度；0 关闭 |
@@ -524,7 +547,8 @@ npm test           # 目录、消息转换、SSE 解码、重复检测、文本�
 源码：
 - `src/index.ts` —— 宿主端：注册模型来源和 Models 页的 Trae 行。
 - `src/adapter.ts` —— dsh `LlmAdapter`，组装 llm_raw_chat 请求、解流、重组工具调用、兜底。
-- `src/trae/auth.ts` —— PAT → Cloud-IDE JWT 兑换与缓存。
+- `src/trae/auth.ts` —— PAT → Cloud-IDE JWT 兑换与缓存；兑换失败的报错带上实际请求的 host。
+- `src/trae/deployment.ts` —— 部署地址（`host` / `consoleHost`）的规范化、控制台跟随规则，以及卡片经 configEditor 写回 profile 的那一步。
 - `src/trae/catalog.ts` —— 目录的数据结构，外加断网兜底用的 20 个模型（其中 14 个走 Max）。
 - `src/trae/catalog-source.ts` —— 运行时目录：上游 `batch_get_detail_param` 与 traecli 缓存的
   解析、三级兜底、每次插件启动刷新一次的 `TraeCatalog`。

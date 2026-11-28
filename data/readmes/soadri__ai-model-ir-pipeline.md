@@ -1,0 +1,186 @@
+<div align="center">
+
+<img src="docs/assets/banner.svg" alt="AI 모델 변환(표준 IR) 파이프라인 — PyTorch 모델을 표준 MLIR을 거쳐 NPU 특화 IR로 낮추고, NPU 시뮬레이터에서 연산 정합성까지 검증" width="100%">
+
+<br><br>
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-1F2A44?style=flat-square)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/soadri/ai-model-ir-pipeline/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/soadri/ai-model-ir-pipeline/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.11-005BAC?style=flat-square)
+![Standard IR](https://img.shields.io/badge/IR-MLIR%20linalg-005BAC?style=flat-square)
+![NPU Simulator](https://img.shields.io/badge/simulator-furiosa--opt%200.10-5B4BC4?style=flat-square)
+[![Release](https://img.shields.io/github/v/release/soadri/ai-model-ir-pipeline?style=flat-square&color=C96F1A&label=release)](https://github.com/soadri/ai-model-ir-pipeline/releases/latest)
+
+<br>
+
+**[소개 페이지](https://soadri.github.io/ai-model-ir-pipeline/)** &nbsp;|&nbsp; **[체험 가이드](docs/GUIDE.md)** &nbsp;|&nbsp; **[최신 릴리즈](https://github.com/soadri/ai-model-ir-pipeline/releases/latest)**
+
+</div>
+
+<br>
+
+AI 모델 변환(표준 IR) 파이프라인은 PyTorch로 작성된 AI 모델이 NPU에서 실행 가능한 형태로 바뀌는 과정을 단계별로 보여주고 검증하는 오픈소스 도구입니다. 모델을 표준 MLIR(linalg) 표현으로 변환한 뒤 NPU 특화 IR로 낮추고, 커널을 NPU 시뮬레이터에서 실행해 PyTorch 결과와 수치를 비교합니다.
+
+- **투명한 변환 과정**<br>
+  모델의 각 연산이 어떤 표준 IR 연산을 거쳐 어떤 NPU 특화 연산이 되는지 그대로 확인할 수 있습니다.
+- **계층적 검증**<br>
+  IR 구조의 정합성부터 NPU 시뮬레이터에서의 연산 결과까지 세 단계로 검증합니다.
+- **생태계 변화 대응**<br>
+  PyTorch, torch-mlir 등 Upstream 오픈소스의 변화를 추적하고 같은 기준으로 다시 검증합니다.
+
+<br>
+
+## 변환 파이프라인 구조
+
+<img src="docs/assets/architecture.svg" alt="파이프라인 구조: 표준 IR 변환과 분석(1~3), NPU 특화 IR 변환과 시뮬레이터 실행(4~6), 계층적 검증과 결과 확인(7~9), 정기 재검증" width="100%">
+
+PyTorch 모델은 torch-mlir을 통해 표준 MLIR의 linalg 연산으로 변환되고(1\~3), 파이프라인이 이 연산들을 분석해 NPU 특화 IR 연산으로 바꿉니다(4). 이후 연산별 커널을 구성해 NPU 시뮬레이터에서 실행하고(5\~6), 변환 정합성과 연산 결과를 검증합니다(7\~9).
+
+<br>
+
+## 주요 기능
+
+**표준 IR 변환과 분석**<br>
+PyTorch 모델을 linalg IR로 변환하고, 각 연산을 변환 대상·흡수·형태 변환으로 분류합니다. RMSNorm, Softmax, SiLU, GELU, ReLU, Attention, FFN(SwiGLU, GeGLU, ReGLU 등) 같은 복합 패턴도 식별합니다.
+
+**NPU 특화 IR 변환**<br>
+linalg 연산을 NPU 특화 IR(RNGD Dialect) 연산으로 바꿉니다. 예를 들어 `nn.Linear`가 만드는 가중치 transpose와 `linalg.matmul`의 연산 체인은 `transpose_rhs` 속성을 가진 하나의 `gemm`으로 결합되고, GELU·ReLU·sigmoid처럼 여러 기본 연산으로 풀린 활성화 함수는 연산 하나로 합쳐집니다.
+
+**예시 기반 패턴 식별 (실험적)**<br>
+라벨을 붙인 예시 노드로 패턴 템플릿을 만들고 데이터 흐름 그래프에서 같은 모양을 찾는 방법(「AI 모델 중간 표현의 연산 패턴 식별을 위한 예시 기반 분석 기법」)을 규칙 기반 식별과 **나란히** 실행해, 두 결과가 일치하는지 함께 보여 줍니다. 변환·검증·최적화 마커는 계속 규칙 기반 결과를 씁니다. 템플릿 10개(RMSNorm, Softmax, SiLU, GELU, ReLU, Residual, FFN 4종)는 예시 하나씩으로 만들었고, Llama 2개 규모와 대시보드 예시 전체에서 규칙 기반과 모두 일치합니다. Attention은 아직 템플릿이 없습니다.
+
+**계층적 검증**<br>
+Level 1-2에서 IR 변환 정합성 12개 항목을, Level 3에서 NPU 시뮬레이터 실행 결과와 PyTorch 기준값의 수치 정합성을 확인합니다.
+
+**변환 규칙 레지스트리**<br>
+표준 IR 연산마다 어떤 NPU 특화 IR 연산으로 바뀌는지, 정밀도와 허용 오차, 무엇과 비교해 검증하는지를 26개 규칙으로 정리해 대시보드의 「변환 규칙」 화면과 API로 공개합니다.
+
+**사용자 모델 분석**<br>
+직접 정의한 `nn.Module`을 입력하면 변환 커버리지, 미지원 연산, 복합 패턴, 변환된 IR을 바로 확인할 수 있습니다. 대시보드 예시 13종(Llama, GPT-J, Gemma, GPT-2, BERT, PaLM, Mixtral 계열 구조) 중 12종은 모든 연산이 변환되고, Mixtral식 MoE 예시는 반복문의 인덱스 계산(정수→실수 변환) 때문에 92%입니다.
+
+**결과 확인**<br>
+웹 대시보드와 CLI를 제공하며, 변환된 IR·커널 소스·검증 리포트를 내려받을 수 있습니다.
+
+<br>
+
+## Llama-3.1 8B 연산 패턴 분석
+
+<img src="docs/assets/llama-op-patterns.png" alt="Llama-3.1 8B Decoder Layer의 RMSNorm, Attention, FFN 연산 구성과 RoPE·Softmax·SiLU 분해" width="100%">
+
+Llama-3.1 8B Decoder Layer를 표준 IR로 변환하면 RMSNorm, Attention, FFN(SwiGLU)이 위와 같은 연산 체인으로 풀립니다. 위치 인코딩(RoPE), Softmax, SiLU처럼 하나의 연산으로 보이던 부분이 여러 기본 연산으로 분해되며, 파이프라인은 이 체인을 다시 복합 패턴으로 식별해 NPU 특화 연산으로 결합합니다.
+
+<br>
+
+## 검증 결과
+
+Llama-3.1 8B의 Decoder Layer 한 개를 실제 모델 크기(dim 4096, hidden 14336, attention head 32, KV head 8, head dim 128, RoPE와 Causal Mask 포함)로 구성해 검증했습니다. 아래는 개발 과정의 운영 환경(NPU 시뮬레이터 furiosa-opt 0.6)에서 얻은 기록입니다. 체험 이미지는 같은 구조를 기본·중간 규모로 제공하며, 그 결과는 [Release](https://github.com/soadri/ai-model-ir-pipeline/releases)마다 다시 검증해 공개합니다.
+
+<div align="center">
+
+| Level 1-2 IR 정합성 | 연산 변환 커버리지 | Level 3 상대 오차 | 시뮬레이터 GEMM 실행 |
+|:--:|:--:|:--:|:--:|
+| **12 / 12** | **100%** | **0.62%** | **1,664회** |
+
+</div>
+
+- NPU dialect 연산 50개로 변환되었고, 미분류 연산은 없었습니다.
+- 복합 패턴 8개 그룹(RMSNorm 2, Softmax, SiLU, Attention, FFN, Residual 2)을 식별했습니다.
+- dim 64부터 4096까지 규모를 키워가며 Decoder Layer 전체 검증을 모두 통과했습니다.
+- 입력 조건 8종에서 상대 오차가 f32 0.50% 이하, bf16 1.07% 이하로 유지되었습니다.
+
+> [!NOTE]
+> Level 3는 **NPU 시뮬레이터**(Functional)에서 연산 결과의 정합성을 확인하는 단계로, 실제 NPU에서의 실행 성능을 나타내지 않습니다. 기본 제공 모델의 Level 3 검증은 같은 조건(seed 42)의 PyTorch 모델에서 미리 생성한 기준값을 사용합니다.
+
+<br>
+
+## 빠른 시작
+
+Docker만 있으면 됩니다. 이미지(내려받기 약 380MB)는 GitHub Container Registry에서 받습니다.
+
+```bash
+docker pull ghcr.io/soadri/ai-model-ir-pipeline:0.7    # 전에 받은 이미지가 있으면 최신 오류 수정으로 갱신
+docker run --rm -p 127.0.0.1:8100:8100 ghcr.io/soadri/ai-model-ir-pipeline:0.7
+```
+
+> MINOR까지 적은 태그(예: `0.7`)는 같은 계열의 **최신 오류 수정 버전**을 가리킵니다. 지금 어떤 버전인지는 [소개 페이지](https://soadri.github.io/ai-model-ir-pipeline/)나 [Release](https://github.com/soadri/ai-model-ir-pipeline/releases)에서, 실행 중인 버전은 대시보드 오른쪽 위에서 확인할 수 있습니다. 전에 받은 이미지가 있으면 `docker pull`로 새로 받아야 최신 오류 수정이 반영됩니다.
+
+브라우저에서 `http://localhost:8100`에 접속하면 기본 모델(Llama-3.1 8B Decoder Layer)을 변환·검증하거나, 직접 작성한 PyTorch 모델을 분석할 수 있습니다.
+
+명령줄에서 바로 실행할 수도 있습니다.
+
+```bash
+# 기본 모델 변환과 3단계 검증
+docker run --rm ghcr.io/soadri/ai-model-ir-pipeline:0.7 python -m server.cli verify --scale sim_mid
+
+# 직접 작성한 모델 파일 분석 (파일 안에 model, x 변수 정의)
+docker run --rm -v "$PWD/my_model.py:/tmp/model.py:ro" \
+  ghcr.io/soadri/ai-model-ir-pipeline:0.7 python -m server.cli convert /tmp/model.py
+```
+
+실행 이력을 보존하려면 저장소의 [`docker-compose.yml`](docker-compose.yml)로 `docker compose up -d`를 실행하세요.
+
+Windows 환경, 해볼 것, 결과 읽는 법, 문제 해결은 [체험 가이드](docs/GUIDE.md)에 정리되어 있습니다.
+
+> [!NOTE]
+> 이미지는 `linux/amd64`용입니다. Apple Silicon Mac에서는 Docker Desktop이 에뮬레이션으로 실행하므로 검증 시간이 길어질 수 있습니다.
+
+> [!WARNING]
+> 사용자 모델 분석은 입력한 PyTorch 코드를 체험 서버 안에서 그대로 실행합니다. 본인 PC에서만 실행하세요. 여러 사람이 접속하는 서버로 운영해야 한다면 [빌드 가이드](docs/BUILD.md#c-여러-사람이-접속하는-서버에서-운영할-때)의 접근 토큰 설정을 사용하세요.
+
+배포된 이미지가 이 저장소의 공개 소스에서 GitHub Actions로 빌드됐는지 직접 확인할 수 있습니다.
+
+```bash
+gh attestation verify oci://ghcr.io/soadri/ai-model-ir-pipeline:0.7 -R soadri/ai-model-ir-pipeline
+```
+
+<br>
+
+## 문서
+
+| 문서 | 내용 |
+|:--|:--|
+| [체험 가이드](docs/GUIDE.md) | 배포 이미지로 대시보드와 명령줄 도구 실행하기 (Windows, macOS, Linux) |
+| [빌드 가이드](docs/BUILD.md) | 소스에서 이미지 빌드, 로컬 개발 환경 구성 |
+| [NPU 특화 IR 명세](docs/IR_SPEC.md) | RNGD Dialect 연산·속성 정의, 백엔드 인터페이스, 변환 규칙 |
+| [지원 버전 정책](docs/VERSIONING.md) | 버전 번호, 지원하는 Upstream 버전, Upstream 변화 대응 절차 |
+| [기여 가이드](CONTRIBUTING.md) | 의견 제안, 문제 신고, Pull Request 절차 |
+| [변경 이력](CHANGELOG.md) | 버전별 변경 사항 |
+
+<br>
+
+## 현재 한계
+
+- 기본 모델 검증은 Llama 계열 Decoder Layer 구조로 진행합니다. 사용자 모델의 Level 3는 Linear, RMSNorm, SiLU, GELU, ReLU 레이어를 커널로 검증하며, 그 밖의 연산은 Level 1-2까지 확인합니다. 변환하지 못한 연산은 분석 결과에 그대로 표시됩니다.
+- Level 3는 변환된 IR 전체를 NPU에서 실행하는 단계가 아니라, 연산 종류별 NPU 커널이 대표 데이터에서 PyTorch와 같은 결과를 내는지 확인하는 단계입니다. 기본 모델은 고정된 커널 규모(gemm M=512·K=64·N=512 등)와 미리 만든 기준값을 쓰고, 사용자 모델의 Linear는 실제 가중치를 커널 규모에 맞춰 나눠 검증하며, 활성화 함수(SiLU·GELU·ReLU)는 입력 텐서의 앞 8개 값으로 검증합니다.
+- 독립된 reduce 연산은 NPU 특화 IR로 변환하지만 실행은 CPU 대체 처리로 표시합니다(`rngd.exec = "cpu_fallback"`). RMSNorm 커널 안의 축소는 Level 3에서 NPU 시뮬레이터로 검증합니다.
+- 그 밖의 한계는 [NPU 특화 IR 명세](docs/IR_SPEC.md#9-현재-한계)에 정리했습니다.
+- 표준 IR 변환은 특정 버전의 torch-mlir에 고정되어 있습니다. 최신 torch-mlir의 FX importer 경로로의 이전을 준비하고 있습니다([지원 버전 정책](docs/VERSIONING.md)).
+
+<br>
+
+## 개발 환경
+
+| 구성 요소 | 버전 |
+|:--|:--|
+| Python | 3.11 |
+| PyTorch | 2.3.0.dev20240122+cpu |
+| torch-mlir | 20240127.1096 |
+| NPU 시뮬레이터 | furiosa-opt 0.10.0 (Rust nightly-2026-05-01) |
+
+PyTorch와 torch-mlir의 해당 버전은 원래 배포처에서 더 이상 내려받을 수 없어, 검증에 사용한 설치 환경에서 wheel 파일을 재구성해 [build-deps-1 릴리즈](https://github.com/soadri/ai-model-ir-pipeline/releases/tag/build-deps-1)로 제공합니다. 재구성한 환경은 원래 환경과 동일한 IR을 생성하는 것을 확인했습니다.
+
+<br>
+
+## 라이선스
+
+이 프로젝트는 [Apache License 2.0](LICENSE)에 따라 배포됩니다. 함께 사용하는 오픈소스 구성 요소의 라이선스는 [NOTICE](NOTICE)에서 확인할 수 있습니다.
+
+## 문의
+
+코드나 문서로 기여하는 방법은 [기여 가이드](CONTRIBUTING.md)를 참고해 주세요. 체험 의견은 [체험 의견 남기기](https://github.com/soadri/ai-model-ir-pipeline/issues/new?template=feedback.yml)로, 미지원 연산이나 오류는 [문제 신고](https://github.com/soadri/ai-model-ir-pipeline/issues/new?template=bug.yml)로 남겨주세요.
+
+<br>
+
+<div align="center">
+<img src="docs/assets/keti-logo.png" alt="한국전자기술연구원(KETI)" width="240">
+</div>

@@ -1,220 +1,240 @@
-<p align="center">
-  <img src="assets/aether-banner.svg" alt="Aether — локальный AI-агент для Android" width="100%" />
+<div align="center">
+
+<img src=".github/assets/icon.svg" alt="Aether logo" width="128">
+
+# Aether
+
+**An AI coding agent and chat assistant that runs on your Android phone.**
+
+No PC needed. No root needed.
+
+<p>
+  <a href="https://github.com/aether-aiagent/aether"><img src=".github/assets/download-from-github.png" alt="Download from GitHub" height="54"></a>
+  <a href="https://play.google.com/store/apps/details?id=com.aether.app"><img src=".github/assets/google-play.png" alt="Get it on Google Play" height="54"></a>
+  <a href="https://discord.gg/NdC5K3XeWF"><img src=".github/assets/join-discord.png" alt="Join our Discord" height="54"></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/aether-aiagent/aether/releases"><img src="https://img.shields.io/github/v/release/aether-aiagent/aether?style=flat-square&amp;color=7C3AED&amp;label=APK" alt="Последний релиз" /></a>
-  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&amp;logo=android&amp;logoColor=white" alt="Android 8.0+" />
-  <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&amp;logo=kotlin&amp;logoColor=white" alt="Kotlin" />
-  <img src="https://img.shields.io/badge/Jetpack_Compose-4285F4?style=flat-square&amp;logo=jetpackcompose&amp;logoColor=white" alt="Jetpack Compose" />
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-22D3EE?style=flat-square" alt="GPL 3.0" /></a>
-  <a href="https://github.com/aether-aiagent/aether/actions/workflows/build-nightly-apk.yml"><img src="https://img.shields.io/github/actions/workflow/status/aether-aiagent/aether/build-nightly-apk.yml?style=flat-square&amp;label=build" alt="Сборка" /></a>
-  <a href="https://github.com/aether-aiagent/aether/releases"><img src="https://img.shields.io/github/downloads/aether-aiagent/aether/total?style=flat-square&amp;label=Downloads&amp;color=22D3EE" alt="Загрузки" /></a>
-  <img src="https://img.shields.io/github/stars/aether-aiagent/aether?style=flat-square&amp;label=Stars&amp;color=7C3AED" alt="Звёзды" />
-</p>
+[![Debug build](https://github.com/aether-aiagent/aether/actions/workflows/nightly.yml/badge.svg)](https://github.com/aether-aiagent/aether/actions/workflows/nightly.yml)
+[![Version](https://img.shields.io/badge/version-3.0-blue)](https://github.com/aether-aiagent/aether/releases/latest)
+[![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3ddc84)](https://developer.android.com/about/versions/oreo)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-<p align="center">
-  <img src="assets/aether-demo.gif" alt="Aether: запрос, три вызова инструментов, ответ" width="100%" />
-</p>
+</div>
 
-<p align="center"><b>AI-агент на Android с русским интерфейсом.</b><br/>Чат, инструменты, расширения и локальная среда выполнения — на вашем устройстве.</p>
+## About
 
-> **Официальные сборки** — только в разделе [Releases](https://github.com/aether-aiagent/aether/releases) этого репозитория. APK подписан ключом проекта, `versionCode` растёт монотонно, поэтому обновления ставятся поверх без потери чатов. Любые сборки с других аккаунтов, форков и сторонних сайтов — не наши: подпись там другая, обновиться поверх официальной версии не получится.
+Aether is a native Android app, written in Kotlin with Jetpack Compose, for working on real code projects from your phone. The agent reads and edits files, runs commands in a real Linux toolchain (bash, git, python, node), pushes to GitHub, drives a browser, and shows every step in a chat you can inspect.
 
-<p align="center"><a href="https://github.com/aether-aiagent/aether/releases/latest"><b>Скачать APK</b></a> · <a href="https://aether-aiagent.github.io/aether/"><b>Сайт проекта</b></a> · <a href="https://t.me/AetherAIAgent"><b>Telegram владельца</b></a> · <a href="CHANGELOG.md">Изменения</a> · <a href="docs/AETHER_EXTENSIONS.md">Расширения</a> · <a href="https://github.com/aether-aiagent/aether/issues">Сообщить об ошибке</a></p>
+The app has two sections:
 
-<p align="center"><sub>
-<a href="https://aether-aiagent.github.io/aether/ai-agent-na-telefon/">ИИ-агент на телефон</a> ·
-<a href="https://aether-aiagent.github.io/aether/android-ai-agent/">Android AI agent</a> ·
-<a href="https://aether-aiagent.github.io/aether/local-llm-android/">Local LLM on Android</a> ·
-<a href="https://aether-aiagent.github.io/aether/termux-ai-agent/">Termux AI agent</a>
-</sub></p>
+- **Code** is the agent. It works inside a project folder with files, shell, git, tests and browser tools.
+- **Chat** is for everyday questions, research, writing and brainstorming. It uses read-only tools and can hand work over to Code when a conversation turns into a project.
 
-<p align="center">Владелец проекта — <b>Aether AI Agent</b> · <a href="https://t.me/AetherAIAgent">t.me/AetherAIAgent</a></p>
+You can start for free with the built-in provider, which needs no account, or run models fully offline on the device.
 
----
+## Screenshots
 
-## О проекте
+<table>
+  <tr>
+    <td align="center" width="20%"><img src=".github/assets/showcase/01-code.jpg" alt="Code agent building an app" width="100%"><br><sub>Code agent at work</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/02-chat.jpg" alt="Chat answering a question with a rich card" width="100%"><br><sub>Chat with rich answers</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/03-providers.jpg" alt="Provider picker" width="100%"><br><sub>Switch providers</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/04-code-installation.jpg" alt="Approval card for installing Linux packages" width="100%"><br><sub>Approve before installs</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/05-code-options.jpg" alt="Code chat options menu" width="100%"><br><sub>Chat tools and modes</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="20%"><img src=".github/assets/showcase/06-settings.jpg" alt="Settings screen" width="100%"><br><sub>Settings</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/07-code-settings.jpg" alt="Coding settings" width="100%"><br><sub>Coding settings</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/08-plugins.jpg" alt="Plugin manager" width="100%"><br><sub>Plugins and skills</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/09-9router.jpg" alt="9Router local router page" width="100%"><br><sub>9Router on the phone</sub></td>
+    <td align="center" width="20%"><img src=".github/assets/showcase/10-local-models.jpg" alt="Local models page" width="100%"><br><sub>Offline local models</sub></td>
+  </tr>
+</table>
 
-**Aether** — AI-агент, который работает прямо на телефоне: читает и правит файлы, запускает команды,
-держит локальную среду (Alpine), подключает расширения и общается с любой моделью через
-OpenAI-совместимый API. Интерфейс и настройки — на русском.
+## Highlights
 
-Запросы к моделям и веб-сервисам требуют сети и настроенного провайдера; всё остальное
-(инструменты, файлы, среда, история) остаётся на устройстве.
+- **A real coding agent.** File edits, shell, git, tests, browser control and subagents. Every tool call gets a card you can open to see exactly what happened.
+- **An assistant everywhere.** Make Aether your phone's digital assistant and ask about any screen without leaving the app you are in. Models that cannot see pictures can read the text inside them on the phone.
+- **Goals that finish the job.** `/goal` keeps the agent working turn after turn until a separate check agrees the task is done, with parts, a budget and a Resume that keeps its progress.
+- **A real shell.** Commands run through Shizuku, Wireless ADB pairing, optional root, a Termux-based Linux toolchain, or a toybox fallback. A shell policy and a secret redactor sit on top.
+- **Free to start.** The built-in keyless provider works without sign-up, and local GGUF models run offline. Cloud API keys and ChatGPT accounts are optional.
+- **Free speech.** Edge speech is built in with no key, more than 300 Microsoft voices and a sample for each. Groq, OpenAI, ElevenLabs, Deepgram, Cartesia and AssemblyAI can listen, speak or both.
+- **Many providers.** Anthropic, Google Gemini, ChatGPT accounts, any OpenAI-compatible endpoint, and fallback chains that switch models when one fails.
+- **Research that reads.** Turn on any of eleven search providers; the agent picks one, falls through failures, reads the top pages and returns passages. Shaky statements can be flagged, and a question can be re-run deeper.
+- **Plugins, skills and MCP.** Install plugins from npm, GitHub, Claude marketplaces, archives or a folder on the phone, and the agent can manage them when you ask. Plugin commands, binaries and language servers run like Claude Code, and MCP servers connect over stdio or HTTP.
+- **Built for long runs.** A foreground service, resume cards, a saved message queue and optional auto-continue keep work safe when the screen turns off or the connection drops.
+- **Safe by default.** The agent stays inside the workspace, sensitive actions ask for approval, phone control is approved once per chat while destructive changes ask every time, and every change can be reviewed as a diff and undone.
+- **21 languages.** Switch the app language at any time without a restart.
 
-> **Aether — AI agent for Android.** An open-source Android AI agent app (Kotlin, Jetpack Compose)
-> that runs an LLM chat with real tools: bash, file read/write/edit, grep, find, ls, MCP servers,
-> subagents and a local Alpine Linux runtime via proot, plus optional Termux integration.
-> Signed APK builds ship from GitHub Releases. Keywords: android ai agent, local llm android,
-> on-device ai assistant, termux ai agent, shizuku automation, mcp client android,
-> open source chatgpt alternative for android, kotlin llm chat app.
+## What's new in 3.0
 
-> **ИИ-агент на телефон.** Aether — открытый ИИ-агент для Android: нейросеть на телефоне, которая
-> не только отвечает, но и запускает команды, читает и правит файлы, держит локальную среду Alpine.
-> Ключевые слова: ии агент на телефон, ии агент андроид, локальный ии агент, аи агент apk,
-> нейросеть на телефон, чат с ии на андроид, termux агент, shizuku автоматизация, mcp клиент android.
+- **Your assistant over any app.** Set Aether as your digital assistant and ask about what is on screen, by voice or typing, without leaving the app you are in. Models that cannot see images can now read the text inside pictures on the phone.
+- **Goals that keep going.** `/goal` turns a task into a loop that keeps taking turns until a separate check agrees it is done, with a turn limit, an optional check command, a budget, named parts, a per-turn change summary and a Resume that keeps its progress. Keep improving can push past done.
+- **Backups and setup rebuilt.** Backup & restore streams one file, lets you pick chats, and now carries images and usage stats. Setup is a page-by-page flow that can restore chats and settings, and file access is optional.
+- **Memory you can shape.** Folders with colors, trigger words, trigger-only memories, multi-select move and delete, and a zoomable map of how memories connect.
+- **Exa joins search.** Exa searches by meaning instead of keywords and can return full page text, alongside the ten existing providers.
+- **A calmer chat.** A floating task pill, a slash menu docked on the composer that follows the cursor, editing a sent message's photos and files, background browser screenshots, and per-item trust for workspace tools.
 
-## Возможности
+See [CHANGELOG.md](CHANGELOG.md) for the full release notes.
 
-| Возможность | Что доступно |
-|---|---|
-| Русский интерфейс | Настройки, чат, файловый менеджер, расширения, документация |
-| Чат | Стриминг ответов, markdown, инструменты с подтверждением, история и поиск |
-| Интерактивные опросы | Карточки ` ```poll ` в чате: варианты, мультивыбор и свой ответ прямо в карточке |
-| Графики в ответах | Карточки ` ```chart ` (линия, столбцы, круговая) с легендой и сворачиванием — агент рисует их вместо таблиц |
-| Понятный список чатов | У каждого чата своя цветная плашка и форма, превью последнего сообщения, время и группировка «Сегодня / Вчера / Раньше» |
-| Поиск по всему тексту | Ищет по названиям и по тексту сообщений, показывает найденный фрагмент с подсветкой |
-| Действия с ответом | Копировать, повторить, удалить, статистика, **прочитать вслух** (TTS) и **поделиться** в любое приложение |
-| Копирование кода | У каждого блока кода — метка языка и кнопка «копировать» с подтверждением |
-| Инструменты | bash, read, write, edit, grep, find, ls + инструменты расширений |
-| Среда выполнения | Alpine proot, интеграция с Termux |
-| Shizuku | Root-операции через Shizuku и Agent Mode (виртуальный дисплей) без root-прав |
-| Расширения | Web Access, MCP Servers, Subagents, AI Lab, Lab Power |
-| Стабильная подпись | Все APK подписаны одним ключом — обновления ставятся поверх без потери данных |
-| Автообновление | Проверка новых версий в этом репозитории и установка APK прямо из приложения |
-| Debian 13 | Aether Desktop — GUI-приложение с окном (Electron) и sudo-паролем один раз за сессию |
-| Подстановки в промпте | `{{current_date}}`, `{{current_time}}`, `{{weekday}}`, `{{timezone}}`, `{{device}}`, `{{android}}`, `{{locale}}`, `{{unix_timestamp}}` |
+## Getting started
 
-Почему это работает иначе, чем облачные чаты:
+1. Install the app from [Google Play](https://play.google.com/store/apps/details?id=com.aether.app) or [GitHub Releases](https://github.com/aether-aiagent/aether/releases/latest), or build it from source.
+2. Grant file access if you want it. All files access lets the shell and file tools use real paths; without it the app works in its own folder and asks when a task needs your files.
+3. Pick a model. Use the built-in keyless provider, add an API key in Settings, or download a model in Settings → Local models.
+4. Recommended: install [Shizuku](https://github.com/RikkaApps/Shizuku), pair Wireless ADB in Settings → Terminal & device, or install the Linux environment from inside the app. This lets shell commands run with proper permissions. Rooted devices can also turn on direct root there.
 
-- **Всё локально.** Нет аккаунта, нет бэкенда, нет телеметрии. История чатов, файлы и
-  настройки живут на телефоне, ключи провайдеров лежат в Android Keystore.
-- **Не только разговор.** Агент правит файлы, запускает команды, держит среду, ставит пакеты,
-  подключает расширения и MCP-серверы, управляет устройством через Shizuku.
-- **Провайдер — ваш.** OpenAI-совместимый API, Anthropic, Gemini или локальная модель:
-  свой базовый URL, свои заголовки, своя цена.
-- **Стабильные обновления.** Все APK подписаны одним ключом, версия монотонно растёт и
-  ставится поверх старой — данные и чаты сохраняются.
+Then open a workspace and ask for a change, or open Chat for anything that does not need a project. If something feels off, run `/doctor` to test every tool family.
 
-## Агент и инструменты
+## Features
 
-Каждый запуск агента получает описание среды, стиль ответа и набор инструментов. Базовые:
+A short tour of what the app can do. The complete list, with every detail, is in [FEATURES.md](FEATURES.md).
 
-<details>
-<summary>Полный список базовых инструментов</summary>
+**Code**
+- Streaming chat with thinking blocks, tool cards, diffs and verification cards that list every build or test that ran.
+- A workspace is one folder, and a project groups workspaces for chats that need several, each editable or read only.
+- Plan mode, dual planning (plan on one model, execute on another), subagents and a persistent message queue that can hold send to choose when a queued message is read.
+- Goals that keep working across turns until a separate check agrees the task is done, with parts, a turn limit, a check command, a budget and Keep improving.
+- Approve phone control once per chat, set reminders, alarms and timers, and schedule a message from the chat itself.
+- Scheduled automations that run prompts daily, hourly or on demand.
 
-| Инструмент | Что делает |
-|---|---|
-| `bash` | Команда в активной среде (Alpine proot или Termux) |
-| `read` | Чтение файла; изображения отдаются модели как картинки |
-| `write` | Создание или перезапись файла |
-| `edit` | Точечная правка по точному совпадению |
-| `grep` | Поиск по содержимому с контекстом |
-| `find` / `ls` | Поиск файлов по маске и листинг каталога |
-| `Agent` | Фоновые суб-агенты: свой чат, свои инструменты, результат кратким отчётом |
-| `aether_*` | Среда, расширения, Skill, Agent Mode, расписания, диагностика — только через эти инструменты |
+**Chat**
+- Web research across eleven providers, with the top pages read for passages, cited sources, claim checks and adjustable depth.
+- Reminders, alarms and timers, photo paste, a single attachment tray and a full-screen gallery.
+- Personal Chat agents with their own instructions, model, tools and knowledge files.
+- Rich answers with tables, charts, diagrams, images and interactive previews.
+- Shared memory with Code, saved answers and voice input and output.
 
-</details>
+**Assistant**
+- Ask about any screen from the phone's assistant gesture, over other apps, by voice or typing, with screen text sent only when the question is about it.
+- Read text in images on the phone for models that cannot see pictures.
 
-Расширения добавляют свои инструменты: веб-доступ, MCP-серверы, AI Lab, Lab Power и
-фоновые суб-агенты — они подключаются в настройках и не требуют пересборки приложения.
+**Files, editor and Git**
+- File manager, tabbed code editor with syntax highlighting, search and replace, and offline language tools.
+- Side-by-side diff viewer, per-chat change tracking with undo, and a Build & Test dashboard.
+- GitHub sign-in, repository import, commit and push, and pull requests from the app.
+- SSH workspaces and FTP or SFTP sync.
 
-## Приватность
+**Models**
+- Built-in free provider, ChatGPT accounts, Anthropic, Gemini and any OpenAI-compatible API.
+- Up to 20 rotating API keys per provider, proxies, custom headers, key testing and fallback chains.
+- Voice providers for listening and speaking, including free Edge speech with more than 300 voices.
+- On-device GGUF models with optional GPU acceleration, plus 9Router as a local model router.
 
-Aether не отправляет данные на наши серверы: их нет. Всё, что уходит наружу — это ваши
-запросы к выбранному вами провайдеру модели и те сетевые вызовы, которые вы разрешили
-инструментам. Экспорт чата, история, файлы и настройки остаются на устройстве; при удалении
-приложения они удаляются вместе с ним.
+**Personalization**
+- Custom color palettes, a background canvas, experimental glass effects and haptic feedback.
+- Expressive settings in named sections, custom settings sections you build yourself, and motion blur on long lists.
+- Phone and desktop layouts with keyboard shortcuts.
 
-## Частые вопросы
+## Shell access
 
-<details>
-<summary>Обновление не ставится поверх старой версии</summary>
+Commands always run in the strongest environment the device allows.
 
-Android ставит APK поверх только при том же пакете, той же подписи и versionCode не ниже
-установленного. Все релизы Aether собираются одним ключом и с растущим versionCode, так что
-обновление ставится поверх без удаления приложения.
+| Command target | Runs as | Environment |
+| --- | --- | --- |
+| Privileged commands | shell uid via Shizuku | system access, like adb shell |
+| Privileged commands, no Shizuku | shell uid (2000) via Wireless ADB | system access, like adb shell |
+| Explicit root requests | UID 0 via the verified root service | full device access, when root is enabled |
+| Workspace commands | app uid | Linux toolchain with bash, git, python and node |
+| Fallback | app uid | toybox sh when nothing else is installed |
 
-</details>
+Root is always optional and opt-in. More detail is in [FEATURES.md](FEATURES.md#terminal-and-shells).
 
-<details>
-<summary>Нужен ли root?</summary>
+## FAQ
 
-Нет. Базово приложение работает в изолированной Alpine-среде без root. Root или Shizuku
-нужны только для операций с другими приложениями и системными разделами (Agent Mode).
+**Do I need a PC?**
+No. Editing, shell, git, GitHub, SSH, the models, and even building and signing APKs all happen on the phone.
 
-</details>
+**Do I need an API key?**
+No. The built-in provider offers free models without an account, and local models run offline. Keys are only needed for cloud providers.
 
-<details>
-<summary>Можно ли пользоваться своей моделью?</summary>
+**Do I need root?**
+No. Shizuku or the built-in Wireless ADB pairing gives shell-level access without unlocking the bootloader. Root is supported if you have it.
 
-Да: в настройках указывается провайдер, базовый URL, ключ и модель. Подходит любой сервер,
-совместимый с OpenAI Chat Completions, включая локальные Ollama и LM Studio.
+**Does it work offline?**
+Local models do, once downloaded. Web search, page reading and GitHub need a connection.
 
-</details>
+**Which languages are supported?**
+English, Simplified Chinese, Traditional Chinese, Russian, Arabic, Persian, Brazilian Portuguese, German, Spanish, Japanese, Indonesian, Sinhala, Vietnamese, Turkish, Malay, Thai, French, Hindi, Korean, Tamil, Bengali and Filipino.
 
-## Установка
+**Where do my chats and keys go?**
+Chat traffic goes only to the provider you choose. Credentials are stored encrypted on the device, and secrets are redacted before they reach a model. Settings backups include API keys only if you ask, and ChatGPT sign-ins are never included.
 
-1. Скачайте APK со страницы [релизов](https://github.com/aether-aiagent/aether/releases/latest)
-   или из [сборок Actions](https://github.com/aether-aiagent/aether/actions/workflows/build-nightly-apk.yml)
-   (артефакт **Aether-nightly**).
-2. Установите на Android **8.0+**, устройство **ARM64**.
-3. Настройте провайдера модели в настройках и выберите русский язык.
+**Can it damage my files?**
+The agent is limited to the workspace, every write shows up as a diff, and changes can be rewound or undone.
 
-Дальше обновления приходят сами: приложение проверяет новые релизы в этом репозитории и
-предлагает скачать и установить APK. Ставятся поверх старой версии — данные сохраняются.
+**Which devices are supported?**
+Android 8.0 and newer. Local models need a compatible 64-bit device.
 
-## Сборка из исходников
+## Build from source
 
-Нужны **JDK 17**, **Node.js 22.19+** и Android SDK с платформой **36**. Укажите путь к SDK
-в `local.properties` (`sdk.dir=...`) или через `ANDROID_HOME`.
+You need JDK 17 and the Android SDK.
 
 ```bash
-./gradlew :shared:testDebugUnitTest :app:testDebugUnitTest :app:assembleDebug \
-  --no-daemon --max-workers=2 -Paether.versionName=2.2.0
+./gradlew :app:assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-APK: `app/build/outputs/apk/debug/app-debug.apk`. Подписанная ночная сборка:
+Run the unit tests:
 
 ```bash
-./gradlew :app:assembleNightly -PNIGHTLY_KEYSTORE_FILE=signing/aether-nightly.keystore \
-  -PNIGHTLY_KEYSTORE_PASSWORD=... -PNIGHTLY_KEY_ALIAS=aether-nightly -PNIGHTLY_KEY_PASSWORD=...
+./gradlew :app:testDebugUnitTest
 ```
 
-В Windows используйте `gradlew.bat`. Для Termux задайте `android.aapt2FromMavenOverride`
-в `~/.gradle/gradle.properties`.
+Debug APKs are also built on every push to `main` and nightly in the Actions tab. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full setup.
 
-## Aether Desktop (Debian 13)
+## GitHub setup
 
-Каталог `debian/aether-desktop` — отдельное GUI-приложение с окном (Electron): чат, опросы,
-настройки провайдера и sudo-пароль, который вводится **один раз за сессию**.
+In Settings → GitHub, choose **Sign in with GitHub** or **Use a personal access token**.
 
-```bash
-./debian/build-deb.sh                     # .deb + AppImage в debian/aether-desktop/dist-electron/
-sudo apt install ./debian/aether-desktop/dist-electron/Aether-*.deb
-aether-desktop
-```
+- Device sign-in shows a code that you enter on GitHub in your browser.
+- Only enable workflow access if you need to edit GitHub Actions files.
+- Fine-grained tokens need the target repositories and **Contents: read and write**. Editing workflows also needs **Workflows** access.
+- Organizations may require approval or SSO authorization.
 
-Готовые пакеты собираются workflow **Build Aether Desktop (Debian 13)**. Подробности — в
-[debian/README_ru.md](debian/README_ru.md).
+Importing a repository needs the Linux environment. Clones go into private app storage, so broad storage permission is not required. Pushes never force-push, and each pushed commit is checked against the remote branch.
 
-## Звёзды во времени
+If a push automation fails, open its history to see the real cause. Common ones are the wrong workspace, missing Git, an SSH remote, missing token permissions, newer commits on the remote, or branch protection. A failed push can be retried with **Push existing commits**.
 
-<p align="center">
-  <a href="https://star-history.com/#aether-aiagent/aether&Date">
-    <img src="https://api.star-history.com/svg?repos=aether-aiagent/aether&type=Date" alt="История звёзд Aether" width="460" />
-  </a>
-</p>
+<details>
+<summary>Building with your own OAuth app</summary>
 
-## Поддержать проект
+Register a [GitHub OAuth app](https://github.com/settings/developers), turn on **Enable Device Flow**, and set `GITHUB_CLIENT_ID` in the ignored `local.properties` file. Local debug and release builds include that value. The Client ID is not stored in the repository source, docs or public workflows, and no client secret or auth server is used. Builds without it still support token login. Keep a token as a backup, since GitHub rate limits Device Flow for shared OAuth apps.
 
-Aether бесплатный и открытый. Если он экономит тебе время, проект можно поддержать:
+</details>
 
-- **Разово или подпиской** — ссылки в кнопке **Sponsor** вверху репозитория (Boosty, DonationAlerts, ЮMoney).
-- **Бесплатно, но не менее полезно** — звезда репозиторию, отчёт об ошибке с логами, PR с исправлением, честный отзыв в своём канале.
-- **Для компаний** — упоминание в README и в приложении на странице «О программе» в обмен на поддержку разработки.
+## Documentation
 
-Подробно, как искать спонсоров и что им писать: [docs/sponsorship.md](docs/sponsorship.md).
+- [FEATURES.md](FEATURES.md): the complete feature reference
+- [Configuration guide](docs/configuration/README.md) and [JSON Schema](docs/aether.schema.json) for `aether.json`
+- [Plugin guide](docs/configuration/plugin-manager.md)
+- [Developer repo wiki](https://github.com/aether-aiagent/aether/tree/main/repowiki): architecture of the agent engine, tools, providers, MCP and workspaces
+- [CHANGELOG.md](CHANGELOG.md), [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md)
 
-## Связанные репозитории
+## Contributing
 
-| Репозиторий | Что внутри |
-|---|---|
-| [aether-plugins](https://github.com/aether-aiagent/aether-plugins) | Примеры расширений: инструменты агента, команды чата, нативные моды |
-| [aether-skills](https://github.com/aether-aiagent/aether-skills) | Навыки агента в Markdown: код-ревью, релиз-ноты |
-| [aether-docs](https://github.com/aether-aiagent/aether-docs) | Установка, настройка провайдера, разбор частых ошибок |
+Bug reports, fixes, tests and documentation are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and use the issue forms for bugs and feature requests. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md). Translations are handled on [POEditor](https://poeditor.com/join/project/ZPbHNa9WWc).
 
-## Лицензия
+## Acknowledgements
 
-[GNU GPL v3](LICENSE). Сведения о сторонних компонентах — в [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Aether takes ideas and design inspiration from these open source projects:
+
+[Hermes Agent](https://github.com/NousResearch/hermes-agent),
+[Aider](https://github.com/Aider-AI/aider),
+[pi (ohmypi)](https://github.com/earendil-works/pi),
+[OpenCode](https://github.com/anomalyco/opencode),
+[Claude Code](https://github.com/anthropics),
+[Roo Code](https://github.com/RooCodeInc/Roo-Code),
+[Cline](https://github.com/cline/cline),
+[browser-use](https://github.com/browser-use/browser-use),
+[Termux](https://github.com/termux),
+[Shizuku](https://github.com/RikkaApps/Shizuku),
+[CodeGraph](https://github.com/colbymchenry/codegraph),
+[Caveman](https://github.com/JuliusBrussee/caveman),
+[llama.cpp](https://github.com/ggerganov/llama.cpp),
+[sora-editor](https://github.com/Rosemoe/sora-editor) and
+[Eruda](https://github.com/liriliri/eruda).
+
+## License
+
+Released under the [MIT License](LICENSE).

@@ -14,7 +14,7 @@ Recrify is built to support two sides of the hiring process:
 * **Recruiters** can manage job postings, review applicants, bulk process resumes, schedule interviews, monitor interview workflows, and track hiring activity from dedicated dashboards.
 * **Candidates** can explore jobs, upload resumes, analyze resume quality using AI, track applications, and join scheduled interviews from a personalized experience.
 
-The platform focuses on fast execution, role-based access, AI-assisted hiring workflows, and a more organized candidate pipeline.
+The platform focuses on fast execution, role-based access, AI-assisted hiring workflows, and a more organized candidate pipeline. Its integrated video interviews, coding rounds, and monitoring alerts help recruiters review potential integrity concerns during online screening.
 
 
 
@@ -31,6 +31,9 @@ The platform focuses on fast execution, role-based access, AI-assisted hiring wo
 - **AI Chat Assistant** - Embedded assistant for platform guidance and hiring-related interactions.
 - **Interview Scheduling & Management** - Recruiters can manage interview workflows through a dedicated interviews dashboard.
 - **Interview Room Access** - Browser-based interview room flow for both recruiters and candidates.
+- **Live Video Interviews** - Browser-based video calls with microphone and camera controls for recruiters and candidates.
+- **Integrated Coding Rounds** - Timed technical assessments with an editable coding platform, test execution, and recruiter visibility into candidate progress.
+- **Interview Monitoring Alerts** - Face, focus, and fullscreen signals help recruiters review possible issues during online screening and reduce opportunities for cheating.
 - **Interview Monitoring Add-Ons** - Monitoring credit purchases and interview monitoring-oriented flows are included in the product.
 - **Payments & Plans** - Subscription plans, payment handling, and monitoring add-on purchases are integrated into the platform.
 - **Legal & Support Pages** - Privacy, refund, terms, pricing, and contact pages are integrated into the application.

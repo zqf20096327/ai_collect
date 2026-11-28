@@ -61,13 +61,13 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 ## Current coverage
 
-- [Classification & Routing](categories/classification-routing.md) — 80 entries
+- [Classification & Routing](categories/classification-routing.md) — 81 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 67 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 45 entries
 - [Agent Decisions](categories/agent-decisions.md) — 70 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 54 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 55 entries
 - [Calibration & Research](categories/calibration-research.md) — 70 entries
 - [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 140 entries
 - [Game & Simulation](categories/game-simulation.md) — 30 entries
@@ -200,6 +200,7 @@ Source file: [`categories/classification-routing.md`](categories/classification-
 - [typesafe-cascade](https://github.com/monumei/typesafe-cascade) ![stars](https://img.shields.io/github/stars/monumei/typesafe-cascade?style=flat-square&label=%E2%98%85) - Cascade: sends every classification to a typed `Choice` first and only escalates to a reasoning model when Jev's confidence fails to clear a threshold, which is the pattern most projects here reimplement without naming it.
 - [pi-sieve](https://github.com/DrMkdaddy/pi-sieve) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![stars](https://img.shields.io/github/stars/DrMkdaddy/pi-sieve?style=flat-square&label=%E2%98%85) - Routing: semantic routing and a hybrid Jev/Clef compaction step inside the Pi coding agent's own tooling, alongside a guardrail suite.
 - [Switchyard](https://github.com/NVIDIA-NeMo/Switchyard) ![stars](https://img.shields.io/github/stars/NVIDIA-NeMo/Switchyard?style=flat-square&label=%E2%98%85) - Routing: NVIDIA NeMo's traffic router can use Jev as the task judge, choosing between models from candidate descriptions and a probability cutoff rather than a rule table.
+- [Asking a model for a judgment in Kafka Streams: triaging new CVEs](https://www.alginte.com/blog/asking-a-model-for-a-judgment-in-kafka-streams/) - Security triage: a Kafka Streams topology asks Jev a `Choice` of critical, high, medium or low for each new CVE published without a severity, and sends answers under 0.6 confidence to human review.
 
 ### Adaptive & Realtime UI
 
@@ -338,5 +339,4 @@ Source file: [`categories/scoring-ranking.md`](categories/scoring-ranking.md)
 - [Chem Autocomplete (ChemIllusion)](https://chemillusion.com/blog/2026-09-25-chem-autocomplete-jev) - Chemistry: uses Jev to rank which RDKit-validated sketcher structure candidates to show as autocomplete cards and in what order (~0.2s per request).
 - [dsh-jev-plugin](https://github.com/luobosibing2/dsh-jev-plugin) ![agent: DeepSeek Harness](https://img.shields.io/badge/agent-DeepSeek%20Harness-2D5BD7?style=flat-square) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/luobosibing2/dsh-jev-plugin?style=flat-square&label=%E2%98%85) - Coding agents: asks Jev a `Noul` for each skill summary or original glob path, orders candidates by the returned relevance probability, and supplies the selected skills or ranked paths to DeepSeek Harness, with all features disabled by default.
 - [JevRanker](https://github.com/hgqimo/JevRanker) ![stars](https://img.shields.io/github/stars/hgqimo/JevRanker?style=flat-square&label=%E2%98%85) - Retrieval and RAG: an open-source port of Jev's typed-decision format ([NanoJev](https://github.com/TianyuCodings/NanoJev)'s Qwen3-0.6B, trained on T2Ranking, no hosted API call) that replaces the LLM comparator inside two published search rerankers, BlitzRank's tournament graph and Reranker-Guided Search, where each match is one `Choice` scored over k candidate paths in a single forward pass with zero decoded tokens, reaching 0.6309 nDCG@10 on T2Ranking dev against 0.2162 for the same 0.6B decoding a RankGPT listwise prompt, at 34 ms instead of 752 ms per match and 8.6-9.4x lower per-query latency inside RGS.
-- [Jev vs embeddings for page selection](https://sayora.ai/many-hands/jev-vs-embeddings/) - Production replacement: across 168 caller questions on four small-business websites Jev put the right page first 88% of the time against 70% for production embeddings, and handed the model the wrong page a tenth as often.
-- [OpenJev playground](https://github.com/SiliconLabAI/OpenJev) ![stars](https://img.shields.io/github/stars/SiliconLabAI/OpenJev?style=flat-square&label=%E2%98%85) - Playground: state plus typed ques
+- [Jev vs embeddings for page selection](https://sayora.ai/many-hands/jev-vs-embeddings/) - Production replacement: across 168 caller questions on four small-business

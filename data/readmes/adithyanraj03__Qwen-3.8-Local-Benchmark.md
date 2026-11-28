@@ -1,26 +1,26 @@
 # Qwen3.8 local model benchmark — 10 builds, 54 real tasks
 
-English | [中文](README.zh-CN.md)
-
 <p align="center">
-  <a href="https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/"><img alt="Live report" src="https://img.shields.io/badge/Live_report-open_in_browser-2bb5a0?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=202124"></a>
-  <a href="https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/#leaderboard"><img alt="Top score: M4 8.98" src="https://img.shields.io/badge/Top_score-M4_%C2%B7_8.98-22a882?style=for-the-badge&labelColor=202124"></a>
-</p>
-<p align="center">
-  <img alt="Benchmark time 5 d 5 h" src="https://img.shields.io/badge/benchmark_time-5d_5h-b8891c?style=flat&labelColor=202124">
+  <img alt="Benchmark time 6 d 3 h" src="https://img.shields.io/badge/benchmark_time-6d_3h-b8891c?style=flat&labelColor=202124">
   <img alt="GPU: RTX 5090" src="https://img.shields.io/badge/GPU-RTX_5090_%C2%B7_64_GB-76b900?style=flat&logo=nvidia&logoColor=white&labelColor=202124">
   <img alt="Engines: NInfer, Strata, Basalt" src="https://img.shields.io/badge/engines-NInfer_%C2%B7_Strata_%C2%B7_Basalt-e0892f?style=flat&labelColor=202124">
   <a href="https://huggingface.co/Cracked-ANJ/Orca-Qwen3.8-Flash-Next-Abliterated-NVFP4-GPTQ-Strata"><img alt="Hugging Face: M4 weights" src="https://img.shields.io/badge/Hugging_Face-M4_weights-ffd21e?style=flat&logo=huggingface&logoColor=white&labelColor=202124"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC_BY_4.0-lightgrey?style=flat&logo=creativecommons&logoColor=white&labelColor=202124"></a>
 </p>
 
+<p align="center">
+  English | <a href="README.zh-CN.md">中文</a> &nbsp;&nbsp;
+  <a href="https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/"><img alt="Live report" src="https://img.shields.io/badge/Live_report-open_in_browser-2bb5a0?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=202124"></a>
+  <a href="https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/#leaderboard"><img alt="Top score: M4 8.98" src="https://img.shields.io/badge/Top_score-M4_%C2%B7_8.98-22a882?style=for-the-badge&labelColor=202124"></a>
+</p>
+
 Ten Qwen3.8 builds, each run alone through the same 54 hands-on tasks: games and 3D worlds, SVG and shaders, web apps and extensions, C++, Rust and Go, refactors and bug hunts, LaTeX papers and research write-ups. Everything ran on one RTX 5090 with 64 GB of RAM. Every result was rebuilt, run, recorded and scored by hand, and the owner personally played and rated every game, 3D, sound and design task.
 
-**Live report:** [adithyanraj03.github.io/Qwen-3.8-Local-Benchmark](https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/). Scores, recordings, notes and playable demos for all 378 runs.
+**Live report:** [adithyanraj03.github.io/Qwen-3.8-Local-Benchmark](https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/). Scores, recordings, notes and playable demos for all 486 runs.
 
 ## Final standings
 
-![Final standings: 1 M4 8.98 (29 tasks won), 2 M7 8.89 (22), 3 M6 8.37 (12), 4 M1 8.22 (11), 5 M5 8.19 (8), 6 M2 8.07 (12), 7 M3 8.06 (9)](assets/readme/standings.png)
+![Final standings: 1 M4 8.98 (29 tasks won), 2 M7 8.89 (21), 3 M9 8.86 (15), 4 M10 8.60 (9), 5 M6 8.37 (11), 6 M1 8.22 (11), 7 M5 8.19 (8), 8 M2 8.07 (12), 9 M3 8.06 (9)](assets/readme/standings.png)
 
 ## How scoring works
 
@@ -28,10 +28,10 @@ Each run is scored on five axes: Visual, Prompt following, Output, Creativity, a
 
 ## Settings each build ran with
 
-From the Strata launch files on the host and the inference monitor's request history for the OpenCode runs
-(9 Oct – 2 Nov 2026).
+From the Strata launch files and the Basalt config on the host, and the inference monitor's request history for the OpenCode runs
+(9 Oct – 2 Nov 2026; M9 and M10 25–27 Nov 2026).
 
-[![Settings each build ran with: engine and launch flags for M1 to M7; M6 is the only build with a speed-projection control vector](assets/readme/settings.png)](https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/#settings)
+[![Settings each build ran with: engine and launch flags for M1 to M10; M6 is the only build with a speed-projection control vector](assets/readme/settings.png)](https://adithyanraj03.github.io/Qwen-3.8-Local-Benchmark/#settings)
 
 - All builds: RTX 5090 + 64 GB RAM, KV cache int8, vision on.
 - **M2 ran with MTP, not DFlash2.** The 27B Orca's first DFlash2 run on this machine was on 3 Nov 2026, after the OpenCode runs.
@@ -39,7 +39,8 @@ From the Strata launch files on the host and the inference monitor's request his
   when reading its speed and its results.
 - **Sampling** was not recorded by the server; it comes from the OpenCode config on the test machine: build agent temperature 0.6,
   top_p 0.95, auto-compaction on with 32,768 tokens reserved. Context window given to OpenCode: 200K for the 27B builds,
-  250K for M4 and M5, 500K for M6 and for M7 at 512K, 380K for M7 at 384K.
+  250K for M4, M5, M9 and M10, 500K for M6 and for M7 at 512K, 380K for M8 (384K).
+- **M9 runs on Basalt**, the only build not on NInfer or Strata. Basalt takes a JSON config, not CLI flags; the image lists its keys.
 
 ## Model weights
 

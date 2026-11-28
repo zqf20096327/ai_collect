@@ -10,7 +10,7 @@ A curated guide to [Apertus](https://www.apertus-ai.org/), the open multilingual
 
 > Independent, community-maintained list; not affiliated with, sponsored by, or endorsed by Apertus or its institutions. “Official” denotes resources from the Apertus team or Swiss AI.
 
-**Last full ecosystem review and list audit: November 18, 2026.**
+**Last full ecosystem review and list audit: November 27, 2026.**
 
 Related Swiss guides: [open data sources and tools](https://github.com/rnckp/awesome-ogd-switzerland) and [legal sources, datasets and tools](https://github.com/rnckp/awesome-open-legal-switzerland).
 
@@ -45,12 +45,12 @@ Related Swiss guides: [open data sources and tools](https://github.com/rnckp/awe
 ## Official sites and documentation
 
 - [Apertus website](https://www.apertus-ai.org/) — Project home; [about and roadmap](https://apertus-ai.org/pages/about/) cover its mission, background, and plans.
-- [Swiss AI Initiative](https://www.swiss-ai.org/) — Parent initiative; [ETH AI Center](https://ai.ethz.ch/), [EPFL AI Center](https://ai.epfl.ch/), and [CSCS](https://www.cscs.ch/) are the institutional homes.
+- [Swiss AI Initiative](https://www.swiss-ai.org/) — Parent initiative; [ETH AI Center](https://ai.ethz.ch/about-us.html), [EPFL AI Center](https://ai.epfl.ch/), and [CSCS](https://www.cscs.ch/) are the institutional homes.
 - [Documentation hub](https://apertus-ai.org/pages/documentation/) — Downloads, technical resources, and policies; start with the [overview](https://apertus-ai.org/docs/overview/) and [FAQ](https://apertus-ai.org/docs/faq/).
 - [Provider directory](https://apertus-ai.org/pages/get-started/) and [community showcase](https://apertus-ai.org/pages/get-showcase/) — Officially listed services and applications.
 - [GitHub organization](https://github.com/swiss-ai) — Authoritative code index; includes other Swiss AI research alongside Apertus.
 - [Hugging Face organization](https://huggingface.co/swiss-ai) — Authoritative models, datasets, collections, and demos.
-- [News](https://apertus-ai.org/news/) and [newsletter](https://apertus-ai.org/subscribe/) — Updates, including [Apertus 1.5](https://apertus-ai.org/articles/2026-07-apertus-1-5/) the [October 2026 release notes](https://huggingface.co/blog/swiss-ai/apertus-v15-release-notes), and the [September 2026 ecosystem review](https://apertus-ai.org/articles/2026-09-apertus-1-5-ga/).
+- [News](https://apertus-ai.org/news/) and [newsletter](https://apertus-ai.org/subscribe/) — Updates, including [Apertus 1.5](https://apertus-ai.org/articles/2026-07-apertus-1-5/), the [October 2026 release notes](https://huggingface.co/blog/swiss-ai/apertus-v15-release-notes), and the [September 2026 ecosystem review](https://apertus-ai.org/articles/2026-09-apertus-1-5-ga/).
 - [Apertus Charter](https://apertus-ai.org/pages/charter/) — Published behavioral principles.
 - [Legal documentation](https://github.com/swiss-ai/apertus-legal) — Versioned licenses, usage and privacy policies, EU public summaries, and codes of practice; companion [licensing](https://apertus-ai.org/docs/tech/licensing/) and [safety](https://apertus-ai.org/docs/tech/safety/) guides.
 - [Website source](https://github.com/swiss-ai/www-apertus) — Contribute fixes to the website and documentation.
@@ -72,7 +72,7 @@ Use each model card for capabilities, access conditions, and installation instru
 
 Supporting models: [pretraining toxicity classifier](https://huggingface.co/swiss-ai/apertus-pretrain-toxicity) and [WavTokenizer checkpoint](https://huggingface.co/swiss-ai/wavtokenizer-large-unify-40token).
 
-**Version matters:** The official 1.5 weights require accepting access conditions. Follow the [1.5 model card](https://huggingface.co/swiss-ai/Apertus-v1.5-8B#how-to-use) for the pinned builds and check the runtime status below. Use non-thinking mode for tool calling.
+**Version matters:** The official 1.5 weights require accepting access conditions. Transformers 5.24 introduces native support. Follow the [1.5 model card](https://huggingface.co/swiss-ai/Apertus-v1.5-8B#how-to-use) for the pinned vLLM build and use non-thinking mode for tool calling.
 
 ## Official code and training infrastructure
 
@@ -119,6 +119,7 @@ Supporting models: [pretraining toxicity classifier](https://huggingface.co/swis
 - **Text pretraining research:** [processed Project Gutenberg](https://huggingface.co/datasets/swiss-ai/project_gutenberg_preprocessed) and [poison/canary data](https://huggingface.co/datasets/swiss-ai/apertus-pretrain-poisonandcanaries).
 - **Post-training:** [SFT mixture](https://huggingface.co/datasets/swiss-ai/apertus-sft-mixture), [Africa SFT](https://huggingface.co/datasets/swiss-ai/africa-sft), and [Africa preferences](https://huggingface.co/datasets/swiss-ai/africa-preferences).
 - **1.5 post-training releases:** [Text SFT mix](https://huggingface.co/datasets/swiss-ai/Apertus-v1.5-SFT-mix), [annotated preference pool](https://huggingface.co/datasets/swiss-ai/Apertus-v1.5-Preference-Pool), and [DPO training pairs](https://huggingface.co/datasets/swiss-ai/Apertus-v1.5-Preference-Data).
+- **1.5 multimodal post-training:** [Vocalized SFT](https://huggingface.co/datasets/swiss-ai/Apertus-v1.5-Vocalized-SFT) pairs synthesized user speech with text replies. [LNQA Recap](https://huggingface.co/datasets/swiss-ai/Apertus-v1.5-LNQA-Recap) pairs images and original questions with regenerated answers. The speech compilation is ODC-BY and the visual dataset is published under CC BY 4.0. Upstream text and images retain their own terms.
 - **Instruction following:** [verified SFT](https://huggingface.co/datasets/swiss-ai/if-sft-verified-singleturn-all), [RL prompts](https://huggingface.co/datasets/swiss-ai/if-rl-singleturn-prompts), and [hard RL prompts](https://huggingface.co/datasets/swiss-ai/if-rl-singleturn-hard-prompts).
 - **Multimodal source collections:** [NASA](https://huggingface.co/datasets/swiss-ai/nasa), [Our World in Data](https://huggingface.co/datasets/swiss-ai/owid), [Smithsonian](https://huggingface.co/datasets/swiss-ai/smithsonian), and [swisstopo](https://huggingface.co/datasets/swiss-ai/swisstopo).
 - **Evaluation datasets:** [mLogiQA](https://huggingface.co/datasets/swiss-ai/mlogiqa), [MathQA](https://huggingface.co/datasets/swiss-ai/math_qa), [BLEnD sample](https://huggingface.co/datasets/swiss-ai/blend-sample), and [HalluLens](https://huggingface.co/datasets/swiss-ai/hallulens).
@@ -148,6 +149,7 @@ Supporting models: [pretraining toxicity classifier](https://huggingface.co/swis
 
 - [Who Gets Help First?](https://github.com/uomoathens/who-gets-help-first) — Counterfactual flood-response decision audit in Greek, French and English, with recorded Apertus 1.0 8B and comparison-model runs, controls and analysis. MIT code; study results are provisional and synthetic scenarios were not validated by emergency services.
 - [MSafeTemp](https://github.com/swiss-ai/msafetemp) — Multilingual safety-data augmentation, evaluation and Apertus training recipes, with a [60-language dataset](https://huggingface.co/datasets/swiss-ai/MSafeTemp) and [paper](https://arxiv.org/abs/2610.40516). MIT code and Apache-2.0 dataset.
+- [PersonaFactory](https://github.com/swiss-ai/personafactory) — Swiss AI research on rewriting conversations using synthetic personas, with Apertus 1.5 8B fine-tuning recipes and evaluation. MIT code. The [dataset](https://huggingface.co/datasets/swiss-ai/PersonaFactory) is released under Apache-2.0 and upstream chat sources retain their terms.
 - [Forking Paths / Rozcestí](https://github.com/josefslerka/forking-paths) — Local research workbench for token probabilities, surprisal, context comparisons and model interventions, with Apertus and EuroLLM backends. Apache-2.0. Demo values are synthetic and optional calibrated addons are not bundled.
 - [ONWARD degeneration probes](https://github.com/swiss-ai/degeneration-probe) — Degeneration-onset datasets, hidden-state probes and false-alarm evaluation for original Apertus 8B Instruct and comparison models; [released probes](https://huggingface.co/collections/marcodene/onward-degeneration-probes). Research tooling, not a validated deployment safeguard.
 - [SFT Data Scorer](https://github.com/aebelge/sftdashboard) — Dataset inspection, annotation and score-based selection dashboard with Apertus 1.5 dataset/scoring adapters. Research prototype; default scores are synthetic fixtures. MIT.
@@ -168,13 +170,14 @@ Supporting models: [pretraining toxicity classifier](https://huggingface.co/swis
 - [Charter alignment benchmark](https://github.com/swiss-ai/swiss-ai-charter-alignment-benchmark) — Research scaffold for measuring adherence to charter articles.
 - [SwissLegalEvals](https://github.com/JoelNiklaus/SwissLegalEvals) — Independent Swiss legal benchmarks and [2026 Apertus comparison](https://github.com/JoelNiklaus/SwissLegalEvals/blob/main/blog/swiss-legal-evals-2026.md).
 - [DS-NLP Lab: Apertus 1.5 8B evaluation](https://blog.nlp-lab.ai/2026/07/29/Apertus15Bench.html) — Independent write-up; [earlier 8B result files](https://github.com/unisg-ics-dsnlp/Apertus8B-Instruct-Benchmark-Results).
+- [Catalan local-model evaluation](https://github.com/lesantipodes/avaluacio-catala-local/tree/main/clam) — Softcatalà benchmark results for a Q8_0 build of the original Apertus 8B Instruct and comparison models. Apache-2.0 scripts. Quantization and hardware differ from Softcatalà’s published runs.
 - [GuideLLM](https://vllm-project.github.io/guidellm/main/) — Serving-load benchmarking tool used in the official ecosystem review.
 
 ## Local inference and serving
 
 | Tool                     | Apertus resources                                                                                                                                                                                                                                                           | Notes                                                                                |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Transformers             | [Official guide](https://apertus-ai.org/docs/guides/transformers/) · [1.0 docs](https://huggingface.co/docs/transformers/model_doc/apertus) · [1.5 development docs](https://huggingface.co/docs/transformers/main/en/model_doc/apertus1p5) · [Swiss AI fork](https://github.com/swiss-ai/transformers) | Native 1.5 support [merged to main](https://github.com/huggingface/transformers/pull/47662) on November 17, after the 5.23.0 release.           |
+| Transformers             | [Official guide](https://apertus-ai.org/docs/guides/transformers/) · [1.0 docs](https://huggingface.co/docs/transformers/model_doc/apertus) · [1.5 docs](https://huggingface.co/docs/transformers/main/en/model_doc/apertus1p5) · [Swiss AI fork](https://github.com/swiss-ai/transformers) | [v5.24.0](https://github.com/huggingface/transformers/releases/tag/v5.24.0) introduces native 1.5 text, image and audio input with text output. |
 | vLLM                     | [Official guide](https://apertus-ai.org/docs/guides/vllm/) · [1.5 instructions](https://huggingface.co/swiss-ai/Apertus-v1.5-70B#how-to-use) · [Swiss AI fork](https://github.com/swiss-ai/vllm) · [upstream PR](https://github.com/vllm-project/vllm/pull/50496) | The 1.5 upstream PR remains open. Use the model card’s pinned builds, parsers and containers.                   |
 | SGLang                   | [Official guide](https://apertus-ai.org/docs/guides/sglang/) · [Swiss AI fork](https://github.com/swiss-ai/sglang) · [sglang-apertus](https://github.com/swiss-ai/sglang-apertus) · [Scratchpad](https://github.com/swiss-ai/Scratchpad)                                    | Original-model examples; 1.5 integration remains work in progress.                   |
 | llama.cpp                | [Upstream](https://github.com/ggml-org/llama.cpp) · [experimental 1.5 branch](https://github.com/MichelRosselli/llama.cpp/tree/model/apertus-v1.5) · [maintainer discussion](https://huggingface.co/swiss-ai/Apertus-v1.5-8B/discussions/6)                                 | Experimental full 1.5 support: author-tested 8B; 70B unvalidated.                    |
@@ -186,6 +189,7 @@ Supporting models: [pretraining toxicity classifier](https://huggingface.co/swis
 | Transformers.js / WebGPU | [Mini demo and source](https://huggingface.co/spaces/swiss-ai/apertus-mini-webgpu)                                                                                                                                                                                          | Browser-local inference with converted Mini weights.                                 |
 
 - [EAGLE-3 for Apertus 1.5 70B](https://github.com/ninabot-ch/apertus-eagle3) — Pinned vLLM patch helper and measurement scripts for a [gated draft head](https://huggingface.co/ninabot/Apertus-v1.5-70B-EAGLE3). Apache-2.0. Experimental W4A16/TP4 setup, with a head trained on a fine-tune and small reported measurement samples.
+- [Apertus on Axelera Metis](https://github.com/ichalkiad/apertus-axscript-edge) — Experimental text-only Apertus 1.5 8B port for the Metis NPU using AxScript and Voyager SDK 1.9.0. Apache-2.0 port code. The author reports running it at a 1,024-token context on one chip.
 
 ## Community quantizations and derivatives
 
@@ -216,7 +220,7 @@ Supporting models: [pretraining toxicity classifier](https://huggingface.co/swis
 - [Apertus Mini bank-budget classifier](https://huggingface.co/kgptalkie/apertus-1.5b-bank-budget) — Educational 1.1 Mini 1.5B adaptation for US transaction categories, with an MLX LoRA adapter and fused Q8 GGUF. Apache-2.0; trained and evaluated on synthetic bank lines.
 - [Greek Apertus](https://github.com/eellak/greek-apertus) — Greek adaptation of original Apertus 8B; [continued-pretraining weights](https://huggingface.co/glossAPI/apertus-8b-greek-cpt) and [instruction-tuned v0.5 preview](https://huggingface.co/glossAPI/greek-apertus-8b-instruct). Apache-2.0 weights; gated downloads.
 - [Apertus Decide](https://huggingface.co/andreasmartin/apertus-v1.1-swiss-decide-0.4b-bidir) — Experimental Mini-derived bidirectional encoder for runtime-defined choices, ordered scores and boolean decisions; [playground/API](https://huggingface.co/spaces/andreasmartin/apertus-decide). Non-generative; confidence is not probability of correctness. Apache-2.0.
-- [Votum-8B](https://huggingface.co/votum-ai/Votum-8B) — 1.5 8B decision model for many concurrent questions per request: the input is read once for up to 8 questions, each returning a probability per option; [FP8](https://huggingface.co/votum-ai/Votum-8B-FP8), [training data](https://huggingface.co/datasets/votum-ai/Votum-Pool) and [code](https://github.com/hypathia/votum).
+- [Votum-8B](https://huggingface.co/votum-ai/Votum-8B) — Apertus 1.5 8B adaptation that scores options for up to eight questions about a shared text or image input. Includes an [FP8 variant](https://huggingface.co/votum-ai/Votum-8B-FP8), the [cleaned successor to its training data](https://huggingface.co/datasets/votum-ai/Votum-Pool) and [code](https://github.com/hypathia/votum).
 - [Andreas Martin's Apertus collection](https://huggingface.co/collections/andreasmartin/apertus) — Experimental and educational 1.1 Mini and 1.5 embedding conversions, text-only formats and a biomedical fine-tune.
 
 ### Community fine-tuning tutorials
@@ -237,6 +241,7 @@ Sources: official [directory](https://apertus-ai.org/pages/get-started/), [ecosy
 | Safe Swiss Cloud | [Private AI](https://safeswisscloud.com/en/private-ai/)                                                                                                                                                                                 | Managed private AI; lists 1.5 70B.            |
 | stepping stone   | [AI on demand](https://www.stepping-stone.ch/en/products/artificial-intelligence/ai-on-demand-powered-by-swiss-ai-initiative) · [deployment notes](https://wiki.stoney-cloud.com/wiki/AI_on_demand:_apertus-ai/Apertus-v1.5-8B)         | Managed 1.5 8B service.                       |
 | Public AI        | [Chat](https://publicai.co/) · [developer platform](https://platform.publicai.co/) · [API reference](https://platform.publicai.co/api) | Hosted chat and API.                          |
+| Cloudflare Workers AI | [Apertus 1.5 8B model docs](https://developers.cloudflare.com/workers-ai/models/apertus-v1.5-8b/) | Hosted API with documented image input and function calling. Access requires a request. |
 | Featherless      | [Apertus catalog](https://featherless.ai/models?families=apertus) · [deployment guide](https://apertus-ai.org/docs/deploy/featherless/)                                                                                                 | Serverless inference.                         |
 | Regolo           | [Apertus model page](https://regolo.ai/models-archive/apertus-70b-2509/)                                                                                                                                                                | Original 70B via `apertus-70b`.               |
 | OnPrem AI        | [Model catalog](https://www.onprem.ai/en/ai-llm-models/)                                                                                                                                                                                | On-premise enterprise deployment and support. |
@@ -255,11 +260,12 @@ Sources: official [directory](https://apertus-ai.org/pages/get-started/), [ecosy
 
 - [Lumo by Proton](https://proton.me/blog/lumo-apertus-partnership) — Assistant with Apertus 1.5 selection.
 - [Euria](https://www.infomaniak.com/en/euria) — Infomaniak assistant with Apertus selection; [setup and kSuite integration](https://www.infomaniak.com/en/support/faq/2924/discover-euria-and-the-apertus-model).
-- [Helvetra](https://helvetra.ch/) — Swiss-language translation; [backend source](https://github.com/Helvetra/backend).
+- [Helvetra](https://helvetra.ch/) — Swiss-language translation with Apertus, including Swiss German dialects. MIT-licensed [web](https://github.com/Helvetra/frontend) and [iOS](https://github.com/Helvetra/ios) clients connect to the [Helvetra backend](https://github.com/Helvetra/backend).
 - [AI Potluck](https://www.aipotluck.org/chat) — Alpha chat with Apertus 1.5 routing and per-answer model/provider provenance. The [published source snapshot](https://github.com/currentai-org/alpha) includes chat and agent services. MIT code, with Apache-2.0 chat-ui-derived files and hosted-service dependencies.
 - [AskCH](https://github.com/xLongLink/askch) — Apertus 1.5 70B chat with an Infomaniak-backed agent, Swiss-service MCP tools and streamed tool traces. MIT prototype. Provider credentials are required and hosted-service claims were not independently verified.
 - [Open Data Editor](https://opendataeditor.okfn.org/) — Tabular-data editor with local AI; [source](https://github.com/okfn/opendataeditor) defaults to original Apertus 8B GGUF.
 - [ZüriCityGPT OSS](https://oss.zuericitygpt.ch/) — Liip's Apertus-backed RAG demo over Zurich city website content.
+- [FINMA regulatory-enquiry pilot](https://www.finma.ch/en/documentation/finma-publications/addresses-and-specialist-articles/referate-folder/20261103-rede-marlene-amstadt-sba/) — FINMA reports blind expert evaluation of Apertus and two other models running on its own hardware to draft replies to regulatory enquiries. Internal prototype.
 
 ### SDKs, automation, and application examples
 
@@ -289,7 +295,7 @@ Highlights from the [full Hack Apertus project list](HACK_APERTUS.md), which doc
 - [SwissCivicQA-4L](https://github.com/Jann08/swisscivicqa/tree/main/track_1b) — **Online Track 1B runner-up, team Jann.** Swiss constitutional factuality benchmark in German, French, Italian and Romansh, with source-backed answers, recorded Apertus 1.5 8B responses and cross-language consistency scoring.
 - [Swiss Heritage Factuality](https://github.com/ChristoYusj/apertus-swiss-landmarks) — **Online Track 1B third place, team Red Pandas.** Four-language Swiss landmark benchmark with photo, text-only and trap questions, recorded responses and deterministic regrading.
 - [Reading semantic differences from Apertus](https://github.com/amunozo/apertus-swissgov-rsd) — **Online Track 2A winner, Alberto Muñoz Ortiz.** SwissGov-RSD experiments with Apertus 1.5 8B hidden states, fitted prediction heads, token heatmaps and CPU replay of saved features.
-- [Fact Attack](https://github.com/JJukic/Apertus-Team-Fact-Attack-2026) — **Online Track 2A runner-up.** Multilingual voting-booklet claim verification with Apertus 1.5, hybrid page retrieval and cited evidence. The report identifies AGPL obligations for the PyMuPDF-based image.
+- [Fact Attack](https://github.com/JJukic/Apertus-Team-Fact-Attack-2026) — **Online Track 2A runner-up.** Multilingual voting-booklet claim verification with Apertus 1.5, hybrid page retrieval and cited evidence. A [student follow-up](https://github.com/SheylaSam/fact-attack-genai) adds source selection and reports results from one held-out evaluation. Both projects document AGPL obligations for their PyMuPDF-based images.
 - [See It, Say It, Pick It — Asian Prompters](https://github.com/azamafridi23/see-it-say-it-pick-it-hack-apertus) — **Online Track 2A third place.** Object segmentation, scene graphs and Apertus planning/safety agents produce pick/place plans, clarification questions or refusals for the robotics challenge.
 - [Sturmglocke](https://github.com/TusharTechs/sturmglocke) — **Online Track 2B winner, team Barry.** Crisis-staff training game with Apertus multilingual alerts, calls and debriefs, plus deterministic hazard-value checks; resident behaviour is illustrative.
 - [Klar](https://github.com/0uternet/klar) — **Online Track 2B runner-up.** Web-accessibility pre-checks combining axe-core, Apertus 1.5 interpretation, source-quotation guards and human review. Recorded local runs and replay are available; live-page false positives remain a limitation and findings do not certify conformance.

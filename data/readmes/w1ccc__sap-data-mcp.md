@@ -131,3 +131,7 @@ sap-data-mcp/
 ## License
 
 [MIT](LICENSE)
+
+## 作者
+
+[w1ccc](https://github.com/w1ccc)

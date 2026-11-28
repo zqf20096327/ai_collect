@@ -33,7 +33,14 @@ Give each bot a job. Watch it work. Approve the steps that matter.</p>
   <a href="https://play.google.com/store/apps/details?id=bot.seira.companion"><b>Android app</b></a>
 </p>
 
-<p>If Seira helps you, a ⭐ on GitHub helps other people find it.</p>
+<p>
+  <a href="https://www.producthunt.com/products/seira-bot?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-seira-bot"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1331852&amp;theme=dark">
+    <img alt="Seira.bot on Product Hunt" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1331852&amp;theme=light" width="250" height="54">
+  </picture></a>
+</p>
+
+<p>If Seira helps you, a ⭐ on GitHub and your support on Product Hunt help other people find it.</p>
 
 </div>
 
@@ -260,7 +267,10 @@ Measured with Seira 0.1.194 on a VPS with 2 vCPU and Ubuntu 26.04, on 2026-11-26
 | At idle | less than 400 MB of memory, 0.7% of one CPU core |
 | Time Seira adds to each chat turn | about 0.4 s |
 | HTTP API | 2,600 to 2,900 requests per second; p99 under 4 ms at 100 requests per second |
+| Memory for each bot that works, with a real model | about 0.2 to 0.45 GB: the engine and its tool helpers |
+| 12 Claude bots that work at the same time | 3.6 GB at the peak; from 4 bots the 2 vCPU are full and replies take longer |
 
+The last two rows come from a test with Claude, Codex and OpenCode models on a second 2 vCPU VPS (Docker, Ubuntu 24.04).
 [docs/benchmarks.md](docs/benchmarks.md) has the method, the raw data, the standard agent benchmarks, and the script to measure your own server.
 
 ## Privacy
@@ -345,11 +355,42 @@ No. The desktop app and the npm server connect apps for you. Your own Composio k
 Chats and files stay on your computer. A bot sends your message to the AI service that it uses. A bot uses your computer only after you allow it. Commands and file edits show as cards that you allow or deny.
 </details>
 
+## Community
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/assets/community/producthunt.svg" alt="" width="40" height="40">
+      <h4>Product Hunt</h4>
+      <p>Like Seira? Your support or a review helps more people find it.</p>
+      <a href="https://www.producthunt.com/products/seira-bot?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-seira-bot"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1331852&amp;theme=dark"><img alt="Seira.bot on Product Hunt" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1331852&amp;theme=light" width="220" height="48"></picture></a>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/assets/community/discord.svg" alt="" width="40" height="40">
+      <h4>Discord</h4>
+      <p>Ask questions, show your bots, and meet other users.</p>
+      <a href="https://discord.gg/wAAgETJpFS"><b>Join the server →</b></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/assets/community/whatsapp.svg" alt="" width="40" height="40">
+      <h4>WhatsApp channel</h4>
+      <p>Get new releases and tips on your phone.</p>
+      <a href="https://whatsapp.com/channel/0029VbEEDHAAojYjWCQr2c1G"><b>Follow the channel →</b></a>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/assets/community/linkedin.svg" alt="" width="40" height="40">
+      <h4>LinkedIn</h4>
+      <p>Tell your network about Seira in one click.</p>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.producthunt.com%2Fproducts%2Fseira-bot"><b>Share on LinkedIn →</b></a>
+    </td>
+  </tr>
+</table>
+
 ## Contributing
 
 Issues and pull requests are welcome.
-Ask questions and meet other users on the [Seira Discord server](https://discord.gg/wAAgETJpFS).
-Follow the [Seira channel on WhatsApp](https://whatsapp.com/channel/0029VbEEDHAAojYjWCQr2c1G) for new releases and tips.
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) explains how a change lands.
 - The [code guide](docs/contributing.md) holds the code rules, and [DESIGN.md](DESIGN.md) holds the design rules.

@@ -1,5 +1,3 @@
-<div align="center">
-
 # Whiteboard AI Tutor
 
 **An open-source AI tutor that teaches on a whiteboard — and a benchmark of which LLM does it best.**
@@ -300,3 +298,8 @@ Contributions to whiteboard animation, visual learning and educational AI are we
 ## License
 
 [MIT](LICENSE). Model outputs in `results/` are included for research and comparison.
+
+
+## Special Thanks
+
+Mozhenzhen: Stop overpaying for AI — compare prices, verify models & spot nerfed APIs for free at mozhenzhen.com(https://mozhenzhen.com/go/whiteboard-ai-tutor)

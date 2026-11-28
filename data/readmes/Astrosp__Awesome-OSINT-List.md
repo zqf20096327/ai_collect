@@ -15,6 +15,28 @@ A curated list of OSINT tools and resources for penetration testing, reverse sea
   <a href="https://webvetted.com/awesome-osint?utm_source=github&utm_medium=sponsorship&utm_campaign=awesome-osint"><b>Start an Investigation →</b></a>
 </div>
 
+---
+
+### Website and Autofill Extension
+<div align="center">
+  <a href="https://app.zapply.jobs/onboarding/?ref=github-cta-astrosp">
+    <img src="/assets/Images/zapply_apply.png" alt="Apply to jobs in seconds with Zapply." width="800">
+  </a>
+  <br><br>
+  <b>Explore Zapply’s website and check out:</b><br>
+  Our Chrome extension, which autofills job applications in seconds.<br>
+  A dedicated job board featuring the latest openings across various roles.<br>
+  User accounts with multiple profiles for different resume types and roles.<br>
+  Job application tracking with streaks and commitment awards.<br><br>
+  Experience an advanced career journey with us! 🚀
+  <br><br>
+  <a href="https://app.zapply.jobs/onboarding/?ref=github-cta-astrosp">
+    <img src="/assets/Images/zapply_get_started.png" alt="Visit Zapply" width="700">
+  </a>
+  <br>
+  <sub>Sponsored by Zapply</sub>
+</div>
+
 ## Index
 
 #### 1. Artificial Intelligence (AI)
@@ -519,6 +541,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [AnonAddy](https://anonaddy.com/) - Anonymous Email Forwarding Create Unlimited Email Aliases For Free and best part it's open source.
 - [SimpleLogin](https://simplelogin.io/) - Receive and send emails anonymously.
 - [MailDrop](https://maildrop.cc/) - Save your inbox from spam. Use Maildrop when you don't want to give out your real address No signup required - Maildrop is free for anyone to use when you need a quick, disposable email address.
+- [Tempboxy](https://tempboxy.com/) - Free receive-only .com and .edu.pl temporary email inbox with automatic OTP extraction, tracker-pixel detection, and a keyless REST API.
 - [Send text free](https://globfone.com/send-text/) - Send text online without worrying about phone bills. Free SMS to hundreds of GSM operators worldwide.
 - [Free Fax](https://faxzero.com/) - Send faxes for free to anywhere in the U.S. and Canada Or, Send an International Fax.
 - [Receive-sms-now.com](http://receive-sms-now.com/) - Free temporary phone numbers for SMS verification.
@@ -1043,18 +1066,4 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Youtube Comments Downloader](https://youtubecommentsdownloader.com/) - Effortlessly export comments from YouTube videos, live streams, shorts, and community posts. Perfect for YouTubers, social media managers, researchers [PAID].
 - [ActiveTK](https://www.activetk.jp/tools/yt-not-well-known) - Search for YouTube videos filtered by number of views or likes.
 - [youtubetranscript](https://youtubetranscript.com/) - Extremely fast free online service for converting YouTube videos to text. Not perfect quality, but quite acceptable and very fast.
-- [Voqusa](https://www.voqusa.com/) - Free web tool and Chrome extension that converts a public TikTok, YouTube Shorts or Instagram Reels link into a text transcript with timestamps; useful for quoting and archiving short-video claims.
-
-<br>
-
-[⇧ Top](#index)
-
-## Reddit
-
-- [Vapor](https://vapor.selva.ee/) - Get Profile data by username.
-- [Reveddit.com](https://www.reveddit.com/) - Reveal Reddit's secretly removed content. Search by username or subreddit.
-- [redditsfinder](https://pypi.org/project/redditsfinder/) - Archive a reddit user's post history. Formatted overview of a profile, JSON containing every post, and picture downloads.
-- [SocialGrep](https://www.socialgrep.com/search) - Search reddit posts and comments. Advanced filters via date, score, subreddit, keywords, website urls and more. All searches can be exported via csv or json.
-- [Reddit_Persona](https://github.com/n2itn/reddit_persona) - A Python module to extract personality insights, sentiment & keywords from reddit accounts.
-- [Reddit Downloader](https://redditdownloader.github.io/) - Download media from reddit like image, audio, video.
-- [Reddit User Analyser](https://reddit
+- [Voqusa](https://www.voqusa.com/) - Free web tool and Chrome extension that converts a public T

@@ -25,6 +25,23 @@ Kera is a self-hosted AI chat for a team or a company. People get one place to c
 
 It is for a team that wants its own AI chat on its own server, with sign-in, groups, access control, an audit trail and spend per person. It is not a desktop or mobile app, and the interface is in English only (see [Status and limits](#status-and-limits)).
 
+<a id="durable-runs"></a>
+## ♻️ Durable runs
+
+Restart the server in the middle of a task and the task carries on from where it was. This needs only Postgres: no Redis, no workflow server, no Python runtime.
+
+- **Deploys and crashes.** A reply in a saved chat or a Cowork task goes on from its last checkpoint: at once after a clean restart, within about 40 seconds after a crash once Kera is back.
+- **No blind repeats.** A clean stop first gives open tool calls up to 20 seconds to finish. If a call was still in flight: one that only reads is made again; one that may have changed something is not repeated, and the assistant is told the outcome is unknown.
+- **Questions survive restarts.** When the assistant asks you something in a saved chat, the question waits in the database, with nothing held in memory.
+
+New on `main`, after v1.2.1: until the next release, the quick start's image does not include it. Build [from source](#quick-start) to try it.
+
+<p align="center">
+  <img src="docs/images/durable-restart.gif" alt="Animated recording: a Cowork task is creating a release ticket when the Kera server gets a stop signal. The open call finishes, the server exits and the page says Kera is temporarily unavailable. After the server starts again the task goes on, checks the build, posts an announcement and finishes. The tool server's count stays at one ticket and one announcement." width="860">
+</p>
+
+<sub>A real recording, in real time, of a scratch install with made-up data and a scripted model. What resumes and what does not: [docs/durable-runs.md](docs/durable-runs.md).</sub>
+
 <a id="quick-start"></a>
 ## 🚀 Quick start
 
@@ -85,14 +102,13 @@ How it differs from Open WebUI, LibreChat, AnythingLLM and Onyx, row by row and 
 - 🧪 **Code interpreter.** With a Jupyter server, runs Python, Node.js, TypeScript, Bash, PHP, Ruby, Go, Java and R, and returns the files and images the code creates.
 - 🖥️ **Cowork.** A task mode in which the model drives a sandboxed Linux desktop (browser and shell). You watch it live and can take over at any time.
 - **Scheduled tasks.** A step-by-step wizard (goal, assistant, apps, schedule, review) starts a Cowork task or saves it with a timetable (hourly, daily, weekdays, weekly); the server runs it by itself as you, with your connected apps. A read-only test run on the last step shows what it would do before anything is scheduled. Each run is a normal task, and the task keeps notes from run to run (see [docs/cowork.md](docs/cowork.md)).
+- ♻️ **Durable runs.** A reply in a saved chat or a Cowork task goes on after a restart or a crash, and a question the assistant asked stays open. On by default (`runs.resume`); see [docs/durable-runs.md](docs/durable-runs.md).
 - 🧠 **Memory.** Automatic memory capture, which users manage in Settings.
 - 🛡️ **Guardrails.** Personal-data redaction or blocking, prompt-injection and blocklist checks, and optional moderation on every model call, with an audit trail (see below).
 - 🧾 **Audit log.** Who did what and when: sign-ins, admin changes, stored secrets, pipelines and sharing, one plain sentence per event under Admin > Audit, with filters, a CSV export and a retention setting. Names of what changed are kept, values never are (see [docs/audit.md](docs/audit.md)).
 - 🔗 **Integrations.** Scheduled directory sync from Google Workspace: users come in, departments become groups, and suspended or deleted users are disabled (see [docs/integrations.md](docs/integrations.md)).
 - 🔄 **Pipelines.** Keep a knowledge collection in sync with a source on a schedule, from your own script or with one command. A flow view shows each run step by step, with its logs and errors (see [docs/pipelines.md](docs/pipelines.md)). Or let Kera run the script too: the Compose stack includes a runner, so a timetable, a notebook editor and checks work with no setup ([docs/kera-run-pipelines.md](docs/kera-run-pipelines.md)).
 - 🎨 **Branding.** Your own name, logos and colours, set from the admin console.
-
-<a id="screenshots"></a>
 
 <a id="screenshots"></a>
 ## 📸 Screenshots
@@ -111,47 +127,11 @@ The screenshots follow your light or dark theme. They show a demo workspace for 
     </td>
     <td width="50%">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/images/knowledge-dark.png">
-        <img src="docs/images/knowledge-light.png" alt="A knowledge collection called Product docs with five indexed Markdown files" width="100%">
-      </picture>
-      <br>
-      <sub><b>Knowledge.</b> A collection of files, indexed for hybrid search.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/images/assistants-dark.png">
-        <img src="docs/images/assistants-light.png" alt="The Workspace models page listing six assistant presets as cards with their knowledge and tool counts" width="100%">
-      </picture>
-      <br>
-      <sub><b>Assistants.</b> Presets with their own prompt, tools and knowledge.</sub>
-    </td>
-    <td width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/images/cowork-dark.png">
-        <img src="docs/images/cowork-light.png" alt="The Cowork task list with tasks that are running, waiting for input, done and failed" width="100%">
-      </picture>
-      <br>
-      <sub><b>Cowork.</b> Tasks that run on their own, finish, or wait for an answer.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <picture>
         <source media="(prefers-color-scheme: dark)" srcset="docs/images/cowork-task-dark.png">
         <img src="docs/images/cowork-task-light.png" alt="A finished Cowork task with its expanded step timeline and the Markdown file it produced in the Outputs panel" width="100%">
       </picture>
       <br>
       <sub><b>A finished task.</b> Its steps, its report and the file it produced.</sub>
-    </td>
-    <td width="50%">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/images/scheduled-dark.png">
-        <img src="docs/images/scheduled-light.png" alt="The Scheduled tab with five scheduled tasks, their next and last runs, and one failed run with its reason" width="100%">
-      </picture>
-      <br>
-      <sub><b>Scheduled tasks.</b> A timetable per task, and the reason when a run fails.</sub>
     </td>
   </tr>
   <tr>
@@ -165,57 +145,72 @@ The screenshots follow your light or dark theme. They show a demo workspace for 
     </td>
     <td width="50%">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/images/pipelines-dark.png">
-        <img src="docs/images/pipelines-light.png" alt="The Pipelines page with five pipelines in different states: failed, late, warning, never run and OK, each with its last run" width="100%">
-      </picture>
-      <br>
-      <sub><b>Pipelines.</b> Collections kept in sync with their sources, and which runs failed or are late.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <picture>
         <source media="(prefers-color-scheme: dark)" srcset="docs/images/pipeline-run-dark.png">
         <img src="docs/images/pipeline-run-light.png" alt="A failed pipeline run with the error in plain words and the last log lines, above the flow of steps with the build step in red" width="100%">
       </picture>
       <br>
       <sub><b>A failed run.</b> The flow of steps, the step that broke and why.</sub>
     </td>
-    <td width="50%"></td>
   </tr>
 </table>
 
-**Pipelines up close.** A scratch workspace with five invented pipelines whose scripts really ran on two runners: run times, a run that waited for a runner, the step that failed. More screens, and where each timing shows up, are in [Pipelines in pictures](docs/pipelines.md#pipelines-in-pictures).
+<details>
+<summary>More screenshots: knowledge, assistants, Cowork tasks, scheduled tasks, pipelines</summary>
+<br>
 
 <table>
   <tr>
     <td width="50%">
-      <a href="docs/pipelines.md#pipelines-in-pictures"><img src="docs/images/pipelines-overview-light.png" alt="The Pipelines page with five pipelines: Invoice check failed, Nightly report with a warning, Knowledge base refresh running, Docs sync and Ticket digest OK, each with its timetable, next run and last run" width="100%"></a>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/knowledge-dark.png">
+        <img src="docs/images/knowledge-light.png" alt="A knowledge collection called Product docs with five indexed Markdown files" width="100%">
+      </picture>
       <br>
-      <sub><b>The list.</b> State, timetable, next run and last run for each pipeline.</sub>
+      <sub><b>Knowledge.</b> A collection of files, indexed for hybrid search.</sub>
     </td>
     <td width="50%">
-      <a href="docs/pipelines.md#a-finished-run"><picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/images/pipeline-run-ok-dark.png">
-        <img src="docs/images/pipeline-run-ok-light.png" alt="A finished Docs sync run: Finished OK in 1 min 35 s, a progress bar with four green segments, and a step waterfall with four steps and their durations" width="100%">
-      </picture></a>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/assistants-dark.png">
+        <img src="docs/images/assistants-light.png" alt="The Workspace models page listing six assistant presets as cards with their knowledge and tool counts" width="100%">
+      </picture>
       <br>
-      <sub><b>A finished run.</b> Total time, the usual time, and how long each step took.</sub>
+      <sub><b>Assistants.</b> Presets with their own prompt, tools and knowledge.</sub>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <a href="docs/pipelines.md#a-run-in-progress"><img src="docs/images/pipeline-run-live-light.png" alt="A Knowledge base refresh run in progress: Running, step 2 of 4, an elapsed clock at 2 min 23 s, and the open step with a striped bar and a growing log" width="100%"></a>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/cowork-dark.png">
+        <img src="docs/images/cowork-light.png" alt="The Cowork task list with tasks that are running, waiting for input, done and failed" width="100%">
+      </picture>
       <br>
-      <sub><b>A run in progress.</b> The elapsed clock, the open step and its log.</sub>
+      <sub><b>Cowork.</b> Tasks that run on their own, finish, or wait for an answer.</sub>
     </td>
     <td width="50%">
-      <a href="docs/pipelines.md#a-failed-run"><img src="docs/images/pipeline-run-failed-light.png" alt="A failed Invoice check run: Failed at Validate invoices, the error in a red block, the failing step open with its log lines, and two steps skipped" width="100%"></a>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/scheduled-dark.png">
+        <img src="docs/images/scheduled-light.png" alt="The Scheduled tab with five scheduled tasks, their next and last runs, and one failed run with its reason" width="100%">
+      </picture>
       <br>
-      <sub><b>A failed run.</b> Which step failed, why, and the last log lines.</sub>
+      <sub><b>Scheduled tasks.</b> A timetable per task, and the reason when a run fails.</sub>
     </td>
   </tr>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/pipelines-dark.png">
+        <img src="docs/images/pipelines-light.png" alt="The Pipelines page with five pipelines in different states: failed, late, warning, never run and OK, each with its last run" width="100%">
+      </picture>
+      <br>
+      <sub><b>Pipelines.</b> Collections kept in sync with their sources, and which runs failed or are late.</sub>
+    </td>
+    <td width="50%"></td>
+  </tr>
 </table>
+
+</details>
+
+Run times, a run in progress, a run waiting for a runner and the step that failed are in [Pipelines in pictures](docs/pipelines.md#pipelines-in-pictures).
 
 <a id="architecture"></a>
 ## 🧩 Architecture
@@ -248,6 +243,15 @@ When the assistant has knowledge, the search runs three rankings (by meaning, by
 </p>
 
 Every box has settings, defaults and a place to look when it misbehaves. Admins find them in **Admin > Help**; [docs/how-it-answers.md](docs/how-it-answers.md) has the same diagrams, a worked example with numbers, the agent loop and a table of symptoms and the settings to try.
+
+A run in a saved chat also outlives the server process. It saves checkpoints in Postgres as it goes, and a question to you waits there too ([durable runs](docs/durable-runs.md#how-it-works) has a text version of this diagram).
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/durable-run-dark.svg">
+    <img src="docs/images/durable-run-light.svg" alt="The life of a run: it saves checkpoints in Postgres while it works. If the server stops, the next Kera process claims the run, checks access again and goes on from the last checkpoint. A question parks the run until it is answered or times out, 30 minutes in a chat and 12 hours in a task. After the final answer the reply is saved and the checkpoint deleted." width="880">
+  </picture>
+</p>
 
 <a id="configuration"></a>
 ## ⚙️ Configuration
@@ -293,6 +297,13 @@ Kera is young: v1.0.0 was released on 2026-11-21. Schema migrations run on start
 - The default stack runs Kera, Postgres and the document extraction service. Reranking, the code interpreter's Jupyter server and the Cowork desktop are separate services (see [Quick start](#quick-start)). OCR reads English until you add languages to the extraction image.
 - Scheduled Cowork tasks are off for non-admin users until you turn on `features.cowork_schedule`.
 - The quick start expects a model server. Small CPU-only models are slow; add a GPU or point Kera at a hosted model.
+- Running more than one Kera instance is not supported yet. Among other things, live token streaming does not cross instances.
+- [Durable runs](docs/durable-runs.md#limits) have limits:
+  - Only runs of saved chats resume, Cowork tasks and scheduled runs among them. Temporary chats, API calls without a `chat_id` and requests that bring their own `tools` end with the process.
+  - A tool call that was in flight and may have changed something is not repeated; the assistant is told the outcome is unknown and to check first. Kera does not know whether it took effect, and does not stop the assistant from calling the tool again. Calls a tool server declares read-only are trusted to be safe to make again.
+  - A question waits 30 minutes in a chat and 12 hours in a task, then the assistant is told you did not answer. It does not wait for days, and there is no setting for it. A question in a temporary chat, or a confirmation a tool server asks for in the middle of a call, does not survive a restart.
+  - A model call that a restart interrupts is paid for twice, and after a crash usage and spend can undercount.
+  - An upgrade that changes the checkpoint format ends the runs that were live, as interrupted.
 
 Found a gap that is not listed here? [Open an issue](https://github.com/cdmx-in/kera/issues/new/choose) or start a [discussion](https://github.com/cdmx-in/kera/discussions).
 

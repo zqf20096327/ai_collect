@@ -47,33 +47,43 @@ npm install -g takomi
 takomi setup
 ```
 
-That's it. Takomi auto-detects your installed IDEs, creates your toolkit at `~/.takomi/`, and syncs your selected skills everywhere.
+`takomi setup` scans your machine, lets you pick Pi extensions (core on by default, optional extensions toggleable and uninstallable) and IDE skills (shared default with per-IDE overrides), previews the install plan, and writes one unified state file at `~/.takomi/state.json`.
 
 ```bash
 # Day-to-day usage
-takomi              # Launch in your current project
-takomi status       # See what's connected
-takomi refresh      # One-command update for everything
-takomi doctor       # Run diagnostics
+takomi                      # Launch Pi in your current project
+takomi status               # See installed Pi extensions, packs, skills, and IDEs
+takomi skills               # Interactive skill picker (search with /, presets c/a/n)
+takomi pi extensions        # Toggle or uninstall bundled Pi extensions
+takomi refresh              # Update Takomi CLI, Pi, and synced skills
+takomi doctor --fix         # Diagnose and auto-fix drift or duplicate tools
+```
+
+All commands also support non-interactive flags (`--yes`, `--dry-run`, `--json`) so coding agents and scripts can run them without prompts:
+
+```bash
+takomi setup --pi --pi-ext core --skills core --harnesses detected --yes
+takomi skills add convex hyperframes --for cursor,claude
+takomi skills remove babysit-pr --for cursor
+takomi pi extensions --enable oauth-router --disable notify-sound --yes
+takomi status --json
 ```
 
 <details>
-<summary><strong>📋 More install options (Pi, Codex, per-project, browser)</strong></summary>
+<summary><strong>📋 More install options (Pi, Codex, per-project)</strong></summary>
 
 ### Pi Harness
 
 ```bash
-takomi setup pi
+takomi pi setup             # Install Pi CLI + pick Takomi extensions and feature packs
+takomi pi extensions        # Enable, disable, or uninstall bundled extensions
+takomi pi features          # Install or remove optional Pi feature packs
 cd my-project
 takomi
 ```
 
-Optional global skills and feature packs:
-
-```bash
-takomi setup skills        # Core Skills on first install, custom category browser on repeat
-takomi setup pi-features   # Interview, Todo, Browser QA, Doc Preview, opt-in desktop control
-```
+Core bundled extensions (checked by default, individually untickable): `takomi-runtime`, `takomi-subagents`, `takomi-context-manager`, `takomi-vault`.
+Optional bundled extensions (unchecked by default): `oauth-router`, `notify-sound`, `antigravity-provider`, `takomi-computer-use` (Windows).
 
 ### Optional Windows desktop control
 
@@ -118,36 +128,11 @@ See [Takomi Codex Onboarding](docs/takomi-codex-onboarding.md) for activation, p
 
 ### Per-Project Setup
 
-Drop workflows into a single project without global install:
+Drop project-local Agent Skills into `.agents/skills/` (and optionally `.pi/`) for a single repository:
 
 ```bash
-npx takomi init
+takomi project init --skills core --yes
 ```
-
-Choose from `.agent` folder (Cursor, Windsurf, Gemini Code Assist), Agent YAMLs (Kilo Code), or legacy protocols (browser AI).
-
-### Global Install (Multi-IDE)
-
-Install once. Use everywhere. Skills follow you across all detected AI harnesses:
-
-```bash
-npx takomi install
-```
-
-### Browser-Based AI (ChatGPT, Claude.ai, Gemini)
-
-1. Open a `.md` file from `Legacy (Manual Method)/`
-2. Copy the entire prompt
-3. Paste into your AI chat
-4. Follow the conversation flow
-
-| # | Protocol | Purpose |
-|---|----------|---------|
-| 1 | **Project Genesis Protocol** | Start any new project |
-| 2 | **Ultimate Orchestration Prompt** | One-shot prompt for quick scripts |
-| 3 | **Design System Genesis Protocol** | Create visual design systems |
-| 5 | **Escalation & Handoff Protocol** | When AI gets stuck |
-| 9 | **Reverse Genesis Protocol** | Onboard AI to existing codebases |
 
 </details>
 
@@ -176,7 +161,7 @@ Think of skills as specialized team members you can summon on demand. Takomi shi
 takomi                 grill-me               sync-docs
 code-review            security-audit         avoid-feature-creep
 agent-recovery         git-commit-generation  unslop
-babysit-pr             html-private-pages
+babysit-pr             delivery-loops
 ```
 
 ### Install More Skills
@@ -200,7 +185,7 @@ npx -y skills add https://github.com/JStaRFilms/VibeCode-Protocol-Suite
 
 **Engineering Principles** - `engineering-principles` (21 foundational discipline principles: `boundary-discipline`, `build-the-lever`, `model-the-domain`, `type-system-discipline`, `guard-the-context-window`, `prove-it-works`, `subtract-before-you-add`, and more)
 
-**Developer / Frameworks** - `web-dev-standards` (`nextjs-standards`, `typescript-standards`, `test-driven-development`, `codebase-design`, `interactive-wizard`, `monorepo-management`, `upgrading-expo`, `shared-resend-portfolio`), `ai-sdk`, `git-github-tools` (`github-ops`, `git-worktree`, `issue-pr-triage`, `pr-comment-fix`, `resolving-merge-conflicts`), `context7`, `jules`, `anti-gravity`, `wait-what`, `bro`, `poteto-mode`
+**Developer / Frameworks** - `web-dev-standards` (`nextjs-standards`, `typescript-standards`, `test-driven-development`, `codebase-design`, `interactive-wizard`, `monorepo-management`, `upgrading-expo`, `shared-resend-portfolio`), `tailscale` (`html-private-pages`, `tailscale-app-serve`), `ai-sdk`, `git-github-tools` (`file-pr`, `leaving-pr-comments`, `takeover`, `modernize`, `branch-review`, `resolving-merge-conflicts`, `issue-pr-triage`, `git-worktree`, `git-environments`), `context7`, `cos`, `jules`, `anti-gravity`, `wait-what`, `bro`, `poteto-mode`
 
 **Security & Web Audits** - `security-audit`, `audit-website`
 
@@ -256,35 +241,33 @@ npx -y skills add https://github.com/JStaRFilms/VibeCode-Protocol-Suite
 
 ## Supported IDEs
 
-Install once into `~/.takomi/` — Takomi syncs skills to each harness automatically.
+Install once into `~/.takomi/skills/` and sync to each harness automatically (with optional per-harness `--for` overrides).
 
-| Harness | Skills Path | Workflows Path |
-|---------|-------------|----------------|
-| **Antigravity** | `~/.gemini/config/skills/` | `~/.gemini/config/global_workflows/` |
-| **Claude Code** | `~/.claude/skills/` | — |
-| **Codex** | `~/.codex/skills/` | — |
-| **Cursor** | `~/.cursor/skills/` | — |
-| **Kilo Code** | `~/.kilocode/skills/` | `~/.kilocode/workflows/` |
-| **Pi / Agent Skills** | `~/.agents/skills/` | — |
-| **Windsurf** | `~/.codeium/windsurf/skills/` | `~/.codeium/windsurf/global_workflows/` |
+| Harness | Skills Path |
+|---------|-------------|
+| **Pi / Shared** | `~/.agents/skills/` |
+| **Claude Code** | `~/.claude/skills/` |
+| **Codex** | `~/.codex/skills/` |
+| **Cursor** | `~/.cursor/skills/` |
+| **Antigravity** | `~/.gemini/config/skills/` |
+| **Kilo Code** | `~/.kilocode/skills/` |
+| **Windsurf** | `~/.codeium/windsurf/skills/` |
 
 <details>
 <summary><strong>🔧 CLI reference</strong></summary>
 
 | Command | What It Does |
 |---------|--------------|
-| `takomi` | Launch in the current project |
-| `takomi setup` | Guided first-time setup |
-| `takomi setup pi\|skills\|project\|all` | Targeted setup |
-| `takomi setup computer-use` | Opt into Windows desktop MCP access |
-| `takomi computer-use doctor\|config\|disable` | Check, export, or disable desktop integration |
-| `takomi refresh` | One-command update (CLI + Pi + skills) |
-| `takomi refresh pi\|skills\|project\|all` | Targeted refresh |
-| `takomi add <url>` | Pull skills from any GitHub repo |
-| `takomi status` | See connections and toolkit status |
-| `takomi doctor` | Run diagnostics |
-
-Legacy aliases: `install` → `setup`, `sync`/`upgrade` → `refresh`, `init` → `setup project`.
+| `takomi` | Launch Pi in the current project |
+| `takomi setup` | Guided setup wizard (or non-interactive with `--pi`, `--pi-ext`, `--skills`, `--harnesses`, `--yes`) |
+| `takomi status [--json]` | See installed Pi extensions, optional packs, skills, and connected harnesses |
+| `takomi skills` | Interactive skill picker (or `list`, `add`, `remove`, `preset`, `sync` with `--for <harness>`) |
+| `takomi pi` | Manage Pi (`status`, `setup`, `extensions`, `features`, `update`, `computer-use`) |
+| `takomi project init` | Scaffold project-local `.agents/skills/` and optional `.pi/` |
+| `takomi refresh [all\|cli\|pi\|skills]` | Update Takomi CLI, enabled Pi extensions, and synced skills (`update` alias) |
+| `takomi doctor [--fix] [--dev] [--json]` | Run installation diagnostics and auto-fix drift |
+| `takomi computer-use doctor\|config\|disable` | Check, export, or disable Windows desktop MCP integration |
+| `takomi stats` | Inspect token, model, project, tool, and subagent usage stats |
 
 </details>
 
@@ -364,7 +347,7 @@ Takomi-original skills, workflows, and runtime extensions — including `21st-de
 | **[pi-markdown-preview](https://github.com/omaclaren/pi-markdown-preview)** by omaclaren | Markdown/LaTeX previews (optional Pi pack) |
 | **[context-mode](https://github.com/mksglu/context-mode)** by Mert Koseoğlu | External context-window project (not bundled) |
 | **[kilocode](https://github.com/Kilo-Org/kilocode)** by Kilo-Org | Git commit generation |
-| **[pr-comment-fix](https://gist.github.com/GSonofNun/35c67304c35dac7d6b43308b5371f671)** | PR review comment automation |
+| **[tstack](https://github.com/t3dotgg/tstack)** by Theo Browne | Delivery loops (`full-send`, `full-stop`, `sol-loop`, `council`), PR workflows (`file-pr`, `leaving-pr-comments`, `modernize`, `takeover`), and `babysit-pr` watcher patterns |
 
 </details>
 

@@ -220,7 +220,7 @@ The optional Vulkan feature uses native C compute operators for all registered a
 
 **Ant bucketed residency:** VRAM-tier weights are uploaded once into DEVICE_LOCAL memory (real VRAM); disk-tier weights stream through a HOST_COHERENT pool each step. Ant page-in/evict moves weights between the two buckets. On GPUs with small VRAM, oversized uploads automatically fall back to the streaming path per weight.
 
-**Operator library** (`shared_ops.comp`, 10 ops): rms_norm (op 0), elementwise add/sub (ops 1–2), rotary (op 3), attention (op 4), silu_mul (op 5), gelu_mul — exact + tanh (op 6), layer_norm (op 7), embedding_gather (op 8), bias_add (op 9). Dedicated matmul pipelines for f32, bf16, f16, and q8.
+**Operator library** (`shared_ops.comp`, ops 0–9 plus catalog ops 10–18): rms_norm (op 0), elementwise add/sub (ops 1–2), rotary (op 3), attention (op 4), silu_mul (op 5), gelu_mul — exact + tanh (op 6), layer_norm (op 7), embedding_gather (op 8), bias_add (op 9); catalog codes 10–18 cover activations, elementwise binops, extra norms, stateful recurrent steps, and reduction — sum/mean/max/argmax over one axis of a row-major buffer (op 18). Dedicated matmul pipelines for f32, bf16, f16, and q8.
 
 Compiled shader paths can be overridden per operator:
 
@@ -340,6 +340,7 @@ The startup banner prints the backend capability list per architecture (`backend
 - [docs/ANT_MEMORY.md](docs/ANT_MEMORY.md) — Ant memory manager and the native backend: file formats, the parameter-resolution chain, the residency planner, page-level tier control, SIMD kernels, the comparison-test infrastructure, and the add-a-family checklist.
 - [docs/REGISTRY.md](docs/REGISTRY.md) — the model resolution layer: architecture → chat template / backend capability / family constants, backend selection, and how to add an architecture, family, or backend.
 - [docs/MCP.md](docs/MCP.md) — MCP, both directions: the built-in `POST /mcp` server endpoint, client configuration, the agentic loop, streaming hold-back, and testing.
+- [docs/REDUCTIONS_VALIDATION.md](docs/REDUCTIONS_VALIDATION.md) — reduction operators vs the PyTorch reference: fixture method, deviation tables (max/argmax bit-exact; sum/mean at f32 rounding noise), and reproduction steps.
 - [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md) — coding conventions and the complete per-function reference (every function in the codebase, analyzed).
 
 ## Model inspection

@@ -23,7 +23,7 @@ Or install it from ComfyUI-Manager: Search for **KSR-Unofficial**.
 
 | File | Size | Download | Folder |
 |---|---|---|---|
-| `kandinsky_imagesr_2.0.safetensors` (transformer, bf16) | ~10.3 GB | [hmdlsk/Kandinsky-ImageSR-2.0-ComfyUI](https://huggingface.co/hmdlsk/Kandinsky-ImageSR-2.0-ComfyUI) | `models/diffusion_models/` |
+| `kandinsky_imagesr_2.0.safetensors` (transformer, bf16) | ~10.3 GB | [hmdlsk/Kandinsky-ImageSR-2.0-ComfyUI-Unofficial](https://huggingface.co/hmdlsk/Kandinsky-ImageSR-2.0-ComfyUI-Unofficial) | `models/diffusion_models/` |
 | FLUX.1 VAE `ae.safetensors` (most FLUX users already have it) | 335 MB | [black-forest-labs/FLUX.1-schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell) | `models/vae/` |
 
 The VAE that ships with Kandinsky ImageSR **is** the FLUX.1 VAE, stored as bf16. `tools/compare_vae.py` checks this
@@ -107,6 +107,10 @@ Timings were taken before the VAE batching was added; encode/decode should now b
 - **Against bicubic:** pixel metrics (PSNR/SSIM) against the original usually favour bicubic on photos, because
   invented detail is penalised more than blur. This is the known perception–distortion trade-off (Blau & Michaeli,
   CVPR 2018). Judge the crops above, not the numbers.
+
+## Known issues
+
+- **Grid pattern on skin in AI-generated images.** Upscaling already high-res AI images (especially from SDE samplers such as er_sde) can turn their faint latent-grid texture into a visible cross-hatch pattern. It does not appear on real photos. Lower creativity, possibly a slight blur before upscaling (e.g. ImageBlur radius 1, sigma 0.5–0.8), or downscaling first can reduce it.
 
 ## Credits & license
 

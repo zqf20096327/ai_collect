@@ -54,7 +54,7 @@ irm https://symbio.linkzy.dev/install.ps1 | iex     # Windows (PowerShell)
 ```
 
 ```sh
-curl -fsSL https://symbio.linkzy.dev/install | sh   # macOS and Linux (still being tested)
+curl -fsSL https://symbio.linkzy.dev/install | sh   # macOS and Linux
 ```
 
 Or, with Node.js 22+ already there: `npm install -g symbio`, then `sym`.
@@ -187,7 +187,7 @@ An honest list; see [docs/known-issues.md](docs/known-issues.md) for details and
 
 | | |
 |---|---|
-| **Platforms** | Developed and used on Windows 11. macOS and Linux should work but haven't been tested. |
+| **Platforms** | Developed and used on Windows 11; tested on clean Windows and Linux machines (including Linux without a desktop). macOS is tested on CI's Macs only. |
 | **Isolation** | Agents run as your user. The safety rules are pattern checks, not a sandbox. |
 | **Resource limits** | Agents' programs run at low priority, but there's no hard CPU or memory cap. |
 | **One person** | No accounts or sharing; remote access lets you, not others, use it from another device. |
@@ -218,7 +218,7 @@ npm when that doesn't answer, and GitHub to read release notes. The update check
 version and an **anonymous install id** (a random number), so we can tell how many people use
 Symbio and whether they keep using it (the endpoint also notes the time and the country the check
 came from, not the address); nothing about your projects or your computer, and you can
-turn it off in Settings → This computer → Updates (details in [security.md](docs/security.md#update-checks)).
+turn it off in Settings → About, where it's described (details in [security.md](docs/security.md#update-checks)).
 Remote access goes through Cloudflare only while you have it on. Notifications go only to the
 channels you turn on (Telegram, ntfy, a webhook, your e-mail server), and can say only "a project
 needs you".

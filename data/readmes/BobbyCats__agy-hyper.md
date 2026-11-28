@@ -6,7 +6,7 @@
 
 # AGY Hyper
 
-**Local Quota Burn Audit, Live Cache-TTL Cockpit, Inline WAL Undo & Rust MCP Accelerator for Google Antigravity (App & CLI)**
+**Local Quota Burn Audit, Live Cross-Client Session Radar, Inline WAL Undo & Rust MCP Accelerator for Google Antigravity (App & CLI)**
 
 [![CI](https://img.shields.io/github/actions/workflow/status/BobbyCats/agy-hyper/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/BobbyCats/agy-hyper/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/BobbyCats/agy-hyper?style=flat-square&color=E25B2A&labelColor=1E2022)](https://github.com/BobbyCats/agy-hyper/releases/latest)
@@ -15,7 +15,7 @@
 [![Rust](https://img.shields.io/badge/Single_Binary-Rust_~4.5MB_tar.gz-111827.svg?style=flat-square&logo=rust&logoColor=white)](#security--transparency)
 [![Follow on X](https://img.shields.io/badge/Follow-@BobbyCat2025-000000.svg?style=flat-square&logo=x&logoColor=white)](https://x.com/BobbyCat2025)
 
-**English** · [简体中文](./README.zh-CN.md) · [Quick Install](#install-in-one-line) · [CLI Support](#antigravity-cli-agy-support) · [Analysis Report](./docs/ANALYSIS_REPORT.md) · [Security](#security--transparency) · [Benchmarks](#reproducible-benchmarks) · [Uninstall](#uninstall--preserved-files)
+**English** · [简体中文](./README.zh-CN.md) · [Quick Install](#install-in-one-line) · [Live Radar & Naming](#live-session-radar-macos-menubar--smart-auto-naming-v060) · [CLI Support](#antigravity-cli-agy-support) · [Analysis Report](./docs/ANALYSIS_REPORT.md) · [Security](#security--transparency) · [Benchmarks](#reproducible-benchmarks) · [Uninstall](#uninstall--preserved-files)
 
 </div>
 
@@ -94,7 +94,10 @@ Terminal essentials:
 ```bash
 agy-hyper audit --share           # 10s local burn audit + anonymized 2x Health Badge PNG (zero paths/UUIDs)
 agy-hyper audit --png audit.png   # full 2x Retina diagnostic PNG (1920x1200, pure Rust)
-agy-hyper audit --svg audit.svg   # vector dark/light SVG diagnostic card
+agy-hyper radar                   # live 5-state radar across Antigravity & Codex (Waiting/Stalled/Unread/Running)
+agy-hyper menubar status          # inspect native 120Hz macOS MenuBar companion (start|stop|status)
+agy-hyper namer sync              # auto-name recent default-titled sessions (<Emoji> <Code>·<Object>｜<Goal>)
+agy-hyper sessions --query "auth" # <15ms CJK-ready full-text search across Antigravity & Codex threads
 agy-hyper doctor --net            # audit plugin/hook conflicts, skill load, daemon RTT & dual-stack stream health
 agy-hyper update                  # SHA-256 verified 1-click release upgrade (--check to inspect only)
 agy-hyper tx diff <tx_id>         # inspect line-level unified diff for any WAL snapshot before undo
@@ -107,7 +110,7 @@ agy-hyper ui                      # launch AGY Hyper Deck standalone at http://1
 
 ## Local Burn Audit, Split-Cache Diagnostics & Anonymized Share Card (`agy-hyper audit`)
 
-Run `agy-hyper audit --days 14 --png audit-card.png` (or `--svg audit-card.svg`) to audit your Antigravity transcripts 100% locally (zero cloud uploads, zero external Chrome/ImageMagick deps). In **v0.5.1**, it measures empirical per-model cache TTL cliffs, uncached input spend, calibrated **Pre-Edit Bloat Delta (`pre_edit_delta_p50_tokens`)** (separating true pre-edit blanket-read growth from heavy Turn-1 skill/MCP baselines), **Upstream Stream Resets / `EOF` Retry Stalls**, and **Split-Session / Orchestrator-Executor & Model-Switch cache drops** (quantifying cache-hit drop and uncached token penalties across intra-session model switches and parent-to-subagent handoffs).
+Run `agy-hyper audit --days 14 --png audit-card.png` (or `--svg audit-card.svg`) to audit your Antigravity transcripts 100% locally (zero cloud uploads, zero external Chrome/ImageMagick deps). In **v0.6.0**, it measures empirical per-model cache TTL cliffs, uncached input spend, calibrated **Pre-Edit Bloat Delta (`pre_edit_delta_p50_tokens`)** (separating true pre-edit blanket-read growth from heavy Turn-1 skill/MCP baselines), **Upstream Stream Resets / `EOF` Retry Stalls**, and **Split-Session / Orchestrator-Executor & Model-Switch cache drops** (quantifying cache-hit drop and uncached token penalties across intra-session model switches and parent-to-subagent handoffs).
 
 Need a clean Health Badge you can share without leaking local context? Run `agy-hyper audit --share` (writes `agy-hyper-share-card.png` at `1920x1080`, or pass `--share-svg badge.svg` / `--share-png badge.png`): it stamps an objective severity verdict (`BLEEDING` / `WATCH` / `HEALTHY`) alongside `Cache Hit %`, `First-Edit Blind Read P50`, `Split/Switch Cache Drop`, and `Top Quota Drain` while **enforcing hard code-level redaction** (zero filesystem paths, zero usernames, zero repo/workspace names, zero conversation UUIDs, zero prompt snippets).
 
@@ -121,11 +124,25 @@ Need a clean Health Badge you can share without leaking local context? Run `agy-
 
 ---
 
+## Live Session Radar, macOS MenuBar & Smart Auto-Naming (`v0.6.0`)
+
+When workspace folders are collapsed in Antigravity — or when you run tasks across both **Antigravity** and **Codex** — active agents, approval prompts, and newly completed tasks disappear behind closed folders, while default chat titles pile up into an unsearchable list. **v0.6.0** solves both in `Hyper Deck` and a native **120Hz SwiftUI macOS MenuBar companion (`AGYHyperBar`)**:
+
+- **5-State Cross-Client Live Radar (`AGYHyperBar` + `Hyper Deck`)**: Surfaces `Waiting` (approval / `ask_question`), `Stalled` (`>=90s` silent tool/subagent), `Unread` (finished runs `>=8s` awaiting review), `Running`, and `Recently Active` sessions across Antigravity & Codex even when sidebar folders are collapsed. Includes subtle completion/approval earcon chimes (1-click mute), 1-click window focus (`⌥+Click` splits right in Antigravity; `codex://threads/<id>` opens Codex), three 60/120Hz open-source motion presets (`Waveform` / `Bars` / `Ripples`), shared `en / zh-CN / ja` i18n, and automatic macOS `LaunchAgent` login startup (`Apple Silicon M1–M4` & `Intel`, macOS 14+).
+- **Zero-MCP Fast Smart Session Auto-Naming (`agy-hyper namer` & `🪄`)**: Automatically renames default-titled windows on Turn 1 and during active `/swarm` runs into structured `<Emoji> <Prefix>·<Object>｜<Goal>` titles (`~2.6s` via an isolated zero-MCP `HOME` sandbox + deterministic pure-Rust fallback). Preserves SQLite `(last_modified_time, last_user_input_time)` when renaming idle sessions so sidebar sort order never drifts, respects manual user renames (`--force` to override), and supports optional workspace prefix rules via `~/.gemini/antigravity/agy-hyper/session_registry.json`.
+- **`<15ms` CJK-Ready Cross-Client Session Search (`agy-hyper sessions`)**: Instant substring and multi-token search across Antigravity (`conversation_summaries.db` + `brain/`) and Codex (`state_*.sqlite` + `sessions/`), filterable by `--client`, `--group`, and `--days`.
+
+<div align="center">
+  <img src="./assets/menubar-radar-showcase.png" alt="AGYHyperBar 120Hz macOS MenuBar Live Radar & Smart Session Naming (English & Simplified Chinese)" width="100%"/>
+</div>
+
+---
+
 ## AGY Hyper Deck (Native Sidecar Cockpit)
 
-Docked directly in Antigravity's auxiliary pane via `SIDECAR_UI_ENTRYPOINT_AUX_PANE`, powered 100% offline by **Apache ECharts 6** and **i18next** (`English / 简体中文 / 日本語`, zero CDN). Luminance-synced with your host Light/Dark theme.
+Docked directly in Antigravity's auxiliary pane via `SIDECAR_UI_ENTRYPOINT_AUX_PANE` (plus interactive inline **MCP Apps (`SEP-1865`)** cards via `hyper_cockpit`), powered 100% offline by **Apache ECharts 6** and **i18next** (`English / 简体中文 / 日本語`, zero CDN). Luminance-synced with your host Light/Dark theme.
 
-- **Layered Zero-Intrusion Design & 1-Click Verified Upgrade (`v0.5.1`)**: start in **Observe** mode (read-only cockpit + burn audit + passive WAL capture; native tools & diff cards untouched), switch to **Safe** (bundled reads & preset checks while keeping native `edit_file` inline diffs), or unlock **Balanced / Hyper** full Rust MCP acceleration — plus granular per-tool toggles (`MCP Read`, `MCP Edit`, `MCP Check`, `Release Update Radar`) under **Engine**. When a new release ships, a non-blocking GitHub redirect tag check (zero REST API rate-limit burn, zero hook latency) lights up a subtle `↑ vX.Y.Z` topbar badge for 1-click `SHA256SUMS`-verified upgrade and seamless Sidecar reload.
+- **Layered Zero-Intrusion Design & 1-Click Verified Upgrade (`v0.6.0`)**: start in **Observe** mode (read-only cockpit + live session radar + burn audit + passive WAL capture; native tools & diff cards untouched), switch to **Safe** (bundled reads & preset checks while keeping native `edit_file` inline diffs), or unlock **Balanced / Hyper** full Rust MCP acceleration — plus granular per-tool toggles (`MCP Read`, `MCP Edit`, `MCP Check`, `Release Update Radar`) under **Engine**. When a new release ships, a non-blocking GitHub redirect tag check (zero REST API rate-limit burn, zero hook latency) lights up a subtle `↑ vX.Y.Z` topbar badge for 1-click `SHA256SUMS`-verified upgrade and seamless Sidecar + MenuBar reload.
 - **Simple Mode** keeps daily essentials front and center: context level, Turn P50 (with **3-segment `LLM` / `Local Tools` / `Stream Retry · EOF` latency bars**), step vs. session cache hit rate, linked **Subagent & `run_workflow` Fleet Tree** strip (rolling up synchronous & backgrounded `wf:*` workflow nodes alongside `/swarm` & subagent children, splitting **Coordinator vs. Fleet** cost, surfacing **Shared-Workspace Write-Race** collision pills, highlighting `STALLED` subagents silent `>=90s` and `LOOP ×N` crash-looping subagents with 1-click **Rescue** prompt copy, plus orchestrator→executor split-cache drop badges), session/tree usage ribbon with quick currency switch, **auto-calibrated per-model cache warmth bar** (empirical vs. default TTL badge & loop-guard alerts with 1-click **Copy Pivot**), 4-mode layered profile switch, and **inline WAL Unified Diff preview + 1-click Undo**.
 - **Pro Mode** opens five deep telemetry tabs: **Waterfall** (3-segment `LLM Inference` vs. `Local Tools` vs. `Stream Retry / EOF` attribution so network/proxy resets are immediately distinguished from model or tool slowdowns), **Context** (dual-axis cached/uncached curve + **Context X-Ray** composition bar with net pre-edit delta + live **Split-Session & Model-Switch Cache** breakdown), **Usage** (`24H / 7D / 30D / 90D` incremental ledger across 8 currencies, manual **Sync FX**, plus **Local Burn Audit & TTL Cliffs** with calibrated severity verdict, stream-reset pill, **Split-Cache & Model-Switch** diagnostics, and 1-click **Anonymized Share Card** PNG/SVG export & inline preview), **Engine** (AST/pack/singleflight pre-warm hits, release update check & granular MCP layer switches), and **WAL & Audit**.
 
@@ -222,7 +239,7 @@ Measured on Apple Silicon (release LTO build, cold MCP process spawn included) v
 | `hyper_search` + `gix` read-only Git (1 call) | **20 ms** | vs **43 ms** baseline `git status && git log && grep -rn` (**2.2x faster**) |
 | `hyper_pack` (cold single-pass ripgrep + AST + slices + `gix` + 1-hop) | **58 ms** | Zero external `rg` or `git` binaries |
 | `agy-hyper statusline` (warm Daemon pulse + CLI stdin) | **4.2 ms** | Full process exec + lock-free UDS RPC + ANSI/plain-title render (always exits `0`) |
-| Full Rust unit & security chaos suite (`84/84`) | **2.1 s** | Covers ENOSPC staging, dangling symlinks, 4-lang 1-hop, symbol-sliced packs, WAL rollback & shared-workspace write-race detection, singleflight pre-warm, idle/fail-fast watchdog, multi-runner semantic digest classification, stream `EOF` waterfall & pre-edit delta calibration, `run_workflow` fleet tree linkage, subagent crash-loop watchdog & 1-shot daemon notifier, empirical TTL migration, Context X-Ray, Loop Guard, CLI statusline, pure-Rust 2x PNG/share audit export, release update radar, and MCP `PLUGIN_ROOT`/`$HOME` guards |
+| Full Rust unit & security chaos suite (`102/102`) | **2.3 s** | Covers ENOSPC staging, dangling symlinks, 4-lang 1-hop, symbol-sliced packs, WAL rollback & shared-workspace write-race detection, singleflight pre-warm, idle/fail-fast watchdog, multi-runner semantic digest classification, stream `EOF` waterfall & pre-edit delta calibration, `run_workflow` fleet tree linkage, subagent crash-loop watchdog & 1-shot daemon notifier, 5-state cross-client session radar, CJK session index, zero-MCP Connect-RPC auto-namer, MCP Apps (`SEP-1865`) UI, empirical TTL migration, Context X-Ray, Loop Guard, CLI statusline, pure-Rust 2x PNG/share audit export, release update radar, and MCP `PLUGIN_ROOT`/`$HOME`/SSH guards |
 
 ### Controlled End-to-End Paired A/B (`agy` CLI)
 
@@ -250,6 +267,11 @@ Reproduce on your own repository:
 agy-hyper doctor [--net] [--json]               # Tree-sitter, gix, plugin/hook conflict audit, skill load & optional stream probe
 agy-hyper update [--check] [--dismiss <ver>] [--version <ver>] [--json]  # SHA-256 verified release check / 1-click upgrade
 agy-hyper daemon start|stop|status              # Manage the shared local Rust daemon
+agy-hyper menubar start|stop|status             # Manage the native 120Hz macOS MenuBar radar companion (AGYHyperBar)
+agy-hyper radar [--recent 8] [--ack <id>] [--json]  # Inspect 5-state live cross-client session radar
+agy-hyper namer sync [--limit 16] [--json]      # Queue smart auto-naming for recent default-titled sessions
+agy-hyper namer run <conversation_id> [--force] [--json]  # Immediately generate or refresh a session title
+agy-hyper sessions [--query <q>] [--client all|agy|codex] [--group <g>] [--days N] [--json]  # <15ms CJK session search
 agy-hyper ui [--port 47821]                     # Launch AGY Hyper Deck standalone in browser
 agy-hyper audit [--days 14] [--sessions 80] [--share [card.png]] [--share-png card.png] [--share-svg card.svg] [--png card.png] [--svg card.svg] [--theme dark|light] [--json]
 agy-hyper usage [--window 24h|7d|30d|90d] [--currency CNY] [--json]
@@ -295,7 +317,7 @@ $env:AGY_HYPER_UNINSTALL = "1"; irm https://raw.githubusercontent.com/BobbyCats/
 $env:AGY_HYPER_UNINSTALL = "1"; $env:AGY_HYPER_PURGE = "1"; irm https://raw.githubusercontent.com/BobbyCats/agy-hyper/main/install.ps1 | iex
 ```
 
-- **Removed**: stops the local Rust daemon and Hyper Deck sidecar, deletes `~/.gemini/config/plugins/agy-hyper`, removes `~/.local/bin/agy-hyper` (Unix) or the plugin `bin` entry from User `PATH` (Windows).
+- **Removed**: stops the local Rust daemon, `AGYHyperBar` macOS MenuBar companion (and `~/Library/LaunchAgents/com.agyhyper.menubar.plist`), and Hyper Deck sidecar; deletes `~/.gemini/config/plugins/agy-hyper`; removes `~/.local/bin/agy-hyper` / `~/.local/bin/agy-hyper-bar` (Unix) or the plugin `bin` entry from User `PATH` (Windows).
 - **Preserved by default**: `~/.gemini/antigravity/agy-hyper/` (`config.json`, `usage_ledger.json`, and `wal/` undo snapshots) so your custom rates and file backups stay safe unless you pass `--purge` (`-Purge`). `~/.gemini/config/config.json` is never modified at install or uninstall.
 
 ---

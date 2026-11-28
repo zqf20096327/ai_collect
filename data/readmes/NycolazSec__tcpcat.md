@@ -13,8 +13,9 @@
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14561/badge)](https://www.bestpractices.dev/projects/14561)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/NycolazSec/tcpcat/badge)](https://scorecard.dev/viewer/?uri=github.com/NycolazSec/tcpcat)
 [![Go Reference](https://pkg.go.dev/badge/github.com/NycolazSec/tcpcat.svg)](https://pkg.go.dev/github.com/NycolazSec/tcpcat)
-[![License: AGPL-3.0 or Commercial](https://img.shields.io/badge/License-AGPL--3.0%20or%20Commercial-blue.svg)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 [![Latest Release](https://img.shields.io/github/v/release/NycolazSec/tcpcat)](https://github.com/NycolazSec/tcpcat/releases)
+[![Good first issues](https://img.shields.io/github/issues/NycolazSec/tcpcat/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/NycolazSec/tcpcat/labels/good%20first%20issue)
 [![WASM dissector hub](https://img.shields.io/badge/WASM%20dissectors-hub-3ddc84?logo=webassembly&logoColor=white)](https://github.com/NycolazSec/tcpcat-scripts)
 [![BlackArch](https://img.shields.io/badge/BlackArch-packaged-1793d1?logo=archlinux&logoColor=white)](https://blackarch.org/scanner.html)
 [![Discord](https://img.shields.io/badge/Discord-Rejoindre-5865F2?logo=discord&logoColor=white)](https://discord.gg/syn)
@@ -25,6 +26,20 @@
 tells you which open ports and services are dangerous, and it proves when they
 are fixed.** It is one open-source binary, for the hosts and networks you are
 responsible for.
+
+<div align="center">
+
+![tcpcat scanning scanme.nmap.org with --ai-deep: open ports, versions, weak crypto and CVEs, then its AI tells how the scan went, what the machine is, and the fixes in order](docs/demo.gif)
+
+</div>
+
+<!-- Regenerate this demo with: vhs docs/demo.tape  (see docs/demo.tape) -->
+
+> **Want to help?** Teach tcpcat's AI a service you run (Jellyfin, Home
+> Assistant, Proxmox, a game server…) in about ten minutes, or
+> [translate it into your language](https://github.com/NycolazSec/tcpcat/issues/96):
+> each is one YAML file, written from the browser, without Go.
+> Pick one of the [good first issues](https://github.com/NycolazSec/tcpcat/labels/good%20first%20issue).
 
 ### Why scan your own servers?
 
@@ -44,14 +59,6 @@ then tells you what to do about it.
 **Who it is for:** system administrators, DevOps and hosting teams, and small
 companies without a security team. Penetration testers can use it too, with
 written authorization.
-
-<div align="center">
-
-![tcpcat scanning scanme.nmap.org with --ai-deep: open ports, versions, weak crypto and CVEs, then its AI tells how the scan went, what the machine is, and the fixes in order](docs/demo.gif)
-
-</div>
-
-<!-- Regenerate this demo with: vhs docs/demo.tape  (see docs/demo.tape) -->
 
 ## Quick start
 
@@ -154,7 +161,7 @@ scripts, AWS discovery — are in [examples/](examples/).
 
 ### Project Status
 
-tcpcat is a dual-licensed project (AGPL-3.0 or commercial) maintained by Nicolas Blondelle (NycolazSec). It is **free and open source under the AGPL-3.0**, and does not provide a hosted scanning service, paid support, managed assessments, or customer accounts. Embedding it in a proprietary product or hosted service without the AGPL's copyleft obligations requires a commercial (OEM) license (see [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md)). The project is intended for learning, network administration, and authorized security testing.
+tcpcat is **free and open-source software under the AGPL-3.0**, maintained by Nicolas Blondelle (NycolazSec) and its contributors. It does not provide a hosted scanning service, paid support, managed assessments, or customer accounts. The project is intended for learning, network administration, and authorized security testing.
 
 ### Core Capabilities
 
@@ -206,7 +213,7 @@ be honest about where the others are strong, not a scoreboard.
 | Program/container/pod behind each port | ✅ `inventory` + `explain` | ❌ | ❌ | ❌ | ❌ |
 | Signed evidence + replay after a fix | ✅ `--evidence` + `replay` | ❌ | ❌ | ❌ | ❌ |
 | Signed releases + SBOM | ✅ cosign + CycloneDX | — | — | — | — |
-| License | AGPL-3.0 / commercial | NPSL | GPL/MIT | MIT | AGPL-3.0 |
+| License | AGPL-3.0 | NPSL | GPL/MIT | MIT | AGPL-3.0 |
 
 **On speed:** masscan and ZMap remain the reference for internet-wide
 blasting; Nmap is superbly tuned for a single network. tcpcat's goal isn't to
@@ -261,6 +268,9 @@ sudo ./tcpcat --help
 
 **Prebuilt packages:** `.deb`, `.dmg`, and per-platform binaries are attached
 to each [GitHub release](https://github.com/NycolazSec/tcpcat/releases).
+
+**Shell completions:** Bash `source <(tcpcat completion bash)`; Zsh
+`source <(tcpcat completion zsh)`; Fish `source (tcpcat completion fish | psub)`.
 
 ### Verifying a release
 
@@ -701,6 +711,7 @@ the port state.
 `--update` downloads the release archive matching the current OS and CPU architecture, verifies it against the release `checksums.txt`, and replaces the current executable atomically. It requires a published GitHub release with matching assets and may require elevated permissions when the binary is installed in a system directory. The option does not update source checkouts or package-manager installations.
 
 ### Audit subcommands
+
 ```
 tcpcat policy check <policy.yaml> --from <vantage> [-j f] [--sarif f] [--rate n] [-T n] [--scope-file f]
 tcpcat policy matrix <report.json>...
@@ -878,6 +889,8 @@ in [CHANGELOG.md](CHANGELOG.md).
 
 ### Contributors
 
+If tcpcat is useful to you, a ⭐ on GitHub helps other admins find it.
+
 [![Contributors](https://contrib.rocks/image?repo=NycolazSec/tcpcat)](https://github.com/NycolazSec/tcpcat/graphs/contributors)
 
 ### Built on
@@ -899,16 +912,17 @@ tcpcat stands on the work of these projects:
 
 ## License
 
-tcpcat is **dual-licensed**:
+tcpcat is free software under the **GNU Affero General Public License v3.0
+(AGPL-3.0)**; see [LICENSE](LICENSE). You may use, modify, and self-host it.
+If you distribute tcpcat or a modified version, or offer a modified version to
+others over a network, you must release the complete corresponding source under
+the AGPL. Running it, including for authorized assessments of your clients'
+networks, does not require you to publish anything.
 
-- **GNU Affero General Public License v3.0 (AGPL-3.0)** — free and open source;
-  see [LICENSE](LICENSE). You may use, modify, and self-host tcpcat, but if you
-  distribute it or offer it to others over a network, you must release your
-  product's complete source under the AGPL.
-- **Commercial (OEM) license** — for embedding tcpcat in a proprietary product
-  or hosted service without the AGPL's copyleft obligations. See
-  [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
+Contributions are accepted under the same license, with no Contributor License
+Agreement to sign.
 
 Versions up to and including **v1.4.1** were released under the Apache License
 2.0 ([LICENSE-Apache-2.0.txt](LICENSE-Apache-2.0.txt)) and remain available
-under those terms.
+under those terms. Versions after v1.4.1 up to and including v1.10.0 were also
+offered under a commercial license, which is no longer offered.

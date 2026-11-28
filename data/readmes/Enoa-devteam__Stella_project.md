@@ -4,18 +4,18 @@
 
 # 🌟 Stella
 
-**一个依托记忆系统进行拟人化聊天的 QQ 群聊机器人**
+**基于 OneBot V11/V12 的跨平台拟人化群聊机器人**
 
-*——为 8K 上下文窗口而设计，可以同时兼容本地小模型与在线 API*
+*——为原生支持小上下文窗口本地部署模型设计，兼容在线 API*
 
-[![CI](https://github.com/Eternal-Wanderer-Vegetable/Stella_project/actions/workflows/ci.yml/badge.svg)](https://github.com/Eternal-Wanderer-Vegetable/Stella_project/actions/workflows/ci.yml)
+[![CI](https://github.com/Enoa-devteam/Stella_project/actions/workflows/ci.yml/badge.svg)](https://github.com/Enoa-devteam/Stella_project/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Enoa-devteam/Stella_project)](https://github.com/Enoa-devteam/Stella_project/releases)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![NoneBot2](https://img.shields.io/badge/NoneBot-2-ea5252)](https://nonebot.dev/)
-[![OneBot V11](https://img.shields.io/badge/OneBot-V11-black)](https://onebot.dev/)
+[![OneBot](https://img.shields.io/badge/OneBot-V11%20%2F%20V12-black)](https://onebot.dev/)
 [![Rust](https://img.shields.io/badge/Rust-1.89%2B-dea584?logo=rust&logoColor=white)](https://www.rust-lang.org/)
-[![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?logo=tauri&logoColor=white)](https://tauri.app/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](docs/deployment-docker.md)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](docs/guides/deployment-docker.md)
 
 中文 | [English](README.en.md)
 
@@ -23,56 +23,100 @@
 
 ---
 
-Stella 不只是把消息丢给大模型换一句回复。它把群聊里零散的信息**沉淀成可检索、可验证、会遗忘的记忆**，并在合适的时机主动开口了解你。
+Stella 原生为消费级硬件上可部署的大语言模型设计。其仅需 **8192 tokens** 的模型上下文窗口即可运行。
 
-Stella 的设计前提是上下文窗口很小 —— 基准上限是 **8192 tokens**。人格、记忆、历史对话、工具结果要在这么小的预算里共存，靠堆 prompt 是不可能的。所以这个预算被拆开了：记忆在库里筛完才注入，工具在聊天上下文之外执行、只交回一句结论，滚出窗口的对话自动压缩成回顾。**插件装再多，占的也不是对话窗口。** 小窗口能跑，大窗口自然更宽裕；但反过来不成立——假设窗口无限的架构，换到 8K 上会直接失控。
+模型从哪里来由你决定：
+- **全本地**：支持 GPU 对话与 CPU 记忆整理分离调度，互不抢占资源，聊天数据零出网。
+- **全在线**：填入任意 OpenAI 兼容 API 即可运行，无需本地显卡。
+- **混合**：高难度的对话推理交给在线模型，记忆整合与会话压缩这类高频任务留在本地。
 
-模型从哪里来由你定。
-- **全本地**：聊天用 GPU 上的模型，记忆整理用 CPU 上的小模型，互不抢占资源，没有任何一条群聊内容离开你的机器。
-- **全在线**：填一个 OpenAI 兼容的 API 就能跑，不需要显卡。
-- **混合**：把对话生成交给在线模型，记忆整合、会话压缩这类高频低难度的活留在本地，只有需要强推理的那一步出网。
+> 全本地模式下，路由决策、摘要压缩与插件卡片渲染均在本地完成，仅联网插件（如查天气、查番剧）在执行时自行发起外部请求。
 
-> 注：选择全本地部署运行的模式时，数据不出网是彻底的。需要联网的工具（查天气、查番剧）由插件自己发送请求和返回实际的数据，而判断该不该用工具、把结果压缩成摘要、把插件卡片渲染成图片，全部在本地完成。
+> **OneBot V12 为实验性功能。** V12 接入已默认可用，用于连接 QQ 以外的平台，但尚未在真实协议端上完成收发验证（[#186](https://github.com/Enoa-devteam/stella_project/issues/186)），功能范围也小于 V11。QQ 与生产环境请使用 OneBot V11。详见 [平台适配器 · OneBot V12](docs/guides/platforms.md#onebot-v12)。
 
 ## ✨ 特性
 
-### 在 **8192tokens** 的上下文预算里工作
+### 🪶 小窗口也能跑
 
-- **🧰 工具能力与人格解耦** —— Router 先判断这句话需要什么能力，工具在**聊天上下文之外**执行，只把压缩后的一句结论交回给 Stella。工具描述与原始返回都不进人格 prompt，插件装再多也挤不掉对话窗口
+- **🧰 工具与人格解耦** —— 能力路由先判断这句话需要什么工具，工具在聊天上下文之外执行，只把一句结论交回给 Stella。插件装得再多，也不占对话窗口。→ [能力系统](docs/architecture/capability-system.md)
+- **🗜 长对话不断线** —— 滚出窗口的早期对话自动压缩成回顾；会话摘要、最近原文与话题摘要三层互不重叠，预算分别可调。→ [预算切分](docs/reference/configuration.md#8192-工作窗口的预算切分)
+- **🎯 记忆按需注入** —— 只注入与当前对话相关、筛选过的几条记忆。边界、忌口这类信息只用于约束行为，不会被当作话题提起。→ [记忆系统](docs/architecture/memory-system.md)
 
-- **🗜 长对话不断线** —— 滚出上下文窗口的早期对话自动压缩成回顾，三层上下文（会话摘要 / 原始尾巴 / 话题摘要）按消息 id 划分绝不重叠，且各自的预算分开可调
+### 🧠 会记住，也会遗忘
 
-- **🎯 记忆分区注入** —— 聊天素材与行为约束严格分离，敏感信息（边界、忌口、冲突）永不作为聊天话题被提起。只注入筛过的那几条，不把全部记忆倒进 prompt
+- **🔍 记忆需要证据** —— 候选宽进、晋升严出：同一件事被反复提到才会累积置信度，用户直接对 Bot 说的话单次即可采信，长期没有新证据的候选自动淘汰。筛选在可审计、可回滚的数据库中完成，不占对话预算。
+- **🔎 混合检索** —— SQLite FTS5 全文索引加多维加权排序，可选接入本地 embedding 语义检索，服务不可用时自动降级。
+- **♻️ 会遗忘** —— 按记忆类型设定生命周期，低价值记忆自动归档，长记忆拆分为原子事实。
+- **📚 独立知识库** —— 与个人记忆分开维护的资料库，支持 Markdown / TXT / PDF / DOCX / URL 导入，带审核发布流程与引用式注入。→ [知识库](docs/architecture/knowledge-base.md)
 
-- **🧠 两层记忆过滤** —— 捕获宽松（允许不确定信息进入候选），晋升严格（置信度分档 + 交叉验证 + 每用户配额）。过滤发生在有数据、可审计、可回滚的那一层，而不是 prompt 里——在库里筛完才花窗口，候选与置信度不占对话预算
+### 💬 像群友一样相处
 
-- **🔄 模型可替换** —— 对话、能力路由、插件借用、会话压缩、记忆整合、记忆提取、图片转述七个角色各自指定用哪个端点，本地与在线任意搭配；向量检索固定在本机。换模型不动记忆，换模式也不用重建库
+- **🙋 主动搭话** —— 群聊中被动获得的信息很稀疏，Stella 会主动 @ 活跃成员聊天或确认记忆，并受每日配额、用户冷却与无回应退避限制。
+- **🏠 多群共享空间** —— 多个群可归入同一空间，共享用户画像、长期记忆与人格；消息记录、话题状态与静音开关仍按群隔离。
+- **🎭 表达随群体进化**（默认关闭）—— 从回复效果中学习哪些表达值得复用、群内黑话是什么意思；先以影子模式只记录、不干预。→ [配置参考](docs/reference/configuration.md)
+- **🖼 能看图**（默认关闭）—— 绑定一个视觉模型端点后，被 @ 消息中的图片会先转述成文字再进入对话；未绑定时行为不变。
+- **⏰ 定时任务**（默认关闭）—— 群成员可预约 Cron 提醒，管理员可设置有边界的定时 Agent 任务。→ [定时任务](docs/guides/scheduling.md)
 
-- **🖼 能看图** —— 可选的图片转述角色：被 @ 的消息里带图片时，先用视觉模型把图翻译成一句文字描述再进对话。消费级本地模型大多没有可用的图像转述能力，因此**默认关闭**，绑一个确认可用的视觉端点（本地多模态或在线视觉模型）即点亮；没绑定时行为与不支持识图的旧版完全一致
+### 🛠 部署与运维
 
-- **💰 花了多少钱是可见的** —— 在线 token 用量按角色/端点/模型记日账，GUI 与 `deploy status` 里能看到今日用量、**厂商前缀缓存的命中率**（验证省钱手段真的生效的唯一手段）与预算余量；可设每日预算，撞破后默认只暂停记忆整理，**群里照常能说话**
+- **🔄 七个模型角色自由搭配** —— 对话、能力路由、插件借用、会话压缩、记忆整合、记忆提取、图片转述各自指定端点，本地与在线任意组合；更换模型或部署模式不需要重建记忆库。→ [端点与角色](docs/reference/configuration.md#端点与角色两层配置)
+- **💰 用量与预算可见** —— 在线 token 用量按角色、端点与模型记日账，可查看厂商前缀缓存命中率；超出每日预算时默认只暂停记忆整理，群里照常聊天。→ [LLM 预算](docs/architecture/llm-budget.md)
+- **🖥 WebUI 与桌面程序** —— 浏览器与 Windows 桌面程序共用同一套管理面板，覆盖配置、环境自检、运行状态以及知识库、Skills、定时任务等管理。→ [WebUI](docs/guides/webui.md)
 
-### 记忆系统
+### 🔌 平台与生态
 
-- **🔍 记忆需要证据** —— 同一件事被反复提到才会累积置信度；用户直接对 Bot 说的话视为高密度证据，单次即可采信；长期无新证据的候选自动淘汰
+- **🔗 OneBot V11 / V12** —— QQ 通过 OneBot V11 协议端（如 NapCat）接入；OneBot V12 面向其他平台，目前为**实验性**功能（见上文说明）。→ [平台适配器](docs/guides/platforms.md)
+- **🧩 兼容 AstrBot 插件** —— 现成的 AstrBot 插件放进 `data/plugins/` 即可运行，无需修改源码；插件卡片由本地 Chromium 渲染。→ [插件安装](docs/guides/plugins.md)
+- **🤖 Skills 与外部 Agent** —— 支持 Anthropic 风格的 Skills，脚本在受控沙盒中执行；编码、调研等长任务可委派给 OpenAI Codex（Cometa）。→ [Skills](docs/guides/skills.md) · [Cometa](docs/guides/cometa.md)
+- **🧪 可扩展、可验证** —— Pipeline 前后置 Hook 与扩展目录自动加载；单元、集成与厂商中立契约测试覆盖记忆晋升、跨用户隔离与路由降级，另有针对真实模型的探针回归。→ [开发指南](docs/development/README.md)
 
-- **💬 主动获取信息** —— 群聊被动摄入的信息密度极低，因此 Stella 会主动 @ 活跃用户搭话或确认记忆。有每日配额、用户级冷却与「连续无回应即退避」保护
+## 🚀 安装
 
-- **🎭 表达跟着群体进化（默认关）** —— 社交学习闭环：从投递回执与回复效果里沉淀「哪句表达值得复用」与「群体黑话是什么意思」，先影子模式只记录不干预，转正后经预算受控的槽位注入，效果再回流修正。默认关闭，灰度开启（`SOCIAL_ENABLED` / `SOCIAL_MODE`，见[配置文档](docs/reference/configuration.md)）
+运行 Stella 需要两样东西：一个 OneBot 协议端（QQ 推荐 [NapCat](https://github.com/NapNeko/NapCatQQ)），以及至少一个模型服务（本地 [LM Studio](https://lmstudio.ai/) / `llama.cpp`，或任意 OpenAI 兼容 API）。
 
-- **🏠 多群共享空间** —— 多个 QQ 群可归入同一空间，共享用户画像、长期记忆与人格；而消息尾巴、话题状态、静音开关仍按群隔离，不会在 A 群回应 B 群的对话
+### Windows（推荐）
 
-- **🔎 混合检索** —— SQLite FTS5 全文索引 + 多维加权排序，可选接入本地 embedding 语义检索，服务不可用时自动降级
+到 [Releases](https://github.com/Enoa-devteam/stella_project/releases) 下载其中一种：
 
-- **♻️ 会遗忘** —— 按记忆类型设定生命周期，低价值记忆自动归档，长记忆拆分为原子事实
+| 安装包 | 适合 |
+|---|---|
+| `Stella-OneClick-Python-vX.Y.Z-windows-amd64.exe` | 大多数用户。首次启动自动准备 Python、`llama.cpp` CPU 后端与向量模型（需能访问 GitHub 与 Hugging Face） |
+| `Stella-OneClick-Python-Offline-vX.Y.Z-windows-amd64.exe` | 网络受限或内网环境。运行环境与模型随包内置，约 1.2 GB |
+| `Stella-Standalone-Python-vX.Y.Z-windows-amd64.zip` | 已有 Python 3.10+，只需要 Stella 本体 |
 
-### 工程
+想用 Rust 记忆引擎时，下载文件名中 `Python` 换成 `Rust` 的对应版本。
 
-- **🔗 兼容 AstrBot 插件** —— 现成的 AstrBot 插件放进 `data/plugins/` 就能跑，不改源码。插件的卡片模板由**本地 Chromium** 出图，不依赖外部渲染服务
+1. 安装并扫码登录 NapCat，在其 WebUI 的「网络配置」中添加「WebSocket 客户端」，地址填 `ws://127.0.0.1:8080/onebot/v11/ws`。
+2. 打开 `Stella.exe`，填写监听端口与群号；在「模型服务」中选择一键预设（纯本地 / 纯在线 / 混合），补全端点地址、API key 与模型 ID。
+3. 点击「保存并检查」，在「运行状态」页点击「启动」。
 
-- **🔌 可扩展** —— Pipeline 前后置 Hook 机制，扩展目录自动加载
+> 安装器尚未代码签名：SmartScreen 可能提示「未知发布者」，可用 Release 附带的 `SHA256SUMS.txt` 校验文件；开启「智能应用控制」的 Windows 11 会直接拦截。
 
-- **🧪 可验证** —— 单元与集成测试覆盖记忆晋升、跨用户隔离、两层归属、防编造护栏、路由降级与工具隔离；接在线端点后还多一层**厂商中立契约测试**（请求体多带一个字段就红、参数差异只许按错误措辞自适应而不许写厂商白名单）与前缀缓存守卫；另有探针脚本对真实模型做回归验证（含一个专门复现「噪音环境下漏掉信息」的用例），以及一份量化四类路由错误的基准
+完整步骤、升级与数据位置见 [Windows 安装、升级与启动](docs/guides/windows-install.md)。
+
+### Docker（Linux 服务器）
+
+```bash
+git clone https://github.com/Enoa-devteam/stella_project.git
+cd stella_project
+# 先按指南在 .env 中固定 NapCat 镜像摘要，并准备可写的 StellaData 目录
+docker compose build
+docker compose run --rm stella python -m deploy init   # 监听地址填 0.0.0.0
+docker compose up -d
+```
+
+NapCat 登录、网络配置与从 Windows 迁移见 [Docker 部署指南](docs/guides/deployment-docker.md)。
+
+### 从源码运行
+
+```bash
+pip install -r requirements.txt
+python -m deploy init    # 生成配置
+python -m deploy doctor  # 环境自检
+python -m deploy start   # 启动 Corona 控制面与受管 Bot 进程
+```
+
+适合开发与调试，详见 [环境准备](docs/development/environment.md#启动开发实例)。
 
 ## 📖 文档
 

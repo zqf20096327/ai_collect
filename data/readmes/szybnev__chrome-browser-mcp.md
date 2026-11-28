@@ -15,7 +15,7 @@ Hybrid Content Script + On-Demand CDP · Native WebMCP · Prompt-Injection Shiel
 [![MCP v2](https://img.shields.io/badge/MCP-v2%20Streamable%20HTTP%20%2B%20stdio%20%2B%20Apps-0d9488?logo=anthropic&logoColor=white)](https://modelcontextprotocol.io)
 [![Chrome MV3](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white)](./packages/extension)
 [![WebMCP Ready](https://img.shields.io/badge/WebMCP-navigator.modelContext-7c3aed)](./packages/extension/src/background/service-worker.ts)
-[![Node >=24](https://img.shields.io/badge/Node-%3E%3D24-339933?logo=nodedotjs&logoColor=white)](./package.json)
+[![Node 26 LTS (>=22.23)](https://img.shields.io/badge/Node-26%20LTS%20(%3E%3D22.23)-339933?logo=nodedotjs&logoColor=white)](./package.json)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)](./tsconfig.base.json)
 [![100% Local-First](https://img.shields.io/badge/Privacy-100%25%20Local--First%20%7C%20Zero%20Telemetry-10b981)](./PRIVACY.md)
 [![Prompt-Injection Shield](https://img.shields.io/badge/Shield-Prompt--Injection%20Protected-f59e0b)](./packages/protocol/src/shield.ts)
@@ -149,7 +149,7 @@ Chrome Browser MCP provides native GUI integrations with unified **Browser Contr
 | **OpenCode Desktop** (`>=2.2.0`) | `plugins/opencode/` | Native side `Panel` (Shadow DOM) + Side-panel `+` menu (`session.panel`) + Command Palette (`./gui-experimental`) | Server plugin (`ctx.mcp.transform`) |
 | **Claude Desktop** | `plugins/claude/` + `release/chrome-browser-mcp.mcpb` | **Code tab**: Native 5-tab Claude Mod `Pane` (`/browser-deck`) + `AbovePrompt` status bar<br>**Chat tab**: `.mcpb` bundle with inline MCP App | `.mcp.json` / `.mcpb` |
 
-> **Self-contained plugin bundles:** `pnpm build` bundles standalone server artifacts (`server/cli.js` + `server/app/deck.html`) inside `plugins/codex`, `plugins/openchamber`, and `plugins/opencode` with **no external `npx` fallback**, so plugins keep working reliably even after a harness copies them into its own cache or extensions directory outside this repository.
+> **Self-contained plugin bundles:** `pnpm build` bundles standalone server artifacts (`server/cli.js` + `server/app/deck.html`) inside `plugins/codex`, `plugins/openchamber`, `plugins/opencode`, and `plugins/claude` with **no external `npx` fallback**, so plugins keep working reliably even after a harness copies them into its own cache or extensions directory outside this repository.
 
 #### Quick Local Install Helper
 
@@ -176,15 +176,17 @@ Antigravity automatically discovers:
 
 #### Codex Desktop (Codex Plugin + Global & Thread MCP App)
 
-Register this repository as a local marketplace in `~/.codex/config.toml` (or run `pnpm install:local --codex`, which also refreshes Codex's local plugin cache):
+Install the local marketplace and plugin with `pnpm install:local --codex` (which runs `codex plugin marketplace add` + `codex plugin add chrome-browser-mcp@chrome-browser-mcp`, or populates `~/.codex/config.toml` and the local plugin cache directly if `codex` CLI is not on `PATH`):
 
-```toml
-[marketplaces.chrome-browser-mcp]
-source_type = "local"
-source = "/absolute/path/to/chrome-browser-mcp"
+```bash
+pnpm install:local --codex
+```
 
-[plugins."chrome-browser-mcp@chrome-browser-mcp"]
-enabled = true
+Or manually via Codex CLI:
+
+```bash
+codex plugin marketplace add /absolute/path/to/chrome-browser-mcp
+codex plugin add chrome-browser-mcp@chrome-browser-mcp
 ```
 
 Codex Desktop loads `plugins/codex/` with the **Browser Control Deck** in both the global sidebar (`openai/ui: global`) and every thread's side panel (`openai/ui: thread`), plus all `browser_*` tools and the `chrome-browser-mcp` skill.

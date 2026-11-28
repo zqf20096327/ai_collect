@@ -119,14 +119,45 @@ or with Nix:
 nix run github:scarce/axel
 ```
 
-Then run `axel` in a Rex terminal. The first run checks your machine and helps you create
-your first agent. Every commit on `main` that passes CI is a release, so run the script
-again or `brew upgrade` to update.
+Then run `axel` in a Rex terminal. The first run asks one question, your first agent's
+name, and takes sensible defaults for the rest: the harness it finds, every skill, autopilot.
+`axel setup --custom` picks each of those; `axel setup --yes` asks nothing, for scripts.
+Every commit on `main` that passes CI is a release, so run the script again or
+`brew upgrade` to update.
 
 You'll need [Rex](https://www.superlogical.com/rex) and a harness:
 [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex),
 [OpenCode](https://opencode.ai), [Goose](https://goose-docs.ai), [Cursor](https://cursor.com/cli) or
 [another](https://axel.md/docs/installation#harnesses). Details in the [installation guide](https://axel.md/docs/installation).
+
+### Experimental web panes with Ladybird
+
+Web panes are opt-in. Install a [Ladybird build](https://ladybird.org/) with
+terminal mode support, then enable them:
+
+```sh
+axel panes web
+```
+
+Reopen a thread. Its conversation, composer, usage pane and Ctrl+D controls
+now render as web pages inside their Rex panes. Image drops attach files;
+Shift+Tab cycles the composer's runtime mode.
+
+Axel finds `ladybird` or `Ladybird` on `PATH`, or `Ladybird.app` in
+`/Applications` or `~/Applications` on macOS. For another location, set
+`AXEL_LADYBIRD` to the executable's absolute path. The browser must support
+`--headless=terminal` and your terminal must support Kitty graphics. Axel
+falls back to terminal text if Ladybird is missing or cannot draw.
+
+Switch back and reopen the thread:
+
+```sh
+axel panes terminal
+```
+
+`AXEL_PANES=web` or `AXEL_PANES=terminal` overrides the saved preference.
+The experiment currently uses opaque browser frames with the terminal's
+background colour; it does not support transparent web pages.
 
 ## Documentation
 
@@ -156,7 +187,7 @@ The design lives in [`docs/DESIGN.md`](docs/DESIGN.md), the wire formats in
 
 An agent runs on a harness: a coding agent's own CLI, which Axel drives over ACP. Install the
 CLI (and its ACP adapter, for Pi and Amp), log it in once, then name it when you create the
-agent, optionally with a model after a `/`. `axel setup` lists the harnesses it finds.
+agent, optionally with a model after a `/`. `axel setup --custom` lists the harnesses it finds.
 
 ```sh
 axel agent new atlas claude/opus          # Claude Code, on Opus

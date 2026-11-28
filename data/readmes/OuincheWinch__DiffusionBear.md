@@ -1,12 +1,12 @@
 <p align="center">
-  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.1">
-    <img src="docs/screenshots/0.5.1/051_annonce.webp" alt="DiffusionBear v0.5.1 — Local AI Image Studio for Apple Silicon" width="100%">
+  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.2">
+    <img src="docs/screenshots/0.5.2/052_annonce.webp" alt="DiffusionBear v0.5.2 — Local AI Image Studio for Apple Silicon" width="100%">
   </a>
 </p>
 
 <h1 align="center">DiffusionBear</h1>
 
-<p align="center"><strong>v0.5.1</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
+<p align="center"><strong>v0.5.2</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
 
 <p align="center">
   <a href="https://www.diffusionbear.com"><strong>Website</strong></a> &nbsp;·&nbsp;
@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.1"><img src="https://img.shields.io/badge/release-v0.5.1-blue" alt="Latest release v0.5.1"></a>
+  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.2"><img src="https://img.shields.io/badge/release-v0.5.2-blue" alt="Latest release v0.5.2"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT license"></a>
   <a href="https://github.com/ml-explore/mlx"><img src="https://img.shields.io/badge/engine-MLX%20%2F%20Metal-orange" alt="Built on MLX / Metal"></a>
   <img src="https://img.shields.io/badge/platform-macOS%20Apple%20Silicon-lightgrey" alt="macOS, Apple Silicon only">
@@ -26,14 +26,14 @@
 
 ## Quick start
 
-1. **Download** [DiffusionBear-0.5.1-arm64.zip](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.5.1/DiffusionBear-0.5.1-arm64.zip) (**217.2 MB**) — or browse the [v0.5.1 release page](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.1) for checksums.
+1. **Download** [DiffusionBear-0.5.2-arm64.zip](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.5.2/DiffusionBear-0.5.2-arm64.zip) (**218 MB**) — or browse the [v0.5.2 release page](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.2) for the `.dmg` (**288 MB**) and SHA-256 checksums.
 2. **Install:** unzip, drag `DiffusionBear.app` into `/Applications`, then run the one-time Gatekeeper bypass `xattr -cr /Applications/DiffusionBear.app` in Terminal (step-by-step guide below).
 3. **Generate:** launch the app, pick a model in the **Models** tab (weights download once, then the app works 100% offline), type a prompt, hit **Generate**. No account, no cloud, no per-image billing.
 
 
 ---
 
-**DiffusionBear** — a free macOS studio that runs SDXL (and its derivatives), FLUX.1, FLUX.2 Klein 4B/9B, FLUX.3 Klein 5.6B, MOSS-Image SFT 5B, Kromoss 5B, Qwen-Image-2.1 & Edit & Turbo, Krea 2 Turbo, Z-Image-Turbo, Anima Turbo 2B, DreamLite Mobile 0.39B, Bria FIBO 2.0 Edit Turbo and Bria RMBG-3.0 background removal on your Mac's own Metal GPU. No account, no cloud, no per-image
+**DiffusionBear** — a free macOS studio that runs SDXL (and its derivatives), FLUX.1, FLUX.2 Klein 4B/9B, FLUX.3 Klein 5.6B, MOSS-Image SFT 5B, Kromoss 5B, Qwen-Image-2.1 & Edit & Turbo, Krea 2 Turbo, Z-Image-Turbo, Ming-Image 0.2 Design, Anima Turbo 2B, DreamLite Mobile 0.39B, Bria FIBO 2.0 Edit Turbo and Bria RMBG-3.0 background removal on your Mac's own Metal GPU. No account, no cloud, no per-image
 billing.
 
 It is built on Apple's [MLX](https://github.com/ml-explore/mlx) framework, so it is
@@ -77,6 +77,18 @@ Unedited outputs (WebP-encoded for this page) from the studio, generated for the
 
 ---
 
+## What's new in v0.5.2
+
+This release focuses on **Apple Silicon memory efficiency, M1 compute speedups, and 8 GB Mac support**, backed by controlled A/B measurements on an Apple M1 (16 GB):
+
+- **FP16 Compute Precision toggle (`BF16` / `FP16 ⚡`) + per-request API override:** instant switch in **Parameters → Engine** across all MLX engines (FLUX.1/2/3, Z-Image, Qwen-Image 2.1, MOSS/Kromoss, FIBO 2.0/RMBG-3.0, Krea 2). Cuts latency by **-10% to -67.9%** on M1 (`compute_precision` can also be overridden per call in `POST /api/generate`).
+- **Seamless Row-Strip VAE Decode (`VAEBlockDecoder.LOW_MEMORY`):** active on FLUX.2, FLUX.3, Z-Image, MOSS/Kromoss, and FIBO 2.0/RMBG-3.0 (plus Qwen 2.1 native strips). At `1024×1024` FP16, cuts VAE peak MLX memory by **-79.0% to -82.3%** (`6,860 MB → 1,442 MB` on FLUX.2-4B; `8,144 MB → 1,443 MB` on FLUX.3-5.6B) with **SSIM ≥ 0.9978** and zero tile seams.
+- **Qwen-Image 2.1 StepCache (`0.25`, `steps >= 16`):** automatically skips redundant denoising steps on long non-turbo runs, saving **-31.6% to -34.4%** wall time across 25–40 steps (`398.98 s → 261.87 s` at 25 steps; `548.74 s → 371.39 s` at 40 steps) at **SSIM ≥ 0.981**.
+- **SSD Stream (`RAM` / `SSD ⚡`, 8 GB Mac mode):** streams Qwen-Image 2.1 weights from SSD instead of holding them in unified memory, cutting peak footprint by **-64.1%** (`11,639.8 MB → 4,181.5 MB`, `SSIM = 1.00000`), qualifying Qwen-Image 2.1 under the 8 GB ceiling.
+- **Opt-in FLUX.2-klein 9B Light Text Encoder (`5.1B Q4-G64`):** [`Ouinche/flux2-klein-9b-qwen3-te-pruned-5.1b-mlx-q4g64`](https://huggingface.co/Ouinche/flux2-klein-9b-qwen3-te-pruned-5.1b-mlx-q4g64) (**2.57 GiB**, `-73%` disk vs 9.50 GiB BF16). Opt-in download in **Parameters → Engine** (never forced on existing installs), cuts text-encoder peak MLX RAM by **-14.4% to -15.4%**, with isolated prompt-cache keys (`:small9b`).
+- **Ming-Image 0.2 Design 24.9B *(experimental Q4/Q8, MIT)*:** originally targeting 80 GB datacenter GPUs, now plugged into DiffusionBear via a stripped native Swift/MLX helper (`+29 MB` app / `+0.3 MB` zip, reusing the bundled `mlx.metallib`) running strictly in `BF16` with official Figma-style structured JSON prompt rewriting and optional RGBA alpha transparency (**614.32 s** median across 11 benchmark prompts on base M1 16 GB; **~10m 30s – 11m 14s** at native `1024×1024`).
+- **Runtime & metrology:** upgraded MLX, Transformers, and mlx-vlm runtime, rebased vendored `mflux` (`6aebc2d6`), and added unified `memory_peaks` / `compute_precision` / `vae_mode` telemetry to generation sidecars.
+
 ## What's new in v0.5.1
 
 This release adds three engines and a set of smaller improvements.
@@ -84,23 +96,17 @@ This release adds three engines and a set of smaller improvements.
 - **Anima Turbo 2B (q4):** anime-style engine with Anima LoRAs, a 4-step fast mode and a 10-step quality mode. 24.34 s (4 steps) and 52.75 s (10 steps) median at 512×768 on M1 16 GB.
 - **Bria RMBG-3.0 background removal (q4, `Ouinche/RMBG-3.0-MLX-4bit`):** removes the background of an image from the Studio Canvas and keeps the result as a transparent PNG. Three quality levels: Fast (512 px), HQ (768 px) and Native (1:1). CC BY-NC 4.0.
 - **DreamLite Mobile 0.39B (q4):** a small 4-step UNet for quick drafts, 4.62 s median at 512×768 on M1 16 GB. CC BY-NC 4.0.
-- **MCP server (`mcp-server/`):** Model Context Protocol wrapper around the local REST API — 10 tools (`generate_image`, `list_models`, `list_loras`, `job_status`, `wait_for_image`, …), bundled in the `.app` and installable standalone (`pip install ./mcp-server`). Agents (Claude Desktop, Cursor, Cline) drive DiffusionBear fully offline.
+- **MCP server (`mcp-server/`):** Model Context Protocol wrapper around the local REST API — 11 tools (`generate_image`, `create_image`, `list_models`, `list_loras`, `job_status`, `wait_for_image`, …), bundled in the `.app` and installable standalone (`pip install ./mcp-server`). Agents (Claude Desktop, Cursor, Cline) drive DiffusionBear fully offline.
 - **ControlNet on MLX, download-on-first-use only:** FLUX.1-schnell Canny (Apache-2.0 `mflux-community/flux-1-schnell-controlnet-canny-mflux-q4`), Qwen-Image-2.1-Turbo ControlNet-Union and Z-Image-Turbo ControlNet-Union-2.1. Weights are fetched **once**, only when a control image is attached on a supporting model and downloads are allowed — never at startup — and per-stage eviction keeps them inside the 16 GB wired budget.
 - **Vendored mflux rebase (0.24 line)** with Qwen-Image-2.1 prompt-embedding cache pinning; the staged pipeline now reports per-step progress, UI phases and mid-generation cancellation.
 - **Qwen-Image 2.1 RGBA fix:** alpha-channel (transparent) generation no longer crashes in the VAE decode — verified end-to-end with a real RGBA render.
-- **Full benchmark suite refreshed for 0.5.1:** 22 model configurations × 11 prompts = 242 timed generations on M1 16 GB (table below).
-
-### On `main` since v0.5.1
-
-- Accelerators, adapters and auxiliary files are never downloaded without consent ([#46](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/46)).
-- MOSS-Image SFT runs of 4 steps or fewer use the `lvladikov/MOSS-SFT-Distill-4step-LoRA` adapter ([#42](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/42)).
-- Local models can be added from any absolute folder ([#47](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/47)).
-- Faster Qwen-Image VAE decode ([#40](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/40)) and Krea 2 denoising in bf16 ([#45](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/45)).
+- **Full benchmark suite refreshed:** 22 model configurations × 11 prompts = 242 timed generations on M1 16 GB.
+- Additional fixes merged before the next release: accelerators/adapters never download without consent ([#46](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/46)), MOSS-Image SFT ≤4-step uses `lvladikov/MOSS-SFT-Distill-4step-LoRA` ([#42](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/42)), local models can be added from any absolute folder ([#47](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/47)), faster Qwen-Image VAE decode ([#40](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/40)) and Krea 2 denoising in bf16 ([#45](https://github.com/OuincheWinch/MLX-Diffusion-DEV/pull/45)).
 
 ## What's new in v0.5.0
 
-- **Full deletion of PyTorch & trimmed MLX bundle (`-52%` `.app`, `-45%` `.zip`):** **1.3 GB → 615 MB**
-  `.app` (**396.7 MB → 217.1 MB** arm64 `.zip`). `torch`, `torchvision`,
+- **Full deletion of PyTorch & trimmed MLX bundle (`-51%` `.app`, `-45%` `.zip`):** **1.3 GB → 621 MB**
+  `.app` (**396.7 MB → 217.7 MB** arm64 `.zip`). `torch`, `torchvision`,
   `torchaudio`, `diffusers`, and `accelerate` are 100% deleted from the
   packaged `.app` and default runtime. Only the exact runtime modules needed are
   bundled (`mlx`, `safetensors`, NumPy, `transformers`, `tokenizers`, and `--no-deps` `mlx-vlm`), compiled with `0` build warnings.
@@ -109,7 +115,7 @@ This release adds three engines and a set of smaller improvements.
   tree is resident in Unified Memory at a time**:
   - **3-stage (Text-to-Image):** **Encode** (Text Encoder → embeddings → evict) → **Generate** (DiT/UNet → latents → evict) → **Decode** (VAE / fast TAEF mini-VAE → pixels → evict).
   - **4-stage (Reference / img2img / Edit):** adds **Stage 1/4 Reference Encode** at the start — loading the VAE (or Vision-Language encoder), encoding reference image(s) into latent space (`image_latents` + `image_latent_ids`), and evicting the reference encoder before prompt encoding, denoising with injected reference latents, and final VAE decoding.
-- **Generation speed — v0.4.x suite (historical, superseded by the v0.5.1 table in [Benchmarks](#benchmarks); Apple M1 16 GB, 512×768 medians):** 19-config / 209-run suite
+- **Generation speed — v0.4.x suite (historical, superseded by the current table in [Benchmarks](#benchmarks); Apple M1 16 GB, 512×768 medians):** 19-config / 209-run suite
   finishes in **5h 24m 26s** (**-58.5%** vs prior 13h 01m 38s reference, **-4.7%** step-matched):
   - **MOSS-Image SFT 5B (4s DMD, former darask0 kit):** **83.57 s** (**-96.7%** vs 25-step stock)
   - **Qwen-Image 2.1 (2s + DMD2):** **46.77 s** (**-32.0%**) · **Turbo 8s:** **158.64 s** (**-19.4%**)
@@ -118,7 +124,7 @@ This release adds three engines and a set of smaller improvements.
   - **FLUX.2-klein 9B (4s):** **96.54 s** (**-8.0%**) · **FLUX.2-klein 4B (4s):** **44.09 s** (**-7.2%**)
   - **SDXL persistent q4 cache:** warm SDXL + LoRA reloads drop from ~34 s to ~3.45 s via staged TE/UNet eviction and persistent prequantized artifacts.
 - **Kromoss 5B (4-bit MLX) + 8-step Accelerator LoRA:** added support for **Kromoss 5B** (`Ouinche/kromoss-mlx-q4`, a 4-bit MLX distillation of MOSS / `lodestones/Kromoss`), running natively on the pure-MLX MOSS engine with its automatic **8-step DMD2 Accelerator LoRA** (**129.43 s median** at 512×768).
-- **Canonical Model Families & Qwen 2.5 Prompt Enhancers:** every architecture now belongs to its own canonical family (`sdxl`, `flux1`, `flux2`, `flux3`, `krea2`, `z-image`, `qwen`, `moss`, `fibo2`) with a dedicated local **Qwen 2.5** (0.5B / 1.5B MLX) prompt-enhancer profile.
+- **Canonical Model Families & Qwen 2.5 Prompt Enhancers:** every architecture now belongs to its own canonical family (`sdxl`, `flux1`, `flux2`, `flux3`, `krea2`, `z-image`, `qwen`, `moss`, `fibo2`, `ming`) with a dedicated local **Qwen 2.5** (0.5B / 1.5B MLX) prompt-enhancer profile. Ming uses inclusionAI's structured `canvas_settings` + `layers` JSON rewriting contract.
 - **Qwen-Image 2.1 & Turbo Alpha Channel (RGBA Transparency):** added a toggle in **Advanced Settings** to force 4th-channel alpha transparency at generation time, with checkerboard preview across Canvas, Browser, and Image Cards.
 - **First-run model SHA-256 verification & partial repair:** hashes installed built-in models once on first launch against SHA-256 manifests embedded in the binary (custom user models untouched), flags mismatches from legacy upgrades, and offers shard-level partial or full redownload — also available anytime on the **Models** tab.
 - **Open Agentic REST API & Remote Browser Access (`http://127.0.0.1:8001`):**
@@ -180,7 +186,7 @@ This release adds three engines and a set of smaller improvements.
 
 ## Supported models
 
-**Fourteen+ checkpoints across eleven families**, 4-bit quantised and memory-tuned for 16 GB of unified memory. Switching engines swaps weights on demand rather than keeping everything resident.
+**Fifteen+ checkpoints across twelve families**, 4-bit quantised and memory-tuned for 16 GB of unified memory. Switching engines swaps weights on demand rather than keeping everything resident.
 
 | Model | Family | Default steps | What it supports |
 |---|---|---|---|
@@ -193,6 +199,7 @@ This release adds three engines and a set of smaller improvements.
 | **DreamLite Mobile 0.39B** | DreamLite | 4 | The « Instantané » mode: a 0.39B UNet distilled to 4 guidance-free steps (4.62 s median at 512×768 on M1 16 GB), no LoRAs/references. CC BY-NC 4.0. |
 | **Krea 2 Turbo 13B** | Krea 2 | 4–8 | 13B photorealistic engine with 1 reference image, LoRAs, persistent Q4 text-encoder cache, and auto-applied 4-step distilled LoRA. |
 | **Kromoss 5B** | MOSS | 8 | 4-bit MLX distillation of MOSS with automatic **8-step DMD2 Accelerator LoRA** (`8-steps-dmd2-lora.safetensors`), Virtual Boxes, and pure-MLX staged execution. |
+| **Ming-Image 0.2 Design 24.9B** *(experimental)* | Ming-Image | 12 | Typography/UI/design generation with exact-text prompts (24.9B total: 6.15B DiT plus a 17.8B text-conditioning stack) and official Figma-style structured prompt rewriting, optional **RGBA alpha-channel transparency**, official 1024² fast-square plus 2K 1:1/16:9/4:3/2:3 presets, and staged q4/q8 MLX execution through a pinned Swift helper. No LoRAs or reference images in the first integration. |
 | **MOSS-Image SFT 5B** *(+ Base 5B)* | MOSS | 4–8 (DMD) / 25 | Interactive **Virtual Boxes**, reference image, LoRAs, MLX q8-g64 text encoder, and **4-step (`⚡ DMD 4`) / 8-step (`⚡ DMD 8`)** step-distillation adapters (fetched only with your consent). |
 | **Bria RMBG-3.0** | FIBO 2.0 (utility) | 4 | Background removal from the Studio Canvas to a transparent PNG, with Fast (512 px), HQ (768 px) and Native (1:1) quality levels. CC BY-NC 4.0. |
 | **Qwen-Image Edit** | Qwen-Image | 8–25 | Instruction-based editing with up to 3 reference images, negative prompts and guidance, plus 8/15/20/25-step presets. No 2-step adapter (the 60-layer edit transformer is incompatible with Qwen-Image 2.1 DMD2). |
@@ -211,60 +218,61 @@ This release adds three engines and a set of smaller improvements.
 
 | Studio Generation (Dark Mode) | Studio Generation (Light Mode) |
 |---|---|
-| ![DiffusionBear Studio generation interface in dark mode](docs/screenshots/0.5.1/051_en_generate_dark.webp) | ![DiffusionBear Studio generation interface in light mode](docs/screenshots/0.5.1/051_en_generate_light.webp) |
+| ![DiffusionBear Studio generation interface in dark mode](docs/screenshots/0.5.2/052_en_generate_dark.webp) | ![DiffusionBear Studio generation interface in light mode](docs/screenshots/0.5.2/052_en_generate_light.webp) |
 
 | Gallery / Browser (Dark Mode) | Gallery / Browser (Light Mode) |
 |---|---|
-| ![DiffusionBear Gallery with search and favorites in dark mode](docs/screenshots/0.5.1/051_en_browser_dark.webp) | ![DiffusionBear Gallery with search and favorites in light mode](docs/screenshots/0.5.1/051_en_browser_light.webp) |
+| ![DiffusionBear Gallery with search and favorites in dark mode](docs/screenshots/0.5.2/052_en_browser_dark.webp) | ![DiffusionBear Gallery with search and favorites in light mode](docs/screenshots/0.5.2/052_en_browser_light.webp) |
 
 | Models: Installed & Integrity Check | Models: Hugging Face Browser |
 |---|---|
-| ![DiffusionBear Models tab and installed model management](docs/screenshots/0.5.1/051_en_models_installed_dark.webp) | ![DiffusionBear Hugging Face model browser](docs/screenshots/0.5.1/051_en_models_browse_light.webp) |
+| ![DiffusionBear Models tab and installed model management](docs/screenshots/0.5.2/052_en_models_installed_dark.webp) | ![DiffusionBear Hugging Face model browser](docs/screenshots/0.5.2/052_en_models_browse_light.webp) |
 
 | Parameters: Engine, GPU Memory & Model Defaults | Parameters: Language & System Preferences |
 |---|---|
-| ![DiffusionBear Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.5.1/051_en_parameters_preferences_dark.webp) | ![DiffusionBear Parameters preferences in light mode](docs/screenshots/0.5.1/051_en_parameters_preferences_light.webp) |
+| ![DiffusionBear Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.5.2/052_en_parameters_preferences_dark.webp) | ![DiffusionBear Parameters preferences in light mode](docs/screenshots/0.5.2/052_en_parameters_preferences_light.webp) |
 
 | Parameters: API Keys & Remote Access | Parameters: Qwen 2.5 Prompt Enhancer |
 |---|---|
-| ![DiffusionBear Parameters API keys and remote connection](docs/screenshots/0.5.1/051_en_parameters_api_dark.webp) | ![DiffusionBear Parameters Qwen 2.5 prompt enhancer](docs/screenshots/0.5.1/051_en_parameters_enhancer_dark.webp) |
+| ![DiffusionBear Parameters API keys and remote connection](docs/screenshots/0.5.2/052_en_parameters_api_dark.webp) | ![DiffusionBear Parameters Qwen 2.5 prompt enhancer](docs/screenshots/0.5.2/052_en_parameters_enhancer_dark.webp) |
 
 | Models: Detected on Disk | Models: Import from Draw Things / DiffusionBee |
 |---|---|
-| ![DiffusionBear models detected on disk](docs/screenshots/0.5.1/051_en_models_detected_dark.webp) | ![DiffusionBear import from Draw Things and DiffusionBee](docs/screenshots/0.5.1/051_en_models_import_dark.webp) |
+| ![DiffusionBear models detected on disk](docs/screenshots/0.5.2/052_en_models_detected_dark.webp) | ![DiffusionBear import from Draw Things and DiffusionBee](docs/screenshots/0.5.2/052_en_models_import_dark.webp) |
 
 ---
 
 ## Benchmarks
 
-Measured on a **2021 MacBook Pro M1 (16 GB)** running **v0.5.1** across **22 model configurations × 11 prompts = 242 timed studio generations** (10 portrait prompts at `512×768` + 1 icon prompt at `512×512`; full 22-config suite wall time **5h 24m 50.8s**; across the **18 matched configs / 198 runs**: **4h 47m 19s** vs **12h 42m 00s** in the reference, **-62.3%** total / **-10.4%** step-matched (176 runs)):
+Measured on a **2021 MacBook Pro M1 (16 GB)** running **FP16 mode** across **23 model configurations × 11 prompts = 253 timed studio generations** (22 core FP16 configs / 242 runs in **4h 23m 49s**, plus experimental Q4 **Ming-Image 0.2 Design 24.9B** in BF16 via Swift/MLX helper / 11 runs in **1h 55m 04s**, total **6h 18m 53s**; 10 portrait prompts at `512×768` + 1 icon prompt at `512×512`; across the **18 matched configs / 198 runs**: **-69.3%** total / **-27.4%** step-matched vs reference):
 
-| Model | Steps | M1 16 GB median (`512×768`) | M1 16 GB range | M4 Pro VM 16 GB median (`512×768`) | Family / Notes |
+| Model | Steps | M1 16 GB FP16 median (`512×768`) | M1 16 GB range | M4 Pro VM 16 GB median (`512×768`) | Family / Notes |
 |---|---|---|---|---|---|
-| **DreamLite Mobile 0.39B** | 4 | **4.62 s** | 4.55 – 6.05 s | 2.24 s | DreamLite · 0.39B mobile distilled, q4 (new in v0.5.1) |
-| **Juggernaut XL Lightning** | 4 | **8.19 s** | 8.13 – 17.32 s | not measured | SDXL · Native MLX, q4 cache + TAESD (`-12.8%` vs reference) |
-| **RealVisXL V5.0 Lightning** | 6 | **11.98 s** | 11.97 – 20.60 s | not measured | SDXL · 6-step Lightning, native MLX + TAESD |
-| **Anima Turbo 2B** | 4 | **24.34 s** | 24.15 – 26.97 s | 7.81 s | Anima · 2B anime turbo, q4, er_sde (new in v0.5.1) |
-| **Juggernaut XI v11** | 8 | **36.01 s** | 35.75 – 46.62 s | not measured | SDXL · Hyper-SD 8-step, native MLX |
-| **RealVisXL V5.0** | 8 | **36.22 s** | 35.94 – 47.03 s | not measured | SDXL · Hyper-SD 8-step, native MLX (`-15.0%`) |
-| **FLUX.2-klein 4B** | 4 | **43.90 s** | 43.87 – 44.16 s | 10.11 s | FLUX.2 · Compact 4B rectified flow (`-7.4%`) |
-| **FLUX.3-klein 5.6B** | 4 | **47.70 s** | 47.61 – 56.70 s | 14.04 s | FLUX.3 · 5.6B flow-matching + Virtual Boxes (`-10.1%`) |
-| **Anima Turbo 2B** | 10 | **52.75 s** | 52.51 – 53.50 s | 13.39 s | Anima · 2B anime turbo 10-step, q4, er_sde (new in v0.5.1) |
-| **Qwen-Image 2.1 (2s + DMD2)** | 2 | **53.31 s** | 44.68 – 60.27 s | 17.48 s | Qwen-Image · 7B DiT + 2-step DMD2 (`-23.5%`) |
-| **FLUX.1-schnell** | 4 | **68.75 s** | 68.62 – 68.99 s | 20.93 s | FLUX.1 · Classic 4-step rectified flow (`-22.3%`) |
-| **MOSS-Image SFT 5B (DMD 4s)** | 4 | **77.85 s** | 76.79 – 85.35 s | not measured | MOSS · Pure MLX 5B DiT + 4-step DMD (`-96.8%` vs 25s stock); measured with the former darask0 4-step kit, see note below |
-| **FLUX.2-klein 4B (8s)** | 8 | **83.86 s** | 83.79 – 91.62 s | 19.05 s | FLUX.2 · High-detail 8-step mode |
-| **Bria FIBO 2.0 Edit Turbo** | 4 | **86.75 s** | 86.44 – 97.29 s | 23.08 s | FIBO 2.0 · 4.2B DiT + Qwen3-VL 4B (`-17.1%`) |
-| **FLUX.2-klein 9B** | 4 | **90.76 s** | 90.66 – 90.80 s | 20.16 s | FLUX.2 · Flagship 9B rectified flow (`-13.1%`) |
-| **FLUX.3-klein 5.6B (8s)** | 8 | **92.33 s** | 92.23 – 97.25 s | 25.55 s | FLUX.3 · High-detail 8-step mode (`-8.9%`) |
-| **Z-Image Turbo 6B** | 8 | **118.44 s** | 118.38 – 127.82 s | 26.59 s | Z-Image · Sharp geometry 8-step (`+2.1%`) |
-| **Kromoss 5B (DMD2 8s)** | 8 | **126.96 s** | 126.32 – 145.02 s | 37.90 s | MOSS · Pure MLX 5B DiT + 8-step DMD2 LoRA (new in v0.5.1) |
-| **Qwen-Image 2.1 Turbo** | 8 | **145.74 s** | 140.75 – 161.44 s | 41.33 s | Qwen-Image · 8-step distilled 7B DiT (`-30.6%`) |
-| **Krea 2 Turbo 13B** | 4 | **158.75 s** | 145.99 – 175.60 s | 31.85 s | Krea 2 · 13B photorealistic 4-step distilled (`+3.7%`) |
-| **FLUX.2-klein 9B (8s)** | 8 | **180.09 s** | 179.93 – 180.38 s | 40.02 s | FLUX.2 · Flagship 9B 8-step (`-7.2%`) |
-| **Krea 2 Turbo 13B (8s)** | 8 | **243.57 s** | 233.60 – 330.04 s | 63.86 s | Krea 2 · 13B native 8-step (`-10.7%` vs reference) |
+| **DreamLite Mobile 0.39B** | 4 | **3.67 s** | 3.61 – 5.69 s | 2.24 s | DreamLite · 0.39B mobile distilled, q4 (`-20.6%` vs BF16) |
+| **Juggernaut XL Lightning** | 4 | **9.73 s** | 9.28 – 20.55 s | not measured | SDXL · Native MLX, q4 cache + TAESD |
+| **RealVisXL V5.0 Lightning** | 6 | **12.80 s** | 12.64 – 21.84 s | not measured | SDXL · 6-step Lightning, native MLX + TAESD |
+| **Anima Turbo 2B** | 4 | **14.21 s** | 14.17 – 14.87 s | 7.81 s | Anima · 2B anime turbo, q4, er_sde (`-41.6%` vs BF16) |
+| **Anima Turbo 2B** | 10 | **34.31 s** | 34.10 – 37.44 s | 13.39 s | Anima · 2B anime turbo 10-step, q4, er_sde (`-35.0%` vs BF16) |
+| **FLUX.2-klein 4B** | 4 | **34.34 s** | 34.23 – 38.70 s | 10.11 s | FLUX.2 · Compact 4B rectified flow (`-21.8%` vs BF16) |
+| **FLUX.3-klein 5.6B** | 4 | **37.69 s** | 37.49 – 42.20 s | 14.04 s | FLUX.3 · 5.6B flow-matching + Virtual Boxes (`-21.0%` vs BF16) |
+| **Juggernaut XI v11** | 8 | **38.26 s** | 38.11 – 51.62 s | not measured | SDXL · Hyper-SD 8-step, native MLX |
+| **RealVisXL V5.0** | 8 | **39.23 s** | 37.96 – 49.26 s | not measured | SDXL · Hyper-SD 8-step, native MLX |
+| **Qwen-Image 2.1 (2s + DMD2)** | 2 | **59.39 s** | 37.26 – 77.38 s | 17.48 s | Qwen-Image · 7B DiT + 2-step DMD2 |
+| **FLUX.2-klein 4B (8s)** | 8 | **63.50 s** | 63.40 – 63.99 s | 19.05 s | FLUX.2 · High-detail 8-step mode (`-24.3%` vs BF16) |
+| **MOSS-Image SFT 5B (DMD 4s)** | 4 | **67.58 s** | 66.71 – 72.71 s | not measured | MOSS · Pure MLX 5B DiT + 4-step lvladikov LoRA (`-13.2%` vs BF16) |
+| **FLUX.2-klein 9B** | 4 | **69.47 s** | 68.92 – 77.56 s | 20.16 s | FLUX.2 · Flagship 9B rectified flow (`-23.5%` vs BF16) |
+| **FLUX.3-klein 5.6B (8s)** | 8 | **71.26 s** | 71.05 – 71.76 s | 25.55 s | FLUX.3 · High-detail 8-step mode (`-22.8%` vs BF16) |
+| **FLUX.1-schnell** | 4 | **78.25 s** | 77.90 – 82.36 s | 20.93 s | FLUX.1 · Classic 4-step rectified flow |
+| **Bria FIBO 2.0 Edit Turbo** | 4 | **79.81 s** | 79.54 – 82.85 s | 23.08 s | FIBO 2.0 · 4.2B DiT + Qwen3-VL 4B (`-8.0%` vs BF16) |
+| **Z-Image Turbo 6B** | 8 | **91.12 s** | 90.43 – 102.51 s | 26.59 s | Z-Image · Sharp geometry 8-step (`-23.1%` vs BF16) |
+| **Qwen-Image 2.1 Turbo** | 8 | **106.17 s** | 105.46 – 123.53 s | 41.33 s | Qwen-Image · 8-step distilled 7B DiT (`-27.2%` vs BF16) |
+| **Kromoss 5B (DMD2 8s)** | 8 | **111.70 s** | 110.70 – 121.27 s | 37.90 s | MOSS · Pure MLX 5B DiT + 8-step DMD2 LoRA (`-12.0%` vs BF16) |
+| **Krea 2 Turbo 13B** | 4 | **117.86 s** | 113.62 – 137.58 s | 31.85 s | Krea 2 · 13B photorealistic 4-step distilled (`-25.8%` vs BF16) |
+| **FLUX.2-klein 9B (8s)** | 8 | **137.14 s** | 136.67 – 137.63 s | 40.02 s | FLUX.2 · Flagship 9B 8-step (`-23.8%` vs BF16) |
+| **Krea 2 Turbo 13B (8s)** | 8 | **186.22 s** | 184.40 – 196.17 s | 63.86 s | Krea 2 · 13B native 8-step (`-23.5%` vs BF16) |
+| **Ming-Image 0.2 Design 24.9B** *(exp. Q4)* | 12 | **614.32 s** | 591.76 – 744.90 s | not measured | Ming-Image · Experimental Q4/Q8 (`BF16`), plugged via Swift/MLX helper (`1024px` internal bucket) |
 
-The **M4 Pro VM** column is secondary: an Apple M4 Pro **virtual machine** with 16 GB, running v0.5.1, **17 configurations × 11 prompts = 187 timed generations**, same prompts and sizes. The four SDXL configurations and MOSS-Image SFT were not measured there. A virtual machine is not a retail Mac, so treat this column as indicative.
+The **M4 Pro VM** column is secondary: an Apple M4 Pro **virtual machine** with 16 GB, measured on the prior release, **17 configurations × 11 prompts = 187 timed generations**, same prompts and sizes. The four SDXL configurations and MOSS-Image SFT were not measured there. A virtual machine is not a retail Mac, so treat this column as indicative.
 
 The MOSS-Image SFT 4-step row was measured with the former darask0 4-step kit (removed from Hugging Face); the current ≤4-step path uses the lvladikov LoRA and has not been re-benchmarked yet.
 
@@ -272,20 +280,37 @@ Sources: [`docs/Comparaison040/benchmark_data.json`](docs/Comparaison040/benchma
 
 For the full interactive visual duel arena, per-prompt latency deltas (`-green` / `+red` vs reference), and historical September baselines, visit **[diffusionbear.com/benchmark.html](https://www.diffusionbear.com/benchmark.html)**.
 
+### FP16 & Memory Optimization Highlights (Apple M1 16 GB)
+
+Measured on the same 2021 MacBook Pro M1 (16 GB) at `512×768` (or `1024×1024` for Row-Strip VAE), identical seeds. Full interactive before/after sliders are on **[diffusionbear.com/fp16-acceleration.html](https://www.diffusionbear.com/fp16-acceleration.html)**.
+
+| Optimization / Model | Baseline | Optimized | Measured Gain | Parity (SSIM / PSNR) |
+|---|---:|---:|---:|---:|
+| **FP16 · Qwen-Image 2.1 Turbo (2s)** | 108.59 s (BF16) | **34.88 s** (FP16) | **-67.9%** | 0.8942 / 23.73 dB |
+| **FP16 · MOSS-Image SFT 5B (4s)** | 107.40 s (BF16) | **65.50 s** (FP16) | **-39.0%** | 0.9885 / 35.95 dB |
+| **FP16 · FLUX.2-klein 4B (4s txt2img)** | 83.27 s (BF16) | **58.31 s** (FP16) | **-30.0%** (-1,669 MB RSS) | 0.9613 / 27.99 dB |
+| **FP16 · FLUX.2-klein 9B (4s ref)** | 351.90 s (BF16) | **255.98 s** (FP16) | **-27.3%** (-1,221 MB RSS) | 0.9604 / 31.29 dB |
+| **FP16 · FLUX.3-klein 5.6B (4s ref)** | 175.34 s (BF16) | **131.65 s** (FP16) | **-24.9%** | 0.9802 / 34.66 dB |
+| **FP16 · Bria FIBO 2.0 Turbo (4s ref)** | 119.37 s (BF16) | **90.06 s** (FP16) | **-24.6%** | 0.9991 / 48.32 dB |
+| **Row-Strip VAE · FLUX.3 5.6B (`1024×1024`)** | 8,144 MB peak | **1,443 MB peak** | **-82.3% VAE peak** | 0.9978 / 45.84 dB |
+| **Row-Strip VAE · FLUX.2 4B (`1024×1024`)** | 6,860 MB peak | **1,442 MB peak** | **-79.0% VAE peak** | 0.9981 / 49.76 dB |
+| **StepCache · Qwen 2.1 (25s / 40s)** | 398.98 s / 548.74 s | **261.87 s / 371.39 s** | **-34.4% / -32.3%** | 0.9835 / 0.9885 |
+| **SSD Stream · Qwen 2.1 Turbo (8 GB)** | 11,639.8 MB peak | **4,181.5 MB peak** | **-64.1% footprint** | 1.0000 / 99.00 dB |
+
 ## Install the App & First-Launch Gatekeeper Guide
 
 `DiffusionBear.app` is a self-contained macOS application: it bundles the backend, one relocatable Python/MLX runtime, and the studio interface inside one `.app`. **You do not need to install Python, Node, Xcode, or Homebrew.**
 
-**[⬇ Download DiffusionBear for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.5.1/DiffusionBear-0.5.1-arm64.zip)** &nbsp;·&nbsp; [v0.5.1 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.1)
+**[⬇ Download DiffusionBear for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.5.2/DiffusionBear-0.5.2-arm64.zip)** &nbsp;·&nbsp; [v0.5.2 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.2)
 
 | | Detail |
 |---|---|
 | **Requires** | An Apple Silicon Mac (M1 / M2 / M3 / M4 / M5 / M6), **macOS 26.2 or later**, 16 GB unified memory recommended. |
 | **Your files** | Settings, gallery, LoRA registry, and model store live in `~/Library/Application Support/DiffusionBear`. To put the store on an external drive, write an absolute path into `~/Library/Application Support/DiffusionBear/store_path`. |
 | **Model weights** | Downloaded on first use from Hugging Face or [Civitai](https://civitai.com/?ref_code=88C8VEBA) into your local store. After that, the app works 100% offline. |
-| **Package size** | **217.2 MB** arm64 `.zip` → **615 MB** standalone `.app` (pure MLX, no PyTorch or `diffusers`). |
+| **Package size** | **217.7 MB** arm64 `.zip` → **621 MB** standalone `.app` (pure MLX, no PyTorch or `diffusers`). |
 
-**SHA-256 (zip):** `a02a4fc0a549730ef5c989a8a9a12847404d695d20be4bf56b2ca95a62ecb57e` (all checksums recorded in [packaging/ALL_SHA256SUMS](packaging/ALL_SHA256SUMS)).
+**SHA-256 (zip):** `fda8b2e03f28a6c641e36173efd78c1486d211d06cfce979a79a44aad4a2747c` (all checksums recorded in [packaging/ALL_SHA256SUMS](packaging/ALL_SHA256SUMS)).
 
 ### 🍎 How to Open on First Launch (macOS Gatekeeper Bypass)
 
@@ -299,7 +324,7 @@ Because DiffusionBear is a free, open-source project signed ad-hoc (without a pa
 
 **Follow this one-time 60-second procedure:**
 
-1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.5.1-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
+1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.5.2-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
 2. **Bypass Gatekeeper (choose Option A or Option B):**
    * **Option A — Fastest (Terminal 1-Liner):** Open **Terminal.app**, paste this command, and press Return:
      ```bash
@@ -359,6 +384,18 @@ app manages it; you watch (Parameters → Engine & GPU) rather than tune:
 - **Storage cleanup.** The Parameters tab reports generated-image size, TAESD
   state and settings, and the Models tab clears per-repo Hugging Face cache
   entries to reclaim disk space.
+
+### Engine & Performance Toggles (Parameters → Engine)
+
+Three opt-in / instant switches in **Parameters → Engine** (plus two automatic pipeline optimisations) let you tune speed vs memory for your Mac:
+
+| Control | Default | Effect (measured on M1 16 GB) | Recommended for & Limitations |
+|---|---|---|---|
+| **Compute Precision (`BF16` / `FP16 ⚡`)** | `BF16` *(or `FP16` via settings/API)* | Runs MLX compute in `float16` instead of `bfloat16`: **-10% to -67.9%** faster on M1, up to **-1,669 MB** RSS. Overridable per call via `compute_precision` in `POST /api/generate`. | **M1 / M2 Macs** benefit most (M3/M4 have native hardware BF16). **Limitation:** large 13B models (`Krea 2 Turbo`) can show noticeable composition drift in FP16 (`SSIM 0.7247`); switch back to `BF16` for strict parity. |
+| **SSD Stream (`RAM` / `SSD ⚡`)** | `RAM` (Off) | Streams Qwen-Image 2.1 weights on demand from SSD instead of pinning them in RAM: **-64.1% peak footprint** (`11,639.8 MB → 4,181.5 MB`), `SSIM = 1.00000`. | **8 GB Apple Silicon Macs.** **Limitation:** applies to Qwen-Image 2.1 non-edit txt2img runs only (disabled on `qwen-image-edit` reference runs) and requires fast internal NVMe SSD. |
+| **FLUX.2-9B Light Text Encoder (`5.1B Q4-G64`)** | Off (opt-in) | Swaps the 9.50 GiB BF16 Qwen3-8B encoder for [`Ouinche/flux2-klein-9b-qwen3-te-pruned-5.1b-mlx-q4g64`](https://huggingface.co/Ouinche/flux2-klein-9b-qwen3-te-pruned-5.1b-mlx-q4g64) (**2.57 GiB**, `-73%` disk, **-14.4% to -15.4%** TE peak MLX RAM). Never auto-downloaded. | **8–16 GB Macs** short on RAM or disk. **Limitation:** Q4 dequantization adds **~3.4–3.8 s** on cold prompt-cache misses and slightly shifts secondary object placement (`SSIM 0.47–0.55` vs 8B, equal visual quality). |
+| **Row-Strip VAE Decode** *(automatic)* | On | Decodes latents in row strips with full-image GroupNorm stats (`VAEBlockDecoder.LOW_MEMORY`): **-79% to -82.3%** VAE MLX peak at `1024×1024`, **SSIM ≥ 0.9978**. | Automatic on FLUX.2, FLUX.3, Z-Image, MOSS/Kromoss, FIBO 2.0/RMBG-3.0, and Qwen 2.1. **Limitation:** ~2–3% decode overhead at small `512×768` frames, huge win at `≥1024px`. |
+| **Qwen StepCache** *(automatic)* | On (`steps >= 16`) | Caches and skips redundant transformer steps (`step_cache_ratio=0.25`) on non-turbo Qwen 2.1 runs: **-31.6% to -34.4%** faster at 25–40 steps, **SSIM ≥ 0.981**. | Automatic for Qwen-Image 2.1 when `steps >= 16` (disabled below 16 steps where 0 steps are skipped, and disabled on Qwen-Edit / ControlNet). |
 
 ### MOSS-Image step distillation (default behaviour)
 
@@ -621,6 +658,7 @@ are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - **FIBO**: Generation and editing powered by Bria AI's FIBO models, licensed under CC BY-NC 4.0.
 - **DreamLite**: The instant 0.39B mode is powered by carlofkl's DreamLite models, licensed under CC BY-NC 4.0.
 - **Anima**: The 2B anime engine is powered by CircleStone Labs' Anima, under the CircleStone Labs Non-Commercial License (weights non-commercial, outputs commercial; derivative of NVIDIA Cosmos-Predict2 under the NVIDIA Open Model License).
+- **Ming-Image**: Typography, UI, and layout-heavy design generation is powered by inclusionAI's Ming-Image 0.2 Design (24.9B, MIT) via [ming-image-swift](https://github.com/xocialize/ming-image-swift) (MIT).
 - **ControlNet branches** (optional, downloaded once on first ControlNet use): FLUX.1-schnell ControlNet-Canny and Z-Image-Turbo ControlNet-Union-2.1 q4 packs from mflux-community (Apache-2.0), and the Qwen-Image-2.1-Turbo ControlNet-Union q4 pack (Qwen Research License, like the Qwen-Image 2.1 base).
 
 ## License & Commercial Model Rights
@@ -638,6 +676,7 @@ before commercial sale:
 |---|---|---|---|
 | **FLUX.2-klein 4B**, **FLUX.1-schnell** | `Apache-2.0` | **Yes** | Permissive commercial use & weights (preserve licence/attribution notices) |
 | **MOSS-Image SFT 5B**, **MOSS-Image Base 5B**, **Kromoss 5B** | `Apache-2.0` | **Yes** | Permissive commercial use & weights |
+| **Ming-Image 0.2 Design 24.9B** | `MIT` | **Yes** | Permissive commercial use & weights (MIT) |
 | **Z-Image Turbo 6B**, **Qwen-Image Edit** | `Apache-2.0` | **Yes** | Permissive commercial use & weights |
 | **Qwen2.5-1.5B / 0.5B Instruct** *(prompt enhancers)* | `Apache-2.0` | **Yes** | Permissive commercial use & weights |
 | **RealVisXL V5.0** & **Lightning** | `OpenRAIL++` | **Yes** | Commercial outputs & weights allowed under OpenRAIL++ ethical-use terms |

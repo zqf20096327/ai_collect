@@ -1,0 +1,182 @@
+# Backline
+
+Backline is an AI travel agent. Tell it where you want to go and it researches, plans, phones and books the trip, then shows the whole thing on a 3D globe of the real Earth.
+
+You type one sentence, such as "a weekend in Lisbon for two, we love fado". Backline returns a trip matched to your taste and researched from cited sources, and flies you through it in 3D. One tap of approval books it, and the AI phone calls to hotels and restaurants, the payments and the confirmation numbers all appear live on screen.
+
+Live demo: [backline.travel](https://backline.travel). Built for the [Qloo Agentic Hackathon](https://qloo.devpost.com/).
+
+## The core loop
+
+| # | Step | How | What you see |
+|---|---|---|---|
+| 1 | Understand | Nemotron (Nebius) reads the request; dates resolved on the calendar; origin from what you said, your home city, or your connection | The globe flies to your destination within seconds, from your city |
+| 2 | Taste | Qloo resolves what you love to entities and tags, and maps where that taste lives in the city (heatmap, taste zone) | Qloo's taste rises over the real city as glowing columns; "Because you love …" |
+| 3 | Research | A ReAct agent decides each step: Qloo places, OpenStreetMap, live hotel rates, real Google Flights fares, events on your dates, web sources; field guide from Open-Meteo, holidays, exchange rates, cited notes | Pins drop onto real streets; every pick shows its Qloo affinity and rank |
+| 4 | Plan | Hour-by-hour plan using only listed places; real road routes | Day routes drawn on the streets; "Fly the trip" plays each day |
+| 5 | Approve | One checkout for the whole trip: every booking, the total in your currency, your wallet before and after | "Approve & pay" or "Take a look first" |
+| 6 | Execute | Each booking prepaid from the Backline Wallet, then confirmed by a real Vapi voice call, one at a time, day by day; hotel and flight booking; emails; automatic refunds | A live Bookings panel: you → agent → business, the call as a conversation, a receipt for every payment |
+
+## How the agent works (ReAct)
+
+Research and choosing run as one agent loop ([agent/runtime.ts](packages/engine/src/agent/runtime.ts)); [ADR 0001](docs/adr/0001-react-agent-core.md) explains why. Each turn the model reasons (one sentence, streamed to the screen), acts (up to 3 tool calls in parallel) and observes the results, then decides the next step, until it chooses to finish or a budget (10 turns, 24 calls, 90 s) runs out; on its last turn it is asked to finish with what it has.
+
+| Tool | What it does |
+|---|---|
+| `update_trip` | Corrects its understanding of the trip (dates, budget, price level) |
+| `locate` | Pins the city, a landmark, or a named place on the real map |
+| `search_places` | Qloo places ranked by the person's taste, plus OpenStreetMap |
+| `check_places` | Rates and booking contacts for its top picks |
+| `find_travel` | Real Google Flights fares for the dates and travellers, plus trains and buses; weighed against the budget |
+| `find_events` | Concerts, matches, festivals on the dates, ranked by taste |
+| `research` / `read_document` | The web, and the person's attached files |
+
+It checks itself: a finish that misses something (no hotel, over budget, fares never checked, arrival station not on the map) is sent back once. Model output is untrusted: tool names and arguments are validated, repeated calls are answered from memory. If the model stops answering, an autopilot finishes with the same tools. The steps after the agent (plan, routes, payment slip) reuse what it found, and prices are always computed in code from provider data ([ADR 0002](docs/adr/0002-prices-in-code.md)). Every run's full trace (thought, tool, arguments, result) is under "How the agent worked".
+
+## Talk to it
+
+| Way in | What happens |
+|---|---|
+| Type or say one sentence | The full loop above, on the web |
+| Call Backline at +1 (618) 260-1647 | A real AI phone agent plans the trip on the call and reads out a 4-digit code; the trip appears on the home page under that code |
+| Talk here (browser) | The same agent over your microphone; the trip opens when you hang up |
+| It calls you | When every booking is done, Backline rings your phone with a short briefing of what was booked |
+
+The rules the agent follows are written down as a specification in [docs/SYSTEM.md](docs/SYSTEM.md). [docs/VERIFICATION.md](docs/VERIFICATION.md) logs every live check we ran, what was wrong and how it was fixed.
+
+## What is real in the demo
+
+| Capability | In the live demo | Notes |
+|---|---|---|
+| Qloo taste, heatmap, places, affinity | Real | Qloo's own scores, shown to three decimals with rank |
+| Research, routes, weather, holidays, exchange rates | Real, cited | Nothing is invented; gaps are listed |
+| Call Backline, talk in the browser, concierge briefing | Real calls | Inbound number answered by the agent; browser voice needs `NEXT_PUBLIC_VAPI_PUBLIC_KEY` |
+| AI phone calls (Vapi + Telnyx) | Real calls | Demo calls ring the signed-in person's own phone, where they play the business; real businesses only with `CALLS_LIVE=1` |
+| Backline Wallet | Real ledger, demo balance | $20,000 per person, kept in US dollars and shown in the traveller's currency; holds, captures, refunds and receipts in the database. No real money moves |
+| Hotel booking (LiteAPI), flights (Duffel) | Real APIs, sandbox | References shown as Backline references when the provider returns a placeholder |
+| Identity verification (Persona) | Real flow when keys are set | Paid bookings wait for a verified traveller |
+| Emails to businesses (Resend) | Real when signed in | Within per-mission limits |
+| 3D city | Satellite + terrain + 3D buildings; Photoreal (Google 3D Tiles) when a key is set | |
+
+## The expedition
+
+Trips open into a full-screen expedition on the real Earth (MapLibre GL globe, satellite imagery, terrain, 3D buildings) with a Three.js layer sharing the camera: light beacons over every pick, Qloo taste columns, trees grown in real parks, clouds and rain from the forecast, a traveller that flies each day's route. A colour grade follows the hour and the weather; drag the day's clock to see the light change. Light and dark themes. Details: [docs/EXPERIENCE.md](docs/EXPERIENCE.md).
+
+## Tech stack
+
+- TypeScript throughout, as an npm workspaces monorepo (Node.js 20.3 or newer)
+- Web app: Next.js 15 and React 19, deployed on Vercel ([docs/DEPLOYMENT.md](docs/DEPLOYMENT.md))
+- 3D: MapLibre GL for the globe, Three.js and `@react-three/fiber` for the 3D scenes, and `3d-tiles-renderer` for Google Photorealistic 3D Tiles
+- Agent engine: framework-free TypeScript with Zod validation at every boundary; any OpenAI-compatible model provider (Nebius Token Factory by default)
+- Data and accounts: Supabase (Postgres migrations in `packages/db`)
+- Voice: Vapi with a Telnyx number, plus `@vapi-ai/web` in the browser
+- Travel and services: Qloo, LiteAPI, Duffel, SerpApi, Tavily, Resend and Persona (see [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md))
+- Tests: Vitest for unit tests, Playwright with axe-core for end-to-end and accessibility checks
+
+## Repository layout
+
+```
+apps/web          Next.js app: landing page, brief view, API routes
+packages/engine   Agent engine: skills, orchestrator, Qloo / LLM / Tavily clients, tests
+packages/db       SQL migrations for Supabase
+brand/            Logo marks and concept board
+docs/             Product, architecture, security, QA and roadmap documents
+scripts/          API and location coverage checks
+launch-film/      The launch film, built in code (scenes, score, render scripts)
+```
+
+## Getting started
+
+Requires Node.js 20.3 or newer.
+
+```bash
+npm install                                  # installs all workspaces
+cp .env.example apps/web/.env.local          # then fill in your keys
+npm run check                                # verifies Qloo and the AI provider
+npm run dev                                  # http://localhost:3000
+```
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the web app in development mode |
+| `npm run build` / `npm start` | Production build of the web app, and serve it |
+| `npm test` | Engine and web unit tests (synthetic data, no network) |
+| `npm run typecheck` | Type-check every workspace |
+| `npm run lint` / `npm run lint:fix` | ESLint across the repo |
+| `npm run check` | Verify API keys and Qloo capabilities |
+| `npm run check:locations` | Venue coverage across 24 locations worldwide |
+| `npm run check:places` | Show what Qloo returns for hotels, restaurants and venues in a few cities |
+| `npm run check:secrets` | Refuse files that look like they contain a live key (also runs before each commit) |
+| `npm run check:audit` | Dependency audit that fails on high or critical advisories in production code |
+
+End-to-end tests live in the web workspace: `npm run e2e -w @backline/web` (Playwright). See [docs/TESTING.md](docs/TESTING.md).
+
+### Environment variables (`apps/web/.env.local`)
+
+| Variable | Purpose |
+|---|---|
+| `QLOO_API_KEY`, `QLOO_API_URL` | Qloo hackathon API |
+| `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_MODEL_FAST`, `LLM_MODEL_STRONG` | Any OpenAI-compatible provider (Nebius Token Factory by default) |
+| `LLM2_*`, `LLM3_*` (`_API_KEY`, `_BASE_URL`, `_MODEL`, `_MODEL_FAST`) | Backup model providers. If the first one fails (no credit, bad key, rate limit, timeout) the next answers, and the failed one rests for a while |
+| `TAVILY_API_KEY` | Live web research |
+| `STT_API_KEY`, `STT_BASE_URL`, `STT_MODEL` | Speech-to-text for the voice prompt |
+| `TRAVEL_DOCS_KEY` | Encrypts saved passports (AES-256-GCM); `openssl rand -base64 32` |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Accounts: Google and email sign-in, saved details, trips and memory (run migrations `0003` to `0006`; see `docs/SETUP-AUTH.md`) |
+| `ANTHROPIC_API_KEY`, `CLAUDE_SEARCH_MODEL` | Web research and listed hotel prices; Tavily also supported, with Wikivoyage as a free fallback |
+| `BOOKING_LIVE` | `1` lets live Duffel and LiteAPI keys buy real tickets and rooms; unset, live keys only price (demo checkout) |
+| `DUFFEL_API_KEY` | Flight search, booking and payment (a `duffel_test_` token uses Duffel's test airline) |
+| `SERPAPI_API_KEY` | Real Google Flights fares for the exact route, dates and travellers (SerpApi; free plan 250 searches a month). Without it (or when its searches run out) the slip uses a fare listed online or a distance estimate, tagged "est."; answers are cached for 6 hours to save searches |
+| `LITEAPI_API_KEY` | Live hotel rates, booking and payment (a `sand_` key simulates payment) |
+| `RESEND_API_KEY`, `ACTIONS_FROM_EMAIL` | Emails the agent sends for you (plans, confirmations, restaurant requests); sender must be on a domain verified in Resend |
+| `VAPI_API_KEY`, `VAPI_PHONE_NUMBER_ID`, `VAPI_MODEL` | Outbound AI phone calls through Vapi (imported Telnyx number). Without them the agent writes the call script for you |
+| `VAPI_WEBHOOK_SECRET` | Shared secret Vapi sends with every webhook; requests without it are refused |
+| `NEXT_PUBLIC_VAPI_PUBLIC_KEY` | Vapi public key (a UUID, from Vapi's dashboard) for talking to Backline in the browser |
+| `NEXT_PUBLIC_BACKLINE_PHONE` | Optional: the number shown for Call Backline (otherwise read from Vapi) |
+| `DEMO_CALLS_PER_DAY` | Daily cap on home-page demo calls (default 60) |
+| `CALL_DEMO_TO` | Optional fixed demo line (E.164). Without it, demo calls ring each signed-in person's own phone |
+| `PERSONA_API_KEY`, `NEXT_PUBLIC_PERSONA_TEMPLATE_ID`, `NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID` | Identity checks with Persona; paid bookings wait for a verified traveller |
+| `RUN_SEAL_KEY` | Seals the approved plan so approval runs exactly what was shown (falls back to the Supabase secret) |
+| `CALLS_LIVE` | `1` lets AI calls reach real businesses. Off by default: without it and without a demo line, no business is ever dialled |
+| `NEXT_PUBLIC_TOMTOM_KEY` | Optional live traffic on the city's roads (View → Live traffic); TomTom free plan, restrict the key to the site |
+| `NEXT_PUBLIC_GOOGLE_MAPS_KEY` | Optional Photoreal mode: Google Photorealistic 3D Tiles (Map Tiles API), restricted by website |
+| `UBER_CLIENT_ID`, `UBER_CLIENT_SECRET`, `UBER_SCOPE`, `UBER_ENV` | Optional live Uber price estimates. Used only when `UBER_ENV=production`; otherwise ride fares come from published rates |
+| `NEXT_PUBLIC_MAP_TILES`, `NEXT_PUBLIC_MAP_ATTRIBUTION` | Optional keyed map tile provider (OpenStreetMap by default) |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional: Google sign-in on Backline's own address instead of the Supabase project's |
+| `SUPABASE_SECRET_KEY` | Server-only Supabase key for usage totals in the monitor |
+| `ADMIN_EMAILS` | Accounts that can open the private monitor at `/ops` (comma-separated) |
+| `SUPABASE_URL` | Same project URL, read on the server |
+| `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CONTACT_EMAIL` | Public site URL and privacy contact (defaults to backline.trips@gmail.com) |
+
+## Documentation
+
+### Product
+
+- [System specification](docs/SYSTEM.md): definitions, lifecycle, sources, accuracy policy, consent, calls, payments, data, failure modes
+- [Product requirements](docs/PRD.md) · [Feature specifications](docs/FEATURES.md) · [Roadmap](docs/ROADMAP.md)
+- [Expedition design](docs/EXPERIENCE.md): the 3D experience, design system and motion
+- [Launch film](launch-film/README.md)
+
+### Engineering
+
+- [Architecture](docs/ARCHITECTURE.md) · [Decision records](docs/adr/README.md)
+- [API reference](docs/API.md) · [Third-party services](docs/INTEGRATIONS.md) · [Qloo API notes](docs/qloo-api-notes.md)
+- [Deployment](docs/DEPLOYMENT.md) · [Runbook](docs/RUNBOOK.md) · [Sign-in setup](docs/SETUP-AUTH.md)
+- [Testing](docs/TESTING.md) · [Quality assurance](docs/QA.md) · [Verification log](docs/VERIFICATION.md)
+- [Changelog](docs/CHANGELOG.md)
+
+### Policies
+
+- [Security](SECURITY.md) · [Privacy notice](https://backline.travel/privacy) · [Terms of use](https://backline.travel/terms)
+- [Contributing](CONTRIBUTING.md) · [Code of conduct](CODE_OF_CONDUCT.md) · [License](LICENSE)
+
+## Credits and data
+
+- Taste data by [Qloo](https://qloo.com).
+- Maps © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors via OpenFreeMap; satellite imagery © Esri, Maxar, Earthstar Geographics; terrain from AWS Terrain Tiles; Photoreal 3D © Google (when enabled); routing by OSRM; geocoding by Nominatim and Photon.
+- Travel text from Wikivoyage and Wikipedia (CC BY-SA) when used as a fallback.
+- Ride fares are estimates from published rates; final fares are set by the ride app.
+- Qloo API responses are never stored in this repository; tests use synthetic data.
+
+## License
+
+[MIT](LICENSE)

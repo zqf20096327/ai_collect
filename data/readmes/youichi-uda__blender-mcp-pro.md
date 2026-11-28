@@ -26,6 +26,14 @@ Control Blender entirely from AI assistants (Claude Code, Claude Desktop, Cursor
 
 ## Installation
 
+After extracting the downloaded ZIP you should see:
+
+```
+blender_mcp_pro.zip   <- the Blender addon (install this in Blender)
+server/               <- the MCP server (Python)
+README.md
+```
+
 ### 1. Install MCP server dependencies
 
 ```bash
@@ -33,18 +41,47 @@ cd server
 pip install -r requirements.txt
 ```
 
+> Requires the MCP Python SDK **1.x** (`mcp[cli]>=1.2.0,<2`, pinned in
+> `requirements.txt`). MCP SDK 2.x is not compatible. If the server fails to
+> start with `No module named 'mcp.server.fastmcp'`, run:
+> `pip install "mcp[cli]>=1.2.0,<2"`
+
 ### 2. Install the Blender addon
 
-1. Open Blender → **Edit > Preferences > Add-ons > Install**
-2. Select the `addon/` folder from the downloaded ZIP
-3. Enable **"Blender MCP Pro"**
-4. Open the 3D Viewport sidebar (N key) → **BM Pro** tab → **Start Server**
+1. Open Blender → **Edit > Preferences > Add-ons**
+2. Click the dropdown (▾) at the top right → **Install from Disk…**
+3. Select **`blender_mcp_pro.zip`** (the inner ZIP, not the outer download)
+4. Enable **"Blender MCP Pro"** in the add-ons list
+5. Open the 3D Viewport sidebar (N key) → **BM Pro** tab → **Start Server**
+
+> Tested on Blender 4.0–5.0. If "Blender MCP Pro" does not appear after installing,
+> make sure you selected the inner `blender_mcp_pro.zip` and not the outer
+> `blender-mcp-pro-vX.Y.Z.zip` you downloaded.
 
 ### 3. Configure your MCP client
 
 Add the following to your MCP client config. Replace `<path>` with the actual path where you extracted the ZIP.
 
+> **License key**
+> - **itch.io** ($15 one-time): no license key. Omit the `env` block entirely.
+> - **Gumroad** ($5/month): include `BLENDER_MCP_PRO_LICENSE` with the key from your Gumroad receipt email.
+
 #### Claude Code (`~/.claude.json`)
+
+**itch.io (no license key):**
+
+```json
+{
+  "mcpServers": {
+    "blender-mcp-pro": {
+      "command": "python",
+      "args": ["<path>/server/server.py"]
+    }
+  }
+}
+```
+
+**Gumroad (with license key):**
 
 ```json
 {
@@ -62,35 +99,23 @@ Add the following to your MCP client config. Replace `<path>` with the actual pa
 
 #### Claude Desktop (`claude_desktop_config.json`)
 
-```json
-{
-  "mcpServers": {
-    "blender-mcp-pro": {
-      "command": "python",
-      "args": ["<path>/server/server.py"],
-      "env": {
-        "BLENDER_MCP_PRO_LICENSE": "YOUR-LICENSE-KEY"
-      }
-    }
-  }
-}
-```
+Same shape as above — pick the itch.io or Gumroad variant depending on where you purchased.
 
 #### Cursor / Windsurf
 
-Add `server/server.py` in your MCP settings with the `BLENDER_MCP_PRO_LICENSE` environment variable.
+Add `server/server.py` in your MCP settings. itch.io customers don't need any environment variables; Gumroad customers should set `BLENDER_MCP_PRO_LICENSE`.
 
 ## Updating
 
 When a new version is released:
 
 1. Download the latest ZIP from your Gumroad library or itch.io
-2. Extract and overwrite the existing `server/` folder
+2. Extract and overwrite the existing `server/` folder, then re-run `pip install -r server/requirements.txt`
 3. In Blender: **Edit > Preferences > Add-ons** → remove the old "Blender MCP Pro"
-4. Install the new `addon/` folder and enable it
+4. Install the new `blender_mcp_pro.zip` and enable it
 5. Restart Blender
 
-Your MCP client config and license key do not need to change.
+Your MCP client config does not need to change (Gumroad customers: keep the same license key).
 
 ## Usage
 
@@ -174,13 +199,14 @@ Some MCP clients — notably **VS Code GitHub Copilot Chat** — ignore the `not
       "command": "python",
       "args": ["<path>/server.py"],
       "env": {
-        "BLENDER_MCP_PRO_LICENSE": "YOUR-LICENSE-KEY",
         "BLENDER_MCP_PRO_EAGER": "1"
       }
     }
   }
 }
 ```
+
+(Gumroad customers: also include `"BLENDER_MCP_PRO_LICENSE": "YOUR-LICENSE-KEY"` in the `env` block.)
 
 Claude Desktop and Claude Code handle `list_changed` correctly and do not need this flag.
 

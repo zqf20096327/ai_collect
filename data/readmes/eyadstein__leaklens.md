@@ -64,6 +64,8 @@ leaklens train.csv --target label
 leaklens train.csv --test test.csv --target label --time date
 ```
 
+Nothing to install yet? The [interactive demo](https://eyadstein.github.io/leaklens/demo.html) replays real scanner output in the browser. It is prerecorded and no Python runs there; the CLI is the live audit.
+
 A clean run prints `LeakLens trust score: 100/100` and exits `0`. A high-severity finding, a score below `--fail-under`, or a new finding under the opt-in `--fail-on-new` exits `1`; invalid arguments or configuration exit `2`. A `--scan` path that does not exist is invalid input, so it exits `2` instead of reporting a clean scan. That single contract makes the same command usable locally and in CI.
 
 ## See it catch a leak
@@ -86,6 +88,14 @@ LeakLens trust score: 50/100
 ```
 
 `chargeback_flag` is the label copied into a feature, so accuracy looks perfect until the column is removed. `demo.csv` is generated and not committed; the [walkthrough notebook](examples/leak_walkthrough.ipynb) plants three leaks and fixes them step by step, and [examples/advanced_leaks.py](examples/advanced_leaks.py) covers tuning, target encoding, feature selection, grouped CV and temporal ordering.
+
+The same table with the leak removed prints `LeakLens trust score: 100/100` and exits `0`:
+
+```sh
+leaklens examples/data/clean_transactions.csv --target is_fraud
+```
+
+`examples/data/` also holds the dataset and split fixtures the demo page replays, so its copyable commands work in a clone. A scan that finds only low-severity notes still exits `0`, which is what a passing CI run looks like.
 
 ## What it detects
 
@@ -404,7 +414,7 @@ python -m pip install "leaklens-ml[api]"
 python -m leaklens.public_api            # http://127.0.0.1:8000/health
 ```
 
-`LEAKLENS_HOST` (default `127.0.0.1`), `LEAKLENS_PORT` (default `8000`) and `LEAKLENS_LOG_LEVEL` change the bind; see [docs/LIVE_SCANNING.md](docs/LIVE_SCANNING.md) for limits, reverse-proxy and Docker instructions.
+`LEAKLENS_HOST` (default `127.0.0.1`), `LEAKLENS_PORT` (default `8000`) and `LEAKLENS_LOG_LEVEL` change the bind; see [docs/LIVE_SCANNING.md](docs/LIVE_SCANNING.md) for limits, reverse-proxy and Docker instructions. The API has no client authentication: keep it on loopback or put it behind an authenticating proxy before anyone else can reach the port.
 
 If an optional dependency is missing, the command raises an `ImportError` that names the extra, and `leaklens doctor` lists which extras are importable. The base install remains fully usable. Scanning is offline and CPU-first by default; only an explicitly configured remote `--llm` provider, an install command or an MLflow run you start uses the network.
 

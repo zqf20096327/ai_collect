@@ -143,6 +143,7 @@ VulnHunter-White 的特点：
 | AsyncHttpClient/async-http-client | [GHSA-qjr7-w8pj-pmv9](https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-qjr7-w8pj-pmv9) | 会话固定     | 4.0      |
 | AsyncHttpClient/async-http-client | [GHSA-2jwh-9rmr-j4xf](https://github.com/AsyncHttpClient/async-http-client/security/advisories/GHSA-2jwh-9rmr-j4xf) | 认证不当     | 6.8      |
 
+完整漏洞成果清单详见 [CVELIST.md](./CVELIST.md)。
 
 
 其他师傅的成果反馈：
@@ -326,6 +327,8 @@ Linux / macOS：`sh scripts/pull-semgrep.sh`。
 ### 8. 可选环境变量
 
 可将 `.env.example` 复制为仓库根或 `backend/.env`。监听端口给 `start.cmd` / `start.sh` 用；设置页保存过代理 / FOFA 后以设置为准，**尚未保存过**时才用代理 / Key 变量回退。不要把真实 Key 写进仓库。
+
+软件更新模式通过 `VULNHUNTER_APP_UPDATE_MODE` 配置，默认 `user`：不受影响的本地改动会保留，可能被覆盖的文件须在设置页确认，确认后改动备份至 `git stash`。设为 `development` 时，已跟踪文件有未提交改动便禁止更新。修改 `.env` 后重启服务生效。Git 忽略的文件不会自动覆盖；如阻碍更新，请手动处理。
 
 ```
 # VULNHUNTER_ACCESS_TOKEN=

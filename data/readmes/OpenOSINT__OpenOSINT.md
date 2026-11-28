@@ -17,7 +17,7 @@
 <img src="https://raw.githubusercontent.com/OpenOSINT/OpenOSINT/main/docs/assets/demo-chat.gif" width="720" alt="OpenOSINT answering a question about a company in chat: tool calls with their times, then an answer with a source on every claim">
 
 **Run it yourself:** `uvx openosint web` (one command, no keys)<br>
-**No terminal?** Use [OpenOSINT Cloud](https://app.openosint.tech/?utm_source=github&utm_medium=readme&utm_campaign=hero) in your browser, first check free
+**No terminal?** [Run a quick check in the browser](https://app.openosint.tech/check?utm_source=github&utm_medium=readme_hero), first check free
 
 [Docs](https://openosint.tech/docs/) · [Claude Code plugin](#use-it-from-claude-code-or-any-mcp-client) · [MCP server](https://openosint.tech/docs/mcp/)
 
@@ -44,6 +44,10 @@ Checks: email OK, registration OK (passive)
 ```
 
 Real output, trimmed and re-wrapped. More commands: [CLI reference](https://openosint.tech/docs/cli/) · [install guide](https://openosint.tech/docs/install/).
+
+### Not a developer?
+
+The same engine powers the OpenOSINT Investigator Board, a hosted case board for investigators: company lookups with sources, confirmed connections and a signed PDF report. See a sample case rebuilt from public records: [Azerbaijani Laundromat](https://app.openosint.tech/cases/azerbaijani-laundromat?utm_source=github&utm_medium=readme). For a one-off check on a company, website or email sender, use [Quick check](https://app.openosint.tech/check?utm_source=github&utm_medium=readme) in the browser; the first check is free, no account needed.
 
 ## What you can do
 
@@ -138,10 +142,6 @@ Keys go in the web UI Settings, `~/.openosint/config.env` or the environment. [A
 ### Docker
 
 `docker compose up --build`, then open <http://localhost:8080>. [Docker notes](https://openosint.tech/docs/web-ui/#docker)
-
-## OpenOSINT Cloud
-
-The same engine as a hosted chat for a domain, an IP address or a company, with a source on every claim. [First check free, no account](https://app.openosint.tech/?utm_source=github&utm_medium=readme&utm_campaign=cloud). Hosted REST and MCP API by request: [commercial@openosint.tech](mailto:commercial@openosint.tech).
 
 ## Sponsors
 

@@ -5,11 +5,11 @@
 > 研究生《课程设计》· 方向 1 · 工程实践题目 1：**带证据引用与可信拒答的领域知识库问答系统**
 > 仓库：`github.com/2019wakeup/AI_RAG`（public） ｜ 产品中文名：**沥知问答**
 
-**一句话**：输入一个用自然语言提出的材料问题，系统在 11,143 块领域语料中做 BM25 + 向量混合检索，返回**带 `[n]` 角标、可展开原文**的答案；证据不足时**明确拒答**，信息不足时**追问**——而不是编造答案。
+**一句话**：输入一个用自然语言提出的材料问题，系统在 11,014 块领域语料中做 BM25 + 向量混合检索，返回**带 `[n]` 角标、可展开原文**的答案；证据不足时**明确拒答**，信息不足时**追问**——而不是编造答案。
 
 - 领域：**沥青路面养护材料**（规范条文 / 论文题录 / 论文全文 / 定量表格 / 材料知识条目 / 企业资料）
 - 技术栈：Vue 3 + Hono + SQLite FTS5 / LanceDB + transformers.js 本地嵌入 + 可选 LLM
-- 规模：语料 6 类、**11,143 块 / 395 文档**；检索金标准 38 条；单测 **486 passed / 3 skipped**
+- 规模：语料 6 类、**11,014 块 / 371 文档**（T15 域外剔除后，tables 1,041→934、表格 docId 107→83）；检索金标准 38 条；单测 **508 passed / 3 skipped**
 - 现状：检索、语料、证据结构与推荐下游应用**已具备**；**问答编排与可信拒答是本课程设计的核心待交付项**（见 [当前状态](#6-当前状态)）
 
 ---
@@ -134,7 +134,7 @@ ONNXRUNTIME_NODE_INSTALL_CUDA=skip pnpm install
 # 2) 配置环境变量（演示端口 3011 / 5175；无可用 LLM 时改 LLM_OFF=1）
 cp .env.example .env
 
-# 3) 首次构建索引：11,143 块，e5-small（384 维），约 729 s；需联网下载模型
+# 3) 首次构建索引：11,014 块，e5-small（384 维），约 700 s；需联网下载模型
 HF_ENDPOINT=https://hf-mirror.com EMBEDDING_MODEL=multilingual-e5-small \
 pnpm build:index -- --rebuild --backend=lancedb --model=multilingual-e5-small
 
@@ -247,7 +247,7 @@ E2E_BASE_URL=http://127.0.0.1:3011 pnpm e2e
 
 ### ✅ 已具备
 
-- **语料与索引**：6 类语料、11,143 块 / 395 文档；每条 chunk 带 7 字段 provenance（`sourceDocId/contentHash/embeddingModel/modelVersion/dim/pipelineRev/embeddedAt`），可逐条溯源；索引可幂等重建。
+- **语料与索引**：6 类语料、11,014 块 / 371 文档；每条 chunk 带 7 字段 provenance（`sourceDocId/contentHash/embeddingModel/modelVersion/dim/pipelineRev/embeddedAt`），可逐条溯源；索引可幂等重建。
 - **检索**：SQLite FTS5（trigram BM25）与 LanceDB 双引擎；BM25 + 向量余弦 → RRF(k=60)；`HYBRID_WEIGHTS` 可调；可选 LLM 重排（`RERANK=off` 可关）与 MMR。
 - **证据结构**：`SearchHit` 自带 `text`（原文片段）与 provenance；前端 `EvidencePanel.vue` 可展开原文——问答页可直接复用。
 - **检索评测**：38 条金标准 + 三方案对比；混合检索 mean recall@5 **0.9187**。
@@ -255,13 +255,13 @@ E2E_BASE_URL=http://127.0.0.1:3011 pnpm e2e
 - **问答前端**：`apps/web/src/api/qa.ts`（类型化客户端 + 六类错误归一）、`stores/qa.ts`（idle→loading→done|error、partial 保留）与 **问答页 `views/QaView.vue`**（空/加载/错误/答案四态 + 证据卡片 + `/qa` 路由与导航，T12/T13）已就绪。
 - **问答契约**：`QaRequest` / `QaResponse` / `QaCitation` / `QaRefusalReason` / `RefusalDecision` / `NeedInfoSlot` 已在 `packages/contracts` 定义（契约先行）。
 - **推荐下游应用**：5 案例端到端 + 确定性复跑 + 三档降级（LLM/A/C 适配器/LanceDB→SQLite）。
-- **工程质量**：`pnpm typecheck` + `pnpm test`（**486 passed / 3 skipped**）+ GitHub Actions CI。
+- **工程质量**：`pnpm typecheck` + `pnpm test`（**508 passed / 3 skipped**）+ GitHub Actions CI。
 
 ### 🚧 待实现（课程设计核心，按 [任务拓扑](docs/plan/task-topology.md) 推进）
 
 | 待实现项 | 落点 | 负责人 |
 |---|---|---|
-| 追问 needInfo 与拒答接入编排（判据核心 T17 已完成；remain T18 追问 + T19 接入） | `apps/server/src/qa/{needinfo,index}.ts` | C / B |
+| 追问 needInfo 与拒答接入编排（判据核心 T17/T18 已完成；remain T19 接入） | `apps/server/src/qa/{clarify,index}.ts` | C / B |
 | 角标定位原文 + 拒答/追问 UI（页面与证据卡片已完成，T14/T21 收口） | `apps/web/src/components/{CitationBadge,RefusalNotice,NeedInfoForm}.vue` | D |
 | QA 金标集（含负样本）与 `qa-eval` 评测 | `data/golden/qa.json`、`scripts/qa-eval.ts` | E / F |
 | 三方案对比的显式开关（`--vector` / `--rerank`）与结果落盘 | `scripts/golden-eval.ts`、`docs/experiments/` | F |
@@ -274,20 +274,20 @@ E2E_BASE_URL=http://127.0.0.1:3011 pnpm e2e
 
 ## 7. 数据来源摘要
 
-语料真相源在 `data/corpus/`，索引由 `pnpm build:index` 重建（**11,143 块 / 395 文档**，`Xenova/multilingual-e5-small`，384 维）：
+语料真相源在 `data/corpus/`，索引由 `pnpm build:index` 重建（**11,014 块 / 371 文档**，`Xenova/multilingual-e5-small`，384 维）：
 
 | 类别 | 规模 | 原文性 | 可追溯凭证 |
 |---|---|---|---|
 | 规范条文 `standards/` | 8 部 / 57 条 | ✅ 原文（摘录） | 规范号 + 条号 |
 | 论文全文 `literature-full/` | 40 篇 / 9,753 块 | ✅ 原文（MinerU 节选） | 原始 PDF 路径 + DOI（32/40） |
-| 定量表格 `tables/` | 1,041 张 / 107 docId（85 个题名） | ✅ 原文（表格） | 论文题名 + 表题 + 页码 |
+| 定量表格 `tables/` | 934 张 / 83 docId（61 个题名；T15 剔除 24 篇域外文献的 107 张） | ✅ 原文（表格） | 论文题名 + 表题 + 页码 |
 | 论文题录 `literature/` | 142 条 | ⚠️ 仅题录 | DOI 109 条；33 条以「期刊, 年份」兜底 |
 | 材料知识条目 `knowledge/` | 42 条 / 94 块 | ❌ 二次加工 | 条目/关系级 `sourceRef` |
 | 企业资料 `enterprise/` | 56 条 | ❌ 脱敏样例 | `sourceRef` 文字说明（原始数据不在仓库） |
 
 - 逐类来源、切分规则、清洗与无效值处理、已知问题、**数据划分声明（无 train/val；检索金标准 38 条 + QA 金标 + 端到端 5 案例互不复用；闭集评测）**：见 **[docs/数据来源与清洗说明.md](docs/数据来源与清洗说明.md)**
 - 目录与文件格式：见 **[data/corpus/README.md](data/corpus/README.md)**
-- 已登记的已知问题：约 12% 表格属域外文献、企业数据不可追溯、部分全文块 <30 字（OCR 噪声）
+- 已登记的已知问题：企业数据不可追溯；域外表格（107 张，T15 已物理剔除）与 <30 字碎块（T15 已按 `minChunkChars` 过滤）为历史问题，详见 `docs/data/语料清洗报告.md`
 
 ---
 

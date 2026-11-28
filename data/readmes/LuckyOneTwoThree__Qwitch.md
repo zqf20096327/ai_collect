@@ -73,7 +73,7 @@ Qwitch 目前内置 7 个账号适配器，另支持一个通用 API Key 作为�
 | **MiniMax Code CN** | 积分水位；每日签到 | 本机读取 / 内置设备码授权 / Token | 支持 | 支持 |
 | **LobsterAI（有道龙虾）** | 积分水位；每日签到 | 内置 OAuth 授权 / 本机读取 / Token | 支持 | 支持 |
 | **豆包工作** | 多类额度与额度包；每日签到（绑定桌面端登录账号） | 内置网页登录（Cookie） / 本机读取 / Cookie 或 cURL | 支持（需本机登录快照） | 支持 |
-| **码道 CodeArts** | 积分水位（华为云 AK/SK 签名） | 本机读取 / 独立 OAuth / Token | 支持（仅 macOS，需本机会话快照） | 支持（本机只读 / 独立 OAuth） |
+| **码道 CodeArts** | 积分水位；每日签到一键领取 | 本机读取 / 独立 OAuth / Token | 支持（仅 macOS，需本机会话快照） | 支持（本机只读 / 独立 OAuth） |
 | **通用 API Key** | 不提供额度和签到 | 手动填写 Key 与 Base URL | — | 作为最后兜底 |
 
 说明：
@@ -81,7 +81,7 @@ Qwitch 目前内置 7 个账号适配器，另支持一个通用 API Key 作为�
 - **全部 7 个内置账号工具均已通过 Rust 原生协议接入本地网关调度**。
 - **豆包工作**：已接入原生 HTTP/SSE 网关上游（支持流式与非流式对话、自动会话初始化与临时会话清理），模型目录支持从本机缓存目录读取。
 - **豆包工作切号**：需要该账号在本机登录过一次并做过「关联本机」（Qwitch 会保存整份 profile 快照，切号时写回）。**只写 Cookie 不够**：实测客户端还依赖分区 Cookie 属性与自身登录记录，单靠 passport Cookie 无法让它进入登录态（详见 `docs/QUOTA_SWITCH_AND_MODEL_PLAN_2026-11-26.md`）。
-- **码道 CodeArts**：使用华为云 `SDK-HMAC-SHA256` 签名上游（支持 `.myhuaweicloud.cn` 回退与并发限流短冷却），模型目录从本机客户端配置读取；本机导入的 `client_readonly` 凭据可直接参与网关调度，但绝不主动消耗客户端一次性 `refreshToken`（STS 到期时尝试从本机磁盘只读重同步）；如需网关内自动刷新，可在号池入口单独完成一次 `isolated_oauth` 授权。
+- **码道 CodeArts**：支持 `USER_LOGIN` 每日签到一键领取；使用华为云 `SDK-HMAC-SHA256` 签名上游（支持 `.myhuaweicloud.cn` 回退与并发限流短冷却），模型目录从本机客户端配置读取；本机导入的 `client_readonly` 凭据可直接参与网关调度，但绝不主动消耗客户端一次性 `refreshToken`（STS 到期时尝试从本机磁盘只读重同步）；如需网关内自动刷新，可在号池入口单独完成一次 `isolated_oauth` 授权；macOS 支持本机登录态实时检测与双向切号（切号前自动回吸被切走账号最新轮换的 `refreshToken`）。
 - Trae 和 Qoder 的国际版没有每日签到，暂未内置适配器。
 
 ### 接入的 Agent
@@ -146,14 +146,14 @@ Codex / Claude / DSH / OpenCode / MiMo / ZCode
 ### 账号、额度和签到
 
 - 查看每个账号的额度、套餐周期和签到状态，支持分组和平铺两种视图。
-- 单卡查额、批量查额、单卡领取、批量领取，批量操作会显示进度和失败原因。
+- 单卡查额、批量查额、单卡领取、批量领取，批量操作会显示进度和失败原因；其中豆包工作支持串行冷切批量领取（结束后自动切回原账号），不干扰其它纯网络工具的并发领取。
 - 支持签到的工具会区分「可领 / 已领 / 待核实 / 不支持」，避免把不支持签到的账号算进待领。
 - 额度只报服务端真正给出的数字：只有百分比水位时不再伪装成「剩余 100%」，只有剩余值（如 LobsterAI 跨池积分）时只显示余额、不画百分比进度条。
 - 操作日志记录每次查询、领取和切换，支持归档、恢复、筛选和导出，保留策略可配置。
 
 ### 切换桌面账号
 
-切换过程是事务式的：要么成功，要么恢复原样。具体是关闭客户端，备份当前会话，写入目标账号，重新打开并确认存活；中途失败会恢复原来的会话。批量切号会串行执行，并加入随机等待，避免短时间内连续请求。
+切换过程是事务式的：要么成功，要么恢复原样。具体是关闭客户端，备份当前会话（码道会先回吸即将被切走账号最新轮换的 `refreshToken` 并写入最新 `expiresAt`），写入目标账号，重新打开并确认存活；中途失败会恢复原来的会话。批量切号会串行执行，并加入随机等待，避免短时间内连续请求。
 
 ### 本地网关与号池
 
@@ -330,8 +330,8 @@ npm run dev          # 浏览器 Mock 预览
 npm run tauri dev    # 桌面应用开发模式
 npm run build        # 类型检查 + 生产构建
 npm run lint         # ESLint，--max-warnings=0
-npm test             # 前端测试（31 个文件）
-cd src-tauri && cargo test   # 后端测试
+npm test             # 前端测试（30 个文件 / 190 个用例）
+cd src-tauri && cargo test   # 后端测试（309 个用例）
 cargo fmt --check && cargo clippy --all-targets -- -D warnings
 ```
 
@@ -402,7 +402,7 @@ Qwitch/
 - macOS 安装包尚未签名和公证，首次打开需要手动放行。Windows 安装包也没有代码签名。
 - OpenAI Responses 的跨协议增量流式默认关闭。需要时设置 `QWITCH_GATEWAY_RESPONSES_STREAMING=1`；关闭时会把完整回复收完再返回，功能不受影响，只是首字节更慢。
 - 暂不支持云端同步、团队共享、远程访问网关或无人值守批量注册。
-- 码道 CodeArts 切号依赖「本机会话快照」：只有在该账号登录过码道客户端并做过一次「本机导入」后才会出现切号按钮，切号时 Qwitch 用 safeStorage 重新加密 `authSession` 写回 `secretStorage`（仅 macOS）。独立 OAuth 授权的账号没有这份快照，无法切号，但可参与网关调度且不会消耗客户端一次性 refreshToken（到期时自动重读本机缓存）。
+- 码道 CodeArts 切号依赖「本机会话快照」：只有在该账号登录过码道客户端并做过一次「本机导入」后才会出现切号按钮，切号时 Qwitch 用 safeStorage 重新加密 `authSession` 写回 `secretStorage`（仅 macOS；Windows 因 DPAPI 限制暂不支持），并在切走前自动回吸原在登账号最新轮换的 `refreshToken`、支持本机登录/登出实时检测。独立 OAuth 授权的账号没有这份快照，无法切号，但可参与网关调度且不会消耗客户端一次性 refreshToken（到期时自动重读本机缓存）。
 - 豆包工作的签到发放校验绑定「设备 + 桌面端当前登录账号」：网页登录导入的其他账号即使显示可领，写接口也只会返回 `710010702`。因此这类账号的「领取」按钮会禁用并提示先切到桌面端。
 - 豆包客户端**退出登录**后，Qwitch 会在下一轮校准里清掉该工具的「本机使用中」标记，卡片恢复「切至桌面端 / 关联本机」入口（此前会卡在既不能关联也不能切的死胡同）。
 - 豆包客户端**自带多账号**（每个账号一个 Chromium profile）：Qwitch 以 `Local State.profile.last_used` 为准判断当前账号，关联本机会跟随你在客户端里切到的那个账号，切号写回时也会把「当前 profile」一起改过去。
@@ -412,6 +412,10 @@ Qwitch/
 欢迎 Issue 和 PR。提交前请确保 `npm test`、`cargo test` 和 `cargo clippy --all-targets -- -D warnings` 通过。提交信息使用 `feat:`、`fix:`、`docs:` 等前缀，并在 PR 里说明改动和验证方式。
 
 遇到问题、发现某个工具或 Agent 不工作，或者想讨论新功能，请到 [Issues](https://github.com/LuckyOneTwoThree/Qwitch/issues) 反馈。
+
+## 致谢
+
+感谢 [LINUX DO](https://linux.do/) 社区对本项目的开源推广支持与交流反馈。
 
 ## 许可证与免责声明
 

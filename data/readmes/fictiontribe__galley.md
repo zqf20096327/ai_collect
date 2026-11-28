@@ -223,6 +223,7 @@ option or setting it names has to exist.
 | [`packages/core`](packages/core) | The engine: detection, surgical edits, the workspace and git, the preview, the assistant |
 | [`packages/server`](packages/server) | The HTTP API, live events, the web UI, local and hosted security |
 | [`packages/cli`](packages/cli) | `galley-cms` on npm, the `galley` command |
+| [`packages/galleycms`](packages/galleycms) | `galleycms` on npm, alias for `galley-cms` (`npx galleycms`) |
 | [`packages/create-galley`](packages/create-galley) | `create-galley` on npm, behind `npm create galley` |
 | [`packages/web`](packages/web) | The React UI |
 | [`packages/overlay`](packages/overlay) | The click-to-edit script in the preview |
@@ -263,9 +264,10 @@ change between minor versions ([what the numbers mean](RELEASING.md#what-the-ver
   setting redirects on Cloudflare itself (Bulk Redirects); attaching a fresh
   own domain on the real services; a hosted editor's own key accepted by a
   code host end to end.
-- **Not on npm as packages**: the site kit (`@galley/astro`, which sites
-  carry vendored), `@galley/adapter-kit` and `@galley/plugin-kit`. The plugins
-  are built into `galley-cms`.
+- **Kits (`@galleycms/*`)**: the site kit (`@galleycms/astro`, which sites
+  can also carry vendored), `@galleycms/adapter-kit` and `@galleycms/plugin-kit`
+  are wired into the release workflow. The plugins remain built into
+  `galley-cms`.
 
 Every push runs the type checks, the tests, the app build and the site build
 in [GitHub Actions](.github/workflows/ci.yml).

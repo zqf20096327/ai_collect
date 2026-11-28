@@ -4,7 +4,7 @@
 
 # forge-orchestrator
 
-[![stage: alpha](https://img.shields.io/badge/stage-alpha-blue)](STAGE) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-active-00b4ab)](https://registry.modelcontextprotocol.io) [![License: FSL-1.1-ALv2](https://img.shields.io/badge/License-FSL--1.1--ALv2-blue.svg)](LICENSE.md) [![Version](https://img.shields.io/badge/version-v1.8.1-blue)](https://github.com/nxtg-ai/forge-orchestrator/releases/tag/v1.8.1) [![docs.rs](https://img.shields.io/docsrs/forge-orchestrator/1.8.0)](https://docs.rs/forge-orchestrator/1.8.0/forge_orchestrator/) [![CI](https://github.com/nxtg-ai/forge-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/nxtg-ai/forge-orchestrator/actions) [![GitHub stars](https://img.shields.io/github/stars/nxtg-ai/forge-orchestrator)](https://github.com/nxtg-ai/forge-orchestrator) [![crates.io](https://img.shields.io/crates/v/forge-orchestrator)](https://crates.io/crates/forge-orchestrator)
+[![stage: alpha](https://img.shields.io/badge/stage-alpha-blue)](STAGE) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-active-00b4ab)](https://registry.modelcontextprotocol.io) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.md) [![Version](https://img.shields.io/badge/version-v1.8.1-blue)](https://github.com/nxtg-ai/forge-orchestrator/releases/tag/v1.8.1) [![docs.rs](https://img.shields.io/docsrs/forge-orchestrator/1.8.0)](https://docs.rs/forge-orchestrator/1.8.0/forge_orchestrator/) [![CI](https://github.com/nxtg-ai/forge-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/nxtg-ai/forge-orchestrator/actions) [![GitHub stars](https://img.shields.io/github/stars/nxtg-ai/forge-orchestrator)](https://github.com/nxtg-ai/forge-orchestrator) [![crates.io](https://img.shields.io/crates/v/forge-orchestrator)](https://crates.io/crates/forge-orchestrator)
 
 **Stage: Alpha.** The Forge plugin and orchestrator are in alpha. On 2026-10-15 (UTC) a separate NXTG.AI team (product-oracle) ran the pre-registered core-job test on a clean install of the plugin (v3.14.0) and the orchestrator (forge 1.7.0). The test passed; each repeated check passed 3 of 3 (run 7). The evidence is attached to the forge-plugin v3.14.0 release. No SLA; interfaces may change without notice.
 
@@ -239,12 +239,24 @@ The knowledge flywheel exists because I've watched decisions evaporate between s
 
 Decisions, patterns, learnings and research captured through `forge_capture_knowledge` are stored in `.forge/knowledge/`, one directory per category, and classified automatically. Any tool connected to the MCP server can search them with `forge_get_knowledge`, in a later session as well as the current one.
 
-## Forge UI
+## Forge UI (Browser Dashboard & Infinity Terminal)
 
-[forge-ui](https://github.com/nxtg-ai/forge-ui) is a separate React dashboard for Forge, released on its own; its README states its stage. To run it from source:
+[NXTG-Forge UI](https://github.com/nxtg-ai/forge-ui) (L3: Ship Lord) is a separate local-first React 19 dashboard for Forge, released on its own (open source under the Apache License, Version 2.0; its README states its stage). When `forge` is on your `PATH`, the Governance HUD reads live project health scores directly from this orchestrator alongside the **Infinity Terminal** (a shared browser PTY that survives closed tabs and network drops for 5 minutes with ~100 KB scrollback replay).
+
+<p align="center">
+  <a href="https://github.com/nxtg-ai/forge-ui">
+    <img src="https://raw.githubusercontent.com/nxtg-ai/forge-ui/main/docs/images/terminal.png" alt="NXTG-Forge UI Infinity Terminal and Governance HUD" width="100%">
+  </a>
+</p>
+
+To run the pinned release from source (requires Node.js `>=22.12` plus `python3`, `make`, and `g++` for `node-pty`):
 
 ```bash
-git clone https://github.com/nxtg-ai/forge-ui && cd forge-ui && npm install && npm run dev
+git clone --branch v3.5.8 https://github.com/nxtg-ai/forge-ui
+cd forge-ui && npm install && npm run dev
+
+# In a second terminal, generate a single-use 60-second browser sign-in link:
+npm run auth:login-link
 ```
 
 ## Links
@@ -257,4 +269,4 @@ git clone https://github.com/nxtg-ai/forge-ui && cd forge-ui && npm install && n
 
 ## License
 
-Source available under the [Functional Source License 1.1 (FSL-1.1-ALv2)](./LICENSE.md). Converts to Apache License 2.0 on 2028-03-18. See [LICENSE.md](./LICENSE.md) for full terms.
+Open source under the [Apache License, Version 2.0](./LICENSE.md). See [LICENSE.md](./LICENSE.md) and [NOTICE](./NOTICE) for full terms.

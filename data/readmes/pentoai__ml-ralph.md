@@ -45,7 +45,7 @@ UNDERSTAND → STRATEGIZE → EXECUTE → REFLECT
 - Verified and promising? → Strategize next step
 - Surprised or confused? → Go back to Understand
 - Stuck after 2–3 experiments? → Strategic retreat to Understand
-- All success criteria met and verified? → Complete
+- All success criteria met and verified? → Hand in a candidate; the runner decides
 
 Strategic retreat — going back to understand when stuck — is a first-class concept, not a failure. Understanding is progress.
 
@@ -54,6 +54,10 @@ Strategic retreat — going back to understand when stuck — is a first-class c
 `.ml-ralph/conclusions.md` keeps what the agent has learned as at most 300 words of scoped, revisable claims. `ml-ralph init` creates it (empty), and the runner creates it at start if an older project lacks one. Each iteration's prompt inlines it plus the last N log events (`recent_events` in `config.json`, default 30) instead of the whole `log.jsonl`, so the prompt stays flat as a run grows.
 
 The agent may change the file only with a `conclusions_changed` event whose reason is `contradiction`, `new_category`, `flipped_recommendation` or `refinement`. If an iteration leaves it over 300 whitespace-separated words, or changed without such an event, the runner restores the previous version, logs `conclusions_rejected` with the reason and says why in the next prompt.
+
+## Two workers
+
+`ml-ralph --workers 2` runs two iteration loops at once, each with its own `claude` process in its own git worktree (`.ml-ralph/worktrees/worker-1` and `worker-2`, removed when the run ends). The default is 1; more than 2 is refused, and the project must be a git repository with at least one commit. The workers share the run budget (USD, GPU-hours and minutes are one total; `max_experiments_per_iteration` applies to each worker) and `log.jsonl`, where every event carries `worker`. They start once the eval is locked and wait for each other at the end of every iteration, where the runner merges their `conclusions.md` files by concatenation under `[worker 1]` / `[worker 2]` tags; both read the merge next. The runner then judges their candidates one at a time, so the second must beat the new best by the seed-noise margin, and `ralph/best` stays one tag. If one worker's `claude` crashes, a `worker_crashed` event is logged and the other worker carries on. A run that crashed leaves its worktrees behind; the next start removes them.
 
 ## Commit before every eval
 
@@ -67,7 +71,7 @@ When the runner promotes a candidate it force-moves the git tag `ralph/best` to 
 
 ## When a run completes
 
-Only the runner ends a run; the agent's `<project_complete>` is ignored. After a promotion whose search score (from the runner's own eval and `metrics.json`) meets the contract's `success_threshold` in the contract's direction, the runner:
+The runner alone decides promotion and completion; the agent only hands in candidates with `<candidate_complete>`, which it may refuse. After a promotion whose search score (from the runner's own eval and `metrics.json`) meets the contract's `success_threshold` in the contract's direction, the runner:
 
 1. checks that a `holdout_path` is configured for the project in `~/.config/ml-ralph/config.json` (it is read again at every promotion, so one added mid-run is used next time);
 2. runs the independent verifier on the whole diff since the baseline commit;
@@ -85,17 +89,21 @@ By default a run is limited only by the iteration count. Add any of these option
 {
   "max_wall_clock_minutes": 240,
   "max_usd": 25,
+  "max_gpu_hours": 40,
   "max_experiments_per_iteration": 3
 }
 ```
 
 - `max_wall_clock_minutes` — minutes of wall-clock time for the run. A timer checks it during the iteration and stops the claude process when it is reached.
 - `max_usd` — dollars spent, summed from `total_cost_usd` in claude's `result` events (an API-equivalent estimate, not a subscription bill). Checked at each result event, so one iteration's overshoot is possible.
+- `max_gpu_hours` — GPU-hours used by the run's jobs: the sum of `--gpus` × runtime over jobs started with `ml-ralph job start --gpus <n> ...`, finished and running. The GPU count is self-declared (nothing is read from `nvidia-smi`), so while this key is set `job start` refuses a call without `--gpus`, and refuses any start once the run has used the cap. The runner recomputes usage every 15 s while an iteration runs and after each one; at the cap it stops running jobs and ends the run. Usage is kept per job under `.ml-ralph/budget/gpu-jobs/`, so it survives job ends and restarts; a run that predates the key starts at 0.
 - `max_experiments_per_iteration` — `ml-ralph eval` calls per iteration. Once reached, further calls exit non-zero with `experiment cap reached for this iteration (<n>)`. The runner pins the cap it read at start in the claude environment (`ML_RALPH_MAX_EXPERIMENTS`, with `ML_RALPH_ITERATION`), and eval applies the smaller of that and `config.json`; with a cap set and no iteration id, eval refuses, so it only runs inside the runner's agent session.
 
-When `max_wall_clock_minutes` or `max_usd` is reached the run ends with reason `budget_exhausted`, logged in `log.jsonl`. After each iteration the runner logs a `budget_status` event (`usd_spent`, `elapsed_minutes` and the caps); an iteration with no `total_cost_usd` counts as $0 and logs `budget_warning`. Each iteration's prompt states the remaining USD and minutes and the experiment cap, and the TUI header shows estimated spend and elapsed time against the caps (or `no cap`), starting from the recorded totals after a restart. An invalid cap is not shown as a cap; the named error appears on the Output tab.
+When `max_wall_clock_minutes`, `max_usd` or `max_gpu_hours` is reached the run ends with reason `budget_exhausted` (the event's `cap` is `wall_clock`, `usd` or `gpu_hours`), logged in `log.jsonl`. After each iteration the runner logs a `budget_status` event (`usd_spent`, `elapsed_minutes`, `gpu_hours_used` when `max_gpu_hours` is set, and the caps); an iteration with no `total_cost_usd` counts as $0 and logs `budget_warning`. Each iteration's prompt states the remaining USD and minutes, the GPU-hours used and left, and the experiment cap, and the TUI header shows estimated spend and elapsed time against the caps (or `no cap`) and, with `max_gpu_hours` set, GPU-hours used vs the cap, starting from the recorded totals after a restart. An invalid cap is not shown as a cap; the named error appears on the Output tab.
 
-A restarted run keeps its `run_id` (in `.ml-ralph/budget/run.json`) and starts from the spend and elapsed time in its earlier `budget_status` events, so a restart does not reset the budget; the id is dropped only when the run ends with `max_iterations`. After `budget_exhausted`, a user stop, `contract_changed` or `holdout_access` it persists, so a restart inherits the spend and time already recorded. To continue after `budget_exhausted`, raise a cap in `config.json`; to start a fresh budget, delete `.ml-ralph/budget/run.json`. `usd_spent` includes the independent verifier's `total_cost_usd` (also recorded as `cost_usd` on its `verifier_verdict` event). A negative, zero or non-numeric cap stops the run at start with an error naming the key. GPU-hours are not capped yet.
+The holdout guard is best effort: in host mode it catches the holdout and config paths (also as `~/`, `$HOME`, `${HOME}`, a glob, or a listing of their directories) in a tool call and cannot see `setsid` daemons, shell indirection, built-up paths or scripts. For real isolation use `--sandbox docker`; see "Holdout access guard" in `docs/ARCHITECTURE.md`.
+
+A restarted run keeps its `run_id` (in `.ml-ralph/budget/run.json`) and starts from the spend and elapsed time in its earlier `budget_status` events, so a restart does not reset the budget; the id is dropped only when the run ends with `max_iterations`. After `budget_exhausted`, a user stop, `contract_changed` or `holdout_access` it persists, so a restart inherits the spend and time already recorded. To continue after `budget_exhausted`, raise a cap in `config.json`; to start a fresh budget, delete `.ml-ralph/budget/run.json`. `usd_spent` includes the independent verifier's `total_cost_usd` (also recorded as `cost_usd` on its `verifier_verdict` event). A negative, zero or non-numeric cap stops the run at start with an error naming the key.
 
 ## The run report
 

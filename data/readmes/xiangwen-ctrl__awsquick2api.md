@@ -1,6 +1,7 @@
 # AWSQuick2API
 
 [![CI](https://github.com/xiangwen-ctrl/awsquick2api/actions/workflows/ci.yml/badge.svg)](https://github.com/xiangwen-ctrl/awsquick2api/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=xiangwen-ctrl_awsquick2api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=xiangwen-ctrl_awsquick2api)
 [![Release](https://img.shields.io/github/v/release/xiangwen-ctrl/awsquick2api)](https://github.com/xiangwen-ctrl/awsquick2api/releases)
 [![Docker](https://img.shields.io/badge/Docker-GHCR-2496ED?logo=docker&logoColor=white)](https://github.com/xiangwen-ctrl/awsquick2api/pkgs/container/awsquick2api)
 [![Go](https://img.shields.io/badge/Go-1.26.11%2B-00ADD8?logo=go&logoColor=white)](./go.mod)

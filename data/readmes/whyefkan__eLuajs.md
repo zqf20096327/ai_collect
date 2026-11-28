@@ -67,22 +67,22 @@ All links below always point to the **latest release**.
 
 | Hub | Editor |
 | --- | --- |
-| ![Hub](docs/hub-v160.png) | ![Editor](docs/editor-v160.png) |
+| ![Hub](docs/hub-v164.png) | ![Editor](docs/editor-v164.png) |
 
 <p align="center">
-  <img src="docs/ai-v160.png" alt="eLuajs AI assistant">
+  <img src="docs/ai-v164.png" alt="eLuajs AI assistant">
 </p>
 
 <p align="center">
-  <img src="docs/tools-v160.png" alt="eLuajs project tools">
+  <img src="docs/tools-v164.png" alt="eLuajs project tools">
 </p>
 
 <p align="center">
-  <img src="docs/build-v160.png" alt="eLuajs build output window">
+  <img src="docs/build-v164.png" alt="eLuajs build output window">
 </p>
 
 <p align="center">
-  <img src="docs/output-v160.png" alt="eLuajs output chooser">
+  <img src="docs/output-v164.png" alt="eLuajs output chooser">
 </p>
 
 ## Features
@@ -94,7 +94,7 @@ All links below always point to the **latest release**.
 - **Project settings** — compile/min/target SDK, versionCode/versionName and Gradle performance options.
 - **One-click output** — debug APK or signed Play Store AAB, artifact manager, ADB install, versionCode increment, with build logs and click-to-open error locations.
 - **Git integration** — status, diff, stage, commit, pull/push, branches and checkout.
-- **AI providers** — latest OpenAI GPT-6 family, Claude Fable/Opus/Sonnet/Haiku 5.x, Gemini 4/3.x, Groq, DeepSeek, OpenRouter, local Ollama, River AI and any OpenAI-compatible endpoint.
+- **AI providers** — latest OpenAI GPT-6.2/6.x family, Claude Fable 5.2 / Opus / Sonnet / Haiku 5.5, Gemini 4 (Carbon, Neon, Hydrogen, Argon) & 3.x, Groq, DeepSeek V4, OpenRouter, local Ollama, River AI (`https://api.river.ai/v1`) and any OpenAI-compatible endpoint with persistent live model refresh.
 - **AI 2.0** — diff approval, one-click build fix, local Ollama and optional token budget.
 - **AI workspace (1.5.7)** — compact project index, token budgeting, read ranges/search, patch edits, page scaffolding, linked-file context, validation repair, provider retries/prompt caching and AI checkpoints.
 - **Six languages** — English, Turkish, German, French, Spanish and Russian.
@@ -134,7 +134,10 @@ Open the docked panel with the activity bar icon or `Ctrl+Alt+A`.
 - `1.5.7` was the AI workspace update: compact project index, token budgeting, read ranges/search, patch edits, page scaffolding, linked-file context, validation repair, provider retries/prompt caching, and AI checkpoints.
 - `1.5.8` was the final 1.5-series polish pack with the project tools and workspace upgrades.
 - `1.6.0` was the first stable 1.6 release: reliable startup update checks, update badges/last-check status, cancellable updates with health rollback, AI cancellation/error/context panels, cached indexes, patch conflict recovery, page-creation UX, secret redaction, sensitive-file confirmation and diagnostics copy. It also adds accent themes, toasts, fuzzy command palette, outline panel, clickable breadcrumb, tab/file shortcuts, problem/search filters, onboarding, AI prompt history/pinned context/slash commands, project health, template cards, pinned projects, logcat filters and a Signing Vault.
-- `1.6.1` is the infrastructure polish release: atomic file writes, crash-log rotation, safer downloads, invalid-path guards, signing-vault timeout, faster whole-word search, atomic favorites/update settings and small UI/AI quality improvements.
+- `1.6.1` was the infrastructure polish release: atomic file writes, crash-log rotation, safer downloads, invalid-path guards, signing-vault timeout, faster whole-word search, atomic favorites/update settings and small UI/AI quality improvements.
+- `1.6.2` fixed AI model persistence & live model refresh (River AI & custom OpenAI-compatible endpoints no longer reset back to stale defaults on Save), refreshed OpenAI, Claude, Google Gemini, DeepSeek, Groq and OpenRouter model catalogs, added header auth & multi-part thought filtering for Gemini, fixed adaptive-thinking / reasoning temperature compatibility for Claude 5.x and OpenAI GPT-5/GPT-6/o-series, and added one-click model refresh in the AI panel.
+- `1.6.3` redesigned the AI assistant panel (rich Markdown, copyable language-badged code cards, unified focus-highlighted composer, icon-badged activity chips and prompt starter cards), expanded the custom Java2D vector icon pack to 63 distinct icons across the Hub, Editor, Outline, File Explorer, Project Tools, Settings and Build dialogs, replaced legacy Swing checkboxes and tree handles with flat theme-aware controls, and decluttered the editor sidebar and tab header.
+- `1.6.4` adds silent background auto-refresh of AI provider model lists on app startup (`AiModelSync`) with live dropdown updates in the AI panel and Settings dialog while preserving user-selected models and keys.
 - Small fixes keep the same minor line: `1.5.2`, `1.5.3`, and so on.
 - The minor version (`1.5` → `1.6`) changes only for another large feature set.
 - There is no beta channel; every published GitHub release is stable.

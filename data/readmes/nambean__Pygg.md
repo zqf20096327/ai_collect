@@ -16,10 +16,10 @@
 <img src="https://img.shields.io/badge/app-Windows%20x64-blue" alt="Desktop app: Windows x64">
 <img src="https://img.shields.io/badge/CLI-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-blue" alt="CLI: Windows, macOS and Linux">
 <a href="https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.9"><img src="https://img.shields.io/github/v/release/nambean/Pygg?include_prereleases&label=release" alt="Release: v0.1.0-dev.9"></a>
-<img src="https://img.shields.io/badge/status-developer%20preview-orange" alt="Status: developer preview">
+<img src="https://img.shields.io/badge/status-developer%20preview-orange" alt="Status: developer preview"> <a href="https://mcpservers.org/servers/nambean/pygg"><img src="https://mcpservers.org/badge.svg" alt="Listed on mcpservers.org"></a> <a href="https://mcprush.com/to/pygg-mcp?ref=badge"><img src="https://mcprush.com/badge/pygg-mcp/card.svg" alt="Pygg MCP server" height="20"></a>
 </p>
 
-https://github.com/user-attachments/assets/85708783-8be3-4292-955c-783cc066bbd1
+https://github.com/user-attachments/assets/e8a452e3-4af7-43b0-bc7b-839bad1d9b6c
 
 <p align="center">
 <picture>

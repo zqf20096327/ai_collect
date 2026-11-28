@@ -60,14 +60,9 @@
 A live map of everything Beast knows, built straight from its own data — it updates itself as the agent runs. Skills and the full tool arsenal are grouped into domains; a separate dial is the running timeline of **lessons learned**, banded from validated down to still-exploratory. No fabricated numbers — every count is real.
 
 <p align="center">
-  <img src="Images/brain.png" alt="The Brain — Beast's knowledge graph of skills, tools and findings" width="100%"/>
+  <img src="Images/brain_visual.gif" alt="The Brain — Beast's live knowledge graph of skills, tools, lessons and findings" width="100%"/>
+  <br><sub>Skills and the full tool arsenal grouped into domains, plus a running timeline of lessons learned — every count pulled straight from Beast's own data.</sub>
 </p>
-
-<p align="center">
-  <img src="Images/brain-lessons.png" alt="The Brain — the lessons-learned timeline, built from Beast's own lessons.json" width="100%"/>
-  <br><sub>The Lessons dial: real techniques Beast confirmed across targets, banded by how often they held up.</sub>
-</p>
-
 
 ---
 
@@ -177,123 +172,40 @@ The `-v beast-data:/root/.beast` volume keeps your targets, chat sessions, findi
 
 ---
 
-### 3. AI Backend Configuration
+### 3. AI backend
 
-Beast runs two roles — an **Orchestrator** (selects/runs tools) and a **Synthesizer** (writes the researcher-facing report). You point each at a model with `/model orchestrator <provider> <id>` and `/model synthesizer <provider> <id>` (or `/model both <provider> <id>` to set both at once). Pick a provider below.
+Beast runs two roles — an **Orchestrator** (runs tools) and a **Synthesizer** (writes the report). Point them at a model with `/model both <provider> <id>`, or set each tier separately. Any one provider is enough:
 
-> [!TIP]
-> ### Which model should I use?
-> - **Free (recommended):** **NVIDIA NIM** — one free API key works against *any* model it serves (`nvidia/nemotron-3-ultra-550b-a55b`, `meta/llama-3.3-70b-instruct`, …; browse current IDs at [build.nvidia.com/models](https://build.nvidia.com/models), NVIDIA periodically retires old ones). Generous free credits, frontier-class reasoning, zero local GPU.
-> - **Paid:** Anthropic **Claude 3.5 Sonnet**, Google **Gemini 2.0 Flash / Pro**, or **OpenAI GPT-4o**.
-> - **Local (Ollama):** 32B+ models (`qwen2.5:32b`, `deepseek-r1:32b`) — small local models under 14B struggle with multi-stage IDOR chaining and strict JSON tool-calling.
+| Provider | Cost | Connect |
+|---|---|---|
+| **NVIDIA NIM** — *recommended* | Free credits, no GPU | `export NVIDIA_API_KEY=…` → `/model both nvidia nvidia/nemotron-3-ultra-550b-a55b` |
+| **Claude / Gemini / OpenAI** | Paid API | `export ANTHROPIC_API_KEY=…` → `/model both anthropic claude-3-5-sonnet` |
+| **Ollama** | Free, fully offline | `ollama pull qwen2.5:32b` → `/model both ollama qwen2.5:32b` (32B+ for reliable tool-calling) |
 
-#### A. Free Cloud AI via NVIDIA NIM (Strongly Recommended for Free Users)
-Get free API credits and frontier-class 120B model inference with zero local GPU requirements:
-1. Sign up at [build.nvidia.com](https://build.nvidia.com/) to obtain your free API key.
-2. Export your key in your environment or `~/.bashrc`:
-```bash
-export NVIDIA_API_KEY="nvapi-your-key-here"
-```
-3. Inside Bounty Hunter, select Nemotron or Llama 3.3:
-```bash
-beast
-> /model orchestrator nvidia nvidia/nemotron-3-ultra-550b-a55b
-> /model synthesizer nvidia nvidia/nemotron-3-ultra-550b-a55b
-```
-
-#### B. Commercial Frontier Cloud Providers (Claude, Gemini, OpenAI)
-For researchers with commercial API access:
-```bash
-# Anthropic Claude
-export ANTHROPIC_API_KEY="sk-ant-..."
-
-# Google Gemini
-export GEMINI_API_KEY="AIza..."
-
-# OpenAI
-export OPENAI_API_KEY="sk-..."
-```
-
-Inside the console:
-```bash
-> /model synthesizer anthropic claude-3-5-sonnet
-> /model synthesizer gemini gemini-2.0-flash
-```
-
-Want the same model doing both the orchestrator and synthesizer job? You
-don't need to run `/model` twice — `/model both <provider> <model-id>`
-sets both tiers at once (e.g. `/model both nvidia nvidia/nemotron-3-ultra-550b-a55b`).
-See [AI Model Setup](docs/ai-model-setup.md) for the full picture, including
-per-tier splits and session-only overrides.
-
-#### C. Fully Offline Local AI (Ollama)
-For air-gapped or 100% offline environments (32B+ models recommended for reliable tool chaining):
-```bash
-# 1. Install Ollama
-curl -fsSL https://ollama.com/install.sh | sh
-
-# 2. Pull local model
-ollama pull qwen2.5:32b-instruct-q4_0
-
-# 3. Connect inside Bounty Hunter
-beast
-> /model orchestrator ollama qwen2.5:32b-instruct-q4_0
-> /model synthesizer ollama qwen2.5:32b-instruct-q4_0
-```
+Free NVIDIA key at [build.nvidia.com](https://build.nvidia.com/); browse model IDs at [build.nvidia.com/models](https://build.nvidia.com/models). Per-tier splits and session overrides: **[AI Model Setup →](docs/ai-model-setup.md)**
 
 ---
 
-### 4. Integrations (MCP) — Burp, Caido & HexBrain
+### 4. Integrations (optional)
 
-Bounty Hunter can connect external MCP servers as additional tools, alongside
-its own built-in arsenal. Two kinds:
-
-- **Interactive proxies** — drive **Burp Suite** and/or **Caido** directly (send
-  to Repeater, search captured traffic, push findings). These connect only when
-  you actually name them, so an offline proxy never clutters an unrelated turn.
-- **Knowledge source** — **HexBrain**, a free hosted corpus of 15k+ *disclosed*
-  HackerOne reports mapped to how each bug was found (plus playbooks, payloads,
-  bypasses and program payout history). It auto-loads during a hunt so the model
-  can learn from what has actually worked on similar stacks.
-
-Each is one command — no manual config editing:
+Connect external MCP servers as extra tools — one command each, no config files. Proxies (**Burp**, **Caido**) connect only when named; **HexBrain** (15k+ disclosed HackerOne reports) auto-loads during a hunt so the model learns from what has worked on similar stacks.
 
 ```bash
-beast
-> /mcp hexbrain sk_your_key          # free key at hexbrainai.com/account (200 calls/day)
-> /mcp burp http://127.0.0.1:9876    # auto-detects Burp's MCP transport
-> /mcp caido http://localhost:8080   # uses caido-mcp-server if installed, else built-in GraphQL
-> /mcp                               # shows current config + live status for all
-> /mcp test                          # re-checks without changing anything
+> /mcp hexbrain sk_your_key        # free key at hexbrainai.com/account (200 calls/day)
+> /mcp burp http://127.0.0.1:9876  # drive Burp Repeater / captured traffic
+> /mcp caido http://localhost:8080 # drive Caido
+> /mcp                             # config + live status for all
 ```
 
-Full step-by-step guides (getting each key/token, where to find Burp's MCP tab,
-`caido-mcp-server`'s OAuth login, and a troubleshooting table for each):
-[HexBrain Setup](docs/mcp-hexbrain-setup.md) ·
-[Burp Suite MCP Setup](docs/mcp-burp-setup.md) ·
-[Caido Setup](docs/mcp-caido-setup.md).
+Guides: [HexBrain](docs/mcp-hexbrain-setup.md) · [Burp](docs/mcp-burp-setup.md) · [Caido](docs/mcp-caido-setup.md)
 
----
+### 5. Health check
 
-### 5. Health Check & Tool Verification
-Verify that your environment, AI models, and binary tools are fully connected:
 ```bash
-beast
-> /setup
-> /setup tools
+> /setup                          # environment, models, and tool status — with a signup link for any missing key
+> /setup tools auto-install on    # auto-install missing recon tools on demand
+> /setup set-key <tool> <key>     # a few recon tools need their own free key; /setup shows which
 ```
-
-To enable automatic on-demand installation of any missing tools during scans:
-```bash
-> /setup tools auto-install on
-```
-
-#### Third-party recon tool API keys
-A few recon tools call external services that need their own free API key (separate from your LLM provider key above) — `/setup` shows exactly which ones are set and which aren't, with a signup link for each. Set any of them with:
-```bash
-> /setup set-key <tool> <api_key>
-```
-Every tool in the arsenal that needs one is self-describing this way — run `/setup` any time to see current status rather than hunting through docs for which key goes where.
 
 ---
 
@@ -354,16 +266,9 @@ Everything runs behind the unconditional scope gate and rate limiter and writes 
 
 ---
 
-## Recent Upgrades
+## Recent highlights
 
-Highlights of recent work (full history in [CHANGELOG.md](CHANGELOG.md)):
-
-- **Port scanning is now default recon** — a pure-Python alt-port scan fingerprints high-value non-web services (ClickHouse, Elasticsearch, Prometheus, Jenkins, Spring actuator, Docker API, …) and attaches "how to query this" hints, backed by a RoE-aware naabu sweep that catches the *unintended* exposed port a curated list would miss. Plus a framework/debug endpoint probe (actuator heapdump, swagger, `.git`/`.env`, graphql, metrics) with a catch-all-200 false-positive guard.
-- **OSINT & interactive learning** — business-context OSINT that profiles the target org to aim hypotheses, default/weak-credential checks on discovered consoles, and the [HexBrain](docs/mcp-hexbrain-setup.md) MCP integration (15k+ disclosed reports the model mines mid-hunt). All external content runs behind a hard prompt-injection guardrail — it's data to analyze, never instructions to obey.
-- **Findings discipline** — each distinct confirmed bug is recorded the moment it's proven (no batching confirmed bugs into a summary and losing them), findings persist additively across runs instead of being overwritten, and a flag/marker that appears site-wide by default is never treated as proof on its own.
-- **Exploitation validation hardened** — XSS gated on real execution (a browser-disproved payload is refused), with stored/blind XSS recordable on an unsanitized executing-context reflection; `verify_finding` live class-checks; dismissed false positives can't silently re-appear.
-- **Tool-calling made robust** — native-function-calling-first across every provider, with recovery when a reasoning model scrambles a tool call into malformed text instead of leaking the raw JSON and stalling the turn.
-- **Identity, TUI & integrations** — `capture_identity`/`swap_session` and `save_auth_flow`/`replay_auth_flow` bridged into the headless browser and fuzzers; a full-screen Textual TUI with collapsible request/response cards; and MCP integrations (HexBrain knowledge source + Burp/Caido proxies) that connect only when relevant.
+Port scanning + framework/debug probing in default recon · business-context OSINT and a disclosed-report knowledge source the agent mines mid-hunt · XSS gated on real browser execution · findings recorded per-bug the moment they're proven and persisted across runs · native function-calling with malformed-call recovery on every provider. Full history in **[CHANGELOG.md](CHANGELOG.md)**.
 
 ---
 

@@ -39,7 +39,12 @@ Kuri runs offline with local models, talks to any hosted provider when you want 
 
 ## Install
 
-Kuri needs a Mac with Apple silicon and macOS 26. Download the `.dmg` from [Releases](https://github.com/Haruno19/kuri/releases), open it and drag Kuri to Applications.
+Kuri needs a Mac with Apple silicon and macOS 26. Download the `.dmg` from [Releases](https://github.com/Haruno19/kuri/releases), open it and drag Kuri to Applications. Or install it with [Homebrew](https://brew.sh), which also puts `kuri` on your `PATH`:
+
+```bash
+brew tap haruno19/tap
+brew install --cask haruno19/tap/kuri
+```
 
 Releases aren't notarized by Apple yet, so the first time you open Kuri macOS says it can't verify it. Open **System Settings › Privacy & Security**, scroll down to the message about Kuri and click **Open Anyway**. Or, in Terminal:
 
@@ -49,7 +54,7 @@ xattr -dr com.apple.quarantine /Applications/Kuri.app
 
 ### In the terminal
 
-Kuri also ships `kuri`, a command-line client, inside the app. Put it on your `PATH` once; the link points into the app, so it keeps working when you update Kuri:
+Kuri also ships `kuri`, a command-line client, inside the app. Homebrew links it for you; otherwise put it on your `PATH` once. The link points into the app, so it keeps working when you update Kuri:
 
 ```bash
 sudo ln -sf /Applications/Kuri.app/Contents/Helpers/kuri /usr/local/bin/kuri

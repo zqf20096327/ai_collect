@@ -26,7 +26,7 @@ pip install qikly
 qikly --score your_module.py
 ```
 
-[![qikly --score on the bundled pricing example: 10 of 13 planted faults missed, and three of the questions they leave open](https://raw.githubusercontent.com/gal-a/qikly/main/docs/images/qikly_score.png)](#start-here)
+[![qikly --score on the bundled pricing example: 10 of 13 planted faults missed, and three of the questions they leave open](https://raw.githubusercontent.com/gal-a/qikly/main/docs/images/qikly_score.gif)](#start-here)
 
 It plants faults in a copy of your code, one at a time, and turns each one your
 tests miss into a question about behaviour nothing checks. Nothing of yours is
@@ -187,6 +187,12 @@ implementation of the same interface.
 - It plants every fault it can, up to 60 in one module or 150 in a folder,
   and a sample when your tests are slow. `--score-mutants 48` sets the
   number, and `--score-seed 1` draws a different sample.
+- It runs up to four faults at once, each in its own copy of your code, so
+  a slow suite takes a fraction of the time. `--score-workers 1` runs them
+  one at a time, and the same seed gives the same result either way. Tests
+  that cannot run beside a copy of themselves, because they share a file, a
+  port or a database, are noticed before anything is planted, and then the
+  faults go one at a time, with a line saying so.
 - `--demo` works in a throwaway `demo/throwaway_<timestamp>/` folder it expects you to
   delete. It is for watching, not for building in. `--example` and `--scaffold`
   create a real project in the directory you are standing in, and those are the
@@ -212,6 +218,31 @@ the files that failure names are loaded, so runs stay small and quick. It fits
 most naturally where verification already has to be independent, such as
 automotive, medical devices, fintech and defence: `ADAS_HEADWAY`, a bundled
 example, checks following distance from forward-radar samples. See [What it is for](#what-it-is-for).
+
+### Installing with uv
+
+`pip install qikly` is the simplest way, and it is what to use inside a project's
+own environment. If you use [uv](https://docs.astral.sh/uv/), these work too:
+
+```
+uv tool install qikly          # the qikly command on your PATH
+uv tool upgrade qikly          # later, to update it
+uvx qikly --score pricing.py   # a one-off run, nothing installed
+```
+
+qikly runs your tests with the Python it is installed in. A `uv tool install` lives
+in its own environment, so if your project needs its own packages, `--score`
+stops with `No module named ...` even though the tests pass in your project's
+environment. Either install qikly into the project (`pip install qikly`, or
+`uv pip install qikly`), or add what the project needs to the tool:
+
+```
+uv tool install --force --with tabulate qikly
+uvx --with tabulate qikly --score fmt.py
+```
+
+`uvx` keeps the version it first fetched. To get a newer release, run it with
+`--refresh`, for example `uvx --refresh qikly --version`.
 
 ## What it is for
 
@@ -243,7 +274,7 @@ same command for you.
 Your agent sees which tests failed and the pytest output, never the rule it
 broke.
 
-[`docs/mcp.md`](https://github.com/gal-a/qikly/blob/main/docs/mcp.md) has the four tools, other hosts,
+[`docs/mcp.md`](https://github.com/gal-a/qikly/blob/main/docs/mcp.md) has the six tools, other hosts,
 installing with pip instead, what to do when the server does not start, and
 how to keep the generated tests out of your agent's reach.
 
@@ -797,7 +828,7 @@ a run.
 
 **Two ways to pin, and the choice is yours.** `@v0` is a moving alias that
 this project repoints at every release, so you receive fixes without receiving
-a breaking change. `@v0.6.5` is an exact pin that never moves, so nothing
+a breaking change. `@v0.6.6` is an exact pin that never moves, so nothing
 changes under you and nothing reaches you either. The templates use `@v0`
 because most people want the fixes; use the exact form if your policy requires
 it.
@@ -863,7 +894,7 @@ left holding afterwards.
 | **Cost forecast** | Printed before a run starts, from your own history when you have any, labelled as a projection rather than a price |
 | **PR comments** | `--pr-comment` renders the latest run as markdown; the template workflow updates one comment in place rather than adding many |
 | **Pre-commit hook** | `qikly-validate`, the free check, so a hook never bills you for typing `git commit` |
-| **GitHub Action** | `gal-a/qikly@v0.6.5`, uploading the suite, the code and the JUnit XML |
+| **GitHub Action** | `gal-a/qikly@v0.6.6`, uploading the suite, the code and the JUnit XML |
 
 ## Where it fits today
 

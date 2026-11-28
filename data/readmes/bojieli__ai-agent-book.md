@@ -29,7 +29,7 @@
 > - **西班牙语**（社区翻译，by [@santhreal](https://github.com/santhreal)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-es.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-es.epub)
 > - **印度尼西亚语**（社区翻译，by [@jojixyz666](https://github.com/jojixyz666)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-id.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-id.epub)
 > - **繁體中文（台灣）**（社区翻译，by [@tigercosmos](https://github.com/tigercosmos)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-TW.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-zh-TW.epub)
-> - **俄语**（社区翻译，by [@ui99ru](https://github.com/ui99ru)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ru.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ru.epub)
+> - **俄语**（社区翻译，本版由 [@ilkruglov](https://github.com/ilkruglov) 维护；感谢上一版译者 [@ui99ru](https://github.com/ui99ru)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ru.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ru.epub)
 > - **泰米尔语**（社区翻译，by [@nsdevaraj](https://github.com/nsdevaraj)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ta.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ta.epub)
 > - **越南语**（社区翻译，by [@toanalien](https://github.com/toanalien)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-vi.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-vi.epub)
 > - **日语**（社区翻译，by [@eltociear](https://github.com/eltociear)）：[PDF](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ja.pdf) · [EPUB](https://github.com/bojieli/ai-agent-book/releases/download/latest/AI-Agents-in-Depth-ja.epub)
@@ -130,11 +130,12 @@ uv run python chapter1/context/main.py
 | **Atlas Cloud** | <https://www.atlascloud.ai/> | 通过 OpenAI 兼容接口访问多个厂商的模型 | 全球 |
 | **Runcrate** | <https://runcrate.ai/> | 通过 OpenAI 兼容接口访问开源权重模型（DeepSeek、Qwen、GLM、Kimi 等） | 全球 |
 | **Opper** | <https://opper.ai/> | 欧盟托管的 AI 网关，通过一个 OpenAI 兼容接口访问 50+ 厂商的 700+ 模型 | 全球 |
-| **UberLLM** | <https://uberllm.dev/> | 一个 Key 通过 OpenAI 兼容接口访问多个厂商的模型（DeepSeek、Qwen、GPT、Claude、Gemini 等），按量预付 | 全球 |
+| **MartLLM** | <https://martllm.com/> | 一个 Key 通过 OpenAI 兼容接口访问多个厂商的模型（DeepSeek、Qwen、GPT、Claude、Gemini 等），按量预付 | 全球 |
 | **Cheaper Inference** | <https://cheaperinference.com/> | 通过 OpenAI 兼容接口访问 GPT、Claude、Gemini、DeepSeek、GLM 等模型。 | 全球 |
 | **WorldRouter** | <https://www.worldrouter.ai/> | 一个 Key 通过 OpenAI 兼容接口访问 Claude、GPT、Gemini、DeepSeek、Kimi、GLM 等模型，按量计费 | 全球 |
 | **onomeo** | <https://onomeo.com/> | 一个 Key 通过 OpenAI 兼容接口访问 Claude、GPT、Gemini、DeepSeek 等模型，另有免费模型，按量计费 | 全球 |
 | **TeamoRouter** | <https://teamorouter.com/> | 一个 Key 通过 OpenAI 兼容接口访问 Claude、GPT、Gemini、DeepSeek、GLM、Kimi、Qwen 等模型，按量预付，支持银行卡、微信、支付宝和 USDT | 全球 |
+| **Straitly** | <https://straitly.ai/> | 一个 Key 通过 OpenAI 兼容接口访问 100+ 模型（Claude、GPT、Gemini、Grok、DeepSeek 等），按 token 预付费，无订阅 | 全球 |
 | **Krill AI** | [www.krill-code.com](https://www.krill-code.com/register?invite=Q8D3L35725) | 一站式访问全球及国内主流模型（OpenAI、Claude、Gemini、Grok、Kimi、GLM、DeepSeek、Qwen、Minimax） | 全球 + 中国大陆 |
 | **OpenRouter** | <https://openrouter.ai/> | 一站式访问全球及国内主流模型（GPT、Claude、Gemini、Kimi、GLM、DeepSeek、Qwen 等） | 全球 |
 

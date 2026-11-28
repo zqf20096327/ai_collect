@@ -14,11 +14,6 @@ train your own downstream ML models using brain2vec output embeddings
 or perform downstream classification inference using our pre-trained disease
 classification models trained on brain2vec embeddings.
 
-We are happy to announce that Brain2Vec achieved **top spots** on [BrainFMBench](https://www.epics-lab.ca/BrainFMBench/):
-- **#1 Ranked foundation model**
-- 🥇 Brain2Vec ranked 1st on 9 of 15 tasks
-- 🥈 And 1st or 2nd on 11 of 15 tasks
-
 > [!IMPORTANT]
 > To use our model locally, you first need to apply for access to our [hugging face model card](https://huggingface.co/cbica/Brain2Vec). 
 > We follow a 2-step preprocessing with skull-stripping and linear registration,

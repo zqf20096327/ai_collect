@@ -101,7 +101,7 @@ Fresh 2026 work that is already drawing attention.
   - [🧠 Planning & Reasoning (56)](#planning)
   - [💾 Memory (61)](#memory)
   - [🔧 Tool Use (51)](#tools)
-  - [🤝 Multi-Agent Systems (59)](#multi-agent)
+  - [🤝 Multi-Agent Systems (60)](#multi-agent)
 - **🌍 Part II: Agents in Context**
   - [🌐 Interactive Environments (60)](#environments)
   - [🚀 Applications (60)](#applications)

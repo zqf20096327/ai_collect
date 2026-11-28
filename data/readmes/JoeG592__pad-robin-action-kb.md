@@ -6,6 +6,8 @@ There is no official Robin reference. The original language site went offline in
 
 This repo is the missing reference.
 
+**Website: [pad-robin-action-kb.com](https://pad-robin-action-kb.com)**: the three KBs, the videos and the community posts in one place.
+
 https://github.com/user-attachments/assets/f9a1d40f-50a4-4be1-b33a-50d60a1c71b7
 
 The 80-second promo: real pastes into PAD Designer, from 4 to 61 actions. Full quality: [16:9](https://github.com/JoeG592/pad-robin-action-kb/releases/download/v3.9.2/pad-robin-kb-promo.mp4) · [4:5, for feeds](https://github.com/JoeG592/pad-robin-action-kb/releases/download/v3.9.2/pad-robin-kb-promo-4x5.mp4). The videos are not stored in the repo, so a clone stays small.

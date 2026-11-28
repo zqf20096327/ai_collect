@@ -308,6 +308,7 @@ Client level configuration also applies to the WebSocket API (e.g. CosyVoice), w
     - [Multilanguage](#multilanguage)
   - [GUI](#gui)
   - [Audio Understanding](#audio-understanding)
+  - [Qwen-Omni](#qwen-omni-understanding-and-speech-output) - qwen3.8-omni-flash, qwen3.5-omni, qwen3-omni-flash. Understands audio and video, answers in text or in speech
 - [Text-to-Speech](#text-to-speech) - CosyVoice, Sambert, etc. For TTS applications
 - [Real-Time Speech Recognition](#real-time-speech-recognition) - Paraformer, Qwen-Audio ASR. For streaming ASR applications
 - [Recorded Speech Recognition](#recorded-speech-recognition) - qwen3-asr-flash, Fun-ASR-Flash, Qwen-Audio ASR. For recorded audio files
@@ -1986,6 +1987,188 @@ In summary, the audio portrays a modern Mandarin-speaking man, exasperated by a 
 Usage: in(160)/out(514)/audio(152)/total(674)
 ```
 
+### Qwen-Omni (understanding and speech output)
+
+The Qwen-Omni models understand text, images, audio and video within one request. Which endpoint to call depends on the output you need:
+
+| Model | Input | Output |
+|---|---|---|
+| `qwen3.8-omni-flash` | text, image, audio, video | text, with thinking (on by default), function calling and web search |
+| `qwen3.5-omni-flash`, `qwen3.5-omni-plus` | text, image, audio, video | text + audio |
+| `qwen3-omni-flash` | text + one other modality | text + audio, either thinking (`EnableThinking`) or speech |
+
+**Understanding with a text answer** works through the DashScope API, so `GetMultimodalGenerationAsync` (streaming or not) and the `Microsoft.Extensions.AI` integration apply as for every multimodal model. An audio goes in an `AudioContent`, a url or the bytes of a local file, and `qwen3.8-omni-flash` returns its thinking in `ReasoningContent`:
+
+```csharp
+var response = await client.GetMultimodalGenerationAsync(new ModelRequest<MultimodalInput, IMultimodalParameters>
+{
+    Model = "qwen3.8-omni-flash",
+    Input = new MultimodalInput
+    {
+        Messages =
+        [
+            MultimodalMessage.User(
+            [
+                MultimodalMessageContent.ImageContent(imageUrl),
+                // a local file: MultimodalMessageContent.AudioContent(File.ReadAllBytes("meeting.wav"), "audio/wav")
+                MultimodalMessageContent.AudioContent(audioUrl),
+                MultimodalMessageContent.TextContent("请描述图片内容，并告诉我音频在说什么。")
+            ])
+        ]
+    },
+    Parameters = new MultimodalParameters()
+});
+Console.WriteLine(response.Output.Choices[0].Message.ReasoningContent); // the thinking
+Console.WriteLine(response.Output.Choices[0].Message.Content[0].Text);
+```
+
+With `Microsoft.Extensions.AI` the audio is a `UriContent` (the media type follows the extension of the url) or a `DataContent` with an `audio/*` media type:
+
+```csharp
+var response = await chatClient.GetResponseAsync(new ChatMessage(ChatRole.User,
+[
+    new UriContent(new Uri(audioUrl)), new TextContent("这段音频在说什么")
+]));
+```
+
+**Speech output** is delivered by the OpenAI compatible endpoint (`/compatible-mode/v1/chat/completions`) only, and in the streaming mode only: a non-streaming request (`OpenAiCompatibleGetChatCompletionAsync`) answers with the text, the audio is dropped although its tokens are still billed. The model streams the answer part by part, the audio speaking a part right after its text. The payload of the audio deltas is raw PCM (24 kHz, signed 16 bit, mono):
+
+```csharp
+var chunks = dashScopeClient.OpenAiCompatibleGetChatCompletionStreamAsync(
+    new OpenAiCompatibleChatRequest
+    {
+        Model = "qwen3.5-omni-flash",
+        Messages =
+        [
+            new OpenAiCompatibleChatMessage
+            {
+                Role = "user", Content = [new OpenAiCompatibleChatContentPart(Type: "text", Text: "用一句话介绍博客园。")]
+            }
+        ],
+        Modalities = ["text", "audio"],
+        // the voices differ by model (Tina for Qwen3.5-Omni, Cherry for Qwen3-Omni),
+        // see the voice list of the Bailian docs
+        Audio = new OpenAiCompatibleChatAudioOptions(Voice: "Tina", Format: "wav"),
+        StreamOptions = new OpenAiCompatibleChatStreamOptions(IncludeUsage: true)
+    });
+
+var text = new StringBuilder();
+var audio = new MemoryStream();
+await foreach (var chunk in chunks)
+{
+    foreach (var choice in chunk.Choices)
+    {
+        text.Append(choice.Delta?.Content);
+        if (choice.Delta?.Audio?.Data is { } data)
+        {
+            audio.Write(Convert.FromBase64String(data));
+        }
+    }
+
+    var usage = chunk.Usage; // present in the last chunk
+}
+
+// a wav file is a 44 byte header in front of the pcm
+using (var wav = new BinaryWriter(File.Create("answer.wav")))
+{
+    var pcm = audio.ToArray();
+    wav.Write("RIFF"u8);
+    wav.Write(36 + pcm.Length);
+    wav.Write("WAVEfmt "u8);
+    wav.Write(16);
+    wav.Write((short)1); // pcm
+    wav.Write((short)1); // mono
+    wav.Write(24000);
+    wav.Write(48000); // bytes per second
+    wav.Write((short)2); // bytes per sample
+    wav.Write((short)16); // bits per sample
+    wav.Write("data"u8);
+    wav.Write(pcm.Length);
+    wav.Write(pcm);
+}
+```
+
+The same request carries the other omni features of the OpenAI compatible endpoint: `ReasoningEffort` (`none` turns the thinking of `qwen3.8-omni-flash` off, `low` / `medium` / `xhigh` / `max` limit it) or `ThinkingBudget`, a `video` part (the frames of a video) and the `Fps` of a video, `UseMultichannel` for a spatial audio, `ResponseFormat`, and function calling with `Tools` / `ToolChoice`. The model asks for a tool in `ToolCalls`, answer it with a `tool` message and send the conversation again:
+
+```csharp
+var messages = new List<OpenAiCompatibleChatMessage>
+{
+    new() { Role = "user", Content = [new OpenAiCompatibleChatContentPart(Type: "text", Text: "北京今天天气怎么样？")] }
+};
+var request = new OpenAiCompatibleChatRequest
+{
+    Model = "qwen3.8-omni-flash",
+    Messages = messages,
+    Tools =
+    [
+        new ToolDefinition("function", new FunctionDefinition("get_weather", "查询指定城市的实时天气",
+            new { type = "object", properties = new { city = new { type = "string" } }, required = new[] { "city" } }))
+    ],
+    ToolChoice = ToolChoice.FunctionChoice("get_weather"), // force the call, AutoChoice lets the model decide
+    ReasoningEffort = "none"
+};
+var completion = await client.OpenAiCompatibleGetChatCompletionAsync(request);
+var call = completion.Choices[0].Message.ToolCalls![0]; // finish reason "tool_calls", Arguments is a json string
+messages.Add(new OpenAiCompatibleChatMessage { Role = "assistant", Content = [], ToolCalls = [call] });
+messages.Add(new OpenAiCompatibleChatMessage
+{
+    Role = "tool", ToolCallId = call.Id,
+    Content = [new OpenAiCompatibleChatContentPart(Type: "text", Text: "{\"weather\": \"晴\", \"temperature\": \"12℃\"}")]
+});
+request.ToolChoice = null; // let the model answer with the result of the tool
+Console.WriteLine((await client.OpenAiCompatibleGetChatCompletionAsync(request)).Choices[0].Message.Content);
+```
+
+Function calling and web search also answered on the Qwen3.5-Omni models when tested, although the Bailian docs only describe them for Qwen3.8-Omni-Flash. The web search of `qwen3.8-omni-flash` (`EnableSearch` with the `agent` strategy, the only one it accepts) works in the streaming mode only and is served on the workspace domain only, so create the client with a `WorkspaceId` for it (see [Workspace and Region](#workspace-and-region)). Its stream opens with a chunk whose choice carries no delta:
+
+```csharp
+var workspaceClient = new DashScopeClient("your-api-key", workspaceId: "your-workspace-id");
+var chunks = workspaceClient.OpenAiCompatibleGetChatCompletionStreamAsync(new OpenAiCompatibleChatRequest
+{
+    Model = "qwen3.8-omni-flash",
+    Messages =
+    [
+        new OpenAiCompatibleChatMessage
+        {
+            Role = "user", Content = [new OpenAiCompatibleChatContentPart(Type: "text", Text: "请查询今天的日期和星期。")]
+        }
+    ],
+    ReasoningEffort = "none",
+    EnableSearch = true,
+    SearchOptions = new SearchOptions { SearchStrategy = "agent" },
+    StreamOptions = new OpenAiCompatibleChatStreamOptions(IncludeUsage: true)
+});
+await foreach (var chunk in chunks)
+{
+    Console.Write(chunk.Choices.FirstOrDefault()?.Delta?.Content);
+}
+```
+
+Through the DashScope API the web search takes the `EnableSearch` / `SearchOptions` of the multimodal parameters, streaming only as well:
+
+```csharp
+await foreach (var frame in workspaceClient.GetMultimodalGenerationStreamAsync(
+                   new ModelRequest<MultimodalInput, IMultimodalParameters>
+                   {
+                       Model = "qwen3.8-omni-flash",
+                       Input = new MultimodalInput
+                       {
+                           Messages = [MultimodalMessage.User([MultimodalMessageContent.TextContent("请查询今天的日期和星期。")])]
+                       },
+                       Parameters = new MultimodalParameters
+                       {
+                           IncrementalOutput = true,
+                           EnableSearch = true,
+                           SearchOptions = new SearchOptions { SearchStrategy = "agent" }
+                       }
+                   }))
+{
+    Console.Write(frame.Output.Choices[0].Message.Content.FirstOrDefault()?.Text);
+}
+```
+
+The gateway opens that stream with a default frame that only announces the assistant. The SDK reads it as any other frame, there is nothing to skip.
+
 ## Text-to-Speech
 
 The non-realtime speech synthesis models - qwen3-tts (e.g. `qwen3-tts-flash`) and MiniMax speech (e.g. `MiniMax/speech-2.8-hd`) - use the multimodal generation HTTP API instead of a websocket session. The text and voice settings go into `MultimodalInput`; qwen3-tts answers with a downloadable wav url (base64 chunks in `Audio.Data` when streaming), MiniMax speech with hex encoded audio in `Output.Data` (or a url when `OutputFormat` is set to `url`):
@@ -2366,141 +2549,4 @@ await chat.UpdateSessionAsync(
         Instructions = "You are a helpful assistant.", // system prompt of the session
         TurnDetection = new AudioChatTurnDetection
         {
-            Type = "server_vad", // or "smart_turn": meaningless sounds ("um") do not trigger a turn
-            Threshold = 0.5f,
-            SilenceDurationMs = 500
-        }
-        // set TurnDetection = null instead for the push-to-talk mode: commit the audio with
-        // CommitAudioAsync() and trigger the inference with CreateResponseAsync()
-    });
-
-// consume the events while the audio streams in (see below), then send the audio
-await using var audio = File.OpenRead("speech.pcm"); // raw pcm, 16kHz 16bit mono
-await chat.AppendAudioAsync(audio);
-```
-
-In the server_vad / smart_turn mode the server detects the speech boundaries and triggers the inference automatically; the interim ASR results arrive as `conversation.item.input_audio_transcription.delta` events (`Text` is the confirmed part, `Stash` the tentative remainder), the streamed response text and audio as `response.audio_transcript.delta` / `response.audio.delta` (base64 pcm, 24kHz — also available decoded via `GetAudioAsync()`), and a turn ends with `response.done`:
-
-```csharp
-var consuming = Task.Run(async () =>
-{
-    // ReSharper disable once AccessToDisposedClosure
-    await foreach (var e in chat.GetEventsAsync())
-    {
-        switch (e.Type)
-        {
-            case "conversation.item.input_audio_transcription.delta":
-                Console.WriteLine($"Heard: {e.Text}{e.Stash}");
-                break;
-            case "response.audio_transcript.delta":
-                Console.WriteLine($"Said: {e.Delta}");
-                break;
-        }
-    }
-});
-await using var file = File.Create("response.pcm");
-await foreach (var b in chat.GetAudioAsync())
-{
-    file.WriteByte(b);
-}
-```
-
-Beyond the audio loop the session also supports text input and history injection (`CreateItemAsync` with message items), function calling (`Tools` in the session config, execute the call and write the result back with a `function_call_output` item, then trigger the next turn with `CreateResponseAsync`), interrupting the model (`CancelResponseAsync`), and managing the conversation (`RetrieveItemAsync` / `DeleteItemAsync`). The 3.1 plus model additionally takes `InputAudioTranscription.Language` / `OutputAudio.Language` (both directions of translation-like control) and `MaxHistoryTurns`; smart_turn accepts `VoiceprintAudioUrls` for speaker enhancement. The session ends when it is disposed — there is no session.finish.
-
-## Real-Time Multimodal Conversation (Qwen-Omni-Realtime)
-The qwen3.8-omni-flash-realtime, qwen3.5-omni-plus-realtime and qwen3.5-omni-flash-realtime models understand speech, images (video frames) and text, and answer in speech and text - with function calling, remote MCP tools and web search on top. Create a session with `CreateOmniRealtimeSocketSessionAsync` (same `/api-ws/v1/realtime` endpoint, event-based messages). The Bailian documentation serves qwen3.8-omni-flash-realtime on the workspace domain only, configure `WorkspaceId` on the client for it:
-
-```csharp
-using var chat = await dashScopeClient.CreateOmniRealtimeSocketSessionAsync("qwen3.8-omni-flash-realtime");
-await chat.UpdateSessionAsync(
-    new OmniRealtimeSession
-    {
-        Voice = "Tina", // the default; the voices a model takes are listed in the Bailian documentation, an unsupported one fails the response
-        Instructions = "你是个人助理小云，请你准确且友好地解答用户的问题，始终以乐于助人的态度回应。", // system prompt of the session
-        TurnDetection = new OmniRealtimeTurnDetection
-        {
-            Type = "server_vad", // or "semantic_vad": backchannel responses and background noise do not end a turn
-            Threshold = 0.5f,
-            SilenceDurationMs = 800
-        }
-        // set TurnDetection = null instead for the manual mode (push-to-talk, see below)
-    });
-
-// consume the events while the audio streams in (see below), then send the audio
-await using var audio = File.OpenRead("speech.pcm"); // raw pcm, 16kHz 16bit mono
-await chat.AppendAudioAsync(audio);
-// the server only detects the end of the speech after some silence, which a live microphone keeps
-// delivering: with a recorded clip keep appending silence until the response is done
-// AppendImageAsync(frame) sends video frames as base64 jpg, about one per second
-```
-
-In the VAD mode the server detects the speech boundaries, commits the audio and triggers the response by itself: the recognized speech arrives as `conversation.item.input_audio_transcription.delta` events (`Text` is the confirmed part, `Stash` the tentative remainder), the response text as `response.audio_transcript.delta` events, the audio as `response.audio.delta` (base64 pcm, 24kHz — also available decoded via `GetAudioAsync()`), and a turn ends with `response.done` carrying the usage:
-
-```csharp
-var consuming = Task.Run(async () =>
-{
-    // ReSharper disable once AccessToDisposedClosure
-    await foreach (var e in chat.GetEventsAsync())
-    {
-        switch (e.Type)
-        {
-            case "conversation.item.input_audio_transcription.delta":
-                Console.WriteLine($"Heard: {e.Text}{e.Stash}");
-                break;
-            case "response.audio_transcript.delta":
-            case "response.text.delta": // text only responses, see the modalities below
-                Console.WriteLine($"Said: {e.Delta}");
-                break;
-            case "conversation.item.created" when e.Item?.Type == "mcp_approval_request":
-                await chat.RespondToMcpApprovalAsync(e.Item.Id); // approve the MCP tool call the server waits for
-                break;
-        }
-    }
-});
-await using var file = File.Create("response.pcm");
-await foreach (var b in chat.GetAudioAsync())
-{
-    file.WriteByte(b);
-}
-```
-
-In the manual mode (`TurnDetection = null`, sent as an explicit `turn_detection` null) nothing happens until the audio is committed and the response is requested, e.g. for a push-to-talk button. Text goes in the same way, as a user message item: `CreateItemAsync` with `Type: "message"`, `Role: "user"` and an `input_text` content, followed by `CreateResponseAsync()`:
-
-```csharp
-await chat.UpdateSessionAsync(new OmniRealtimeSession { TurnDetection = null });
-await using var audio = File.OpenRead("speech.pcm");
-await chat.AppendAudioAsync(audio);
-await chat.AppendImageAsync(await File.ReadAllBytesAsync("frame.jpg")); // optional: the frames of the turn, after its audio started
-var itemId = await chat.CommitAudioAsync(); // turns the audio (and the images) into a user message item
-var response = await chat.CreateResponseAsync(); // completes at response.done, after the streamed deltas
-Console.WriteLine(response.Output![0].Content![0].Transcript);
-```
-
-### Function calling and MCP tools
-Configure `Tools` in the session: a `function` tool is executed by the client, a `mcp` tool is a remote MCP server (public https, streamable HTTP) whose tools the server discovers and executes. The two can be combined, neither with the web search (`EnableSearch`). A response that needs a function ends with `function_call` items in its output: execute them, write the results back and trigger the next response:
-
-```csharp
-await chat.UpdateSessionAsync(
-    new OmniRealtimeSession
-    {
-        TurnDetection = null,
-        Tools = new List<OmniRealtimeTool>
-        {
-            new(
-                Type: "function",
-                Function: new OmniRealtimeFunction(
-                    "get_current_weather",
-                    "当你想查询指定城市的天气时非常有用。",
-                    new { type = "object", properties = new { location = new { type = "string" } }, required = new[] { "location" } }))
-        }
-    });
-// ... append and commit the audio asking for the weather, then:
-var response = await chat.CreateResponseAsync();
-var call = response.Output!.First(o => o.Type == "function_call");
-// execute the function, then:
-await chat.CreateItemAsync(
-    new OmniRealtimeItem { Type = "function_call_output", CallId = call.CallId, Output = "北京今天天气为霾转晴，气温4/-4℃，微风" });
-var answer = await chat.CreateResponseAsync();
-```
-
-For an MCP tool use `new OmniRealtimeTool(Type: "mcp", ServerLabel: "deepwiki", ServerUrl: "https://mcp.deepwiki.com/mcp", RequireApproval: "always")` instead. The tools are discovered right after the session was updated (`mcp_list_tools.*` events; only responses created after `mcp_list_tools.completed` can use them). With `RequireApproval` set to `always` (the default) the server asks before each call with a `conversation.item.created` event carrying an `mcp_approval_request` item - answer it with `RespondToMcpApprovalAsync(itemId, approve: true)` while consuming the events, as in the loop above (`never` executes without asking). The `CreateResponseAsync` in flight then completes with a response whose output holds the `mcp_call` items (`Output`, or `Error` when 
+            Type = "server_vad", // or "smart_turn": meaningles

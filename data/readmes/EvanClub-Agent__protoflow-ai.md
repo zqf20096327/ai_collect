@@ -165,8 +165,8 @@ npm run electron:start
 
 | 容器服务 | 官方预编译镜像（支持 `amd64` / `arm64`） | 说明 |
 | :--- | :--- | :--- |
-| `api` | `ghcr.io/evanclub-agent/protoflow-ai-api:latest`<br/>（或固定版本 `:v0.1.2`） | Go 1.27 + Gin 发布鉴权、快照校验、远程 HTTP MCP（`/api/v1/mcp/:id`）与版本中心服务 |
-| `web` | `ghcr.io/evanclub-agent/protoflow-ai-web:latest`<br/>（或固定版本 `:v0.1.2`） | Nginx + 在线交互原型浏览端（含 UI Stack 五态切换、主题渲染、需求便签与版本管理台） |
+| `api` | `ghcr.io/evanclub-agent/protoflow-ai-api:latest`<br/>（或固定版本 `:v0.1.4`） | Go 1.27 + Gin 发布鉴权、快照校验、远程 HTTP MCP（`/api/v1/mcp/:id`）与版本中心服务 |
+| `web` | `ghcr.io/evanclub-agent/protoflow-ai-web:latest`<br/>（或固定版本 `:v0.1.4`） | Nginx + 在线交互原型浏览端（含 UI Stack 五态切换、主题渲染、需求便签与版本管理台） |
 | `postgres` | `postgres:18-alpine` | 持久化分享快照、版本记录与发布元数据（启动时由 `api` 自动执行 SQL 迁移） |
 
 ```bash
@@ -187,7 +187,7 @@ docker compose --env-file deploy/.env -f deploy/compose.yml pull &&
   docker compose --env-file deploy/.env -f deploy/compose.yml up -d
 ```
 
-> 如需在生产环境锁定指定镜像版本，可在 `deploy/.env` 中设置 `PROTOFLOW_API_IMAGE=ghcr.io/evanclub-agent/protoflow-ai-api:v0.1.2` 与 `PROTOFLOW_WEB_IMAGE=ghcr.io/evanclub-agent/protoflow-ai-web:v0.1.2`。
+> 如需在生产环境锁定指定镜像版本，可在 `deploy/.env` 中设置 `PROTOFLOW_API_IMAGE=ghcr.io/evanclub-agent/protoflow-ai-api:v0.1.4` 与 `PROTOFLOW_WEB_IMAGE=ghcr.io/evanclub-agent/protoflow-ai-web:v0.1.4`。
 
 ### 在客户端连接你的自建服务
 

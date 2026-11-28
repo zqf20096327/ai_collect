@@ -13,6 +13,8 @@ Workflow:
 
 **Видео по этим Workflow на [YouTube](https://youtu.be/Sw3rYAtZyCk) и [VK](https://vkvideo.ru/video-226908262_456239133)**
 
+**Важно (!) финальные workflow отличаются от показанных в видео**: используйте автоматическую установку по инструкции ниже или обратите внимание на пункт 2 в инструкции внутри workflow, если устанавливаете вручную (добавились ноды).
+
 **Workflow для текстурирования любой вашей 3D-модели:** [sofiakholina-3D-Texturing](https://github.com/sofiakholina/sofiakholina-3D-Texturing).
 
 ## Установка
@@ -24,14 +26,14 @@ Workflow:
 ### Автоматически
 
 1. Установите ComfyUI: [Comfy Desktop](https://www.comfy.org/download), также подойдёт [ComfyUI Portable](https://github.com/Comfy-Org/ComfyUI/releases).
-2. Скачайте этот репозиторий: зелёная кнопка **Code** вверху страницы → **Download ZIP**, распакуйте в любую папку. После успешной установки эту папку можно удалить.
-3. Запустите **Install.bat**, далее установщик задаст вопросы и сделает все сам.
+2. Скачайте этот репозиторий: зелёная кнопка **Code** вверху страницы → **Download ZIP**, распакуйте в любую папку. После успешной установки эту папку можно удалить (для Check.bat и Uninstall.bat скачайте архив заново).
+3. Откройте нужный ComfyUI и запустите **Install.bat**, далее установщик задаст вопросы и сделает все сам.
 
    Если Windows покажет «Система Windows защитила ваш компьютер» — **Подробнее → Выполнить в любом случае**.
 
 4. Workflow находятся в ComfyUI в левой панели **Рабочие процессы** (клавиша W в открытом Comfy).
 
-**Для удаления** запустите **Uninstall.bat**. В Корзину перемещаются подтверждённые файлы проекта. Изменённые и общие файлы сохраняются. Модели и s_tools в отдельной установке требуют отдельного подтверждения.
+**Для удаления** откройте нужный ComfyUI и запустите **Uninstall.bat**.
 
 ### Вручную
 
@@ -39,7 +41,7 @@ Workflow:
 
 ## Если не работает
 
-Запустите **Check.bat** и следуйте инструкциям. Если проблема осталась, найдите файл `diagnostic_report.txt` рядом с Install.bat или по пути из окна проверки, затем отправьте разработчику в [Telegram](https://t.me/sofiakholina).
+Откройте нужный ComfyUI, запустите **Check.bat** и следуйте инструкциям. Если проблема осталась, найдите файл `diagnostic_report.txt` рядом с Install.bat или по пути из окна проверки, затем отправьте разработчику в [Telegram](https://t.me/sofiakholina).
 
 ## Известные особенности
 
@@ -64,6 +66,8 @@ Workflows:
 
 **Videos about these workflows on [YouTube](https://youtu.be/Sw3rYAtZyCk) and [VK](https://vkvideo.ru/video-226908262_456239133)**
 
+**Important (!) The final workflows differ from those shown in the video:** use the automatic installation instructions below or pay attention to step 2 of the instructions inside the workflow if installing manually (new nodes have been added).
+
 **Workflows for texturing any of your 3D models:** [sofiakholina-3D-Texturing](https://github.com/sofiakholina/sofiakholina-3D-Texturing).
 
 ## Install
@@ -75,14 +79,14 @@ Free disk space: about 6 GB for ComfyUI and 16 GB for all three workflows’ mod
 ### Automatic
 
 1. Install [Comfy Desktop](https://www.comfy.org/download) or [ComfyUI Portable](https://github.com/Comfy-Org/ComfyUI/releases).
-2. At the top of this repository, click the green **Code** button and choose **Download ZIP**. Unzip it to any folder. You can delete this folder after a successful installation.
-3. Run **Install.bat**. The installer will ask you a few questions and handle the rest.
+2. At the top of this repository, click the green **Code** button and choose **Download ZIP**. Unzip it to any folder. You can delete this folder after a successful installation (download the archive again for Check.bat and Uninstall.bat).
+3. Open the intended ComfyUI and run **Install.bat**. The installer will ask you a few questions and handle the rest.
 
    If Windows shows “Windows protected your PC”, select **More info → Run anyway**.
 
 4. Find your workflows in the **Workflows** panel on the left. Press W while ComfyUI is open to show it.
 
-**To uninstall**, run **Uninstall.bat**. Verified project files go to the Recycle Bin. Modified and shared files are kept. Models and s_tools in a dedicated installation require separate confirmation.
+**To uninstall**, open the intended ComfyUI and run **Uninstall.bat**.
 
 ### Manual
 
@@ -90,7 +94,7 @@ Follow [MANUAL_INSTALL.md](MANUAL_INSTALL.md#english). The steps are also in the
 
 ## Troubleshooting
 
-Run **Check.bat** and follow the instructions. If the issue persists, find `diagnostic_report.txt` next to Install.bat or at the path shown by Check, then send it to the developer on [Telegram](https://t.me/sofiakholina).
+Open the intended ComfyUI, run **Check.bat** and follow the instructions. If the issue persists, find `diagnostic_report.txt` next to Install.bat or at the path shown by Check, then send it to the developer on [Telegram](https://t.me/sofiakholina).
 
 ## Known issues
 

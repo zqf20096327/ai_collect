@@ -540,6 +540,21 @@ The receiver reopened its inbox and processed the same signed event again. The i
 
 This recording uses synthetic evidence sent over Windows loopback. The watchdog, QOTC planner, worker dispatch, policy checks, and inbox writes ran live in the local development build.
 
+### Live Scrambler rotation in P-BOX
+
+In an owned P-BOX guest, Scrambler completed three live NGINX cutovers between two canary backends. Each cutover began with a signed intent. AntiFlock signed the kernel route it observed, and a separate HTTPS probe checked the application through the selected backend. Predator made the protection decision locally.
+
+![Live BLU3 pilot showing a Scrambler cutover, a watchdog hold that survives restart, verified recovery, and Atlas reporting missing evidence](docs/media/predator-blu3-live-scrambler.gif)
+
+| Step | Observed result |
+| :--- | :--- |
+| **Healthy cutover** | The signed route matched the approved path and the HTTPS probe passed. Predator allowed the protected operation. |
+| **Route mismatch and restart** | The HTTPS probe passed. The signed route differed from the approved path, so Nano triggered a hold. The hold and redacted incident survived a receiver restart with the evidence source absent. |
+| **Verified recovery** | Fresh route and application evidence verified the last good path. Predator allowed the protected operation again. |
+| **Report removal** | Atlas showed missing coverage when the receiver report disappeared. |
+
+CircuitPool rechecked a separately signed historical review after reopening and marked it stale at expiry. The GIF includes seven native status captures from the disposable Debian guest. Atlas read the live receiver report over loopback, and Chrome rendered the recorded states in a replay test.
+
 <a id="clean-worktrees-and-unlimited-context"></a>
 <a id="predator-rc-browser-views-and-ctf-work"></a>
 
@@ -932,10 +947,4 @@ No quantum advantage is claimed or demonstrated anywhere on this page. The hardw
 | **Secret key check** | — | Wrong key: **0 of 400** pass (as intended); a scan of the run's files found the secret nowhere |
 | **Does packing save money? Three circuits, same device** | — | One job: **2.0 s**. Three jobs: **6.0 s**. Same result in both orders (ibm_fez) |
 
-**Why it got cheaper.** IBM bills by the second and charges much less for 1,200 small circuits in one job than spread over many. The saving is **IBM's billing for batched circuits**, not a quantum speed-up; the circuits carry known bit patterns. The 162 → 5 s comparison mixes devices, days and shot counts; the clean test is the three-circuit row.
-
-**What did not work.** A one-job run at three shots had 395 and 392 of 400 messages arrive intact on the first try, below its target of 396 (a re-send fixed the rest; five shots fixed it for good). A compiler setting that looked better on paper did no better on the device and was dropped. One ibm_kingston job waited eleven hours in the queue and was cancelled; one ibm_marrakesh job was stopped by a time limit set too low. IBM finalized both on November 2: 0 seconds (30-second reservation released) and 5 seconds (settled), so the hardware programme total stays at **254 of the 600 free seconds**.
-
-**Evidence flows onward.** Four hardware-delivered briefings (one from ibm_fez, three from ibm_kingston under the secret key) were re-checked from their signed receipts, decoded, matched to the bank, turned into a compact typed message, read by a frontier model, and scored by a deterministic checker: **4 of 4 correct end to end**. The typed-message format passed **12 of 12 held-out tasks** with zero formatting errors. The hardware programme used **254 of the 600 free seconds** and about **$18.65 of a $50 model budget**.
-
-The simulator milestone it builds on, **three fresh 400-agent runs at three shots with a capped six-shot re-send** (1,199 of 1,200 intact first try, 1,200 of 1,200 after re-send), remains the research baseline, kept in full in the [guide](docs/research/quantum-comm-op
+**Why it got cheaper.** IBM bills by the second and charges much less for 1,200 small circuits in one job than spread over many. The saving is **IBM's billing for batched circuits**, not a quantum speed-up; the circuits carry known bit patterns. The 162 → 5 s 

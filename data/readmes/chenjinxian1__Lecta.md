@@ -202,6 +202,8 @@ python -m kejian quiz my-quiz.json --course econ101
 
 Each question can have a Chinese translation, explanations in both languages, key terms and the source slide. Answers are saved in the library, so the **Wrong** and **Ever wrong** filters still work next week.
 
+**Share a quiz with a friend.** Click **Export** at the top of a quiz (or *Export quiz file* in its ⋯ menu). The `.lecta-quiz.json` file holds the questions, answers, explanations, key terms and the notes of the slides each question comes from, but not your answers. Your friend opens **Quizzes → Import quiz** and picks it. Lecta matches each chapter to their copy of the same lecture (by title or file name), files the quiz in that course, and fills in slide notes they don't have yet without overwriting their own. If they haven't imported the lecture yet, the quiz still works; it links up once they do. From the command line: `python -m kejian export <quiz-id> --share --out quiz.lecta-quiz.json`, then `python -m kejian quiz quiz.lecta-quiz.json`.
+
 ## Reading papers
 
 The **Papers** tab is a library of research papers, kept apart from your courses.

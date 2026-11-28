@@ -21,6 +21,11 @@ Botference is a personal project. One person builds it for their own work, and
 some parts assume that person's set-up. Each product below says how ready it
 is.
 
+**Here for the Blygger hackathon (20 to 27 November 2026)?** Read
+[BLYGGER-HACKATHON-2026.md](BLYGGER-HACKATHON-2026.md) first. It describes the
+entry: the Discuss browser plugin as a Blygger client, publishing to your own
+Jekyll site, and replying from a feed with an agent on your own subscription.
+
 ## The five products
 
 | Product | What it does | Start with | State |
@@ -128,7 +133,7 @@ start a post that answers nobody, and show clipped articles to read and reply
 to. [docs/blygger-setup.md](docs/blygger-setup.md) describes the parts, how a
 reply travels, what is in this repository and what is not, and what you need
 to copy it. For the Blygger hackathon entry, start with
-[HACKATHON.md](HACKATHON.md).
+[BLYGGER-HACKATHON-2026.md](BLYGGER-HACKATHON-2026.md).
 
 **Useful for:** people who write a Blygger blog, or want to follow some.
 
@@ -1181,9 +1186,20 @@ The checklist treats a model as one more tool to set up.
 When you send, Claude writes that passage, and it appears in your message as
 a block marked as the agent's, with your instruction under it. You can fill it
 again, edit it, keep it as your own words ("mine"), or remove it. Each gap is
-a separate `claude -p` run with no tools, no MCP servers and none of your
-settings files, given the page only as data; it is not your page's agent
-session. Codex cannot fill gaps. The export writes what is stored and asks no
+a separate `claude -p` run (or `codex exec` for `/tk-codex`), given the page
+only as data; it is not your page's agent session. When your line asks for
+it, the agent may search the web, and read (only read) the notes in the
+folders you list in `"tk_read_roots"` (`botference tk-read check`; none by
+default). It can never write, edit or delete a file, run a command, or use
+MCP servers, and it runs inside a macOS sandbox that refuses writes. Codex
+reads the same folders through a read-only notes reader the companion gives
+it (on Codex CLI 0.167.2; otherwise the web only). Ask for "a backlink to my
+essay on X" and the passage links to one of your published posts, from the
+list your site prints (`botference blyg-home links`). A line sent from your Hub reads
+notes only if `"hub_link_tk_notes": "on"` (decided by who wrote the
+instruction). A passage that read your notes fetches pages only from sites
+its `/tk` instruction names (none on a Claude Code other than 2.1.330), and its post always waits for your look before it is
+published. The export writes what is stored and asks no
 agent: a callout under an HTML comment with your instruction (default), or
 Blygger Studio's own `[TK] … [=] … [/TK]` with `"gap_style": "studio"`;
 `"gap_export": "omit"` leaves the agents' passages out of "My notes only".
@@ -1836,35 +1852,4 @@ explicitly. For example:
 }
 ```
 
-If you want a narrower boundary, reduce the roots instead, for example
-`"build": ["botference/build"]`.
-
-If the whole workspace is intentionally writable, use `"."`:
-
-```json
-{
-  "write_roots": {
-    "plan": ["."],
-    "build": ["."]
-  }
-}
-```
-
-### Visual Verification For Generated Plots And HTML
-
-Rendered artifacts have a stricter definition of done than ordinary text or
-code. For HTML, plots, charts, PDFs, LaTeX files that produce PDFs, web UI,
-generated images, and inline document figures, agents must follow
-[`specs/visual-verification.md`](specs/visual-verification.md):
-
-- use **Changed**, **Generated**, **Structurally checked**,
-  **Visually verified**, and **User-review needed** precisely
-- do not say "done", "fixed", "ready", or "verified" for visual work unless
-  the rendered output was inspected
-- default to static SVG/PNG figures inside prose documents; keep interactive
-  Plotly/D3/Chart.js views as standalone linked pages unless browser-verified
-- batch likely visual fixes before asking the user to reload
-
-Botference also enforces this after each agent turn. If Claude or Codex changes
-or generates a rendered artifact and the turn does not include a matching render
-check, Botference 
+If you want a narrower

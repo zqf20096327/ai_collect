@@ -133,7 +133,7 @@ if err := mcpserver.MountWebTerminal("/mcp", func(pattern string, h http.Handler
 }
 ```
 
-`/mcp` path is yours to choose; mount the web terminal with `MountWebTerminal(prefix, mount)` using the same prefix. The module derives the route, `terminal_url`, and cross-replica forwarding target from that single value. Tool descriptions can also be overridden via the `[tool_descriptions]` config table (precedence: `SetToolDescriptions` > config > built-in default). See **[docs/EMBEDDING.md](docs/EMBEDDING.md)** for the full public API reference, the shared-`/mcp` integration pattern, path conventions, authorization notes, and the config reference.
+`/mcp` path is yours to choose; mount the web terminal with `MountWebTerminal(prefix, mount)` using the same prefix. The module derives the route, `terminal_url`, and cross-replica forwarding target from that single value. Tool descriptions can also be overridden via the `[tool_descriptions]` config table (precedence: `SetToolDescriptions` > config > built-in default). Use `RegisterToolsWith` when the host framework requires tools to go through its own registration entry point (e.g. labels for token admission), and `OpenCommand` + `DisableLocal` when the host opens sessions with a controlled program while keeping local mode closed to callers. See **[docs/EMBEDDING.md](docs/EMBEDDING.md)** for the full public API reference, the shared-`/mcp` integration pattern, path conventions, authorization notes, and the config reference.
 
 ## Distributed deployment & horizontal scaling
 

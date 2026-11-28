@@ -32,10 +32,10 @@
   - Zoom/pan and fullscreen mode
   - Gallery with thumbnails and captions <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#gallery)</sup>
   - Semantic image sorting with text prompts <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#semantic-sort)</sup>
+  - Load generation prompts from metadata
   - Compare two images <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#compare-tool)</sup>
   - Measure size, area and pixel distances <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#measure-tool)</sup>
   - Slideshow <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#slideshow-tool)</sup>
-  - Read prompts from metadata
 
 - **🎨 Image/Mask Editor**: Prepare media for training
   - Crop and save parts of images <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#crop-tool)</sup>
@@ -47,19 +47,22 @@
   - Record masking operations into macros <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#macro-recording)</sup>
   - VAE-encode images and check their latent representation <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide#vae-reconstruction)</sup>
 
-- **📜 Captioning**: Describe media with text
+- **📜 Manual Captioning**: Describe media with text
   - Edit captions manually with drag-and-drop support <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#caption-window)</sup>
   - Save multiple captions in per-media JSON files <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#captions-in-text-files-vs-json-files)</sup>
   - Cascading auto-updates from JSON to TXT files with hierarchical templates <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#cascading-updates)</sup>
-  - *Multi-Edit Mode*: Edit captions across multiple files simultaneously <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#multi-edit-mode)</sup>
-  - *Focus Mode*: Add the same tags to many files quickly <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#focus-mode)</sup>
-  - Tag grouping, merging, sorting, filtering and replacement rules <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#rules)</sup>
-  - Colored text highlighting
+  - **Multi-Edit Mode**: Edit captions across multiple files simultaneously <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#multi-edit-mode)</sup>
+  - **Focus Mode**: Add the same tags to many files quickly <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#focus-mode)</sup>
   - Autocomplete with tags from your groups and CSV files <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#autocomplete)</sup>
+  - Colored text highlighting
   - CLIP Token Counter <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#token-counter)</sup>
+
+- **📃 Auto-Captioning**: Generate or transform tags and prose
   - Automated captioning with support for grounding <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Tips-and-Workflows#grounding)</sup>
   - Dynamic prompts with templates and text transformations <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#templates)</sup>
-  - Multi-turn conversations with VLMs <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#prompts-and-conversations)</sup>
+  - Multi-turn conversations with prefilled responses <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#prompts-and-conversations)</sup>
+  - Configure tag generation thresholds per group <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#tag-generation-overrides)</sup>
+  - Tag grouping, merging, sorting, filtering and replacement rules <sup>[?](https://github.com/FennelFetish/qapyq/wiki/User-Guide-%E2%80%90-Captioning#rules)</sup>
   - Further refinement with LLMs
 
 - **📐 Stats/Filters**: Summarize your data and get an overview

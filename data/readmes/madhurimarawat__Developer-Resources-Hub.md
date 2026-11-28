@@ -1170,8 +1170,10 @@ Discover useful developer utilities, productivity tools, starter kits, learning 
 - **🧪 [agent-qa](https://vostride.com/)**: Run natural-language web and mobile tests through CLI or MCP, with memidex persistent memory, validated self-improvement, and reviewable run evidence.
 - **🔍 [BestJSON JSON Diff](https://bestjson.com/json-diff)**: Compare JSON API responses and inspect added, removed, or changed values by path, with positional, unordered, and record-ID array comparison modes.
 - **📊 [Datacircle API](https://api.datacircle.dev/v1)**: Find the best GTM APIs. Compare benchmarks and explore results at [datacircle.dev](https://datacircle.dev).
+- **🎨 [DESIGN:OS Studio](https://jangtrinh.github.io/design-os-studio/)**: Free desktop interface design app written in Rust that opens and saves .fig files, with an Agents panel and a local MCP server so AI coding agents can read and edit the open design. Source-available under PolyForm Shield 1.0.0.
 - **🎬 [GetYouTubeTranscript API](https://getyoutubetranscript.com/docs)**: Fetch YouTube video transcripts as JSON or text with timestamps, and search videos and channels through REST or a hosted MCP server. Includes 100 free credits on sign-up.
 - **🌐 [easi.run](https://easi.run/)**: Self-hosted Chrome browser infrastructure for external AI agents via MCP or REST, with live browser viewing and human takeover for logins, 2FA, and approvals. Licensed under AGPL-3.0.
+- **🔒 [NoCert](https://nocert.io/)**: Find TLS certificates on public services and internal networks, and get alerts before they expire.
 
 ### ⚙️ Dev Starter Kits
 
@@ -1217,14 +1219,17 @@ Explore cloud computing concepts and resources for understanding AWS services, s
 - **☁️ [Cloud Computing – GitHub Repository](https://github.com/madhurimarawat/Cloud-Computing)**: Learn how to set up and experiment with AWS services, including virtual machines and S3, using LocalStack for local cloud development and testing.
 - **📚 [Cloud Computing Tutorial Series – DEV Community](https://dev.to/madhurima_rawat/series/31049)**: Follow a hands-on tutorial series covering cloud computing concepts and practical implementations of AWS services using LocalStack.
 
-### 🌐 API Directory for Developers
+### 🌐 API Directories & Developer Resource Collections
 
-Looking for APIs to use in your next project? This collection includes directories of free and public APIs, along with a tool for creating mock JSON APIs. Whether you're testing an idea, building an application, or experimenting with integrations, these resources can help you get started.
+Looking for APIs and useful resources for your next project? Explore curated directories of free and public APIs, developer tools, learning materials, and mock API services. These collections can help you discover resources, experiment with integrations, and accelerate development.
 
 - **🌐 [Public APIs – publicapis.io](https://publicapis.io/)**: Find public APIs from different categories for use in personal projects, application development, and experiments.
 - **🔗 [Free APIs – GitHub](https://free-apis.github.io/#/)**: A collection of free APIs that developers can explore and use while learning, building projects, or testing integrations.
 - **📚 [Public APIs – publicapis.dev](https://publicapis.dev/)**: Browse and search APIs across various categories to find services that fit your project requirements.
 - **🌊 [AquaScript](https://aquascript.xyz/)**: Create mock JSON APIs for development and testing. Useful when you need sample data or API responses without setting up a backend.
+- **🔌 [Public API Lists](https://github.com/public-api-lists/public-api-lists)**: A curated collection of free public APIs across multiple categories, searchable and community-maintained, with a free JSON API.
+  - **🌐 [Public API Lists Website](https://public-api-lists.github.io/public-api-lists/)**: Browse and search a categorized collection of free public APIs through an easy-to-use website.
+- **📖 [Free Developer Resources – GitHub](https://github.com/codu-code/free-developer-resources)**: A comprehensive collection of free resources for web developers, covering accessibility, APIs, blogs, books, courses, CSS, design, databases, developer tools, coding practice, and learning resources.
 
 ### 🛠️ Error Messages → Solutions Library
 

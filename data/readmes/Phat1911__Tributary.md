@@ -1,107 +1,210 @@
 # Tributary
 
-**Small streams. Pooled power.**
+[![CI](https://github.com/Phat1911/Tributary/actions/workflows/ci.yml/badge.svg)](https://github.com/Phat1911/Tributary/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Phat1911/Tributary)](https://github.com/Phat1911/Tributary/releases)
+[![License: FSL-1.1-ALv2](https://img.shields.io/badge/license-FSL--1.1--ALv2-blue)](LICENSE)
 
-**Landing page:** <https://phat1911.github.io/Tributary/> — one screen,
-live screenshots, the two-minute quickstart.
+**Governed AI capacity: your team shares one AI key, everyone gets their
+own, and surplus credits can earn, with the money side being built on a Solana
+program.**
 
-**Status: v0.1.4 — self-hostable AI token pools** (gateway, org pools,
-dashboard). Pre-alpha software, real release: every org gets per-user
-keys over pooled provider capacity, with quotas, audit, and leak
-signals. Roadmap lives in [`SPEC.md`](SPEC.md) §14.
+Solana is where the money side goes. A program has been live on devnet
+since 1 November 2026. It holds a USDC escrow, takes and refunds renter
+prepayments, and records deposits as claims minted on the operator's word.
+It holds no funds today, and nothing draws on it yet. Its payout
+instructions (Merkle roots, claims with a proof, a challenge window) are
+this weekend's build, tests first. The rest runs on your own machine:
+Tributary is also a self-hosted gateway for teams that share AI capacity.
+Each member gets a personal key. Every request is metered and checked
+before it reaches the provider. Every admin action that changes state lands
+in an append-only audit log. Depositors put spare keys and credits into a
+pool; what their credits earn is kept in a double-entry ledger, to the
+micro-unit. The software is free and source-available (FSL-1.1-ALv2, which
+converts to Apache-2.0 after two years) and runs in one container.
 
-## Why Tributary?
+**Landing page:** <https://tributary-landing-woad.vercel.app/>. There is no hosted
+demo: run it locally with the Quickstart below.
 
-**What Tributary is today: a free, self-hosted V1 governance tool.** One
-container on your own machine, no recurring cost, no hosted tier — your
-team's AI usage, governed by you. The V2 marketplace is a **gated
-roadmap**: it opens only behind provider/reseller agreements for credit
-transfer. It is not the storefront — V1 is the product.
+![Dashboard: an organisation's members and its pools; keys are issued from a pool's page](docs/images/dashboard-org.png)
 
-Hosted API routers are convenient — but they hold your keys, your
-credits, and your usage data, and they optimize for one developer
-choosing among models. Tributary optimizes for **teams sharing their
-own capacity**:
+## At a glance
 
-- **No middleman, no markup** — you pay provider prices directly; the
-  software is free (FSL-1.1-ALv2) and runs in one container on your own
-  machine.
-- **Your keys and usage stay in the building by default** —
-  envelope-encrypted at rest, exposed to no third party. One optional
-  exception, taken only by org choice: the **purpose classifier** —
-  **off by default**, **disclosed to members** — sends prompts to the
-  classifier provider the org configures when (and only when) the org
-  enables it.
-- **Governance out of the box** — per-member keys, quotas, two-network
-  sharing detection, and a database-enforced append-only audit log:
-  everything a key pasted into a group chat can never give you.
-- **On a router, your money only spends** — if V2 opens, idle credits
-  can optionally earn (gated roadmap — see below).
+- **A Solana program on devnet, governed by a 2-of-2 multisig** (2-of-3 is
+  the planned production posture). A USDC escrow controlled by the program,
+  renter prepayments and refunds, and deposits recorded as claims have been
+  live since 1 November 2026. The program can be upgraded only by a 2-of-2
+  multisig vote. Merkle-settled payouts are this event's build, tests first:
+  see [What exists today](#what-exists-today).
+- **Surplus credits can earn.** A pool of kind `root` accepts depositor
+  credits. Each request's cost is metered to the micro-unit against the
+  depositor whose credits burned, and posted to the books when the window
+  is settled. A settle run pays each depositor what their credits earned,
+  minus an 8% operator fee, once per window.
+- **Per-member keys over pooled capacity.** Quotas and rate limits run at
+  the gateway before any upstream call. Provider keys are envelope-encrypted
+  at rest and shown afterwards only as a prefix and a last four.
+- **Governance that leaves a record.** Leak signals (for example one key
+  seen from two networks) raise review flags. An audit log, enforced
+  append-only by the database, records every control-plane action.
+- **Tests before code, in public.** Security-critical features are written
+  as failing tests first and then implemented to green. CI runs on every
+  push to `main` and on every pull request. The security findings log,
+  [`AUDIT.md`](AUDIT.md), is public.
 
-**Self-hosted *and* a marketplace? The boundary, stated plainly:** V1 is
-governance inside one trust domain — no blockchain, ever; your keys and
-usage data stay in your building. The V2 marketplace is **opt-in, pool by
-pool**, built for the same people V1 serves on both sides: teams and
-individuals holding **surplus AI credits** (students, startups, labs)
-supplying them, and cost-conscious builders drawing from them. Where
-strangers exchange value — and nowhere else — the chain carries the
-receipts: append-only books, escrow no single person can move, every
-money moment a public record.
+## Why Solana
 
-**Why the marketplace works — the economics, plainly.** Credits bought
-at face value never enter the market; the official provider is the
-correct answer for those. The market lives on supply with a **zero or
-sunk cost basis**: granted credits, hackathon prizes, education
-allocations, expiring promos, and committed spend a team has already
-paid for but won't consume — for that supply, selling below face value
-is salvage, not a price war. And pools offer one thing no single key
-can: **a pool of N keys serves N× the rate limits** — for AI agents,
-speed runs out before money does.
+The off-chain part of Tributary, the gateway and its ledger, exists to
+answer one question exactly: who earned what, to the micro-unit. The
+on-chain part exists for the moment that answer turns into money between
+people who do not trust each other.
 
-**Depositor mode (experimental).** A pool created with `kind:"root"`
-accepts depositor-supplied keys and credits and settles earnings per
-depositor for each burn window. Root pools are strictly opt-in — org
-pools (the default) are unchanged — and the feature is experimental:
-the adversarial audit session runs this week, and findings land in the
-public [`AUDIT.md`](AUDIT.md) as they always do. The settlement layer
-it targets is live on Solana devnet: program
-`9pEmyxftdRUZV2iw6ZzCNgZz9QygG53i7APNaWcEHvjX` — 2-of-2 multisig
-governed, upgrade history public on any explorer.
+- **Neither side should hold the books or the money.** An operator who runs
+  the gateway controls its database, so it could alter what it owes. That is
+  why the money, and with this weekend's build the payout records, belong in
+  a Solana program rather than in the operator's database. Today the escrow
+  is there; the payout records are not yet.
+- **Nobody can move another person's funds, and no single key can upgrade
+  the program.** The escrow is a token account controlled by the program. A
+  prepayment is signed by the paying key together with the operator's backend
+  key. The paying key is normally the renter's own; an operator may also fund
+  a wallet-free renter this way (SPEC D44), a gap the audit tracks as A-043
+  until M10. A refund goes only to the renter who prepaid, up to what that
+  renter's on-chain record allows. The upgrade authority is the vault of a 2-of-2
+  multisig: two approvals are needed to change the program, and the upgrade
+  that put today's code in place is
+  [on-chain](https://explorer.solana.com/tx/576QrbHPxvDB3P63nHedFA5hDqVBXJchzkauEvrpAJzHUyyDCnfd6KhXaRw2gePS7RF2NQh2eM5qsgj6wwCdeaP5?cluster=devnet).
+- **The chain does money; servers do speed.** No AI request ever routes
+  on-chain. Metering, quotas and leak detection stay off-chain, where they
+  are fast and keep usage data private; Solana carries only the money and
+  its receipts.
+- **Payouts are settled, not negotiated.** Earnings are merkleized into one
+  root; a depositor claims with a proof; payouts wait for a challenge
+  window; a root can never pay more than it declares (SPEC D45). These rules
+  exist today as twelve failing tests, written before the code.
 
-One line: **a router is something you rent; this is a building you own.**
+### The program, precisely
 
-## Business model, plainly
+Nine instructions, in `programs/pool/src/lib.rs`, each with its own tests in
+`programs/pool/tests`:
 
-V1 is free forever, by strategy: adoption first, zero recurring cost —
-the software costs us nothing per org you run. The first dollar
-Tributary plans to earn is an operator's settlement fee (a fixed 5–10%
-band) on V2 marketplace volume, paid by operators — never by members.
-V2's launch gate includes provider/reseller agreements for credit
-transfer; until that gate opens, Tributary is exactly what you see: a
-free, self-hosted governance tool. No dollar is planned from ToS-gray
-flows, and if V2 never opens, V1 stands on its own.
+| Instruction | Who signs | What it does |
+|---|---|---|
+| `initialize` | the deployment authority (the multisig's vault) and a fee payer | creates the pool, its USDC escrow and a non-transferable claim mint, all program-derived accounts |
+| `record_contribution` | the operator's backend key | mints claim records for a depositor: an attestation from the books. The chain checks the signer and the arithmetic, not a deposit's value |
+| `burn_claims` | the depositor, or the backend key | burns a depositor's claim records |
+| `prepay_renter` | the renter **and** the backend key | USDC into the escrow, recorded per renter |
+| `refund_renter` | the renter, or the backend key; the program signs the transfer | USDC back to that renter only, capped by the renter's record |
+| `pause`, `resume` | the admin authority, the multisig's vault | halt or restore every movement of funds |
+| `set_backend_authority`, `set_admin_authority` | the admin authority | rotates the operator and admin keys |
 
-## Quickstart
+Two facts a reader should not have to dig for. The escrow currently holds
+**0 USDC**, and nothing yet draws on it: wiring prepaid escrow funds to
+served requests is an open earlier milestone, M10. And a deposit on-chain is a
+claim record the operator attests to; the chain verifies who signed, not
+what the deposit is worth. What this weekend's build gives a depositor is a
+check on it: a payout root that can be checked against the published payouts,
+and a challenge window before anything is paid. Addresses and evidence:
+[What exists today](#what-exists-today).
 
-> **Which terminal?** Run these in a **POSIX shell** — Linux, macOS, or
-> **WSL on Windows** (enable Docker Desktop's WSL integration, check
-> with `docker ps`) — and paste the block as-is. **Windows PowerShell**
-> works line-by-line instead: split the first line at `&&`, use
-> `Copy-Item deploy\.env.example .env`, drop the trailing `\`
-> continuations, and generate the key in WSL/Git Bash
-> (`openssl rand -hex 32`). **CMD is not supported.**
+## The problem it solves
 
-> **No compose plugin?** (`docker compose up -d` says
-> `unknown shorthand flag: 'd'`) — the plugin is missing from your
-> Docker install. Fix: Docker Desktop → Settings → Resources → **WSL
-> Integration** on, or `apt install docker-compose-plugin`; or skip
-> compose entirely:
+Small teams share one AI key by pasting it into a group chat. Nobody can
+tell who spent what. One heavy user can drain the quota. A leaked key is
+discovered on the provider's invoice. The spare credit sitting on that key
+earns nothing. Hosted API routers solve the first three problems by taking
+your keys, your credits and your usage data. Tributary takes the other
+road: the team keeps its own keys, on its own machine. It was built by a
+student developer who kept running into exactly this trade.
 
-> **`permission denied ... /var/run/docker.sock`?** your user isn't in the
-> docker group. Fix: `sudo usermod -aG docker $USER && newgrp docker`
-> (or restart WSL), then check `docker ps` runs **without sudo**.
-> WSL-native Docker also needs `sudo service docker start`; Docker Desktop
-> users: enable **WSL Integration** for this distro.
+When the people holding credits and the people needing them are strangers,
+neither side should hold the money or the books. That is the part a
+blockchain is for.
+
+- **No middleman, no markup.** You pay provider prices directly.
+- **Your keys and usage stay in the building by default.** One optional
+  exception exists, and the organisation controls it: the purpose
+  classifier is off by default and disclosed to members.
+- **A router is something you rent; this is a building you own.**
+
+**The other side of the same key.** Granted credits, such as hackathon
+prizes, education allocations and promotional credit, often come with an
+expiry date, and one person rarely uses them up in time. For their
+holders, selling what they cannot use, below face value, is salvage rather
+than a price war; for a buyer, it is capacity at a discount. Hackathon
+credits are the clearest case. Tributary's settlement layer is being built
+for exactly that supply, wherever the provider's terms allow it. AI agents
+feel both problems most: they are commonly run on granted credits, and in
+Tributary an agent is simply a member, with its own key and quota, calling
+the OpenAI-compatible API without a wallet.
+
+## How it works
+
+![Architecture: governance on your machine, settlement on Solana devnet; the dashed Merkle payout path is tests only](docs/images/architecture.png)
+
+### Off the chain
+
+1. A member or an agent calls the gateway with **their own pool key**, using
+   the OpenAI-compatible API.
+2. The gateway **meters the request, checks quotas and watches for leaks**
+   before any upstream call. It then forwards to the provider with a
+   depositor's key.
+3. The cost of the request is **metered to the micro-unit** against the
+   depositor whose credits burned.
+4. At **settle**, the consumed capacity is posted to the **double-entry
+   ledger**, and the books say exactly what each depositor earned: the burn
+   minus an 8% operator fee. A window is settled once and cannot be paid
+   twice.
+5. Every admin action that changes state is written to the **append-only
+   audit log**.
+
+### On the chain
+
+1. The payouts are merkleized and the **root is posted to the Solana
+   program**. A depositor claims with a proof after a challenge window.
+   *This step is being built now: its twelve rules already exist as failing
+   tests (see [What exists today](#what-exists-today)).*
+
+A reproducible run, from the no-key walkthrough
+([`docs/founder-journey-settlement-screen.md`](docs/founder-journey-settlement-screen.md),
+Part B): two requests against the repository's mock upstream burn **2,700
+micro-USD** each, **5,400** in total. The settle run returns an operator fee
+of **432** and pays out **4,968**, and the same two figures appear on the
+settlement screen and in the ledger rows. (This version prices every token
+at a flat 150 micro-USD; the provider's real price table is not wired in
+yet.)
+
+The settlement screen, with a five-depositor root pool after one 8% settle
+run (distributable $0.0378, fee $0.003024, paid out $0.034776):
+
+![The settlement screen: each depositor's contributed, burned and earned, and the result of a settle run](docs/images/settlement-screen.png)
+
+## What exists today
+
+| Part | State | Evidence |
+|---|---|---|
+| Solana program: escrow vault, deposits, renter prepayment | Live on devnet since 2026-11-01 | [Program account](https://explorer.solana.com/address/9pEmyxftdRUZV2iw6ZzCNgZz9QygG53i7APNaWcEHvjX?cluster=devnet), [2-of-2 upgrade transaction](https://explorer.solana.com/tx/576QrbHPxvDB3P63nHedFA5hDqVBXJchzkauEvrpAJzHUyyDCnfd6KhXaRw2gePS7RF2NQh2eM5qsgj6wwCdeaP5?cluster=devnet), [soak report](docs/devnet-soak-m8.md) |
+| Adversarial audits | The escrow program was audited on 2026-11-02 and depositor mode on 2026-11-18 (eight findings); their findings were fixed or formally accepted (2026-11-02 and 2026-11-19); one residual raised since is open (A-061) | [`AUDIT.md`](AUDIT.md), [threat model](docs/threat-model.md) |
+| Gateway, organisation pools, dashboard (V1) | Released as v0.1.4 | [Release](https://github.com/Phat1911/Tributary/releases), [CI](https://github.com/Phat1911/Tributary/actions/workflows/ci.yml), the [Quickstart](#try-it) below |
+| Depositor pools, double-entry ledger, settle API | Experimental. In v0.1.4 in a pre-audit form; the audited settle (idempotent, posting to the books) is on `main` only, not yet in the release image | `crates/gateway`, `crates/ledger`; the [settlement journey](docs/founder-journey-settlement-screen.md) walks through the public API; the audit and fix log is in [`PLAN.md`](PLAN.md) (2026-11-18 and 2026-11-19) |
+| Settlement screen | On `main` after v0.1.4; ships in the next release | Screenshot above; `apps/dashboard/app/org/settlement` |
+| Merkle-settled payouts: root, claim, challenge window, payout cap | In progress: twelve rules written as failing tests, implementation next | [The tests](https://github.com/Phat1911/Tributary/blob/m11/doctrine-suite/programs/pool/tests/m11_doctrine.rs) on branch `m11/doctrine-suite`, and [their CI run, red by design](https://github.com/Phat1911/Tributary/actions/runs/45791887787) |
+
+![Review queue: leak signals with a severity and an action for each](docs/images/review-queue.png)
+
+![The program on Solana devnet: upgradeable only through the multisig's vault](docs/images/onchain-devnet.png)
+
+The program's upgrade authority is `BhLQqw5rkr3otQoXvJSRjiaNHTgdcgXVkqXv8mwEhhJq`,
+the first vault of a [2-of-2 Squads multisig](https://explorer.solana.com/address/GuSeFfFkdKtjkubeLUEeBHW5pfHSJctGnz8AFk7xrCk5?cluster=devnet).
+No single key can upgrade it.
+
+## Try it
+
+> **Which terminal?** Run these in a **POSIX shell**: Linux, macOS, or WSL on
+> Windows (enable Docker Desktop's WSL integration, check with `docker ps`),
+> and paste the block as-is. **Windows PowerShell** works line by line
+> instead: split the first line at `&&`, use `Copy-Item deploy\.env.example
+> .env`, drop the trailing `\` continuations, and generate the key in WSL or
+> Git Bash (`openssl rand -hex 32`). CMD is not supported.
 
 ```sh
 git clone https://github.com/Phat1911/Tributary.git && cd Tributary
@@ -112,7 +215,7 @@ docker exec -it \
   -e TRIBUTARY_DATABASE_URL=sqlite:///data/tributary.db \
   -e TRIBUTARY_ADMIN_PASSWORD="$(openssl rand -base64 18)" \
   tributary tributary create-admin --email you@example.com
-# (--password '<secret>' on the command line also works — but it lands in
+# (--password '<secret>' on the command line also works, but it lands in
 #  your shell history; the env var is the documented path)
 ```
 
@@ -122,63 +225,198 @@ docker run -d --name tributary -p 8111:8080 --env-file .env \
   -v tributary-data:/data --restart unless-stopped ghcr.io/phat1911/tributary:latest
 ```
 
-**Login at http://localhost:8111** — time to first login is **~2 minutes
-with the prebuilt image** (the first `up` pulls ~110 MB); **~10–15
-minutes if it builds from source** instead (cold Rust + dashboard
+**Sign in at http://localhost:8111.** Time to first login is about **2
+minutes with the prebuilt image** (the first `up` pulls about 40 MB), or
+**10–15 minutes if it builds from source** (a cold Rust and dashboard
 compile).
 
-> **Trusted-proxy note:** if you front Tributary with a reverse proxy,
-> set `TRIBUTARY_TRUSTED_PROXIES` to that proxy's CIDR — IP-derived
-> controls (allowlists, sharing detection) are only sound then; without
-> it, X-Forwarded-For is ignored and the socket address is used. Details:
-> [`deploy/README.md`](deploy/README.md).
+**The `:latest` image is release v0.1.4.** It contains depositor pools in
+their pre-audit form, but not the audited settle or the settlement screen;
+those are on `main` and need an image built from it.
 
-> **Provider keys — OpenAI and Gemini:** pools accept keys from **any
-> OpenAI-compatible endpoint**. A Google AI Studio (Gemini) key goes in
-> with provider *Gemini* and base URL
-> `https://generativelanguage.googleapis.com/v1beta/openai`; member
-> traffic is then metered, quota-checked, and leak-watched exactly like
-> OpenAI-routed traffic. Tributary speaks (and meters) the
-> OpenAI-compatible wire format on all pools — it is **not** a format
-> converter, and the native Gemini API shape is not translated. Note the
-> free tier of AI Studio is rate-limited: fine for demos and pilots, but
-> expect upstream 429s under load. Details: [`deploy/README.md`](deploy/README.md).
+> **If `docker compose up -d` says `unknown shorthand flag: 'd'`:** the
+> compose plugin is missing. Fix: Docker Desktop → Settings → Resources →
+> **WSL Integration** on, or `apt install docker-compose-plugin`; or use the
+> compose-free command above.
 
-## What it is
+> **If you see `permission denied ... /var/run/docker.sock`:** your user is
+> not in the docker group. Fix: `sudo usermod -aG docker $USER && newgrp
+> docker` (or restart WSL), then check that `docker ps` runs without sudo.
+> WSL-native Docker also needs `sudo service docker start`.
 
-A tributary is a small stream that feeds a larger river — and that is
-the whole design: members' small, governed streams of AI usage flowing
-into one pooled upstream capacity. Each member gets their own API key;
-every request is metered, quota-checked, and IP-fingerprinted at the
-gateway **before** any upstream call. The pool's owner holds the
-provider keys (envelope-encrypted at rest) and decides who draws how
-much; odd signals — impossible travel, key sharing across countries —
-surface as review flags, not silent surprises.
+> **Behind a reverse proxy:** set `TRIBUTARY_TRUSTED_PROXIES` to that
+> proxy's CIDR. IP-derived controls (allowlists, sharing detection) are only
+> sound then; without it, X-Forwarded-For is ignored and the socket address
+> is used. Details: [`deploy/README.md`](deploy/README.md).
+
+> **Provider keys (OpenAI and Gemini):** pools accept keys from any
+> OpenAI-compatible endpoint. A Google AI Studio (Gemini) key goes in with
+> provider *Gemini* and base URL
+> `https://generativelanguage.googleapis.com/v1beta/openai`. Member traffic
+> is then metered, quota-checked and leak-watched exactly like
+> OpenAI-routed traffic. Tributary speaks the OpenAI-compatible wire format
+> on all pools; it is not a format converter, and the native Gemini API
+> shape is not translated. The free tier of AI Studio is rate-limited: fine
+> for demos and pilots, but expect upstream 429s under load.
+
+### See the settlement
+
+Sign in with any admin account, including the one `create-admin` made
+(`POST /api/v1/auth/login`), keep the returned token in `TOKEN`, create an
+organisation (`POST /api/v1/orgs` with `{"name":"…","slug":"…"}`) and use
+its `id` below:
+
+```sh
+API=http://localhost:8111/api/v1
+# 1. a root pool, then a deposit (any OpenAI-compatible endpoint and its key)
+curl -s -X POST $API/pools -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"org_id":"<org id>","name":"credit-pool","kind":"root","model_allowlist":["gpt-4o-mini"]}'
+curl -s -X POST $API/pools/<pool id>/deposits -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"provider":"openai","key":"<a provider key>","base_url":"https://api.openai.com/v1","model_families":["gpt-4o-mini"],"contributed_micros":5000000}'
+# 2. send a request with a member key (the dashboard issues one), then read the books
+curl -s $API/pools/<pool id>/bucket-positions -H "Authorization: Bearer $TOKEN"
+# 3. settle a window (here: the last hour) with an 8% fee
+curl -s -X POST $API/pools/<pool id>/settle -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d "{\"from_ms\":$(( ($(date +%s) - 3600) * 1000 )),\"to_ms\":$(date +%s)000,\"fee_bps\":800}"
+```
+
+On an image built from `main`, the dashboard shows the same books under
+**Settlement**. A complete walkthrough that needs no real key (it uses the repository's mock upstream)
+is [`docs/founder-journey-settlement-screen.md`](docs/founder-journey-settlement-screen.md).
+
+### Verify the on-chain part yourself
+
+- Open the [program account on devnet](https://explorer.solana.com/address/9pEmyxftdRUZV2iw6ZzCNgZz9QygG53i7APNaWcEHvjX?cluster=devnet):
+  *Upgradeable: yes*, and *Upgrade authority* `BhLQqw…`, the multisig's vault.
+- Open the [upgrade transaction](https://explorer.solana.com/tx/576QrbHPxvDB3P63nHedFA5hDqVBXJchzkauEvrpAJzHUyyDCnfd6KhXaRw2gePS7RF2NQh2eM5qsgj6wwCdeaP5?cluster=devnet):
+  the Squads program executes it, and the vault signs the inner *Upgrade*.
+- Run the settlement rules yourself. On branch `m11/doctrine-suite`, with
+  the toolchain pinned in CI (Agave v4.1.2; a cold build takes well over two
+  minutes):
+  `cd programs/pool && cargo-build-sbf --arch v3 && cd ../.. && cargo test -p pool`.
+  Until the implementation lands, the twelve rule-named tests fail.
+
+## Built at Dev3pack × DSUC (Da Nang, 27–29 November 2026)
+
+Tributary is a submitted project at the Dev3pack × DSUC Build Station
+hackathon. The event's work is on Solana: Merkle-settled payouts for AI
+credit pools, built tests-first. Receipts are listed here as they land: commits, CI runs and
+devnet transactions.
+
+- **Before the event (26 November):** the settlement screen
+  ([`1f12408`](https://github.com/Phat1911/Tributary/commit/1f12408)) and
+  the twelve settlement rules as failing tests
+  ([`2bcd448`](https://github.com/Phat1911/Tributary/commit/2bcd448)).
+- **During the event (27–29 November):** in progress. No Merkle root has
+  been posted on devnet yet; receipts (commits, CI runs, transactions) will
+  be listed here as each part lands.
+
+## Security and known limits
+
+Read first: the [threat model](docs/threat-model.md) (what is audited, what
+is not independently reviewed yet), [`SECURITY.md`](SECURITY.md) (private
+disclosure by email) and [`AUDIT.md`](AUDIT.md) (every finding, with
+evidence, in public).
+
+Stated limits, as of this writing:
+
+- **Depositor mode is experimental.** It was adversarially audited on
+  2026-11-18; its eight findings were fixed or formally accepted on
+  2026-11-19. One high-severity finding has been raised since and is open,
+  **A-061**: the order in which depositors serve a model family can be
+  steered by a depositor-supplied provider name. It is present in the
+  v0.1.4 image; it cannot fire while every deposit in a pool uses the same
+  `provider` string, as the walkthrough does. It has been
+  ruled (the order will depend on contributed weight and deposit age,
+  never on a supplied string) and is scheduled for the next fix session.
+- **Failed upstream calls that answer with an HTTP error still burn the
+  reserve estimate** (A-062). The founder has ruled that an HTTP-error
+  answer must not burn the depositor's credits; the floor stays for
+  successful answers that report no usage. The fix is scheduled with A-061.
+- **Money today is off-chain.** Deposits and earnings are micro-USD book
+  entries. On devnet a deposit is a claim record (SPEC D40) and the vault
+  holds renter prepayments only; nothing yet funds it for payouts. The
+  program fixes the unit, one micro-USD is one USDC base unit, with no
+  conversion.
+- **The challenge design is settled, but it is tests only.** SPEC D45: a
+  challenge freezes a root's payouts until the multisig rules, and a root
+  can never pay more than it declares. The window length is still a
+  constant that must become a parameter before any mainnet use.
+- **The Merkle payout rules are tests, not code,** until the implementation
+  lands on `main`.
+- **The program is on devnet only.** It has no on-chain `security.txt` and
+  no verified build yet.
+- **The challenge window is a fixed 100-slot constant,** sized for a demo.
+
+Non-negotiables, from [`SPEC.md`](SPEC.md): deposits are keys and credits
+only, never subscription logins or browser automation of consumer plans;
+provider keys are envelope-encrypted at rest, with the master key never in
+the database; the ledger is append-only, enforced at the database; quota and
+rate-limit checks always run at the gateway before any upstream call.
+
+## Business model, plainly
+
+V1 is free forever, by strategy: adoption first, zero recurring cost. The
+first dollar Tributary plans to earn is an operator's settlement fee (a
+fixed 5–10% band) on marketplace volume, paid by operators, never by
+members. In V1 the operator is the team that runs the instance; the 8%
+is a parameter of the settle run and today it moves no money, it only
+splits two ledger accounts. That marketplace opens only behind provider and
+reseller agreements for credit transfer; no such agreement exists today.
+Until that gate opens, Tributary is exactly what you see: a free,
+self-hosted governance tool with its settlement layer on devnet. No dollar
+is planned from terms-of-service-gray flows.
+
+Self-hosted *and* a marketplace? The boundary: V1 is governance inside one
+trust domain, with no blockchain, and your keys and usage data stay in your
+building. The marketplace is opt-in, pool by pool, built for teams and
+individuals holding surplus AI credits (students, startups, labs) supplying
+them, and cost-conscious builders drawing from them. That market lives on
+supply whose cost is already paid: granted credits, hackathon prizes,
+education allocations, expiring promotions, and committed spend a team has
+paid for but will not consume. For that supply, selling below face value is
+salvage, not a price war. Where strangers
+exchange value, and nowhere else, the chain carries the receipts:
+append-only books, an escrow that only the program's own instructions can
+move, every money moment a public record. Credits bought at face value never enter that market; the
+official provider is the right answer for those.
 
 ## Where to go next
 
-| | |
+| Document | What it covers |
 |---|---|
-| [`deploy/README.md`](deploy/README.md) | Detailed ops: ports, reverse proxies (the trusted-proxy setting matters), backups, Postgres, healthchecks, quota behavior, upgrades |
-| [`docs/threat-model.md`](docs/threat-model.md) | What is audited and how, what is **not** independently reviewed yet, bus factor — the honest boundaries |
-| [`docs/onboarding-org-admin.md`](docs/onboarding-org-admin.md) | Admin first-day guide (DRAFT v1) — empty box → org → pool → member key → first request |
-| [`docs/pilot-support.md`](docs/pilot-support.md) | "It broke" diagnostics runbook — healthz → logs → audit → review queue, with the known fixes |
-| [Pilot feedback](https://github.com/Phat1911/Tributary/issues/new?template=pilot-feedback.yml) | Running a pilot? Tell us what worked, what broke, what's missing — it drives the M6 rewrite |
-| [`SPEC.md`](SPEC.md) | Architecture, security/economic rules, milestone roadmap |
-| [`SECURITY.md`](SECURITY.md) | Private disclosure by email; finder credit |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Conventions (teaching comments, dual-DB rule) and dev setup |
-| [`LICENSE`](LICENSE) | FSL-1.1-ALv2 — each version converts to Apache-2.0 after two years |
+| [`deploy/README.md`](deploy/README.md) | Ports, reverse proxies (the trusted-proxy setting matters), backups, Postgres, healthchecks, quota behaviour, upgrades |
+| [`docs/threat-model.md`](docs/threat-model.md) | What is audited and how, what is **not** independently reviewed yet, bus factor |
+| [`docs/onboarding-org-admin.md`](docs/onboarding-org-admin.md) | Admin first-day guide (draft): empty box → org → pool → member key → first request |
+| [`docs/pilot-support.md`](docs/pilot-support.md) | "It broke" diagnostics: healthz → logs → audit → review queue |
+| [`docs/founder-journey-settlement-screen.md`](docs/founder-journey-settlement-screen.md) | Depositor pools, the settle API and the settlement screen, end to end |
+| [`docs/devnet-soak-m8.md`](docs/devnet-soak-m8.md) | The live devnet rehearsal: deploy, multisig hand-over, refused single-key upgrade, upgrade by 2-of-2 vote |
+| [`SPEC.md`](SPEC.md) · [`PLAN.md`](PLAN.md) · [`AUDIT.md`](AUDIT.md) | Rules and roadmap · status log · every finding |
+| [`SECURITY.md`](SECURITY.md) · [`CONTRIBUTING.md`](CONTRIBUTING.md) | Private disclosure · conventions and dev setup |
+| [Pilot feedback](https://github.com/Phat1911/Tributary/issues/new?template=pilot-feedback.yml) | Running a pilot? Tell us what worked and what broke |
+| [`LICENSE`](LICENSE) | FSL-1.1-ALv2: each version converts to Apache-2.0 after two years |
 
 ## Repository layout
 
 ```
-crates/            Rust workspace (gateway, control, ledger, crypto, common)
-apps/dashboard/    Next.js + TypeScript dashboard (pnpm workspace)
-deploy/            Dockerfile, entrypoint, .env.example — single-container deploy
-docker-compose.yml the quickstart deployment (root; reads a gitignored .env)
+crates/            Rust workspace: gateway (OpenAI-compatible proxy, metering),
+                   control (admin API, auth), ledger, crypto, common
+apps/dashboard/    Next.js + TypeScript dashboard (pnpm workspace), baked into the image
+programs/pool/     Solana program (Anchor): escrow vault, deposits, renter prepayment;
+                   Merkle settlement (in progress)
+migrations/        sqlx migrations, run on SQLite and Postgres
+scripts/           demo seed, mock upstreams, OpenAI-SDK contract test, devnet soak tool
+deploy/            Dockerfile, entrypoint, .env.example: single-container deployment
+docker-compose.yml the Quickstart deployment (reads a gitignored .env)
+landing/           the landing page, published on GitHub Pages
+docs/              threat model, devnet soak report, founder journeys, operations
+SPEC.md            product and design rules, decision log, roadmap
+PLAN.md            status and milestone log
+AUDIT.md           security and spec-conformance findings, with evidence
+AGENTS.md          the working agreement for people and AI agents in this repo
 ```
 
-## Developing
+## Developing and verification
 
 Rust:
 
@@ -195,11 +433,24 @@ pnpm install
 pnpm -C apps/dashboard build
 ```
 
-CI (`.github/workflows/ci.yml`) runs all of the above, `cargo-deny`,
-and the official-SDK contract tests (OpenAI and Gemini-compat upstreams,
-real OpenAI-SDK clients).
+Solana program (toolchain pinned in CI, Agave v4.1.2):
 
-## License
+```sh
+cd programs/pool && cargo-build-sbf --arch v3 && cd ../.. && cargo test -p pool
+```
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs five jobs
+on every push to `main` and on every pull request: **rust** (fmt, clippy with warnings denied, the test suite on
+SQLite and Postgres), **dashboard** (lint, typecheck, build), **e2e**
+(Playwright journeys against a real stack), **sdk-contract** (the official
+OpenAI SDKs against OpenAI- and Gemini-compatible upstreams) and **deny**
+(cargo-deny).
+
+## Author and license
+
+Built by Tran Dinh Hong Phat (Hong Phat), a second-year IT student in Da
+Nang, Vietnam. One maintainer builds Tributary today; the
+[threat model](docs/threat-model.md) says so plainly.
 
 Copyright 2026 Tran Dinh Hong Phat. Licensed under the
 [Functional Source License, Version 1.1, ALv2 Future License](LICENSE)

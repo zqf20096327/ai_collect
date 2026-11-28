@@ -14,10 +14,13 @@ Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [R
 ## Quick start
 
 - [ ] Clone [FaceRecognition-LivenessDetection-ReactNative](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-ReactNative)
-- [ ] `yarn`, then `cd example && yarn`
 - [ ] Place the native runtimes — [Get the runtimes](#get-the-runtimes)
-- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone connected
+- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone plugged in
 - [ ] The demo ships with license keys for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS)
+
+That is the whole setup. The scripts do the rest: the yarn workspace install, the JS bundle, `pod
+install` on macOS, the build, and the install onto the phone. They need Node 18+ and JDK 17 (plus
+Xcode 15+ on macOS) on PATH, and stop with a named hint if anything is missing.
 
 ## Introduction
 
@@ -110,16 +113,19 @@ Then run `pod install` in `example/ios`.
 ## Run the demo
 
 ```bash
-git clone https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-ReactNative.git
-cd FaceRecognition-LivenessDetection-ReactNative
-yarn
-cd example && yarn
-# place the AAR and the iOS frameworks — see above
-python run_android.py
-python run_ios.py          # macOS
+python run_android.py     # downloads Releases assets if missing; or: python run_ios.py on macOS
 ```
 
-From `example` you can also use `yarn android` / `yarn ios --device`.
+The runner installs the yarn workspace, builds the JS bundle, runs `pod install` on macOS, and
+deploys. By hand:
+
+```bash
+yarn
+cd example && yarn
+yarn android                       # or, on macOS:
+cd ios && pod install && cd ..
+yarn ios --device
+```
 
 Keep the demo ids so the included license activates: Android `applicationId` `com.faceplugin.facerecognitionsdk`, iOS bundle id `com.faceplugin.facerecognition.app`.
 

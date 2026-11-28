@@ -100,6 +100,34 @@ Feel free to file Issues to suggest features or report bugs. PR's are welcome!
 
 Report suspected vulnerabilities privately by emailing [assmann@hey.com](mailto:assmann@hey.com) or DM to @ccssmnn on X; please avoid filing public issues until I respond.
 
+## Cloudflare hosting
+
+`bun run build:cloudflare` selects the Cloudflare adapter; other builds retain
+the existing Vercel or Node adapter. `bun run deploy:cloudflare` deploys staging:
+https://tilly-migration.assmann-568.workers.dev.
+
+The Worker preserves app deep links and the Plausible proxy. Jazz workers belong
+to one request and stay open until streaming chat ends or is cancelled. Server
+credentials stay in Worker secrets; public build settings come from the existing
+production environment. Do not commit environment files.
+
+The scheduled handler invokes the existing authenticated notification route.
+Staging deliberately has no cron trigger: Vercel still runs the hourly job.
+Production uses `wrangler.production.jsonc` on the same Worker after staging
+verification. It attaches only the apex and `www` routes. The apex redirects to
+`www` with HTTP 307, preserving paths and queries. Keep the wildcard and Clerk
+DNS records unchanged.
+
+GitHub `main` builds automatically in Cloudflare. Set the deploy command to
+`bunx wrangler deploy --config wrangler.production.jsonc` after verifying sign-in
+and chat. The default command continues to deploy staging until then.
+
+Disable the Vercel cron before adding `0 * * * *` to the production Wrangler
+configuration. Keep Vercel available for rollback. Never enable both schedulers
+together.
+
+written with gpt-6.1-sol in Codex (T3 Code)
+
 ## License
 
 MIT License - See LICENSE file for details.

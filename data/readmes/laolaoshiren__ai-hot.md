@@ -2,11 +2,11 @@
 
 > GitHub 只放首页摘要，**完整版请直接去网站看**：热点更全、搜索更强、导航更完整。
 
-[![网站](https://img.shields.io/badge/在线阅读-AI热榜-brightgreen)](https://aihot.bt199.com/) [![更新频率](https://img.shields.io/badge/更新频率-每6小时-blue)](https://aihot.bt199.com/) [![工具](https://img.shields.io/badge/工具-185-orange)](https://aihot.bt199.com/tools/) [![模型](https://img.shields.io/badge/模型-408-lightgrey)](https://aihot.bt199.com/models/) [![Agent](https://img.shields.io/badge/Agent-90-purple)](https://aihot.bt199.com/agents/) [![新闻](https://img.shields.io/badge/新闻-98-red)](https://aihot.bt199.com/news/)
+[![网站](https://img.shields.io/badge/在线阅读-AI热榜-brightgreen)](https://aihot.bt199.com/) [![更新频率](https://img.shields.io/badge/更新频率-每6小时-blue)](https://aihot.bt199.com/) [![工具](https://img.shields.io/badge/工具-185-orange)](https://aihot.bt199.com/tools/) [![模型](https://img.shields.io/badge/模型-408-lightgrey)](https://aihot.bt199.com/models/) [![Agent](https://img.shields.io/badge/Agent-90-purple)](https://aihot.bt199.com/agents/) [![新闻](https://img.shields.io/badge/新闻-123-red)](https://aihot.bt199.com/news/)
 
 🌐 **在线网站**：https://aihot.bt199.com/  
 🔍 **站内搜索**：https://aihot.bt199.com/search/  
-🕐 **最近更新**：2026-11-27 05:14:11
+🕐 **最近更新**：2026-11-28 04:58:12
 
 **提供商直达：** [🟠 小米 MiMo](https://platform.xiaomimimo.com?ref=A3JKSD) · [⚡️ ZenMux｜免费调用 DeepSeek V4 API，上手零门槛](https://zenmux.ai/invite/16U6FF) · [硅基流动](https://cloud.siliconflow.cn/i/Ngl1oB14) · [火山引擎](https://volcengine.com/L/A3Cm9GB_3J4/)  
 
@@ -24,17 +24,17 @@
    - 在 Anthropic 进入公开市场的同一天，一款精心设计的人类视频游戏成为有史以来最成功的娱乐产品之一
    - `TechCrunch AI · 2026-11-26`
 
-3. [42 个州的 AG 正试图阻止 Character.AI 出售用户的聊天内容](https://aihot.bt199.com/news/2b77243de9e1/)
+3. [Android 的 DIY 小部件带有一点氛围编码的乐趣](https://aihot.bt199.com/news/87888e326313/)
+   - 除了处理我的日历之外，我还想让人工智能做一件事：告诉我我是否会错过公共汽车。我需要的是一个小部件。它需要告诉我我家附近公…
+   - `The Verge AI · 2026-11-27`
+
+4. [尖端假肢如何帮助探索人类思维](https://aihot.bt199.com/news/fdc03894c819/)
+   - 在过去的几周里，我一直在与亚历山大（阿维）戴维森交谈。 Avi 有很多值得注意的事情。他在青少年时期受了一次可怕的伤害…
+   - `MIT Tech Review · 2026-11-27`
+
+5. [42 个州的 AG 正试图阻止 Character.AI 出售用户的聊天内容](https://aihot.bt199.com/news/2b77243de9e1/)
    - 由 42 名州总检察长组成的联盟正试图阻止 Character.AI 在根据美国破产法第 11 章进行破产程序时出售用户…
    - `The Verge AI · 2026-11-26`
-
-4. [谷歌的定制人工智能视频源专利描绘了娱乐业未来的黯淡景象](https://aihot.bt199.com/news/6d162717023f/)
-   - 去年，谷歌为名为“我的频道”的系统申请了专利，该系统旨在根据该公司了解的用户信息创建充满个性化、人工智能生成的视频和广告…
-   - `The Verge AI · 2026-11-25`
-
-5. [数据中心如何推动美国天然气繁荣](https://aihot.bt199.com/news/a33de435eff5/)
-   - 2025 年 5 月，我的同事 David Rotman 撰写了一篇专题报道，描述人工智能如何让我们继续依赖天然气。仅仅…
-   - `MIT Tech Review · 2026-11-25`
 
 6. [Backblaze 解释了为何与广告商共享客户信息](https://aihot.bt199.com/news/346cdde741e1/)
    - Backblaze 告诉 Ars，它不会与广告商共享用户的备份、存储文件
@@ -47,9 +47,9 @@
 
 ## 🤖 AI 简报
 
-> ⚡ 本期汇总近 20 条最新 AI 动态（主要来自 量子位、TechCrunch AI、V2EX），关注焦点包括：「英伟达暂停向东南亚供应芯片」、「381个AI直播冲刺证明P=NP！把GitHub干崩了」、「下载：更好的仿生手和人工智能的天然气热潮」。
+> ⚡ 本期汇总近 20 条最新 AI 动态（主要来自 量子位、V2EX、MIT Tech Review），关注焦点包括：「人形机器人开发者集合！众擎开放大小脑，10亿产业级生态支持计划也来了」、「Android 的 DIY 小部件带有一点氛围编码的乐趣」、「下载：35 岁以下创新者提名已开放，仿生学之窗进入心灵」。
 
-`基于 20 条新闻 · 2026-11-27`
+`基于 20 条新闻 · 2026-11-28`
 
 👉 [去网站看完整 AI 新闻与站内文章 →](https://aihot.bt199.com/news/)
 
@@ -64,8 +64,9 @@
 
 ## 📈 热度飙升
 
-- [mianstack](https://github.com/didilili/mianstack)：面栈 MianStack｜程序员面试题库天花板！Java、Python、数据库、算…
+- [waifu2x-image-upscaler-windows](https://github.com/Red2076-arch/waifu2x-image-upscaler-windows)：最近值得点开的开源 AI 项目
 - [OpenClaw](https://github.com/openclaw/openclaw)：你的个人AI助手，跨平台、全功能。Any OS, Any Platform
+- [mianstack](https://github.com/didilili/mianstack)：面栈 MianStack｜程序员面试题库天花板！Java、Python、数据库、算…
 
 👉 [去网站看完整热度飙升榜单 →](https://aihot.bt199.com/)
 
@@ -86,7 +87,7 @@
 - [🛠️ AI工具（185）](https://aihot.bt199.com/tools/)
 - [🧠 AI模型（408）](https://aihot.bt199.com/models/)
 - [🤖 AI Agent（90）](https://aihot.bt199.com/agents/)
-- [📰 AI新闻（98）](https://aihot.bt199.com/news/)
+- [📰 AI新闻（123）](https://aihot.bt199.com/news/)
 - [🏢 AI提供商（64）](https://aihot.bt199.com/providers/)
 - [⚔️ 工具对比](https://aihot.bt199.com/compare/)
 - [🔍 全站搜索](https://aihot.bt199.com/search/)

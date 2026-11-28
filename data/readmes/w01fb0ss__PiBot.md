@@ -98,6 +98,10 @@ The agent kernel is [pi](https://github.com/earendil-works/pi), pinned as an npm
 used only in `packages/agent`. The brain does not depend on Electron, so the same code runs
 headless.
 
+## Community
+
+Join the Pi Bot Telegram group to ask questions, share what your Bots are doing and hear about new releases first: [t.me/+zzEe3q-8QflkOTJl](https://t.me/+zzEe3q-8QflkOTJl)
+
 ## Contributing
 
 Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the rules

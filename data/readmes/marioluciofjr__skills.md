@@ -62,6 +62,7 @@ Cada pasta é uma skill diferente. Para baixar os arquivos .ZIP de maneira separ
 * [app-to-firetv](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/app-to-firetv)
 * [leis-uxui](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/leis-uxui)
 * [gestalt](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/gestalt)
+* [criar-fontes](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/criar-fontes)
 
 ## Como adicionar uma skill deste repositório no Claude
 

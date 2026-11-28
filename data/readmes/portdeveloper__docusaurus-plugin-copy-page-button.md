@@ -460,6 +460,8 @@ module.exports = {
 
 For a Docusaurus page rendered at `build/page/index.html`, the plugin writes `build/page.md`, so static hosts serve it at `https://your-docs.com/page.md`. Users can now share `https://your-docs.com/page.md` directly with Claude, ChatGPT, or any tool that can fetch URLs as context. When this option is enabled, the AI tool actions also point at the `.md` URL.
 
+Blog posts get a `.md` too. Blog listing pages (the post list, tag, and author pages) are skipped, because they hold several posts; those pages also don't show the button.
+
 ### Pointing the AI links at markdown you already publish
 
 If your site already serves per-page markdown — for example through an `llms.txt` setup — you don't need `generateMarkdownRoutes`. Use `markdownUrl` to send the "Open in ChatGPT / Claude / …" links at those URLs directly:

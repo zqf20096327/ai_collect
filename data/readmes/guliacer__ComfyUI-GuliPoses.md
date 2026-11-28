@@ -6,7 +6,7 @@
   <a href="docs/showcase.html"><img src="docs/screenshots/node-face.jpg" alt="GG 脸模库" width="248"></a>
 </p>
 
-<p align="center"><sub>GG 姿态库 288 组 × 5 视角 ｜ GG 服装库 1405 套 ｜ GG 脸模库 44 张 —— <a href="docs/showcase.html">点图看全屏预览 ↗</a></sub></p>
+<p align="center"><sub>姿态库 288 组 ｜ 服装库 1405 套 ｜ 脸模库 44 张 ｜ 深度图库 288 组 ｜ 历代服装 57 套 ｜ 动漫服装 1320 套 ｜ 二次元服装 440 套 ｜ 发型/五官 122 张 ｜ 二次元动作 246 组 —— <a href="docs/showcase.html">点图看全屏预览 ↗</a></sub></p>
 
 [![ComfyUI](https://img.shields.io/badge/ComfyUI-custom__nodes-4f8cff)](https://github.com/comfyanonymous/ComfyUI)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab)](https://www.python.org/)
@@ -17,7 +17,28 @@
 
 **在 ComfyUI 节点里翻参考图库，选好就出图。**
 
-姿态 288 组 × 5 视角、服装 1405 套、脸模 44 张，画廊里翻选即出图，输出直接接 ControlNet / Depth / Lineart / IP-Adapter。
+包含姿态、服装、脸模、深度图，以及中国历代服装、ギア动漫服装、CharaDB 二次元服装九类图库。画廊里选图即输出 `IMAGE`，可接 ControlNet / Depth / Lineart / IP-Adapter；CharaDB 可优先使用用户自行放入的本地图片，其他在线图库仍从原站加载。
+
+## 致谢与原项目
+
+感谢原作者与数据维护者提供图库和索引。以下是各节点对应的来源项目；节点底部也提供了原项目入口，便于查看和自行下载素材。
+
+姿态库索引（288 组 / 1439 张 / 4 系列 / 26 分类 / 5 视角）及中文翻译来自 **[anhao/ai-pose-gallery-zh](https://github.com/anhao/ai-pose-gallery-zh)**；`data/zh-dict.csv` 对应上游 `data/translations.csv`。Shisei、ギア动漫服装与 CharaDB 中文索引也采用该仓库同一固定版本的数据快照。
+
+原图库作者：**ギア**（[@giaaibusi](https://x.com/giaaibusi)），提供姿态、深度、写实服装、人像与动漫服装图库。Shisei 由 **wquguru** 提供；CharaDB 由 **Taki**（[@taki_auto](https://x.com/taki_auto)）提供。中文版维护：**Anhao** · X [@anhao_ai](https://x.com/anhao_ai) · GitHub：[anhao/ai-pose-gallery-zh](https://github.com/anhao/ai-pose-gallery-zh)。
+
+| 图库 | 原始项目 | 节点中的资源 |
+| --- | --- | --- |
+| 姿态库（白模） | [AI Pose Gallery](https://ai-pose-gallery.pages.dev/) · ギア | 本地图片 |
+| 姿态深度图库（Depth） | [AI Pose Depth Gallery](https://ai-pose-depth-gallery.pages.dev/) · ギア | 用户本地导入，不随插件分发 |
+| 服装库 | [AI Costume Gallery](https://ai-costume-gallery.pages.dev/) · ギア | 本地图片 |
+| 人像库 | [AI Portrait Gallery](https://ai-portrait-gallery.pages.dev/) · ギア | 来源图库 |
+| 中国历代服装（Shisei） | [Shisei](https://github.com/wquguru/shisei) · wquguru；姿态体系源自ギア图库 | 57 套 / 227 张 CC0 原图，见 `shisei/NOTICE` |
+| ギア动漫服装 | [AI Costume Anime Gallery](https://ai-costume-anime-gallery.pages.dev/) · ギア | 图片仅从原站在线加载 |
+| 二次元服装（CharaDB） | [CharaDB](https://charadb-2fi.pages.dev/) · Taki | 用户下载件在用户数据区自动中文命名；未导入项在线加载 |
+| 二次元发型与五官 | [CharaDB](https://charadb-2fi.pages.dev/) · Taki | 用户下载图按编号/顺序映射中文名并本地使用 |
+| 二次元动作 | [CharaDB](https://charadb-2fi.pages.dev/) · Taki | 用户下载图中文适配；同一动作的视角合并 |
+
 
 > 自己导入的图存在 `ComfyUI/user/default/guliposes/`，不在插件目录里，升级不会丢。
 
@@ -44,7 +65,7 @@ cd ComfyUI/custom_nodes
 git clone --depth 1 https://github.com/guliacer/ComfyUI-GuliPoses.git
 ```
 
-没有 git 就下载 [Release 离线包](https://github.com/guliacer/ComfyUI-GuliPoses/releases/latest)（约 263 MB），解压到 `custom_nodes/`。
+没有 git 就下载 [Release 离线包](https://github.com/guliacer/ComfyUI-GuliPoses/releases/latest)（约 244 MB），解压到 `custom_nodes/`。
 
 已有旧版、且插件目录里放了自己的图，**别直接删目录覆盖**，这样升级：
 
@@ -52,27 +73,32 @@ git clone --depth 1 https://github.com/guliacer/ComfyUI-GuliPoses.git
 python tools/upgrade.py full --from ComfyUI-GuliPoses-v1.2.3.zip --purge
 ```
 
-重启 ComfyUI → 画布右键 → **GuliPoses** → **GG 姿态库**。仓库自带全部图片（约 270 MB），clone 完即用，之后 `git pull` 只拉代码。
+重启 ComfyUI → 画布右键 → **GuliPoses**，选择需要的图库节点。姿态、写实服装、脸模及 Shisei 历代服装图片随仓库提供；深度图库仍需从本机素材导入；ギア动漫服装由原站在线加载。CharaDB 支持将用户自己下载的服装图放进用户数据目录后本地读取，未导入的图片仍从原站加载。
 
 ---
 
 ## 节点
 
-三个节点结构一致，只有底层图库不同。参数名是中文，输出一张 `IMAGE`，分类都是 `GuliPoses`。
+九个节点共用取图与画廊机制，按图库数据源隔离。参数名为中文，均输出一张 `IMAGE`，分类统一为 `GuliPoses`。
 
 | 节点 | 节点 ID | 图库内容 | 视角 | 输出 |
 | --- | --- | --- | --- | --- |
 | GG 姿态库 | `GuliPosePicker` | 288 组姿态 × 5 视角（1439 张，4 系列 / 26 分类） | 正面 / 俯视 / 仰视 / 侧面 / 斜侧 / 随机 | `900×1200` |
 | GG 服装库 | `GuliGarmentPicker` | 1405 套穿搭（6 类型 / 20 分类） | 正面（控件自动隐藏） | `1366×2048` |
 | GG 脸模库 | `GuliFacePicker` | 44 张脸模，可自行扩充 | 正面（控件自动隐藏） | RGB |
-
+| GG 深度库 | `GuliDepthPicker` | 288 组动作 / 1439 张本地深度图；不随插件分发 | 正面 / 俯视 / 仰视 / 侧面 / 斜侧 / 随机 | 由本地素材决定（当前素材 300×400） |
+| GG 中国历代服装库 | `GuliShiseiPicker` | 57 套历代服饰 / 227 个视角（10 个朝代系列） | 正面 / 斜侧 / 侧面 / 背面 / 随机视角 | 原图尺寸 |
+| GG 动漫服装库 | `GuliAnimeCostumePicker` | 1320 套（7 个服装类型系列 / 8 个原始主题分类） | 单视角（控件自动隐藏） | 原站图片尺寸 |
+| GG 二次元服装库 | `GuliCharaDBPicker` | 440 套（15 个分类 / 7 个服装类型系列） | 单视角（控件自动隐藏） | 本地图优先，缺失时原站加载 |
+| GG 二次元发型与五官库 | `GuliCharaDBHairPicker` | 122 张（发型 / 刘海 / 发色 / 发饰 / 瞳色 / 瞳形） | 单视角（控件自动隐藏） | 本地图优先，缺失时原站加载 |
+| GG 二次元动作库 | `GuliCharaDBPosePicker` | 246 组动作 / 281 张（8 类，含 35 张侧面图） | 正面 / 侧面 / 随机视角 | 本地图优先，缺失时原站加载 |
 ### 通用参数
 
 | 参数 | 生效模式 | 说明 |
 | --- | --- | --- |
 | 模式 | 全部 | 固定选中 / 全库随机 / 范围内随机 |
-| 姿态 / 服装 / 脸模 | 固定选中 | 当前库的条目 |
-| 视角 | 全部 | 姿态库 6 项；单角度库只有「正面」 |
+| 姿态 / 服装 / 脸模 / 深度图 / 历代服装 / 动漫服装 / 二次元服装 / 素材 / 动作 | 固定选中 | 深度图库沿用姿态库动作名；其它图库使用各自中文名称 |
+| 视角 | 全部 | 多视角图库按实际角度显示；单视角图库隐藏此控件 |
 | 筛选系列 | 范围内随机 | 全部 + 当前库的系列 |
 | 筛选分类 | 范围内随机 | 全部 + 当前库的分类 |
 
@@ -84,6 +110,12 @@ python tools/upgrade.py full --from ComfyUI-GuliPoses-v1.2.3.zip --purge
 
 - **服装库**：按穿搭类型分六系列——半身裙 440 / 连衣裙 391 / 裤装 293 / 内衣·家居 200 / 上装 58 / 泳装 23，二级 20 分类。原季节留在 `season` 字段，搜索框能搜「春」「派对」与英文关键词（`pleated`、`denim`）。
 - **脸模库**：默认 44 张，只挑了一部分做适配。要更多就把图片丢进用户数据区的 `face/png/`，加载时自动转 WebP 并重建索引。
+- **深度库**：按姿态库的 288 组动作与五视角组织，编号图片映射到中文名称；通过 `python tools/import_depth_db.py --source "本机已下载的深度图文件夹"` 导入用户本地素材，不随插件分发。
+- **中国历代服装库（Shisei）**：57 套服饰，涵盖商至清、民国与婚服，共 227 张正面、斜侧、侧面和背面图片；原图为 CC0，许可与出处见 `shisei/NOTICE`。
+- **动漫服装库（ギア）**：1320 条中文索引，系列按服装类型整理，原站图片仅在线加载、不在本仓库或发行包镜像。需要访问 `ai-costume-anime-gallery.pages.dev`；节点执行若遇 Python 证书链差异，会通过 Windows 系统 TLS 校验重试。
+- **二次元服装库（CharaDB）**：440 套服装、15 个原始分类，按原始服装类型系列整理。把自己下载的图片放入 `ComfyUI/user/default/guliposes/charadb/downloads/`，文件名末尾的 `-001`、`_001` 或 `O001` 会匹配 CharaDB 的 `O001` 中文索引；插件自动生成“分类_服装名称_编号”副本与缩略图，画廊搜索、预览和节点执行优先使用本地图片。
+- **二次元发型与五官库（CharaDB）**：122 张素材自动分为发型、刘海、发色、发饰、瞳色和瞳形。将图片放入 `charadb_hair/downloads/`，文件名末尾支持 1～4 位编号（如 `-01` / `_001` / `O0001`）；如果整批没有编号，会按文件名自然排序从第 1 张开始适配。匹配成功才生成中文分类、名称与编号副本，无法可靠对应的文件保留原图与原始名称展示。
+- **二次元动作库（CharaDB）**：246 组动作共 281 张，按站立、坐姿、躺卧、蹲姿与跪姿、上半身与手势、动态动作、双人互动、日常动作分类。原编号会自动关联中文名称，35 组正面 / 侧面图归并到同一动作；如果文件名没有编号，会按下载文件的自然顺序从第 1 张开始适配。无法可靠对应时不强行转换，节点直接保留并展示原始文件名。两类素材的原件、副本与缩略图均在用户数据区，发行包不含图片；未导入的目录项仍可在线加载。详见 `charadb/NOTICE`。
 
 ---
 
@@ -167,13 +199,26 @@ inbox/            # ★ 收件箱：图包丢这里，启动时自动入库
 poses/            # 姿态库 · img/ thumbs/ index.json
 garment/          # 服装库 · 同上
 faces/            # 脸模库 · 同上；png/ 已废弃，只剩引导说明
+shisei/           # 历代服装 · CC0 图片、索引与来源声明
+anime_costume/    # ギア动漫服装 · 索引与来源声明，原图热链
+charadb/          # CharaDB 服装 · 索引与来源声明，原图热链
+charadb_hair/     # CharaDB 外观素材 · 元数据索引，不含图片
+charadb_pose/     # CharaDB 动作 · 元数据索引，不含图片
 
 <ComfyUI>/user/default/guliposes/   # ★ 用户素材，升级不会动
 ├── inbox/           # 收件箱的另一份，最保险
 ├── pose/custom/     # 导入的图 + meta.json + thumbs/
 ├── pose/png/        # 转换来源：原始图丢这里
-├── garment/…  face/…
+├── garment/…  face/…  shisei/…  anime/…  charadb/…
+├── charadb/downloads/     # 服装原图（001–440）
+├── charadb/user_images/   # 自动生成的中文服装副本
+├── charadb_hair/downloads/ # 发型/五官原图（001–122）
+├── charadb_hair/user_images/ # 自动生成的中文分类/名称副本
+├── charadb_pose/downloads/ # 动作原图（001–281）
+└── charadb_pose/user_images/ # 自动生成的正面/侧面中文副本
 ```
+
+CharaDB 图片导入不需要运行脚本：分别将服装、发型/五官、动作图片放入各自的 `downloads/`。有编号时按末尾 1～4 位编号匹配；整批无编号时按文件名自然排序从第 1 张开始。节点载入图库时只有匹配成功的图片才会生成中文分类/名称副本和缩略图；无法可靠对应的图片保留原图与原始名称并直接展示。下载原件不会移动或改写，所有第三方图片仍只保存在本机用户数据目录。
 
 - 原图用 WebP（q95）不用 PNG：同 1439 张，PNG 要 343 MB，WebP 只 104 MB。
 - `<lib>/png/` 只是转换来源，索引只认 `img/` 里的 WebP——转换产物被覆盖也没关系，源图在你目录里，下次启动自动重转。
@@ -185,6 +230,10 @@ faces/            # 脸模库 · 同上；png/ 已废弃，只剩引导说明
 python tools/build_pose_db.py "D:\path\to\pose-db-01"     # 姿态库
 python tools/build_garment_db.py "…\服装1407"              # 服装库
 python tools/build_face_db.py [--clean]                   # 脸模库，--clean 转换后删原图
+python tools/build_shisei_db.py                           # 历代服装库索引
+python tools/build_anime_costume_db.py                    # ギア动漫服装在线索引
+python tools/build_charadb_db.py                           # CharaDB 服装在线索引
+python tools/build_charadb_aux_db.py                      # CharaDB 发型/五官及动作索引
 ```
 
 ---
@@ -196,8 +245,9 @@ python tools/build_face_db.py [--clean]                   # 脸模库，--clean 
 | 你自己的东西 | 位置 |
 | --- | --- |
 | 导入的图 + 显示名 / 分类 | `user/default/guliposes/<lib>/custom/` |
-| 批量添加的原始图 | `user/default/guliposes/<lib>/png/` |
-| 转换产物、缩略图、内置索引 | 插件目录内，可重建 |
+| 批量添加的原始图 | `user/default/guliposes/<lib>/png/`（深度库用专用导入器） |
+| 深度图文件与映射索引 | `user/default/guliposes/depth/{img,index.json}` |
+| 其它库的转换产物、缩略图、内置索引 | 插件目录内，可重建 |
 
 老版本留在插件里的素材，启动时会自动复制到新位置（只复制不动原件，`meta.json` 走合并）：
 
@@ -259,6 +309,10 @@ ComfyUI/custom_nodes/ComfyUI-GuliPoses/inbox/
 ├── pose/      → 姿态库「我的姿态」
 ├── garment/   → 服装库「我的服装」
 ├── face/      → 脸模库「我的脸模」
+├── depth/     → 深度图库「我的深度图」
+├── shisei/    → 历代服装库「我的历代服装」
+├── anime/     → 动漫服装库「我的动漫服装」
+├── charadb/   → 二次元服装库「我的二次元服装」
 └── 直接丢根目录也行，按姿态库收
 ```
 
@@ -276,7 +330,7 @@ ComfyUI/custom_nodes/ComfyUI-GuliPoses/inbox/
 | 命令 | 作用 |
 | --- | --- |
 | `python tools/import_batch.py --scan` | 结算收件箱（两处都扫） |
-| `python tools/import_batch.py "D:\图包" --lib garment` | 指定路径直接入库，认文件夹和 zip |
+| `python tools/import_batch.py "D:\图包" --lib garment` | 指定路径直接入库，认文件夹和 zip；`--lib` 支持 pose / garment / face / depth / shisei / anime / charadb |
 | `--cat 分类名` | 落库用的分类，默认「自定义」 |
 
 ---
@@ -303,6 +357,35 @@ cd ComfyUI/custom_nodes && git clone https://github.com/guliacer/ComfyUI-GuliNod
 
 ## 更新记录
 
+### v1.2.8 — 2026-11-27
+
+- 九类图库节点底部新增对应原项目入口，方便前往来源页面查看并自行下载素材。
+- 将原作者、中文维护者及九类图库来源致谢移到 README 前部，并补齐 CharaDB 发型/五官与动作来源。
+
+### v1.2.7 — 2026-11-27
+
+- CharaDB 发型/五官与动作导入支持 1～4 位尾号、整批无编号文件按自然顺序从第 1 张开始适配。
+- 对重复编号、越界编号、混合无编号等无法可靠对应的图片不再强行中文化，保留原图并在节点中按原始文件名展示。
+
+### v1.2.6 — 2026-11-27
+
+- 新增 GG 二次元发型与五官库（122 张）及 GG 二次元动作库（246 组 / 281 张），保留中文分类、名称、搜索词与独立画廊。
+- 发型/五官按发型、刘海、发色、发饰、瞳色、瞳形六类展示；动作按八类归纳，正面与侧面图片按同一动作合并。
+- 用户只需把图片放入各自 `downloads/` 目录；有编号时按编号匹配，无编号整批按自然顺序适配；图库只为可靠匹配项建立“分类_名称_视角_编号”中文副本和缩略图，无法对应的图片保留原始名称，原件保留，所有图片素材均从发行包隔离。
+
+### v1.2.5 — 2026-11-27
+
+- 新增 GG 中国历代服装库、GG 动漫服装库与 GG 二次元服装库，三个节点分别提供独立画廊、索引、路由与用户导入空间。
+- 新增 Shisei 历代服装本地图库（57 套 / 227 张视角图）；ギア动漫服装（1320 条）保留在线加载。CharaDB（440 套）可将用户自行下载的图片放入用户数据目录，按编号自动关联中文服装名称与原分类、生成本地展示副本；本地素材不进入发行包。
+- 在线图库固定 HTTPS 来源、限制图片路径、拒绝重定向；为避免暴露来源页地址，浏览器图片请求不发送 Referer。Windows 上 Python 证书链异常时使用仍开启验证的系统 TLS 回退。
+- 明确记录各图库作者、来源与图片使用条款；更新中英文文档。
+
+### v1.2.4 — 2026-11-27
+
+- 新增 GG 深度库节点；沿用姿态库的动作、系列、分类与五视角，并使用独立路由和画廊。
+- 新增本地深度图导入器：完整校验编号与图片可读性，按原站系列顺序映射并生成中文文件名及姿态索引；保留源文件。
+- 深度图保存在 ComfyUI 用户数据目录，不包含在源码仓库与发行包中。
+
 ### v1.2.3 — 2026-10-30
 
 - 新增服装库（1405 套 / 6 类型）与脸模库（44 张），节点扩到三个。
@@ -327,13 +410,16 @@ cd ComfyUI/custom_nodes && git clone https://github.com/guliacer/ComfyUI-GuliNod
 
 ---
 
-## 致谢
+## 来源与素材许可
 
-图库与中文数据来自 **[anhao/ai-pose-gallery-zh](https://github.com/anhao/ai-pose-gallery-zh)**：`poses/index.json` 与它一一对应（288 组 / 1439 张 / 4 体系 / 26 分类 / 5 视角），`data/zh-dict.csv` 取自它的 `data/translations.csv`。
 
-原始来源：原作者 **ギア**（[@giaaibusi](https://x.com/giaaibusi)）· 原站 <https://ai-pose-gallery.pages.dev/> · 中文版维护 Anhao（[@anhao_ai](https://x.com/anhao_ai)）
+- 根目录 `LICENSE` 的 MIT 许可只覆盖本项目代码，不覆盖任何来源图片或原始图库数据。中文镜像仓库也说明，来源素材著作权归原作者；其许可及各图库条款以来源仓库 / 网站为准。
+- Shisei 原图在 Shisei 上游声明为 **CC0 1.0 Universal**；对应许可文本与来源说明随附于 `shisei/LICENSE-images` 和 `shisei/NOTICE`。
+- ギア动漫服装图由原站在线加载，不保存到插件或发行包；来源说明禁止对图像数据再分发、转载或转售，并对用途有限制，详见上游条款。
+- CharaDB 标签表按上游声明为 CC0；图片不适用 MIT / CC0。插件不会下载或分发 CharaDB 图片；用户自行放入 `charadb/downloads/` 的本地副本只保存在当前 ComfyUI 用户数据目录，并由发行打包规则排除。没有本地副本的条目仍从原站加载。上游对图片用途有明确限制；详见 `charadb/NOTICE` 与原站许可。
+- 深度图导入器只映射用户已有的本机文件，不会自动下载深度图库。
 
-> 图片与原始数据著作权归原作者所有。本插件只做本地索引与画布内浏览，不对图片主张任何权利。原作者若认为侵权，请开 Issue，会立即移除。
+> 图片及原始数据权利归各自来源作者。本项目只在各自声明的条件下整理索引或显示来源图片；不主张素材权利，也不代表与这些来源存在隶属关系。
 
 配套插件：[guliacer/ComfyUI-GuliNodes](https://github.com/guliacer/ComfyUI-GuliNodes) · 框架：[ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 
@@ -341,6 +427,6 @@ cd ComfyUI/custom_nodes && git clone https://github.com/guliacer/ComfyUI-GuliNod
 
 ## 许可与免责
 
-- **代码**以 **MIT** 协议开源，见 [LICENSE](LICENSE)；该协议**不覆盖** `poses/` 下的图片与原始数据。
+- **代码**以 **MIT** 协议开源，见 [LICENSE](LICENSE)；该协议不覆盖姿态、服装、人像、深度或新增图库的来源图片与原始数据。各图库另有来源和使用条款，见本 README「致谢」及对应 `NOTICE`。
 - 图库包含**成人向内容**：姿态库性感系姿势、服装库性感 / 内衣 / 泳装系列均涉及成人向题材，仅供艺术创作、动作与穿搭参考及技术学习。未成年人请勿使用。
 - 本项目与上述来源仓库均无隶属关系，仅为个人学习与工具实践。

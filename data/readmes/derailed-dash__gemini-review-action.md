@@ -438,6 +438,14 @@ jobs:
           language: 'English (UK)'           # Optional
 ```
 
+#### Calibrated Multi-Label Issue Triage (Gemini Decisions API)
+
+When `command: 'triage'` runs against the Gemini Developer API (`GEMINI_API_KEY`) with `triage_engine: 'auto'` (the default), the action classifies issues using **`gemini-decision-1`** (`client.decisions.create` on `v1beta`) in a single zero-output-token prefill pass:
+
+* **Label Descriptions & Actionability Guardrail**: Fetches repository labels together with their GitHub descriptions (`get_available_label_metadata()`), evaluating one `noul` (yes/no) question per label alongside an `is_actionable_issue` guardrail (so sparse or test issues cleanly receive `[]`).
+* **Calibrated Probabilities & Cost Telemetry**: Evaluates text, discussion comments, and `"medium"`-resolution screenshots (`triage_media_resolution`), applying every label whose `P(yes)` meets `triage_threshold` (default `'0.70'`) and logging per-label probabilities, confidence scores, latency, input tokens, and estimated USD cost (`$0.10` / 1M input tokens, `0` output tokens).
+* **Automatic Graceful Fallback**: Transparently falls back to standard `generate_content` (`TriageResult` Structured Outputs) when `triage_engine: 'generate_content'` is set, when running on Vertex AI / Enterprise (where `gemini-decision-1` is not currently hosted), when a custom `.github/commands/gemini-triage.toml` override is present under `'auto'`, when a repository exceeds `990` labels or `262,144` estimated tokens, or if the Decisions API errors or triggers `prompt_feedback` filtering.
+
 ### Excluding another reviewer's comments
 
 Comment history exists so the reviewer does not re-raise its **own** feedback once you have addressed it. That is a good default.
@@ -477,7 +485,9 @@ Excluded comments never reach the prompt and are not counted in the reported tok
 | `persona` | Reviewer persona overlay (`straight`, `dazbo`, `palpatine`, `rick`). | No | `straight` |
 | `custom_instructions` | Custom instructions or guardrails to extend the review prompt. Can be inline text or a file path in the repository (e.g. `.github/review-instruction-additions.md`). | No | `.github/review-instruction-additions.md` |
 | `skip_inline_suggestions` | Whether to skip automated re-reviews when a commit is created by accepting an inline suggestion via GitHub UI. | No | `'true'` |
-| `thinking_level` | Thinking level for reasoning models (`low`, `medium`, `high`, plus `xhigh` on `gemini-4-hydrogen` and `gemini-4-neon`; or `off`/integer token budget on Gemini 3). When omitted, the model's native default thinking behaviour applies. See [Reasoning & Thinking Budget Control](#reasoning--thinking-budget-control). | No | `''` |
+| `thinking_level` | Thinking level for reasoning models (`auto`, `low`, `medium`, `high`, plus `xhigh` on `gemini-4-hydrogen` and `gemini-4-neon`; or `off`/integer token budget on Gemini 3). Empty or `'auto'` lets the pre-flight router choose dynamically (otherwise model default applies); explicit values override the router. See [Reasoning & Thinking Budget Control](#reasoning--thinking-budget-control). | No | `''` |
+| `enable_preflight_router` | Run the Decisions API pre-flight PR router (`gemini-decision-1`) on Gemini Developer API to dynamically route `thinking_level`, pre-inject up to 3 matched skills into Turn 2, and gate Developer Knowledge tools (skipped cleanly on Vertex AI). | No | `'true'` |
+| `preflight_confidence_threshold` | Probability confidence threshold in `(0.0, 1.0]` used by the pre-flight router for thinking/skill routing and safe upward fallback. | No | `'0.75'` |
 | `context_mode` | Codebase background context strategy: `'auto'` (default: Invariant Baseline / Full under `max_context_bytes`, else Sparse), `'full'` (force Full Context), `'sparse'` (force Sparse Context with file tree, core docs, and dynamic selection), or `'diff_only'` (skip repository background dump). | No | `'auto'` |
 | `max_context_bytes` | Total byte ceiling across repository text files before `'auto'` switches from Full Context Mode to Sparse Context Mode (default: 1.5 MB). | No | `'1536000'` |
 | `max_diff_full_file_bytes` | Aggregate UTF-8 byte ceiling across all `Full Current File Content` blocks attached in the diff prompt using water-fill truncation (diff patches themselves stay intact). Set to `'0'` to omit full-file copies and review diff patches only. | No | `'262144'` |
@@ -494,6 +504,8 @@ Excluded comments never reach the prompt and are not counted in the reported tok
 | `context_media_resolution` | Gemini per-part `media_resolution` for background Markdown images and attached PDFs (`'medium'` [default, 560 tokens] or `'high'` [1,120 tokens]; `'low'` is disallowed). | No | `'medium'` |
 | `visual_diff_media_resolution` | Gemini per-part `media_resolution` for active PR visual diff images (`'high'` [default, 1,120 tokens] or `'medium'` [560 tokens]; `'low'` is disallowed). | No | `'high'` |
 | `triage_media_resolution` | Gemini per-part `media_resolution` for remote issue triage screenshots (`'medium'` [default, 560 tokens] or `'high'` [1,120 tokens]; `'low'` is disallowed). | No | `'medium'` |
+| `triage_engine` | Issue triage classification engine: `'auto'` (default: `gemini-decision-1` Decisions API on the Gemini Developer API with automatic fallback to `generate_content`), `'decisions'`, or `'generate_content'`. | No | `'auto'` |
+| `triage_threshold` | Minimum calibrated probability `P(yes)` in `(0.0, 1.0]` required to apply a label during Decisions API issue triage. | No | `'0.70'` |
 | `service_tier` | Inference tier for Google AI Studio (`GEMINI_API_KEY`): `'standard'` (default) or `'flex'` (**50% discount** across all input, cached, thinking, and output tokens with 1–15 min target latency; ignored with a warning on Vertex AI). | No | `'standard'` |
 | `service_tier_fallback` | When `service_tier` is `'flex'`, automatically fall back to `'standard'` tier after bounded retries if capacity is shed (`503`/`429`) or timed out. | No | `'true'` |
 | `timeout` | Timeout for API requests in seconds (the Gemini review client enforces a 300s minimum HTTP timeout floor — raised to 600s for `service_tier: 'flex'` — and automatically falls back to streaming on connection resets). | No | `60` |
@@ -502,8 +514,12 @@ Excluded comments never reach the prompt and are not counted in the reported tok
 
 When using reasoning models (such as `gemini-4-hydrogen`, `gemini-4-neon`, `gemini-4-argon`, `gemini-4-carbon`, or `gemini-3.8-flash`), Gemini uses internal reasoning ("thinking") tokens to analyse code diffs, architectural implications, and complex issue triage before outputting a response.
 
-* **Default Behaviour (when omitted)**:
-  If `thinking_level` is left blank (the default), no thinking configuration override is passed to the Gemini API (`thinking_config=None`), so the model's native default reasoning behaviour applies dynamically.
+* **Default Behaviour (when omitted or `'auto'`) & Pre-Flight PR Router (Gemini Developer API)**:
+  When `enable_preflight_router: 'true'` (default) and running against the Gemini Developer API (`GEMINI_API_KEY`), a single sub-second **`gemini-decision-1`** call inspects a compact summary of the PR diff (first 40 lines per file, without downloading the full codebase baseline) and bundles three routing decisions:
+  1. **Dynamic `thinking_level` (Confidence-Safe Upward Fallback)**: Scores `pr_complexity` (`trivial` | `standard` | `complex`) alongside three risk flags (`touches_security_or_auth`, `touches_concurrency_or_state`, `architectural_or_schema_change`). Confident `trivial` PRs with all risk flags confidently false route down to `'low'`, `standard` PRs route to `'medium'`, and any triggered risk flag, `complex` classification, or low-confidence score falls back **upward** (`'medium'` or `'high'`) — never downward. An explicit `thinking_level` (e.g. `'medium'` or `'high'`) always overrides the router's thinking choice while keeping skill pre-injection and tool gating active. *(Note: this router never swaps `gemini_model`, protecting per-model implicit prefix caching.)*
+  2. **Pre-Flight Skill Injection (Turn 2 Cache-Safe)**: Evaluates discovered skills and pre-loads up to 3 confident matches directly into **Turn 2** (strictly after the static `base_sha` baseline prefix) so the model skips multi-turn skill discovery without invalidating Gemini 4's prefix cache.
+  3. **Developer Knowledge Tool Gating**: Gates off `search_google_developer_knowledge` / `get_google_developer_documents` when the PR is confidently unrelated to Google APIs or Cloud SDKs (leaving tools attached whenever uncertain).
+  When running on Vertex AI (where `gemini-decision-1` is not currently hosted), or if the router is disabled or errors, it skips cleanly and leaves `thinking_config=None` (or your explicit `thinking_level`).
 * **Categorical Thinking Levels (Gemini 4 & Gemini 3)**:
   * **`gemini-4-hydrogen` / `gemini-4-*`**: Supports `'low'`, `'medium'`, `'high'`, plus `'xhigh'` (extra-high) on `gemini-4-hydrogen` and `gemini-4-neon`. Because Gemini 4 enforces `'low'` as its minimum reasoning level (rejecting `'minimal'` and `thinking_budget=0` with `400 INVALID_ARGUMENT`), setting `'off'`, `'false'`, `'disabled'`, `'minimal'`, or `'0'` on any `gemini-4-*` model automatically logs a warning and clamps to `'low'` upfront.
   * **Gemini 3**: Supports `'minimal'`, `'low'`, `'medium'`, and `'high'`.
@@ -515,9 +531,9 @@ Thinking token usage and its associated cost are tracked and reported separately
 
 ```yaml
         with:
-          # Recommended lightweight thinking level for fast issue triage or quick reviews on Gemini 4
-          thinking_level: 'low'
-          # Or choose 'medium', 'high', or 'xhigh' (on gemini-4-hydrogen / gemini-4-neon) for deeper architectural analysis
+          # Balanced default thinking level for Gemini 4 PR reviews (use 'low' for fast issue triage or trivial PRs)
+          thinking_level: 'medium'
+          # Or choose 'high' or 'xhigh' (on gemini-4-hydrogen / gemini-4-neon) for deeper architectural analysis
           # thinking_level: 'high'
 ```
 
@@ -771,6 +787,7 @@ Token Usage: 265,849 input tokens (94.4% cached), 210 output tokens, 2,048 think
 * **Cached Context Tokens (`├── Cached Context Tokens`)**: The portion of input tokens hitting Gemini's context cache. Context caching applies **exclusively to input tokens**, delivering a **95% discount** (`0.05x`) on Gemini 4 (`gemini-4-hydrogen`, `gemini-4-neon`, `gemini-4-argon`, `gemini-4-carbon`) when running with Durable Implicit Caching on **Vertex AI (`global` or `eu`/`us`) via WIF/ADC** (AI Studio `GEMINI_API_KEY` offers best-effort ephemeral caching only), and a **90% discount** (`0.1x`) via explicit `CachedContent` handles on Gemini 3 models on both AI Studio and Vertex AI.
 * **PR Comments History Tokens (`├── PR Comments History Tokens`)**: The exact token count consumed by historical inline review threads and conversation comments fetched via the GitHub API and included in the dynamic review context.
 * **Un-cached Fresh Tokens (`└── Un-cached Fresh Tokens`)**: The newly introduced PR diff lines and dynamic skill instructions, billed at standard input rates.
+* **Pre-Flight Router Tokens & Cost (`gemini-decision-1`)**: When the Decisions API pre-flight router runs on the Gemini Developer API, the telemetry table also reports `Pre-Flight Router Tokens`, `Pre-Flight Routing` (complexity, routed `thinking_level`, Dev Docs gate, and Turn 2 pre-loaded skills), and `Cost (pre-flight router)` (billed flat at `$0.10 / 1M` input tokens, `0` output tokens).
 * **Thinking / Reasoning Tokens**: The internal reasoning tokens consumed by Gemini reasoning models (e.g. `gemini-4-hydrogen`) while evaluating complex logic and diffs.
 * **Output Tokens**: The final structured review tokens (markdown comments and suggestions) returned by the model.
 * **Cost (thinking / reasoning) & Cost (response output)**: Under the Google Gemini API pricing model, reasoning/thinking tokens are billed at the **standard output rate** (`rate.output`). Whenever thinking tokens are generated, the cost report transparently splits out the cost of reasoning from the cost of final response candidates, giving you full visibility into the cost impact of your chosen `thinking_level`.
@@ -893,11 +910,13 @@ Here is an overview of the directory tree and the purpose of each file:
 │   ├── budget.py            # Token budget allocation & per-file content truncation
 │   ├── config.py            # Configuration loader and default settings
 │   ├── context.py           # Hybrid codebase context engine & dynamic context selection
+│   ├── decisions.py         # Shared Gemini Decisions API helper (gemini-decision-1)
 │   ├── developer_knowledge.py # Google Developer Knowledge API integration
 │   ├── diff.py              # Diff patch parsing, line numbering & suggestion alignment
 │   ├── github.py            # GitHub REST API interactions & review submission
 │   ├── multimodal.py        # Image/PDF MIME detection, SVG-to-PNG rasterisation, Pillow downscaling & image extraction
 │   ├── personas.py          # Reviewer persona registry & prompt generation
+│   ├── preflight.py         # Decisions API Wave 2 pre-flight PR router (thinking, skills, Dev Docs gate)
 │   ├── pricing.py           # Token pricing calculation & review cost estimation
 │   ├── prompts.py           # Prompt builders, system instructions & visual diff assembly
 │   ├── repo.py              # File discovery, file tree generation & candidate bounding

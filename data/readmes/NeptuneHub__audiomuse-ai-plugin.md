@@ -891,7 +891,7 @@ This API orders **any list of songs** (the output of Similar Tracks, Song Alchem
 
 For each song it says where to start it (`fade_in_seconds`) and where it hands over to the next one (`fade_out_seconds`). The first song starts at 0 and the last one plays to its end (`duration_seconds`). Songs without a neural fingerprint come last, with `null` times. It requires the neural fingerprint (Search by Recording) to be enabled in AudioMuse AI.
 
-The full frontend guide, with every field and charts of a real transition, is in [AudioMuse-AI PR #1019](https://github.com/NeptuneHub/AudioMuse-AI/pull/1019).
+The full frontend guide, with every field and charts of real transitions, is in [AudioMuse-AI PR #1019](https://github.com/NeptuneHub/AudioMuse-AI/pull/1019), updated by [PR #1037](https://github.com/NeptuneHub/AudioMuse-AI/pull/1037) (seven kinds of transition) and [PR #1039](https://github.com/NeptuneHub/AudioMuse-AI/pull/1039) (lengths per genre).
 
 ```bash
 curl -X POST 'http://YOUR-JELLYFIN-URL:PORT/AudioMuseAI/recording_search/smart_fade'   -H 'Content-Type: application/json'   -H 'Authorization: MediaBrowser Client="MyCLI", Device="Ubuntu CLI", DeviceId="ubuntu-cli-01", Version="1.0.0", Token="YOUR-JELLYFIN-API-TOKEN"'   -d '{
@@ -923,23 +923,34 @@ curl -X POST 'http://YOUR-JELLYFIN-URL:PORT/AudioMuseAI/recording_search/smart_f
 
 ### Smart Fade Transition
 
-> * Updated with AudioMuse-AI v3.7.3
-> * More details here: https://github.com/NeptuneHub/AudioMuse-AI/pull/1019
+> * Updated with AudioMuse-AI v3.7.5
+> * More details here: https://github.com/NeptuneHub/AudioMuse-AI/pull/1019, https://github.com/NeptuneHub/AudioMuse-AI/pull/1037 and https://github.com/NeptuneHub/AudioMuse-AI/pull/1039
 
 This API returns **everything a player needs to mix the current song into the next** of a [Smart Fade](#smart-fade) list. You send the two songs and their smart fade points: `out` is the `fade_out_seconds` of the song playing now and `in` is the `fade_in_seconds` of the next song. AudioMuse AI listens to both songs around those points and returns numbers only, no audio: the client plays them.
 
-- `type`: `beat_mix` (the beats lock: 15-21 s together, the tempo glides and the highs, mids and bass pass from one song to the other), `beat_rise` (the same lock, and the next song is louder: its bass comes in through an opening high-pass) or `crossfade` (every other pair: about 10 s of volume crossfade, no stretch, filters flat).
+AudioMuse AI picks one of **seven kinds of transition** for each pair, from what it measures in the two songs, so one list usually mixes several kinds. The length also depends on the two songs (their beats and their genre: longer for pop, shorter for rock), so it changes from pair to pair.
+
+| `type` | When | What changes |
+|---|---|---|
+| `beat_mix` | the beats of both songs lock | the tempo glides (`speed`) and the highs, mids and bass pass from one song to the other, one band after the other |
+| `beat_rise` | the same lock, and the next song is much louder | as `beat_mix`, but the next song's bass comes in through an opening high-pass (`to.highpass_hz`) |
+| `percussion_mix` | both parts are drum-led, their hits line up and no voices overlap | one kick drum at a time (`bass_db`) while the hi-hats cross (`high_db`) |
+| `eq_blend` | no beat lock, and one of the two parts has no drums | native speed: the bass lines swap in one move, the highs and mids are handed over |
+| `filter_rise` | no beat lock, both parts have drums, the next song comes in louder | native speed: the next song comes in through an opening high-pass (`to.highpass_hz`) |
+| `vocal_handoff` | no beat lock, both parts have drums, two voices overlap | native speed: the mids (the voices) move from one singer to the other |
+| `crossfade` | every other pair (the default) | one song goes down while the next comes up, filters flat (a gentle EQ only when voices compete) |
+
 - `start`: the second of the current song where the transition starts. `duration`: how many seconds both songs play together. `middle`: seconds after `start` where the next song takes over (show it as "now playing" there).
-- Every list (`speed`, `volume`, `high_db`, `mid_db`, `bass_db`, `highpass_hz`) is a curve with one value every `step` seconds from `start`, and all lists have the same length. `step` is close to 0.1 s but not fixed: the server sets it so that a whole number of steps fills `duration` exactly (0.099922 in the example below), so always use the value it returns. Join the values with straight lines (Web Audio: `setValueCurveAtTime`).
+- Every list (`speed`, `volume`, `high_db`, `mid_db`, `bass_db`, `highpass_hz`) is a curve with one value every `step` seconds from `start`, and all lists have the same length. `step` is close to 0.1 s but not fixed: the server sets it so that a whole number of steps fills `duration` exactly (0.099663 in the first example below), so always use the value it returns. Join the values with straight lines (Web Audio: `setValueCurveAtTime`).
 - `filters`: the corners of the three tone filters both songs play through: `high_hz` (high shelf), `mid_hz` and `mid_q` (peaking), `bass_hz` (low shelf).
 - `from` (the song playing now) and `to` (the next song):
   - `gain`: a multiplier for the whole song, not only the transition, so every song plays equally loud (-14 LUFS).
-  - `speed`: the playback rate at each point (1 = normal, 1.02 = 2% faster). Play the song's own audio at it, like a DJ deck without key lock (Web Audio: `AudioBufferSourceNode.playbackRate`), so the pitch moves slightly with it. It is all 1 in a `crossfade`.
+  - `speed`: the playback rate at each point (1 = normal, 1.02 = 2% faster). Play the song's own audio at it, like a DJ deck without key lock (Web Audio: `AudioBufferSourceNode.playbackRate`), so the pitch moves slightly with it. It is all 1 in the kinds that play at native speed (`eq_blend`, `filter_rise`, `vocal_handoff`, `crossfade`).
   - `to.start`: the second of the next song where it comes in. The current song is already playing at `start`.
   - There is no position list: the position follows from `speed`. Song A is at `start` and song B at `to.start` when the transition begins, and each moves on by `speed × step` per point. Song B reaches exactly `to.continue_from` when the transition ends.
   - `volume`: the fader at each point, on top of `gain` (0 = silent, 1 = full).
-  - `high_db`, `mid_db` and `bass_db`: how far each filter turns the song down at each point, in dB (0 = unchanged, -40 = almost gone). In a beat mix the server fits these curves to the two songs, so they are not perfectly smooth and can go a few dB above 0 (up to +6). They are all 0 in a `crossfade`.
-  - `to.highpass_hz`: only in `beat_rise`, a high-pass used instead of the bass filter. It is `null` otherwise.
+  - `high_db`, `mid_db` and `bass_db`: how far each filter turns the song down at each point, in dB (0 = unchanged, -40 = almost gone). The server fits these curves to the two songs, so they are not perfectly smooth and can go a few dB above 0. They are all 0 in a plain `crossfade`.
+  - `to.highpass_hz`: in `beat_rise` and `filter_rise`, a list with the corner of a high-pass used instead of the bass filter. It is `null` in every other kind.
   - `to.continue_from`: the second where the next song plays on alone once the transition ends.
 - How to wire it: each song plays its own audio at `speed`, through **highs filter → mids filter → bass filter → fader → gain**, then to the output. All curves start together, when song A reaches `start`, and run for `duration`.
 
@@ -952,47 +963,181 @@ This API returns **everything a player needs to mix the current song into the ne
   | fader | `GainNode` | | `gain` ← `volume` |
   | gain | `GainNode` | `gain` = `gain`, for the whole song | |
 
-  In `beat_rise`, song B's bass filter is a `highpass` instead: its `frequency` follows `to.highpass_hz`, it uses `Q` = 1 (Web Audio counts a high-pass Q in dB), and `to.bass_db` stays all 0. After `duration`, stop song A and leave song B playing from `to.continue_from` with every filter at 0 dB and the fader at 1.
-- `info` is not needed to play: the two tempos (`null` without a steady beat), `confidence` (`high`, `medium` or `low`) and the loudness of each whole song (LUFS).
+  In `beat_rise` and `filter_rise`, song B's bass filter is a `highpass` instead: its `frequency` follows `to.highpass_hz`, it uses `Q` = -3.01 (a Butterworth high-pass; Web Audio counts a high-pass Q in dB), and `to.bass_db` stays all 0. After `duration`, stop song A and leave song B playing from `to.continue_from` with every filter at 0 dB and the fader at 1.
+- `info` is not needed to play: the two tempos (`null` without a steady beat), `confidence` (`high`, `medium` or `low`) and the loudness of each whole song (LUFS). Other keys can appear, so don't rely on a fixed set: `vocal_overlap` (how much two voices compete near the middle), `end_margin_seconds`, `recovered_seconds` and `ending_recovered_seconds` (how the server moved the cue points to keep audible music), and `beat_rejection` (why there is no beat lock: `tempo_gap`, `beat_alignment`, `no_beat_grid` or `audible_cue`).
 
-Call it once per hand-over, while the current song plays. An answer takes a few seconds, because both songs are fetched from the media server. If the call fails (any status other than 200), just crossfade for 10 s at the smart fade points.
+Call it once per hand-over, while the current song plays. An answer takes a few seconds, because both songs are fetched from the media server and analysed. If the call fails (any status other than 200), just crossfade for 10 s at the smart fade points.
 
 ```bash
-curl -G 'http://YOUR-JELLYFIN-URL:PORT/AudioMuseAI/recording_search/transition'   --data-urlencode 'from_id=abc123'   --data-urlencode 'to_id=def456'   --data-urlencode 'out=163.5'   --data-urlencode 'in=25.0'   -H 'Authorization: MediaBrowser Client="MyCLI", Device="Ubuntu CLI", DeviceId="ubuntu-cli-01", Version="1.0.0", Token="YOUR-JELLYFIN-API-TOKEN"'   -H 'Accept: application/json'
+curl -G 'http://YOUR-JELLYFIN-URL:PORT/AudioMuseAI/recording_search/transition'   --data-urlencode 'from_id=abc123'   --data-urlencode 'to_id=def456'   --data-urlencode 'out=39.5'   --data-urlencode 'in=10.0'   -H 'Authorization: MediaBrowser Client="MyCLI", Device="Ubuntu CLI", DeviceId="ubuntu-cli-01", Version="1.0.0", Token="YOUR-JELLYFIN-API-TOKEN"'   -H 'Accept: application/json'
 ```
 
 #### Output
 
-The number of values changes with every transition: it is exactly `duration / step` + 1 (162 here), and all lists of one answer have the same length. Only the first two values of each list and the last one are shown here, so `...` is not part of the real answer.
+Below are five real answers, one per kind, from two smart fade lists. The first one is the answer to the call above. The number of values in the lists changes with every transition: it is exactly `duration / step` + 1 (113 in the first answer), and all lists of one answer have the same length. Only the first two values of each list and the last one are shown, so `...` is not part of the real answer.
+
+**`beat_mix`** (`out=39.5`, `in=10.0`): both songs at 172 BPM, so the beats lock. The speed barely moves, and the three bands pass from song A to song B.
 
 ```json
 {
   "type": "beat_mix",
-  "start": 147.3626,
-  "duration": 16.0875,
-  "middle": 8.0216,
-  "step": 0.099922,
+  "start": 31.7026,
+  "duration": 11.1622,
+  "middle": 5.5807,
+  "step": 0.099663,
   "filters": {"high_hz": 4000.0, "mid_hz": 1000.0, "mid_q": 0.5, "bass_hz": 180.0},
   "from": {
-    "gain": 0.4728,
-    "speed": [0.9998, 0.9998, ..., 0.9893],
-    "volume": [1.0, 1.0009, ..., 0.0],
-    "high_db": [0.0, 0.0, ..., -40.0],
-    "mid_db": [0.0, 0.0, ..., -27.0],
+    "gain": 0.7728,
+    "speed": [1.0, 1.0, ..., 0.99974],
+    "volume": [1.0, 0.9933, ..., 0.0],
+    "high_db": [0.0, -0.01, ..., -40.0],
+    "mid_db": [0.0, -0.01, ..., -12.7],
+    "bass_db": [0.0, -0.05, ..., -40.0]
+  },
+  "to": {
+    "gain": 0.8192,
+    "start": 9.8234,
+    "speed": [1.00026, 1.00026, ..., 1.0],
+    "volume": [0.0, 0.0139, ..., 1.0],
+    "high_db": [-40.0, -40.0, ..., 0.0],
+    "mid_db": [-6.7, -6.71, ..., 0.0],
+    "bass_db": [-40.0, -40.0, ..., 0.0],
+    "highpass_hz": null,
+    "continue_from": 20.9871
+  },
+  "info": {"tempo_from": 172.0, "tempo_to": 172.0, "confidence": "high", "loudness_from": -11.76, "loudness_to": -12.27, "vocal_overlap": 0.8163, "end_margin_seconds": 8.4367, "recovered_seconds": 3.4881, "ending_recovered_seconds": 0.0}
+}
+```
+
+**`filter_rise`** (`out=260.5`, `in=13.0`): no beat lock (`beat_rejection: tempo_gap`, 103.5 vs 168.1 BPM) and song B is louder. Both songs stay at speed 1 and song B comes in through a high-pass that opens from 800 Hz to 10 Hz, so `to.bass_db` is all 0.
+
+```json
+{
+  "type": "filter_rise",
+  "start": 256.3907,
+  "duration": 8.6979,
+  "middle": 4.3489,
+  "step": 0.099976,
+  "filters": {"high_hz": 4000.0, "mid_hz": 1000.0, "mid_q": 0.5, "bass_hz": 180.0},
+  "from": {
+    "gain": 0.9415,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [1.0, 1.0122, ..., 0.0],
+    "high_db": [0.0, -0.01, ..., 0.0],
+    "mid_db": [0.0, 0.0, ..., 0.0],
     "bass_db": [0.0, 0.01, ..., -40.0]
   },
   "to": {
-    "gain": 0.5445,
-    "start": 23.6997,
-    "speed": [1.0109, 1.0109, ..., 1.0002],
-    "volume": [0.0, 0.0137, ..., 1.0],
-    "high_db": [-40.0, -40.0, ..., 0.0],
-    "mid_db": [-27.0, -27.0, ..., 0.0],
-    "bass_db": [-40.0, -39.99, ..., 0.0],
-    "highpass_hz": null,
-    "continue_from": 39.8759
+    "gain": 0.5794,
+    "start": 8.2587,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [0.0, 0.0183, ..., 1.0],
+    "high_db": [0.0, -0.01, ..., 0.0],
+    "mid_db": [0.0, 0.0, ..., 0.0],
+    "bass_db": [0.0, 0.0, ..., 0.0],
+    "highpass_hz": [800.0, 798.02, ..., 10.0],
+    "continue_from": 16.9566
   },
-  "info": {"tempo_from": 90.0, "tempo_to": 89.0, "confidence": "high", "loudness_from": -7.49, "loudness_to": -8.72}
+  "info": {"tempo_from": 103.5, "tempo_to": 168.1, "confidence": "medium", "loudness_from": -13.56, "loudness_to": -9.26, "vocal_overlap": 0.0056, "end_margin_seconds": 9.7021, "recovered_seconds": 4.0, "ending_recovered_seconds": 0.0, "beat_rejection": "tempo_gap"}
+}
+```
+
+**`eq_blend`** (`out=157.0`, `in=1.0`): no beat lock and no drums to clash. Both songs stay at speed 1; the bass lines swap, song B's highs and mids open while song A's close.
+
+```json
+{
+  "type": "eq_blend",
+  "start": 144.5937,
+  "duration": 9.0789,
+  "middle": 4.5395,
+  "step": 0.099768,
+  "filters": {"high_hz": 4000.0, "mid_hz": 1000.0, "mid_q": 0.5, "bass_hz": 180.0},
+  "from": {
+    "gain": 0.4688,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [1.0, 1.002, ..., 0.0],
+    "high_db": [0.0, -0.01, ..., -12.0],
+    "mid_db": [0.0, 0.02, ..., -11.95],
+    "bass_db": [0.0, 0.0, ..., -40.0]
+  },
+  "to": {
+    "gain": 0.5302,
+    "start": 2.9594,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [0.0, 0.0173, ..., 1.0],
+    "high_db": [-12.0, -11.95, ..., 0.0],
+    "mid_db": [-5.97, -5.96, ..., 0.0],
+    "bass_db": [-40.0, -40.0, ..., 0.0],
+    "highpass_hz": null,
+    "continue_from": 12.0383
+  },
+  "info": {"tempo_from": 119.0, "tempo_to": 131.9, "confidence": "medium", "loudness_from": -7.42, "loudness_to": -8.49, "vocal_overlap": 0.4979, "end_margin_seconds": 16.9211, "recovered_seconds": 1.5, "ending_recovered_seconds": 0.0, "beat_rejection": "tempo_gap"}
+}
+```
+
+**`vocal_handoff`** (`out=183.0`, `in=18.0`): no beat lock and two voices overlap (`vocal_overlap: 1.0`). The mids (the voices) move from song A to song B.
+
+```json
+{
+  "type": "vocal_handoff",
+  "start": 176.9494,
+  "duration": 8.9726,
+  "middle": 4.4863,
+  "step": 0.099696,
+  "filters": {"high_hz": 4000.0, "mid_hz": 1000.0, "mid_q": 0.5, "bass_hz": 180.0},
+  "from": {
+    "gain": 0.8593,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [1.0, 0.9753, ..., 0.0],
+    "high_db": [0.0, -0.01, ..., -6.0],
+    "mid_db": [0.0, 0.01, ..., -12.0],
+    "bass_db": [0.0, -0.03, ..., 0.0]
+  },
+  "to": {
+    "gain": 0.7728,
+    "start": 10.004,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [0.0, 0.017, ..., 1.0],
+    "high_db": [-3.0, -3.01, ..., 0.0],
+    "mid_db": [-6.0, -5.99, ..., 0.0],
+    "bass_db": [0.0, -0.03, ..., 0.0],
+    "highpass_hz": null,
+    "continue_from": 18.9766
+  },
+  "info": {"tempo_from": 93.6, "tempo_to": 172.0, "confidence": "medium", "loudness_from": -12.68, "loudness_to": -11.76, "vocal_overlap": 1.0, "end_margin_seconds": 2.4274, "recovered_seconds": 4.0, "ending_recovered_seconds": 0.0, "beat_rejection": "tempo_gap"}
+}
+```
+
+**`crossfade`** (`out=224.0`, `in=14.0`): the default. The beats don't line up (`beat_rejection: beat_alignment`), so it is a plain crossfade: speed 1 and every filter at 0, only the faders move.
+
+```json
+{
+  "type": "crossfade",
+  "start": 224.0046,
+  "duration": 5.8782,
+  "middle": 2.9391,
+  "step": 0.099631,
+  "filters": {"high_hz": 4000.0, "mid_hz": 1000.0, "mid_q": 0.5, "bass_hz": 180.0},
+  "from": {
+    "gain": 0.5302,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [1.0, 0.9825, ..., 0.0],
+    "high_db": [0.0, 0.0, ..., 0.0],
+    "mid_db": [0.0, 0.0, ..., 0.0],
+    "bass_db": [0.0, 0.0, ..., 0.0]
+  },
+  "to": {
+    "gain": 0.6498,
+    "start": 9.6749,
+    "speed": [1.0, 1.0, ..., 1.0],
+    "volume": [0.0, 0.0262, ..., 1.0],
+    "high_db": [0.0, 0.0, ..., 0.0],
+    "mid_db": [0.0, 0.0, ..., 0.0],
+    "bass_db": [0.0, 0.0, ..., 0.0],
+    "highpass_hz": null,
+    "continue_from": 15.5531
+  },
+  "info": {"tempo_from": 132.7, "tempo_to": 136.0, "confidence": "medium", "loudness_from": -8.49, "loudness_to": -10.25, "vocal_overlap": 0.0, "end_margin_seconds": 10.1218, "recovered_seconds": 3.0, "ending_recovered_seconds": 0.0, "beat_rejection": "beat_alignment"}
 }
 ```
 

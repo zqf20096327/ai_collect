@@ -104,7 +104,7 @@ v4 코드는 약 1B급 구조를 정의하지만 실제 파라미터 수는 toke
 
 모든 연구 버전은 하나의 저장소에서 브랜치로 관리됩니다.
 
-[v1 브랜치](https://github.com/seoan1024/Korean-llm/tree/v1) → [v2 브랜치](https://github.com/seoan1024/Korean-llm/tree/v2) → [v3 브랜치](https://github.com/seoan1024/Korean-llm/tree/v3) → **[v4 브랜치](https://github.com/seoan1024/Korean-llm/tree/v4)** → [🧱 Base](https://huggingface.co/seoan1024/Hanok-LLM-Base) → [🧪 Beta](https://huggingface.co/seoan1024/Hanok-LLM-Beta) → [🏯 Hanok LLM](https://github.com/seoan1024/Hanok-LLM)
+[v1 브랜치](https://github.com/seoan1024/Korean-llm/tree/V1) → [v2 브랜치](https://github.com/seoan1024/Korean-llm/tree/V2) → [v3 브랜치](https://github.com/seoan1024/Korean-llm/tree/V3) → **[v4 브랜치](https://github.com/seoan1024/Korean-llm/tree/V4)** → [🧱 Base](https://huggingface.co/seoan1024/Hanok-LLM-Base) → [🧪 Beta](https://huggingface.co/seoan1024/Hanok-LLM-Beta) → [🏯 Hanok LLM](https://github.com/seoan1024/Hanok-LLM)
 
 ## 👤 작성자
 

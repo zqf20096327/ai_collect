@@ -37,11 +37,17 @@ Ask before: Merging or publishing.
 
 If `/docs` redirects to `/docs/` and `/docs/` is the intended search URL, check the full `/docs` address. If the report flags a canonical redirect, use the final HTTP 200 URL in the canonical tag, sitemap and matching `hreflang` links.
 
+For a bilingual cutover, verify the localized pages and old-host redirects before switching traffic. [Run the Astro cutover fixture](examples/astro-bilingual-cutover.md).
+
 For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
 
 **Verify a first monitoring event.** [Run one Betterloop pageview on localhost](examples/betterloop-first-pageview.md) with the ready-to-copy test page in your Free project. [Check a deployed site](https://betterloopai.com/docs/install#verify) with the same snippet, or use the [pageview-only example for Vite](examples/betterloop-first-pageview.md#count-pageviews-from-a-vite-bundle). Once Betterloop receives an event, [read the pageview count in Claude Code](examples/betterloop-first-pageview.md#read-the-pageview-count-in-claude-code). For several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
 
-**Test that a browser edit persists.** In a fresh private browser session, open [Plainer’s editable launch checklist](https://plainer.app/try/from-agent-guide). Add a line such as “Confirm Retry restores the controls,” reload, and check that the line is still there. To keep the edit in a free account, choose **Sign up** in the note. Open the email verification link in the same private window, then sign in there.
+**Verify a conversion after a retry.** [Run the inquiry and booking exercise](examples/betterloop-inquiry-bookings.md) to check that a confirmation counts once and that an analytics opt-out still preserves the inquiry in your app.
+
+**Check that a note edit survives reload.** Open [Plainer’s sample launch workspace](https://plainer.app/demo/from-agent-guide) and choose **Daylight · launch notes**. Add “Confirm Retry restores the controls,” reload, and check that the line is still there. To keep the edit, choose **Keep a copy** and continue to a free account.
+
+**Check a meeting handoff.** [Use a fictional meeting to verify decisions, owners and due dates](examples/plainer-meeting-notes.md) before using the prompt on team notes.
 
 I build Plainer. [Plainer Pro](https://plainer.app/pricing/from-agent-guide) gives you a personal allowance for its built-in assistant. The 14-day trial requires a card. The monthly plan renews at $8 a month unless cancelled.
 
@@ -90,8 +96,6 @@ In a new project folder, paste the system prompt into your coding agent. Then [t
 
 [Read a project note from Gemini CLI](examples/plainer-gemini-handoff.md). Install the Plainer extension on Free, grant read access to a sample workspace, and check that the answer quotes the source note and spots a missing detail.
 
-[Turn meeting notes into a checked action list](examples/plainer-meeting-notes.md). Try fictional notes with a decision, missing dates, and a suggestion that was never agreed.
-
 [Trace a human approval before the agent continues](https://www.humanindaloopai.com/self-host/from-agent-guide). In this simulated Human in da Loop example, an agent waits for a decision on a refund outside the 30-day window. Check that the reviewer’s store-credit choice and the `answered` status reach the agent. The guide opens before sign-in and links to the installer for a local run.
 
 **Try a screen-reading task on Android.** Handy AI uses Claude and needs Android 11 or later and Accessibility permission. [Install Handy AI from Google Play](https://play.google.com/store/apps/details?id=com.claudeagent.phone&utm_source=github&utm_campaign=mcasp_handy_screen_read), then [follow the setup guide](https://gethandyai.app/#install). Open a screen with text you know and are comfortable sharing. Say or type “Read the text on this screen,” then check that Handy AI reads a line that is actually there.
@@ -138,6 +142,8 @@ The prompt supports both paths (see `IMPLEMENTATION POSTURE` inside it):
 To choose, add a line after the prompt, for example `Use harness-wrapper mode around Claude Code.` or `Use native runtime mode on the Claude Agent SDK, in TypeScript.`
 
 A small services team spending 10 hours a week on lead follow-up can capture enquiries in its CRM and draft replies for a person to approve. Start with one inbound channel and track how many drafts need edits. Run a fictional enquiry in your browser, then replay it to see how the example keeps one CRM record and one draft. [Try the sample handoff](https://aiyourwork.chat/guides/lead-follow-up-for-service-companies?utm_source=github&utm_medium=readme&utm_campaign=lead-follow-up-demo-en#sample-enquiry). [Request implementation help from AI Your Work](https://aiyourwork.chat/services?utm_source=github&utm_medium=readme&utm_campaign=agent-workflow-assessment#implementation-request).
+
+If your enquiry form can time out, try a local check for duplicate submissions and uncertain delivery. [Run the enquiry retry exercise](examples/enquiry-retry.md).
 
 ## What to expect
 
@@ -2604,16 +2610,4 @@ De-prioritize or ignore:
 - thin wrappers around provider APIs
 - generic chat shells
 - UI-only products with little public architecture
-- trend-driven multi-agent demos without strong state, eval, or reliability design
-- product launches that do not reveal implementation patterns worth stealing
-
-The external intelligence loop should run on a schedule and produce:
-- a digest of important changes
-- a ranked list of ideas worth testing
-- new eval candidates
-- new skills or workflows worth creating
-- changes to model routing, tooling, or memory strategy
-- warnings that existing assumptions may be stale
-
-Recommended feed categories:
-- open-source orchestration runtimes and workflow 
+- trend-driven multi-agent demos without strong state, eval, or reliab

@@ -26,7 +26,7 @@ For frontend development, select the Node version in [`.node-version`](./.node-v
    ```bash
    cp backend/.env.example backend/.env
    ```
-   Set the Postgres URLs, `FLEET_DAYTONA_API_KEY`, `FLEET_DAYTONA_IMAGE`, `FLEET_DAYTONA_REGION`, and the `FLEET_S3_*` variables shown in the example. Set `FLEET_LLM_MODEL`, `FLEET_SUB_LLM_MODEL`, `FLEET_LLM_API_KEY`, and `TYPESAFE_API_KEY`. Unset `DAYTONA_API_URL` and `DAYTONA_V2_API_URL` when running the v2 client. See [Build and roll out the sandbox image](#build-and-roll-out-the-sandbox-image).
+   Use the pooled Postgres URL for `FLEET_DATABASE_URL` and the direct URL for `FLEET_DATABASE_DIRECT_URL`. Point both at the same Neon branch and database and keep TLS and channel binding enabled. Set `FLEET_DAYTONA_API_KEY`, `FLEET_DAYTONA_IMAGE`, `FLEET_DAYTONA_REGION`, the `FLEET_S3_*` variables, `FLEET_LLM_MODEL`, `FLEET_SUB_LLM_MODEL`, `FLEET_LLM_API_KEY`, and `TYPESAFE_API_KEY` as shown in the example. Unset `DAYTONA_API_URL` and `DAYTONA_V2_API_URL` when running the v2 client. See [Neon connection security](https://neon.com/docs/connect/connect-securely) and [Build and roll out the sandbox image](#build-and-roll-out-the-sandbox-image).
 
    > Models, RLM and history budgets, and the Python cell timeout can be edited in **Settings**. Environment variables control the Daytona image, region, and lifecycle, the storage bucket, the model gateway, MLflow, and worker concurrency.
 
@@ -41,7 +41,7 @@ For frontend development, select the Node version in [`.node-version`](./.node-v
    ```bash
    make mlflow
    ```
-   With `FLEET_MLFLOW_TRACKING_URI` configured, admitted chat requests record a `fleet.turn` span in an MLflow trace keyed by `fleet.run_id`. The span covers sandbox acquisition, workspace hydration, RLM execution, artifact publication, and finalization. To include Daytona SDK request spans, set both `FLEET_DAYTONA_OTEL_ENABLED=true` and `MLFLOW_USE_DEFAULT_TRACER_PROVIDER=false` in the backend process environment.
+   With `FLEET_MLFLOW_TRACKING_URI` configured, MLflow displays chat turns with request and response previews, searchable outcomes, and linked memory consolidation. Find a turn by `fleet.run_id` or by its MLflow session ID. New API optimization jobs use `<chat-experiment>-optimization`. See [tracing and fixture capture](./docs/architecture.md#tracing) for the payload policy and setup.
 
 4. **Run the backend and frontend:**
    ```bash
@@ -54,6 +54,14 @@ For frontend development, select the Node version in [`.node-version`](./.node-v
 Open **Settings → Providers → Add provider** to register an endpoint and a key. Fleet stores encrypted provider keys in Neon Postgres. Configure `FLEET_CREDENTIALS_ENCRYPTION_KEY` on every backend worker. Shared deployments require HTTPS and `FLEET_API_BEARER_TOKEN` for workspace access. Provider administration requires a separate `FLEET_PROVIDER_ADMIN_TOKEN` on shared deployments and on loopback deployments that set `FLEET_API_BEARER_TOKEN`. Enter the administrator bearer in Settings → General while managing credentials. Configure reverse proxies to preserve the public host and scheme. Only expose unauthenticated development servers on loopback.
 
 Fetch the provider's models or specify its default model. In **Settings → Models → Global Workspace Models**, select the primary and sub-LLM independently and save. Each selection uses that provider’s endpoint and credentials. The composer can override the primary model for an individual session.
+
+### Use your ChatGPT plan locally
+
+On a single-user Fleet installation, set `FLEET_CHATGPT_PLAN_ENABLED=true` in `backend/.env` and restart the backend bound to `127.0.0.1:8000`. Open the local frontend at `http://localhost:5173`, choose **Settings → Providers → Continue with ChatGPT**, and approve plan usage in the OpenAI tab. After the callback shows the result, return to Fleet Settings to see the connection. If Fleet uses bearer authentication, use the provider administrator token to connect and manage accounts.
+
+Choose a discovered model in the composer or set local primary and sub-model defaults under **Settings → Models → Local ChatGPT Plan Models**. Fleet offers GPT-6 Luna when your account’s catalog includes it. Plan usage applies to interactive chat and its delegated workspace actions. Optimization jobs and decision models use their existing settings. Learn about [eligible plans and usage limits](https://developers.openai.com/siwc/token-sharing-open-source).
+
+Use **Manage usage** to review the allowance and **Sign out** to clear Fleet’s local tokens. If Fleet cannot confirm revocation, disconnect Fleet from ChatGPT settings. Set `FLEET_CHATGPT_PLAN_ENABLED=false` and restart the backend to disable the feature. Keep it disabled on hosted or shared deployments.
 
 ### Build and roll out the sandbox image
 

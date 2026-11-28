@@ -10,15 +10,11 @@
 
 # Godot Agent Skills
 
-Godot **4.7** skills for AI coding agents (Claude Code, Codex, OpenCode, Gemini CLI, GitHub Copilot, Cursor), based on **Godot 4.7.2**. They cover GDScript and C#/.NET equally.
+27 Godot **4.7** skills for AI coding agents (Claude Code, Codex, OpenCode, Gemini CLI, Copilot, Cursor), GDScript and C#/.NET.
 
-There are 27 compact skills. Agents look up exact APIs from **your installed engine** instead of guessing, edit scenes safely through Godot itself, and check their work with real compile, test and export runs. Every code example in the skills is compiled on Godot 4.7.2 by the test suite.
+Agents look up exact APIs from **your installed engine**, edit scenes safely through Godot itself, and verify with real compile, test and export runs. Every code example is compiled on Godot 4.7.2 by the test suite.
 
-## Recommended: Godot .NET (C#)
-
-I suggest using the **.NET build of Godot with C#**. AI models have seen far more C# than GDScript, and the C# compiler catches mistakes (wrong types, missing members) before the game runs, so agents fix their own errors faster.
-
-GDScript is fully supported too. Pick it if you need **web export**, which C# projects don't support in Godot 4.x.
+**Tip:** use Godot .NET with C# if you can: models know C# better and the compiler catches mistakes early. Pick GDScript if you need web export (not supported for C# in 4.x).
 
 ## Install
 
@@ -34,7 +30,7 @@ git clone https://github.com/EL4CTEO/godot-skills
 ./godot-skills/install/install.sh          # macOS / Linux
 .\godot-skills\install\install.ps1         # Windows
 ```
-The default installs into `~/.claude/skills` and `~/.agents/skills`. `.agents/skills` is read by Codex, OpenCode, Gemini CLI, Copilot and Cursor. Options: `--agent claude|codex|opencode|gemini|copilot|cursor|all`, `--project DIR` for a single project, `--uninstall`.
+Installs to `~/.claude/skills` and `~/.agents/skills` (read by Codex, OpenCode, Gemini CLI, Copilot, Cursor). Options: `--agent claude|codex|opencode|gemini|copilot|cursor|all`, `--project DIR`, `--skills a,b`, `--uninstall` (PowerShell: `-Agent`, `-Project`, `-Skills`, `-Uninstall`).
 
 **Requirements:** Godot 4.7+ (standard or .NET) and Python 3.9+. For C#, the .NET 8+ SDK. If Godot isn't found automatically, set `GODOT_EXE`.
 
@@ -74,8 +70,6 @@ The default installs into `~/.claude/skills` and `~/.agents/skills`. `.agents/sk
 
 > "Add a player with coyote-time jumping and a camera that shakes on landing."
 > "My C# build fails after upgrading to 4.7, fix it."
-> "Make a main menu that works with a gamepad, then export for Windows and Android."
-> "Upgrade my Godot 3 project to 4.7 and list what the converter missed."
 > "Add enemies that patrol, spot the player and chase them around obstacles."
 
 ## Development

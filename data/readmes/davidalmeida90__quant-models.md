@@ -14,7 +14,7 @@ and every folder links back to the full write-up.
 
 <a href="https://www.youtube.com/watch?v=aI240XlqgTw"><img src="https://img.youtube.com/vi/aI240XlqgTw/maxresdefault.jpg" alt="Watch the latest video: Convertible and Callable Bonds, Pricing the Hidden Options" width="560"></a>
 
-**Latest video:** [Convertible and Callable Bonds: Pricing the Hidden Options](https://www.youtube.com/watch?v=aI240XlqgTw). Every video is on the channel, [@DavidAriasCFA222](https://www.youtube.com/@DavidAriasCFA222).
+**Latest video:** [Kronos AI Fine Tuned: Volatility Prediction With a Candlestick Model](https://youtu.be/248IxtRoiQg). Every video is on the channel, [@DavidAriasCFA222](https://www.youtube.com/@DavidAriasCFA222).
 
 **A star costs nothing and puts these models in front of other people. Following on
 [X](https://x.com/Davidariasfin) is where every new model gets posted first.**
@@ -41,6 +41,7 @@ projects keep their own repositories, listed in
 | [Monte Carlo, GBM](monte-carlo-gbm/) | Ten million paths, antithetic variates, convergence to the closed form | simulated paths |
 | [CRR binomial tree](crr-binomial-tree/) | European and American options, early exercise, convergence | analytic |
 | [Volatility and option models](volatility-and-option-models/) | Straddles and calendars, Heston calibrated against one Black-Scholes vol, GJR-GARCH out of sample against the VIX, deep hedging in PyTorch, and the VIX futures basis trade | live Cboe chain + yfinance |
+| [Quant models for trading](trading-models/) | Dealer gamma (GEX) and the gamma flip on the SPX chain, a gamma scalping run with real fills, Almgren-Chriss execution on ADBE and Avellaneda-Stoikov market making on SPY, and LLM trading agents on paper accounts | derived tables (SPX chain, ADBE and SPY bars) + paper fills, included; SPY session from Yahoo Finance; Glassbench results |
 | [Six volatility models](volatility-models/) | arch, QuantLib, FinancePy, tf-quant-finance, gs-quant and an SVI fit | free market data |
 | [Time series momentum](time-series-momentum/) | 990 settings swept on 45 ETFs, in sample and out of sample | ETF prices, yfinance |
 | [Convertible and callable bonds](convertible-callable-bonds/) | The option inside three real bonds: a DoorDash convertible (Black-Scholes and a Tsiveriotis-Fernandes tree), a Viking callable (yield to worst, rate tree, OAS) and a Strategy putable | FINRA + SEC filings + Treasury + Yahoo |

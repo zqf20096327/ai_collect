@@ -14,10 +14,13 @@ Jump: [Quick start](#quick-start) · [Get the runtimes](#get-the-runtimes) · [R
 ## Quick start
 
 - [ ] Clone [FaceRecognition-LivenessDetection-Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Flutter)
-- [ ] `dart run tool/bootstrap.dart`
 - [ ] Place the native runtimes — [Get the runtimes](#get-the-runtimes)
-- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone connected
+- [ ] `python run_android.py` (or `python run_ios.py` on macOS) with a **physical** phone plugged in
 - [ ] The demo ships with license keys for `com.faceplugin.facerecognitionsdk` (Android) and `com.faceplugin.facerecognition.app` (iOS)
+
+That is the whole setup. The scripts do the rest: `flutter pub get` in the plugin and the example,
+`pod install` on macOS, the build, and the install onto the phone. They need Flutter 3.22+ and the
+Android SDK (plus Xcode 15+ on macOS) on PATH, and stop with a named hint if anything is missing.
 
 ## Introduction
 
@@ -110,15 +113,18 @@ Then `cd example/ios && pod install`.
 ## Run the demo
 
 ```bash
-git clone https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Flutter.git
-cd FaceRecognition-LivenessDetection-Flutter
-dart run tool/bootstrap.dart
-# place the AAR and the iOS frameworks — see above
-python run_android.py
-python run_ios.py          # macOS
+python run_android.py     # downloads Releases assets if missing; or: python run_ios.py on macOS
 ```
 
-Or run `flutter run` from `example`.
+The runner fetches packages, runs `pod install` on macOS, builds and installs the app. By hand:
+
+```bash
+flutter pub get
+cd example && flutter pub get && flutter run
+```
+
+`dart run tool/bootstrap.dart` from the repository root is a setup check: it fetches packages and
+reports any runtime file that is still missing.
 
 Keep the demo ids so the included license activates:
 

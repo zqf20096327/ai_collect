@@ -67,11 +67,15 @@ to README.md#install): keep those headings, or change the links with them.
   </picture>
 </p>
 
-alpacawork is an orchestrator for the AI coding agents already on your PC, such as Claude Code and Codex: it hands them work and keeps track of it. Write what you want in one chat box, and your point of contact, an AI called the coordinator, turns it into tasks and assigns them to other AIs. You do three things: ask, answer questions, and check the results. You can use it from your phone in the same way.
+alpacawork is an AI orchestration tool. It lets you run the AI coding agents already on your PC, such as Claude Code and Codex, from one chat. Write what you want, and your point of contact, an AI called the coordinator, turns it into tasks, assigns them to other AIs, and keeps track of them. You do three things: ask, answer questions, and check the results. You can use it from your phone in the same way.
 
 <p align="center">
   <img src="docs/images/demo-dark.webp" alt="A request typed into the phone's chat box becomes three tasks that run in parallel in the PC's list; a result is checked and a swipe marks its task complete, and a question from the AI is answered by picking an option; then the phone and the PC side by side" width="800">
 </p>
+
+## Work moves by task, not by conversation
+
+Most tools for AI agents organize work around your conversation with the AI. In alpacawork, you ask from one chat, and the work you ask for proceeds as tasks. So the screen lists the tasks you asked for, not conversations with the AI. Results and questions for you are grouped by task, and the history stays with the task even when the conversation starts over or the AI is replaced. The reasons are in [How it works](https://github.com/alpacakit/alpacawork/blob/main/docs/concept.md#work-moves-by-task-not-by-conversation).
 
 ## Install
 

@@ -121,7 +121,8 @@ Last updated: 2026-07-02 14:31
 Total: 312 bookmarks | 89 with scraped content | 203 with author threads | 24 videos (6 transcribed)
 
 ## AI Tools & Prompts (93)
-### @swyx
+### 2026-07-01
+@swyx
 https://x.com/swyx/status/...
 
 Here are 7 Claude Code tricks that changed how I build:
@@ -144,6 +145,16 @@ Each bookmark is collapsed under a clear title. Select it to show the full post,
 
 The JSON export groups bookmarks by category and uses clear field names such as `title`, `post_text`, `author_thread`, and `linked_articles`.
 
+Use the day index at the top of the Markdown export to find the topics you saved on a given day. Each category lists bookmarks by local save day, newest first. The JSON field `bookmarked_at` holds the UTC save time from the X bookmark timeline. If the time is unknown, JSON uses `null` and Markdown lists the post under **Save date unknown**.
+
+### Thread and media checks
+
+The scraper follows the original author's posts across the reply pages X returns. It also checks earlier posts when the bookmark points into a thread. It keeps author answers to readers when it can trace the connection to the thread. A partial check records the reason. If more pages are available, the scraper saves its place.
+
+Normal runs and scheduled morning runs revisit up to eight saved bookmarks with work due. Use `--check-gaps` for a local status report. Use `--repair-gaps` for a pass through all due work. Add `--repair-limit 20` to check up to 20 bookmarks in a pass. Each pass continues from the saved position. X can hide or delete replies. A site can also remove an image, disable captions, or limit requests. The archive records what each source supplied.
+
+Keep the `bookmark_*.py` files together when copying the scraper to another folder.
+
 ---
 
 ## Features
@@ -152,7 +163,7 @@ The JSON export groups bookmarks by category and uses clear field names such as 
 |---|---|
 | **Self-healing GraphQL** | Auto-discovers X's rotating query IDs from JS bundles. Most scrapers break weekly. This one doesn't. |
 | **4-layer article extraction** | t.co expansion → trafilatura → HTML fallback → Playwright for JS-rendered pages |
-| **Author thread scraping** | Fetches the original poster's own reply thread below each bookmarked tweet |
+| **Author thread scraping** | Follows available pages and records partial checks, missing posts, and later author replies |
 | **X native video transcription** | yt-dlp + faster-whisper. GPU if available, CPU fallback. |
 | **YouTube transcript extraction** | Auto-pulls transcripts from linked YouTube videos |
 | **Agent-native raw output** | `--raw` flag: writes uncategorized `bookmarks_raw.md` — your AI categorizes it against your own profile |
@@ -160,7 +171,7 @@ The JSON export groups bookmarks by category and uses clear field names such as 
 | **Local semantic search** | Embed your bookmarks with nomic-embed-text (Ollama) and search by meaning |
 | **Image analysis** | Extract text from infographic screenshots via local Ollama vision model |
 | **Exact image archive** | Save unchanged tweet, author-thread, and article-content image bytes with SHA-256 hashes |
-| **Incremental resume** | Never re-scrapes. Ctrl+C safe. Saves every 5 entries. |
+| **Incremental resume** | Recovers unfinished work and protects saved progress if a run stops |
 | **Custom categories** | Bring your own `categories.json` |
 
 ---
@@ -218,6 +229,8 @@ python bookmark_scraper.py --morning           # Scrape new bookmarks, then refr
 # Enrich existing data
 python bookmark_scraper.py --rescrape-articles  # Re-fetch article links that returned empty
 python bookmark_scraper.py --rescrape-replies   # Backfill author thread replies
+python bookmark_scraper.py --check-gaps         # Show saved thread and media status
+python bookmark_scraper.py --repair-gaps        # Retry due work across the saved archive
 python bookmark_scraper.py --transcribe-videos  # Transcribe X native videos
 python bookmark_scraper.py --transcribe-videos --transcribe-max-seconds 1800  # Skip long videos
 python bookmark_scraper.py --download-images    # Backfill exact images for existing bookmarks
@@ -247,7 +260,8 @@ python bookmark_scraper.py --unschedule         # Remove the daily schedule
 | `--view` | GEMINI_API_KEY | bookmarks_output.md | Shortcut for --rebuild --gemini |
 | `--gemini` | GEMINI_API_KEY | bookmarks_output.md | AI categorization via Gemini |
 | `--fix-unsure` | GEMINI_API_KEY | bookmarks_output.md | Re-categorize low-confidence only |
-| `--recategorize-other` | existing scrape | updates progress + both exports | Revisit only Other entries using local keywords and enriched content |
+| `--recategorize-other` | existing scrape | updates progress + both exports | Recheck unclear topics and weak health matches using saved content. Videos with no clear topic go to **Read / watch later** when that category is enabled. |
+| `--backfill-bookmark-dates` | X session + existing scrape | updates progress + both exports | Scan older bookmark pages for save dates. Existing posts keep their saved content. |
 | `--rescrape-articles` | existing scrape | updates progress | Re-fetch empty article links |
 | `--rescrape-replies` | existing scrape | updates progress | Backfill author threads |
 | `--transcribe-videos` | faster-whisper, yt-dlp | updates progress | GPU recommended; records no-audio/no-video/too-long statuses |

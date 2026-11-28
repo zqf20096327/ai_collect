@@ -17,11 +17,15 @@ Android · iOS · Flutter · React Native · Kotlin Multiplatform · Unity · Un
 
 [Website](https://salmanashraf.github.io/mobile-ai-agents/) · [Installation Guide](docs/installation.md) · [Getting Started](docs/getting-started.md) · [Core Loops](docs/core-loops.md) · [Wiki](https://github.com/salmanashraf/mobile-ai-agents/wiki) · [Contributing](CONTRIBUTING.md)
 
-### See the Full Product Loop
+### VaultSheet — App-Building Promo
 
-[**Watch the idea-to-product demo →**](https://github.com/salmanashraf/mobile-ai-agents/releases/download/v1.0.48/mobile-ai-agents-mobile-qa-demo.mp4)
+Watch Mobile Harness take VaultSheet from a project brief through the app engineering workflow:
 
-See how one mobile engineering harness moves through planning, implementation, review, device QA, evidence, and release. Then read the [Android PDF Compressor case study](docs/case-studies/pdf-compressor-mobile-qa.md) for the measured proof behind the demo.
+https://github.com/user-attachments/assets/52df46f1-0099-475a-acce-787e1d2d1568
+
+Plan → Design → Implement → Review → Verify → Device Proof → Save Context.
+
+For a separate example of measured device and file-output verification, read the [Android PDF Compressor case study](docs/case-studies/pdf-compressor-mobile-qa.md).
 
 ## Build the Product, Not Just the Code
 
@@ -39,6 +43,32 @@ Use the full product loop or call a specialist directly for Figma handoff, API p
 
 ---
 ## Install
+
+### Build your app with Mobile Harness
+
+With Claude Code or Codex installed and signed in, run this from your app folder:
+
+```bash
+npx mobile-ai-agents build "Build a habit tracker" --client claude
+```
+
+Already have a project brief and Figma design?
+
+```bash
+npx mobile-ai-agents build --brief PROJECT.md --figma "YOUR_FIGMA_URL" --client codex
+```
+
+Mobile Harness starts inside your AI CLI, clarifies requirements, prepares the plan for your approval, and guides implementation, review, testing, and device verification. Your brief is sent through the selected AI client's configured service. Add `--preview` to inspect the handoff offline. Building and device testing require the relevant platform tools; results are reported only when verified.
+
+At startup it asks whether you want to connect **GitHub, Jira, Figma, Mobile MCP, or another MCP tool**. Existing connections are reused; missing connections are set up with your agreement and verified before use. You can skip integrations and continue local work.
+
+To configure Mobile MCP before the AI session launches:
+
+```bash
+npx mobile-ai-agents build "Build my app" --client codex --mobile-mcp
+```
+
+This adds the Mobile MCP server to the selected client's configuration while preserving unrelated settings. The session checks device availability separately. Other services use their provider's supported authentication flow; never paste tokens into your project brief.
 
 New to AI coding tools? Start with the step-by-step [Installation Guide](docs/installation.md).
 
@@ -248,7 +278,7 @@ Performance guide: [docs/performance-loop.md](docs/performance-loop.md)
 
 ## See It In Action
 
-`/mobile-harness` running Loop Engineering — one flow for planning, building, testing, UI verification, and release checks:
+**Mobile Harness — real CLI walkthrough.** `/mobile-harness` running Loop Engineering: planning, building, testing, UI verification, and release checks:
 
 https://github.com/user-attachments/assets/c98d4468-d56d-41ce-b545-7d9fdc43e9d2
 

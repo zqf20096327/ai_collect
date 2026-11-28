@@ -110,7 +110,11 @@ This automatically downloads the English Wikipedia dump and extracts plain text.
 
     $ wp2txt --lang=en --articles="Cognitive linguistics,Generative grammar" -o ./articles
 
-Only the index file and necessary data streams are downloaded, making it much faster than processing the full dump.
+Only the index file and the parts of the dump that hold the requested articles are downloaded, a few megabytes wherever the articles sit. They are kept in the cache for later runs.
+
+Titles are matched the way Wikipedia writes them: underscores, a lower-case first letter, and namespace prefixes in English or in the wiki's language are accepted. A redirect is followed one step and its article is written under the title you asked for; `--no-follow-redirects` extracts the redirect page itself. For titles that contain commas, list them one per line in a file:
+
+    $ wp2txt --lang=en --articles-file=titles.txt -o ./articles
 
 ### Extract articles from a category
 
@@ -123,6 +127,39 @@ Include subcategories with `--depth`:
 Preview without downloading (shows article counts):
 
     $ wp2txt --lang=en --from-category="Cities in Japan" --dry-run
+
+A category that cannot be listed in full stops the extraction. Add `--allow-incomplete-category` to extract what was listed; the manifest then records the listing as incomplete.
+
+### Results of a targeted extraction
+
+With `--articles`, `--articles-file`, or `--from-category`, every requested title ends in one of three ways: written, skipped by `--skip-empty`, or failed with a reason. The exit code tells which:
+
+| Exit code | Meaning |
+|-----------|---------|
+| 0 | Every requested title was written or skipped |
+| 2 | Some titles failed; the others were written |
+| 1 | Nothing could be written, or the run stopped |
+
+A manifest is written next to the output files: `enwiki_articles.manifest.json` for `--articles` on English Wikipedia, or the category name in place of `articles` for `--from-category`. It gives the dump version used (`source`), the result of each requested title (`requests`, with the title it was found under), the counts, and the files written. A title that reaches an article already written for another title is marked `same_as` that title, and `records` counts each article once:
+
+```json
+{
+  "run_id": "…",
+  "wp2txt_version": "2.5.0",
+  "template_patterns": "…",
+  "exit_code": 2,
+  "source": {"lang": "en", "date": "20261101", "snapshot": "…", "chosen": "recent"},
+  "counts": {"requested": 3, "located": 2, "retrieved": 2, "written": 2, "records": 2, "skipped_empty": 0, "failed": 1},
+  "requests": [
+    {"requested_title": "tokyo", "status": "written", "title": "Tokyo"},
+    {"requested_title": "NYC", "status": "written", "title": "New York City"},
+    {"requested_title": "No such page", "status": "failed", "reason": "not_found"}
+  ],
+  "output_files": ["enwiki_articles.txt"]
+}
+```
+
+Failure reasons: `not_found` (no such title in the dump), `redirect_unresolved` (a redirect whose target is missing, another redirect, or on another wiki), `text_unavailable` (the dump holds no text for the page), `truncated` or `stream_unavailable` (the part of the dump holding the page could not be read or fetched), and `index_mismatch` or `identity_mismatch` (the index and the dump disagree). Rerunning to the same output replaces the files the previous manifest lists. A run that fails leaves no manifest.
 
 ### Process local dump file
 
@@ -228,9 +265,13 @@ For redirect articles:
     $ wp2txt --cache-status           # Show cache status
     $ wp2txt --cache-clear            # Clear all cache
     $ wp2txt --cache-clear --lang=en  # Clear cache for English only
-    $ wp2txt --update-cache           # Force fresh download
+    $ wp2txt --update-cache           # Check for a newer dump version now
 
-When cache exceeds the expiry period (default: 30 days), wp2txt displays a warning but allows using cached data.
+wp2txt uses the newest dump that Wikimedia marks finished. It checks for a newer version at most once per `dump_expiry_days` (default: 30); `--update-cache` checks at once. `--dump-date YYYYMMDD` uses a given version instead:
+
+    $ wp2txt --lang=en --dump-date=20261101 --articles="Tokyo" -o ./articles
+
+Cached files are checked against the sizes and SHA-1 digests Wikimedia publishes for that version. A cached file that does not match is set aside as `<name>.bad-<time>` and fetched again. Without a network connection, the newest version in the cache is used. Each version's files are kept in their own directory by hard link, so the cache directory must be on a file system that allows hard links.
 
 ## Advanced Options
 
@@ -273,12 +314,14 @@ Configure with `--markers`:
 
 ### Template Expansion
 
-Common MediaWiki templates are automatically expanded (enabled by default):
+Templates are expanded by default. On the Japanese, English, German, French, Spanish, Italian, Russian, Chinese, Portuguese, Dutch, Polish, Arabic, and Korean editions, the most used inline templates are shown the way that edition shows them, from patterns learned from its own output: `{{lang-de|Wort}}` comes out as "ドイツ語: Wort" on the Japanese edition and "German: Wort" on the English one. Templates that compute their output (unit conversions, ages, coordinates) are not reproduced; the values written in the article are kept. Ages count from the dump's date. A template wp2txt does not know is replaced by its first unnamed argument, passing over a language code before another argument.
+
+Other common templates are expanded by wp2txt's own rules:
 
 | Template | Output |
 |----------|--------|
 | `{{birth date\|1990\|5\|15}}` | May 15, 1990 |
-| `{{convert\|100\|km\|mi}}` | 100 km (62 mi) |
+| `{{convert\|100\|km\|mi}}` | 100 km |
 | `{{coord\|35\|41\|N\|139\|41\|E}}` | 35°41′N 139°41′E |
 | `{{lang\|ja\|日本語}}` | 日本語 |
 | `{{nihongo\|Tokyo\|東京\|Tōkyō}}` | Tokyo (東京, Tōkyō) |
@@ -327,11 +370,15 @@ full-text search, interlanguage links, cross-language SQL, and the full MCP tool
       -i, --input=<s>                  Path to compressed file (bz2) or XML file
       -L, --lang=<s>                   Wikipedia language code (e.g., ja, en, de)
       -A, --articles=<s>               Specific article titles (comma-separated)
+      --articles-file=<s>              File of article titles, one per line
+      -w, --no-follow-redirects        Extract redirect pages themselves
       -G, --from-category=<s>          Extract articles from Wikipedia category
       -D, --depth=<i>                  Subcategory recursion depth (default: 0)
       -y, --yes                        Skip confirmation prompt
       --dry-run                        Preview category extraction
-      -U, --update-cache               Force refresh of cached files
+      --allow-incomplete-category      Extract what was listed when a category cannot be listed in full
+      -U, --update-cache               Check for the newest dump version now
+      --dump-date=<s>                  Use the dump of this date (YYYYMMDD)
 
     Output options:
       -o, --output-dir=<s>             Output directory (default: current)
@@ -411,8 +458,7 @@ This creates `~/.wp2txt/config.yml`:
 
 ```yaml
 cache:
-  dump_expiry_days: 30      # Days before dumps are stale (1-365)
-  category_expiry_days: 7   # Category cache expiry (1-90)
+  dump_expiry_days: 30      # Days between checks for a newer dump version (1-365)
   directory: ~/.wp2txt/cache
 
 defaults:
@@ -441,6 +487,10 @@ Turbo mode (default) splits bz2 into XML chunks first, then processes in paralle
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
+
+**v2.5.0 (November 2026)**: Targeted extraction fetches only the needed parts of the dump and reports every requested title (manifest, exit codes), verified dump versions, complete category listings, templates rendered as each Wikipedia shows them.
+
+**v2.4.0 (October 2026)**: Lead terms in JSON output, incoming link counts, Wikidata IDs and disambiguation marks from page_props, Japanese readings and 仮リンク kept.
 
 **v2.3.0 (July 2026)**: Interlanguage links import, cross-language SQL (multi-dump ATTACH), explicit-title extraction, SQL results to file with reproducibility sidecars, GHCR image publishing.
 

@@ -18,7 +18,8 @@
   <a href="#examples">Examples</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#terminal-ui">Terminal UI</a> ·
-  <a href="#providers">Connect a model</a>
+  <a href="#providers">Connect a model</a> ·
+  <a href="docs/goa-intro-ko.pptx">소개 자료(한국어)</a>
 </p>
 
 </div>
@@ -375,7 +376,7 @@ No key yet? `--mock` answers every provider's real request shape locally, so the
 | `llm:anthropic`, `llm:xai`, ... | that LLM's key | JSON-schema judgment |
 | `local` | none | deterministic keyword + ontology heuristic |
 
-Every backend returns the same typed answer (`choice` + `confidence` + `probabilities`, or `noul` in [0, 1]); a refusal becomes confidence 0, which makes the agent ask. Keys and defaults can live in `./.env` (see [`.env.example`](.env.example)); shell variables win. Override models with `GOA_<PROVIDER>_MODEL` (`GOA_CLAUDE_CODE_MODEL`, default `sonnet`; `GOA_CODEX_MODEL`, default your Codex config; `GOA_OPENROUTER_DECISION_MODEL` for the judge) and endpoints with `TYPESAFE_URL`, `OPENAI_DECISIONS_URL`, `OPENROUTER_DECISIONS_URL`. `--mock` simulates `claude -p` and `codex exec` too, so the sign-in path runs with neither installed.
+Every backend returns the same typed answer (`choice` + `confidence` + `probabilities`, or `noul` in [0, 1]); a refusal becomes confidence 0, which makes the agent ask. Keys and defaults can live in `./.env` (see [`.env.example`](.env.example)); shell variables win. Override models with `GOA_<PROVIDER>_MODEL` (`GOA_CLAUDE_CODE_MODEL`, default `sonnet`; `GOA_CODEX_MODEL`, default your Codex config; `GOA_OPENROUTER_DECISION_MODEL` for the judge) and endpoints with `OPENAI_BASE_URL`, `TYPESAFE_URL`, `OPENAI_DECISIONS_URL`, `OPENROUTER_DECISIONS_URL`. Local loopback endpoints (`127.0.0.1`, `localhost`, `::1`) do not require an API key. `--mock` simulates `claude -p` and `codex exec` too, so the sign-in path runs with neither installed.
 
 ## Development
 
@@ -385,9 +386,30 @@ npm --prefix ui install && npm --prefix ui test # the UI, against a scripted and
 GOA_LOG=debug goa demo                          # English logs for every step
 ```
 
+### Benchmark
+
+55 fixed cases in [`benchmarks/tasks.json`](benchmarks/tasks.json) score relation judgment, invalidation, 3-way merge and end-to-end scenarios, plus p50 latency for submit, tick, a full scenario and a `goa serve` round-trip. No network, no window focus.
+
+```bash
+python3 scripts/benchmark.py --compare            # run and compare with benchmarks/baseline.json; exit 1 on regression
+python3 scripts/benchmark.py --write-baseline     # record a new baseline after an intended change
+python3 scripts/benchmark.py --compare-files old.json new.json   # compare two saved results
+python3 scripts/benchmark.py --suite merge --case <id> --json    # reproduce one case
+```
+
+A regression prints the metric, suspect modules and the exact command to reproduce it. Defaults allow no accuracy drop and up to +50% and +50 ms on p50 latency.
+
+Every merge into `preconquer-gogoymh` is benchmarked by [`scripts/bench_watch.py`](scripts/bench_watch.py): it exports the merged commit with `git archive`, runs the suite headless and compares with the previous run. A latency flag is re-measured side by side against the previous commit, so machine load alone never files a regression. Results live in `.git/goa-bench/`; a confirmed drop writes `regression.md`, which a Preconquer workflow turns into an issue.
+
+```bash
+git show preconquer-gogoymh:scripts/bench_watch.py | python3 - --ref preconquer-gogoymh
+```
+
 The UI ships only permissively licensed packages (MIT, ISC); `node ui/scripts/license-check.mjs` fails the build otherwise.
 
 The banner is built by `scripts/make_banner.py` from Codex-generated art; candidates live in [`docs/assets/candidates`](docs/assets/candidates).
+
+The Korean intro deck ([`docs/goa-intro-ko.pptx`](docs/goa-intro-ko.pptx)) is rebuilt with `node scripts/make_deck_ko.js` (requires `pptxgenjs`).
 
 ## Out of scope (for now)
 

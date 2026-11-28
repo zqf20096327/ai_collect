@@ -120,6 +120,8 @@ Only using Cursor or VS Code? Add it in one click instead (runs `npx -y dsh-any-
 >
 > <a href="https://dsh-any-agent.xmtlz.dev/en/#video"><img src="https://raw.githubusercontent.com/xmtlzzz/dsh-any-agent/main/website/src/media/promo-poster.jpg" width="560" alt="▶ Play the dsh-any-agent promo (54 seconds)"></a>
 
+> Run the five-minute walkthrough with `npm run demo`. It dispatches a task, interjects twice, then checks the output with `node --test`. Use `npm run demo -- --replay` to replay it without spending tokens. See the [five-minute demo](docs/en/demo.md).
+
 > **Before your first task:** read the [Usage Notes](docs/en/caveats.md), especially the model-config and external-MCP permission boundaries. External MCP tools bypass DSH's sandbox. For a fresh machine, follow [Setup](docs/en/install.md).
 
 > **The default is `workspace-write` with escalation denied.** To review escalation requests individually, set `DSH_MCP_APPROVAL=ask` in the MCP server configuration and reconnect. A tool call may choose a stricter policy. Use `read-only` for untrusted content. See [Permissions & privacy](docs/en/security.md).
@@ -154,7 +156,9 @@ Only using Cursor or VS Code? Add it in one click instead (runs `npx -y dsh-any-
 | `dsh_status` | Lightweight status check (single conversation), including the write-lock holder `lock_holder` |
 | `dsh_inbox` | **Cross-conversation approval inbox**: every pending approval with reason, input and age; decide with `dsh_approval_decide` |
 | `dsh_queue` | Inspect/modify the session queue: `list` / `remove` / `update` / `promote` (created by `dsh_send(queue=true)`; unstarted queued receipts are marked cancelled after a server restart) |
-| `dsh_doctor` | Read-only health check: DSH version, profile, daemon mode, workspace sync, registry locks, result-directory hard links, worktree usage, orphan locks, sessions and RSS, effective config |
+| `dsh_doctor` | Read-only health check: DSH version, profile, daemon count, DSH storage format (`dsh_storage`), workspace sync, registry locks, result-directory hard links, worktree usage, orphan locks, sessions and RSS, effective config |
+
+If the health check reports multiple daemons, run `dsh-any-agent daemon status`. Common IDE session tokens are ignored automatically. Use `DSH_MCP_DAEMON_IGNORE_ENV` for additional ephemeral variables.
 
 Every tool declares all four MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`). Six only read state and are marked read-only: `dsh_list`, `dsh_read`, `dsh_get`, `dsh_status`, `dsh_inbox`, `dsh_doctor`. Tool titles, descriptions, server instructions, tool output, and user-facing errors all come in English and Chinese: they follow your system language, or set `DSH_MCP_LANG=en|zh`.
 

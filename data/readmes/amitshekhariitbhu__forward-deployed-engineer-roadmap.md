@@ -197,6 +197,7 @@ If you want a quick introduction to RAG before starting, watch: [AI Engineering 
 - [How does Semantic Search work?](https://outcomeschool.com/blog/how-does-semantic-search-work)
 - [How does an Inverted Index work?](https://outcomeschool.com/blog/inverted-index)
 - [How does BM25 work?](https://outcomeschool.com/blog/bm25)
+- [How do sparse and dense embeddings differ?](https://outcomeschool.com/blog/sparse-vs-dense-embeddings)
 - [How does Hybrid Search work?](https://outcomeschool.com/blog/how-does-hybrid-search-work)
 - [How does a Reranker work?](https://outcomeschool.com/blog/how-does-a-reranker-work)
 - [How does OCR with Deep Learning work?](https://outcomeschool.com/blog/optical-character-recognition-ocr)
@@ -311,6 +312,7 @@ In this step, we will learn how to design a complete AI system end to end and wh
 Learn AI System Design step by step: [AI System Design](https://github.com/amitshekhariitbhu/ai-system-design)
 
 - [How does Model Serving work?](https://outcomeschool.com/blog/model-serving)
+- [How does an LLM Gateway work?](https://outcomeschool.com/blog/llm-gateway)
 - [How does a GPU work for Deep Learning?](https://outcomeschool.com/blog/how-does-a-gpu-work-for-deep-learning)
 - [How do CUDA Kernels work?](https://outcomeschool.com/blog/how-do-cuda-kernels-work)
 - [How does a Google TPU work?](https://outcomeschool.com/blog/how-does-a-google-tpu-work)
@@ -356,6 +358,7 @@ In this step, we will see everything come together in one of the most requested 
 - [How do pronunciation dictionaries fix how TTS says names and brands?](https://outcomeschool.com/blog/pronunciation-dictionaries-for-tts)
 - [How does keyword boosting help ASR recognize domain words?](https://outcomeschool.com/blog/keyword-boosting-in-asr)
 - [How does a voice agent handle accents and noisy environments?](https://outcomeschool.com/blog/accents-and-noise-in-voice-agents)
+- [How does a voice agent detect and switch the user's language mid-call?](https://outcomeschool.com/blog/language-switching-in-voice-agents)
 - [How does a voice AI agent answer a phone call?](https://outcomeschool.com/blog/phone-calls-in-voice-agents)
 - [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
 - [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)

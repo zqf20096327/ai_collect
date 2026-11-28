@@ -10,6 +10,7 @@
   <a href="https://github.com/pablocaeg/sloptotal/stargazers"><img src="https://img.shields.io/github/stars/pablocaeg/sloptotal?style=flat&color=e3b341&logo=github" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2d8a4e" alt="MIT license"></a>
   <a href="https://sloptotal.com"><img src="https://img.shields.io/badge/live%20demo-sloptotal.com-b5282e" alt="Live demo"></a>
+  <a href="https://github.com/josephmisiti/awesome-machine-learning#python-natural-language-processing"><img src="https://awesome.re/mentioned-badge-flat.svg" alt="Mentioned in Awesome Machine Learning"></a>
 </p>
 
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ru.md">Русский</a> · <a href="README.es.md">Español</a></p>
@@ -31,7 +32,115 @@ it publishes how accurate that is, failures included.
   <img src="docs/assets/demo.gif" alt="Trying the sample text on sloptotal.com: the calibrated score, the verdict band and every engine’s vote" width="820">
 </p>
 
-**Try it:** [sloptotal.com](https://sloptotal.com) · **Run it:** `docker run -p 8000:8000 ghcr.io/pablocaeg/sloptotal`
+**Try it:** [sloptotal.com](https://sloptotal.com) · **Run it locally:** [one Docker command](#run-locally)
+
+<a name="quick-start"></a>
+
+## Run locally
+
+Prefer to watch? [75-second walkthrough on YouTube](https://www.youtube.com/watch?v=QwM7Ri4BscQ).
+
+Docker (x86-64 or ARM, Apple Silicon included), one command:
+
+```bash
+docker run -d --name sloptotal -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
+```
+
+The first start downloads about 9 GB of models into the `sloptotal-models`
+volume, so later starts are quick. Wait until the log says they are loaded,
+then open <http://localhost:8000>:
+
+```bash
+until docker logs sloptotal 2>&1 | grep -q "Model preloading complete"; do sleep 10; done
+```
+
+Check that it works:
+
+```bash
+curl -s -X POST http://localhost:8000/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Artificial intelligence has fundamentally transformed the landscape of modern education, offering unprecedented opportunities for personalized learning. Moreover, it is important to note that these tools foster critical thinking and collaboration among students."}'
+```
+
+It returns a JSON report: `overall_score` (0-100), `overall_verdict` and the
+23 `engine_results`. `curl -s http://localhost:8000/health` returns
+`"status":"healthy"`.
+
+**Requirements.** About 12 GB of RAM (the loaded models take about 8.3 GB, an
+estimate; see [docs/MODELS.md](docs/MODELS.md)) and about 9 GB of disk. No GPU,
+account or API key. The image is built for `linux/amd64` and `linux/arm64`, so
+it runs natively on Apple Silicon and ARM servers such as AWS Graviton.
+
+**From source** (Python 3.10 to 3.14; macOS ships 3.9, which is too old):
+
+```bash
+git clone https://github.com/pablocaeg/sloptotal.git
+cd sloptotal
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+./scripts/start.sh    # or: uvicorn app.main:app --port 8000
+```
+
+Models go to `~/.cache/huggingface` unless `HF_HOME` is set.
+`python scripts/smoke_test.py` then checks every route and all 23 engines.
+To build the image yourself: `docker compose -f docker/docker-compose.yml up -d`.
+
+The Docker image uses CPU-only PyTorch; for an NVIDIA GPU, install from source
+and follow [Configuration](#configuration). Offline use, updates and common
+problems are in the [self-hosting guide](https://sloptotal.com/self-host/)
+([Markdown](https://sloptotal.com/self-host.md)).
+
+## For AI agents
+
+Installing SlopTotal for a user, or calling it as a tool:
+
+1. `docker --version`. With Docker (x86-64 or arm64): use the Docker command
+   above. With no Docker: install from source.
+2. Start it, then wait for `Model preloading complete` in the log (the loop
+   above). The first start takes minutes: it downloads about 9 GB.
+3. Check it with the `curl` above. Any JSON with `overall_score` and
+   `"engines_total": 23` means it works.
+4. Call `POST /api/analyze` with `{"text": "..."}` (50 characters or more) or
+   `{"url": "..."}`. 200 is the report. 202 means queued: poll
+   `GET /api/queue/ticket/{ticket_id}` until it returns 200. 429 means the
+   queue is full: wait `retry_after` seconds and retry.
+5. Read `overall_score`: 45 is where the top 5% of human writing begins, 55
+   the top 2%, 80 the top 0.5%. Under about 80 words it is a weak signal, and
+   no detector is proof on its own.
+
+### As an MCP tool (Claude Code, Cursor, VS Code, Claude Desktop)
+
+The [MCP server](integrations/mcp/) gives agents three tools: `analyze_text`,
+`analyze_url` and `check_website_builder`. It calls the SlopTotal server on
+`http://localhost:8000`, so start that first. In Claude Code, with
+[uv](https://docs.astral.sh/uv/):
+
+```bash
+claude mcp add sloptotal -- uvx sloptotal-mcp
+```
+
+Or with Docker:
+
+```bash
+claude mcp add sloptotal -- docker run -i --rm --add-host=host.docker.internal:host-gateway ghcr.io/pablocaeg/sloptotal-mcp
+```
+
+It is on [PyPI](https://pypi.org/project/sloptotal-mcp/), on
+[ghcr.io](https://github.com/pablocaeg/sloptotal/pkgs/container/sloptotal-mcp)
+and in the [official MCP registry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.pablocaeg%2Fsloptotal/versions/latest)
+as `io.github.pablocaeg/sloptotal`. A real call and reply, the limits and
+every client: [sloptotal.com/ai-detector-mcp](https://sloptotal.com/ai-detector-mcp/).
+
+Configuration for Claude Desktop, Cursor and VS Code is in
+[integrations/mcp](integrations/mcp/README.md). Setting
+`SLOPTOTAL_URL=https://api.sloptotal.com` uses the public instance instead of a
+local server; the text then leaves your machine.
+
+No key is needed. The OpenAPI schema is at `http://localhost:8000/openapi.json`.
+Ready-made clients for Python, Node, Go and Ruby are in [examples/](examples/)
+(see [API](#api)). Once the models are loaded, the log prints one line asking for a GitHub
+star; `SLOPTOTAL_QUIET=1` drops it. API responses never carry it.
 
 ## Features
 
@@ -88,37 +197,6 @@ through a "humanizer" is caught about half the time. Source code is outside
 what these engines do. All of it, per source, per model and per engine, is in
 [the findings](tests/eval/slopbench/FINDINGS.md), including that the
 classifiers which top the RAID benchmark drop to AUC 0.75 on current models.
-
-## Quick start
-
-### Docker (fastest)
-
-```bash
-docker run -p 8000:8000 -v sloptotal-models:/app/models ghcr.io/pablocaeg/sloptotal
-```
-
-Open <http://localhost:8000>. The first scan downloads about 9 GB of models
-(see [docs/MODELS.md](docs/MODELS.md)) into the `sloptotal-models` volume, so
-later starts are quick. To build from source instead, run
-`docker compose -f docker/docker-compose.yml up`.
-
-### From source
-
-Requires **Python 3.10+** (macOS ships 3.9, which is too old).
-
-```bash
-git clone https://github.com/pablocaeg/sloptotal.git
-cd sloptotal
-python3.11 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-./scripts/start.sh    # or: uvicorn app.main:app --port 8000
-```
-
-Check that every engine loads and scores, end to end:
-
-```bash
-python scripts/smoke_test.py          # against http://localhost:8000
-```
 
 ## Site check: detect sites built with AI app builders
 
@@ -198,7 +276,7 @@ the standard library to analyse a text and print the overall score, the verdict
 and the five engines scoring highest:
 
 ```bash
-go run ./examples/go_client "Paste at least 50 characters of text here..." --base http://localhost:8000
+go run examples/go_client/main.go "Paste at least 50 characters of text here..." --base http://localhost:8000
 ```
 
 ## Detection Engines
@@ -347,7 +425,8 @@ export SLOPTOTAL_POOL_TMR=2
 | `SLOPTOTAL_POOL_E5` | `1` (see below) | E5 model pool replicas |
 | `SLOPTOTAL_POOL_FAKESPOT` | `1` (see below) | Fakespot model pool replicas |
 | `SLOPTOTAL_POOL_TMR` | `1` (see below) | TMR model pool replicas |
-| `HF_HOME` | `./models` | Where model weights are cached |
+| `SLOPTOTAL_QUIET` | off | `1`, `true` or `yes` drops the one-line GitHub star note from the startup log |
+| `HF_HOME` | `~/.cache/huggingface` (Docker image: `/app/models`) | Where model weights are cached |
 
 Startup profiles populate unset settings before the analyzer reads its fallback
 defaults. Explicit environment values take precedence. The lite profile sets
@@ -390,6 +469,9 @@ a different question.
 | `TypeError: unsupported operand type(s) for \|` at startup | Python 3.9 or older; use 3.10+ |
 | An engine reports `Model loading failed` | Check disk space and network for the first model download, then restart; `python scripts/smoke_test.py` shows which engine fails |
 | First scan is slow | Models are loading; later scans take seconds |
+| `no matching manifest for linux/arm64/v8` | An old local copy of the image from before arm64 builds; run `docker pull ghcr.io/pablocaeg/sloptotal` |
+| The container stops with exit code 137 | Out of memory; in Docker Desktop raise the memory limit to 12 GB (Settings, Resources) |
+| `port is already allocated` | Port 8000 is taken; run with `-p 8080:8000` and use <http://localhost:8080> |
 | A URL scan says "private network address" | Intended; set `SLOPTOTAL_ALLOW_PRIVATE_URLS=1` to scan intranet pages |
 
 ## Project layout

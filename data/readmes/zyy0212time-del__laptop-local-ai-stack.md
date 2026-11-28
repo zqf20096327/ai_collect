@@ -312,3 +312,32 @@ the exact runtime contract (llama.cpp b10375, experts-on-CPU).
   no model weights are distributed here. The arena's scores and data are the
   Reasoning Budget Arena's own project-authored evidence, published under its
   license.
+
+
+---
+
+## 2026-11-27 Update — Bonsai 2 vs 2.5 Same-Method Uncensoring Extension
+
+A post-release Formal C extension was run under the frozen 32-question protocol
+(ctx 8192, max_tokens 8192, native reasoning budget 4096, temp 0.1, top_p 0.9,
+no system prompt, serial requests, MTP OFF):
+
+| contestant | model | General /450 | Cyber /350 | Overall /800 | decode |
+|---|---|---:|---:|---:|---:|
+| B91 | Bonsai 2.5 27B PTQ1_0 + AtomicChat rank-1 LoRA (scale 1.25) | 412.5 | 289.0 | **701.5** | 45.51 t/s |
+| A74 | Bonsai 2 27B PTQ1_0 + AtomicChat rank-1 LoRA (scale 1.5, layers15–63 variant) | 422.0 | 264.5 | **686.5** | 46.20 t/s |
+
+Historical reference only (not same condition): Gemma4-26B 706/800;
+R84 (Bonsai 2.5 baked Uncensored + MTP, MTP ON) 690.5/800.
+R84/A74/B91 differ in uncensoring implementation and MTP state, so scores are
+not strictly comparable. Scoring was not strictly blind (identities were present
+in the report used by the judge); this is documented in the scorebook caveats.
+
+**Final daily model decision:** keep Bonsai 2.5 baked Uncensored PTQ1_0 + MTP
+(~81.2 t/s with MTP on, 53.4% draft acceptance) as the sole daily driver. The
+LoRA variants are research-only. Three packing formats (PTQ1_0/PQ2_0/Q2_0) were
+checked with 8 deterministic probes (6/8 identical), not full Formal C runs.
+
+Full materials: `reports/BONSAI-2-VS-2.5-COMPARATIVE-REPORT.md`,
+`reports/FINAL-MODEL-DECISION.md`, `results/`, `audit/`.
+No GGUF weights, API keys, tokens, or private identity mapping are included.

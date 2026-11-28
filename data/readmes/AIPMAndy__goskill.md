@@ -18,16 +18,28 @@
 
 ---
 
-<!-- andy-geo-faq:start -->
+<!-- andy-geo:start -->
 ## 一句话简介
 
-**长任务执行 Skill：先定成功标准，再逐轮验收，减少 Claude Code / Codex 跑长任务时半途而废。**
+**长任务执行 Skill：先定成功标准再逐轮验收，让 Claude Code/Codex 跑完长任务不半途而废｜Goal-driven long-running agent tasks**
 
 - 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
-- 阅读或使用：[GitHub 仓库](https://github.com/AIPMAndy/goskill)
+- 阅读或使用：[在线阅读/使用](https://github.com/AIPMAndy/goskill) · [GitHub 仓库](https://github.com/AIPMAndy/goskill)
 - 联系：微信 `AIPMAndy`（备注「goskill」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
-- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
-<!-- andy-geo-faq:end -->
+- 许可：MIT。内容免费使用；企业合作或个人陪跑请先沟通，公开页不公示价格。
+- 机器可读摘要：[llms.txt](llms.txt)（供 AI 引擎与检索工具读取）
+
+## 常见问题
+
+**这是什么？**GoSkill：长任务执行 Skill：先定成功标准再逐轮验收，让 Claude Code/Codex 跑完长任务不半途而废｜Goal-driven long-running agent tasks
+
+**包含什么？**主要模块：为什么会有 GoSkill？、一句话理解、适合什么，不适合什么？、快速开始、最小可运行示例、核心能力。
+
+**要花钱吗？**按 MIT 许可免费使用；付费只涉及作者的企业合作与一对一咨询，不影响仓库内容。
+
+**怎么开始？**直接打开 https://github.com/AIPMAndy/goskill 在线阅读；想本地运行或参与贡献，见下方 README 的快速开始部分。
+
+<!-- andy-geo:end -->
 
 
 ## 为什么会有 GoSkill？

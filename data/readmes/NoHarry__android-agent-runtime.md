@@ -24,9 +24,10 @@ Anthropic-compatible model.
 - **Skills, AGENTS.md and subagents.** Skills load on demand; the agent can delegate to child agents and wait for them.
 - **Control.** Hooks before and after tool calls, a policy engine, confirmation for network and side-effecting
   actions, and a per-provider concurrency limit.
-- **Durable sessions.** An append-only event log per session, resumable runs, SQLite session storage on Android.
-- **Optional modules.** Operate other apps' screens through accessibility (Android Use), sandboxed JavaScript that calls
-  tools, calendar, notification and media tools, and A2A client and server.
+- **Durable conversations.** One SQLite `log.db` per storage root holds each thread's append-only log, attachments
+  and rebuildable projections; model history, items, usage and recovery read the same records.
+- **Optional modules.** Operate other apps' screens through accessibility (Android Use), run sandboxed JavaScript
+  that calls tools, or connect to other agents through A2A.
 
 ## Install
 
@@ -42,6 +43,10 @@ Kotlin 2.0 or later (the artifacts are built at language level 2.1), JDK 17, And
 the event log use `java.nio.file`, which Android has from API 26: below that, enable core library desugaring with
 `com.android.tools:desugar_jdk_libs_nio` 2.1.5 or later (as `samples/quickstart-android` does).
 
+The dependency above is the published 0.5.0. Build this checkout from source to use the 0.6.0 APIs and storage
+behavior described below. Upgrading discards pre-0.6 conversation history. See the
+[migration guide](docs/design/log-as-source-migration.md) and [0.6.0 changelog](CHANGELOG.md#060-unreleased).
+
 ## Quickstart (Android)
 
 ```kotlin
@@ -51,12 +56,13 @@ val tools = functionTools("device") {
     }
 }
 
-val runtime = AndroidAgentRuntime.builder(context) // workspace, SQLite sessions, event log, history
-    .model(OpenAiModelClient({ apiKey }, model = "gpt-4o-mini", stream = true))
-    .tools(tools)
-    .build()
-
 scope.launch {
+    // Off the main thread: the first build in a process opens the SQLite conversation store (and cleans up pre-0.6
+    // files on first upgrade); build() on the main thread refuses to.
+    val runtime = AndroidAgentRuntime.builder(context) // workspace and default SQLite conversation log store
+        .model(OpenAiModelClient({ apiKey }, model = "gpt-4o-mini", stream = true))
+        .tools(tools)
+        .buildAsync()
     runtime.startThread().runStreamed("What device am I on?")
         .collect { event -> if (event is ThreadEvent.ItemDelta) answer.append(event.text) }
 }
@@ -65,9 +71,12 @@ scope.launch {
 Use `thread.run(text)` for a complete `TurnResult`, or `runStreamed` for eight event types. Each item has a stable
 id, and `ItemCompleted` includes its full content. An `Approval` item waits in the same stream until `approve()` or
 `deny()`; `ask` finishes with `WAITING_FOR_ANSWER`, and the next turn supplies the answer. `thread.steer(text)` adds
-input while a turn runs; `thread.interrupt()` cancels it. Configure `.storage(directory)` on the JVM to restore model
-history and `thread.items()` after restarting; Android configures private storage automatically. Live tool payloads
-are original; stored item snapshots use the configured trace redactor.
+input while a turn runs; `thread.interrupt()` cancels it. On the JVM, explicitly configure either `.storage(directory)`
+(which requires adding `runtimeOnly("org.xerial:sqlite-jdbc:<version>")` on your classpath; `agent-runtime` does not
+bundle a JDBC driver) to persist and restore model history and `thread.items()` across restarts, or `.inMemory()` for
+ephemeral storage (retains up to 16 idle threads with LRU eviction). Android configures private SQLite storage
+automatically (`noBackupFilesDir/agent-runtime/conversations/log.db`). Live and saved item
+views hide registered credentials and credential-like values; the person's names, phone numbers and coordinates stay.
 
 Keep API keys off the device in a real app: point `baseUrl` at your own backend.
 
@@ -81,6 +90,8 @@ val deepWiki = McpToolProvider(
 )
 
 val runtime = AgentRuntime.builder()
+    // Explicitly choose .storage(File("agent-store")) (needs org.xerial:sqlite-jdbc) or .inMemory().
+    .inMemory()
     // Any OpenAI-compatible endpoint: pass its baseUrl. AnthropicModelClient speaks the Messages API.
     .model(OpenAiModelClient({ System.getenv("API_KEY") }, model = "gpt-4o-mini", stream = true))
     .tools(deepWiki)
@@ -97,10 +108,9 @@ of your own (a scripted one standing in for an on-device model), tools from your
 | Artifact | What it is |
 |---|---|
 | `agent-runtime` | The runtime and host facade (plain JVM): `AgentRuntimeBuilder`, OpenAI- and Anthropic-compatible model clients, MCP, `functionTools`, skills, subagents, sessions and memory, web search and fetch, hooks and policy, and the workspace's virtual file system |
-| `agent-runtime-android` | The Android layer: `AndroidAgentRuntime.builder(context)`, SQLite sessions, the app-private event log, and mounting a folder the user picks through the Storage Access Framework |
+| `agent-runtime-android` | The Android layer: `AndroidAgentRuntime.builder(context)`, the platform SQLite conversation log store, and mounting a folder the user picks through the Storage Access Framework |
 | `agent-api` | Android-neutral Thread / Turn / Item contracts and stable model, tool, hook and event-log extension interfaces |
 | `agent-exec-js` | Optional: `exec_js`, sandboxed JavaScript (QuickJS through Zipline) that can call tools; the app server's scripts (plugin packages' tools written in JavaScript) need it too |
-| `agent-device-capabilities` | Optional: calendar, notification and media tools; with the app server, also their plugin (`device-tools`), loaded by default |
 | `agent-android-use` | Optional: observe and operate the screen through an accessibility service; with the app server, also its plugin (`android-use`), loaded by default |
 | `agent-a2a` | Optional (plain JVM): delegate tasks to remote A2A agents, and expose the agent as a local A2A endpoint. Two clients: a direct JSON-RPC/SSE one speaking A2A 0.3, and one over the official A2A Java SDK speaking A2A 1.0, whose SDK the app adds ([below](#the-official-a2a-client)) |
 | `agent-acp` | Optional (plain JVM): serve the agent's threads over the Agent Client Protocol (ACP) to editors and other ACP clients, on stdio or any stream |
@@ -121,15 +131,14 @@ hosts is [agent-app-server/README.md](agent-app-server/README.md); `samples/agen
 | `agent-app-models` | Optional (Android): the model services' plugin, loaded by default once on the classpath: DeepSeek (with its balance, search and relay check), OpenAI, Anthropic, Google Gemini, xAI, OpenRouter, Groq, Moonshot (Kimi), Zhipu (GLM), Alibaba Cloud Model Studio (Qwen), Volcengine Ark (Doubao), MiniMax and SiliconFlow: where each is reached, its models' facts and prices, how its failures read |
 
 The core speaks the wire protocols (OpenAI Chat Completions and Responses, the Anthropic Messages API) and knows no
-service: with it alone a profile reaches any compatible service, with conservative defaults. Three published modules
-bring a plugin that the server loads once the app depends on them, unlisted: `agent-app-models`, and
-`agent-android-use` and `agent-device-capabilities` for operating the screen and the device's tools (those two only
-compile against the server, so an app with the runtime alone gets their tools without it). A host's own plugins are its
-code (`AppServerPlugin`). The other first-party ones (cards, drawn pages, memory, pictures, plans, A2A) are source
+service: with it alone a profile reaches any compatible service, with conservative defaults. The server loads
+the plugins from `agent-app-models` and `agent-android-use` when the app depends on those modules. The screen
+tools also work with the runtime alone. Hosts write their own plugins using `AppServerPlugin`.
+Bothy's first-party plugins (cards, drawn pages, memory, pictures, plans, A2A and device tools) are source
 modules of the [Bothy](https://github.com/NoHarry/bothy) app, built into it rather than published as Maven artifacts,
 so they change without a release of this one; their source is published with Bothy's next release.
 The core names no plugin's package and no model service, and carries none of the runtime modules only a plugin brings
-(`agent-a2a`, `agent-android-use`, `agent-device-capabilities`, `agent-app-models`;
+(`agent-a2a`, `agent-android-use`, `agent-app-models`;
 `checkAppServerLayering`, part of `ciCheck`).
 
 ### The official A2A client

@@ -103,6 +103,7 @@ optional.
 | [Supported models](docs/models.md) | every tested checkpoint with its size and measured agreement with the reference |
 | [Getting weights](docs/weights.md) | Hugging Face downloads, the mirror, GGUF files, MLX checkpoints |
 | [OpenAI-compatible server](docs/server.md) | chat, embeddings, images, audio; structured outputs, forced tool calls, log probabilities |
+| [Two machines](docs/cluster.md) | one server over two machines (`--peer`), one model across two (`split`), with the link's measurements |
 | [Web GUI on this machine](docs/web.md) | `oxinfer web`: the browser GUI with native models, the catalog, downloads, the model cache |
 | [Tool calling](docs/tool-calling.md) | built-in and caller-defined tools |
 | [Session snapshots and the prompt cache](docs/sessions.md) | saving and restoring a conversation's state |
@@ -110,6 +111,7 @@ optional.
 | [Typed decisions](docs/decisions.md) | the Jev decision models, over text and images |
 | [Runtime interventions](docs/interventions.md) | neuron edits, steering, abliteration, SAE features |
 | [LoRA adapters](docs/lora.md) | PEFT and llama.cpp GGUF adapters on language models, at run time or merged |
+| [Learning from outcomes](docs/learning.md) | `MODEL@PROFILE`: logged episodes, reported outcomes, a per-profile adapter on the loaded model |
 
 **Text models**
 
@@ -142,7 +144,9 @@ optional.
 | [FLUX.1](docs/flux.md) | Kontext editing, schnell / dev, Fill, Canny / Depth, Redux |
 | [Qwen-Image, Qwen-Image-Edit and Qwen-Image-2.1](docs/qwen-image.md) | editing, text to image, ControlNet, layers; Qwen-Image-2.1 / 2.1-Turbo |
 | [MOSS-Image and Kromoss](docs/moss-image.md) | text to image with Qwen3.5-9B conditioning; LoRA / LoKr, DMD turbo LoRAs, curated presets (`--preset kromoss-famegrid`) |
+| [Nemotron-Labs-Image](docs/nemotron-image.md) | autoregressive text to image on a 30B-A3B Nemotron-H (visual tokens rendered by its ViT tokenizer); the float32 release and its GGUFs, Metal decoding |
 | [MiniMax-H3 video](docs/video.md) | text to video, first / last frame to video, with the stereo soundtrack |
+| [LTX-2.5](docs/ltx.md) | text / image / audio to video with a 48 kHz stereo soundtrack, retakes of a video's time window, text to audio: the distilled and guided (dev, HQ res2s) pipelines, upsamplers, duration head, LoRAs; whole transformer passes on Metal |
 | [LongCat-Video-Avatar](docs/longcat-avatar.md) | a character speaking a recording: image + audio + text to video, long videos, two speakers; curated presets (`--preset longcat-avatar-int8`) |
 | [OmniGen2](docs/omnigen2.md), [BAGEL](docs/bagel.md), [Step1X-Edit](docs/step1x-edit.md), [Janus-Pro](docs/janus.md) | instruction editing, unified generation and understanding |
 | [Whisper](docs/whisper.md) | speech to text |
@@ -151,6 +155,9 @@ optional.
 | [ZONOS3-Mini](docs/zonos.md) | text to speech at 44.1 kHz in 43 languages, default voices, cloning from a clip |
 | [Audio8 TTS](docs/audio8-tts.md) | text to speech at 44.1 kHz in 23 languages, cloning from a clip and its transcript, its codec |
 | [Haru-4B](docs/haru.md) | full-duplex speech to speech at 24 kHz: a recording of the user in, what the model says meanwhile out |
+| [Depth Pro 2](docs/depth.md) | metric depth of a photo or a video at full resolution, focal length estimation (`oxinfer depth`) |
+| [Voice Isolator](docs/voice-isolation.md) | 48 kHz voice isolation (denoising), offline and as a live stream with 63 ms latency (`oxinfer isolate`) |
+| [OCRia-nano-1](docs/ocr-nano.md) | OCR of images on the CPU or the GPU (Metal) with LiteParse's 4M-parameter ONNX models (line detector, script router, Latin / CJK / right-to-left / world recognizers) on oxinfer's own ONNX interpreter, and LayoutNet with LiteParse's projection and table decoder: layout blocks, tables and Markdown (`oxinfer ocr`, `/v1/ocr`) |
 | [Fish Audio Drama 3](docs/fish-drama.md) | text to speech at 44.1 kHz with a 35B MoE, several speakers per text, cloning from a clip and its transcript |
 
 **Under the hood**

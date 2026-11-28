@@ -81,6 +81,15 @@ npx -y anvil-engineering-workbench install . --hooks
 
 *See the [Universal Tool Installer Guide](docs/install.md) and [Agent Stop Hooks Guide](docs/agent-hooks.md) for tool-specific targets (`--target`), dry-run preview, and uninstall.*
 
+**Claude Code plugin:** install every ANVIL agent, skill, command, rule, Guard hook and the MCP server as one plugin:
+
+```text
+/plugin marketplace add AdityaaaTiwari/ANVIL
+/plugin install anvil@anvil
+```
+
+On Claude Code 2.1.275 or later this is one step: `/plugin install anvil --marketplace AdityaaaTiwari/ANVIL`. Everything is namespaced, e.g. `/anvil:code-review`, `/anvil:security-review`, `anvil:security-reviewer`.
+
 ### 2. Run verification gate instantly with npx
 
 ```bash
@@ -162,6 +171,10 @@ Every command and flag listed below is verified and supported in ANVIL v1.5.0:
 | `anvil loop run` / `status` | Executes anti-tamper verification loop with pre/post checksums and `.anvil/loops/` receipts | `--goal`, `--check`, `--max-iterations` | **Available** |
 | `anvil race` | Races multiple coding agents in isolated Git worktrees and ranks verified diffs | `--agents`, `--goal`, `--check` | **Available** |
 | `anvil doctor [path]` | Verifies environment health (Node, Git, Docker, workspace permissions) | `--fix`, `--json` | **Available** |
+| `anvil guard check\|log\|status` | Dry-runs Guard on a command or file read/write (exit 2 on deny), shows what Guard blocked per harness and rule, and where Guard hooks are live | `--file <path>`, `--write`, `--path <dir>`, `--days <n>`, `--limit <n>`, `--json` | **Available** |
+| `anvil catalog` | Lists installable agents, skills, commands and rules with the lowest install profile that includes each | `--kind agent\|skill\|command\|rule`, `--json` | **Available** |
+| `anvil analyze [path]` | Profiles the repository (stack, layout, conventions from git history) and saves it as an `anvil-project` skill for Claude Code and Codex/OpenCode | `--write`, `--json` | **Available** |
+| `anvil app <file>` | Looks inside a shipped app without external tools: Android APK/AAB (manifest, permissions, exported components, signing, native ABIs, framework), iOS IPA (Info.plist, ATS), Electron `app.asar` (insecure `BrowserWindow` settings), WASM imports/exports, source maps (recover sources with `--extract`) and JS bundles; flags embedded credentials (masked) and endpoints | `--json`, `--fail-on <severity>`, `--extract <dir>`, `--include-third-party` | **Available** |
 | `anvil mcp [setup\|start\|sync]` | Configures, runs, or cross-syncs the local Model Context Protocol server | `add`, `remove`, `sync`, `matrix` | **Available** |
 | `anvil dashboard [path]` | Launches unified multi-cockpit dashboard (Verification, Agent Toolkit, Binary Intelligence, Control Center) on loopback | `[path]` | **Available** |
 | `GitHub App Service` | GitHub App handlers & webhook bot (`/anvil analyze\|repair\|audit\|doctor\|risk`) | `/anvil` | **Available** |
@@ -191,6 +204,8 @@ ANVIL acts as the local inspection and verification harness for your agent:
   Use standard `AGENTS.md` instructions and run `anvil gate .` to verify changes before committing.
 - **Google Antigravity (AGY):**
   Integrates seamlessly with AGY workspace configurations and rules. See the [Antigravity Integration Guide](docs/integrations/antigravity.md).
+- **Amp, Qoder & Pi:**
+  `anvil install . --target amp,qoder,pi` (added automatically when `.amp/`, `.qoder/` or `.pi/` exists). All three read the managed `AGENTS.md` block; Amp and Pi load ANVIL skills natively from `.agents/skills/`. The MCP server goes in `.amp/settings.json` for Amp (run `amp mcp approve anvil` once) and `.mcp.json` for Qoder CLI. Pi has no built-in MCP client, so it uses the ANVIL CLI.
 
 ### Canonical MCP Tools
 
@@ -203,6 +218,7 @@ All ANVIL MCP tools are strictly read-only and enforce safety bounds:
 - `anvil_quality_audit`: Static project hygiene and workflow audit.
 - `anvil_security_audit`: Entropy-based secret scanning with zero network calls.
 - `anvil_binary_intelligence`: Zero-dependency PE/ELF/Mach-O/WASM header, SHA-256, and binary-spoofing inspection.
+- `anvil_app_inspect`: Looks inside one APK, IPA, Electron `app.asar`, WASM module, source map or JS bundle: manifest risks, exported components, insecure Electron settings, embedded credentials (masked) and endpoints. No external tools.
 - `anvil_supply_chain_audit`: Offline audit of `node_modules` install hooks, `.node` addons, lockfile integrity, and typosquats.
 - `anvil_call_graph`: TypeScript/JavaScript AST symbol call-graph (`caller -> callee`), upstream traces, and orphan exports.
 - `anvil_jit_skills`: Sub-1k token task-scoped JIT skill & instinct selector for prompt hooks (`anvil hook prompt-submit`).

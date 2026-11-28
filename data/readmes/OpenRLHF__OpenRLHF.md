@@ -4,21 +4,21 @@
 <div align="center">
 <p align="center">
       <a href="https://github.com/OpenRLHF/OpenRLHF/graphs/contributors">
-        <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/OpenRLHF/OpenRLHF" />
+        <img alt="GitHub Contributors" src="https://badgen.net/badge/GitHub/contributors/0088ff" />
       </a>
       <a href="https://github.com/OpenRLHF/OpenRLHF/issues">
-        <img alt="Issues" src="https://img.shields.io/github/issues/OpenRLHF/OpenRLHF?color=0088ff" />
+        <img alt="Issues" src="https://badgen.net/github/open-issues/OpenRLHF/OpenRLHF?color=0088ff" />
       </a>
       <a href="https://github.com/OpenRLHF/OpenRLHF/discussions">
-        <img alt="Issues" src="https://img.shields.io/github/discussions/OpenRLHF/OpenRLHF?color=0088ff" />
+        <img alt="Discussions" src="https://badgen.net/badge/GitHub/discussions/0088ff" />
       </a>
       <a href="https://github.com/OpenRLHF/OpenRLHF/pulls">
-        <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/OpenRLHF/OpenRLHF?color=0088ff" />
+        <img alt="GitHub pull requests" src="https://badgen.net/github/open-prs/OpenRLHF/OpenRLHF?color=0088ff&label=pull%20requests" />
       </a>
       <a href="https://github.com/OpenRLHF/OpenRLHF/stargazers">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/OpenRLHF/OpenRLHF?color=ccf" />
+        <img alt="GitHub stars" src="https://badgen.net/github/stars/OpenRLHF/OpenRLHF?color=ccf" />
       </a>
-      <a href="https://deepwiki.com/OpenRLHF/OpenRLHF"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+      <a href="https://deepwiki.com/OpenRLHF/OpenRLHF"><img alt="Ask DeepWiki" src="https://badgen.net/badge/Ask/DeepWiki/0088ff" /></a>
       <br>
       <em>Open-source / Comprehensive / Lightweight / Easy-to-use</em>
     </p>
@@ -294,17 +294,16 @@ OpenRLHF provides a complete RLHF pipeline with agent-based flexibility:
 ```bash
 # 1. Launch Docker container
 docker run --runtime=nvidia -it --rm --shm-size="10g" --cap-add=SYS_ADMIN \
-  -v $PWD:/openrlhf nvcr.io/nvidia/pytorch:26.03-py3 bash
+  -e PIP_BREAK_SYSTEM_PACKAGES=1 -v $PWD:/openrlhf pytorch/pytorch:2.14.0-cuda13.0-cudnn9-devel bash
 
-# 2. Clean conflicting packages
-sudo pip uninstall xgboost transformer_engine flash_attn pynvml -y
-
-# 3. Install OpenRLHF (choose one)
+# 2. Install OpenRLHF (choose one)
 pip install openrlhf                    # Basic
-pip install openrlhf[vllm]              # + vLLM 0.29.0 (recommended)
+pip install openrlhf[vllm]              # + vLLM 0.34.0 (recommended)
 pip install openrlhf[vllm_latest]       # + Latest vLLM
 pip install openrlhf[vllm,ring,liger]   # + All optimizations
 ```
+
+FlashAttention 2 comes as a prebuilt kernel that transformers downloads from the Hugging Face Hub on first use (about 1 GB), so nothing is compiled. RingAttention, clusters without internet access, and hosts whose NVIDIA driver is older than 580 need the image built from the [Dockerfile](./dockerfile/Dockerfile) instead, `docker build -t openrlhf dockerfile`: it carries the FlashAttention 2 package itself and the CUDA forward-compatibility libraries.
 
 **Alternative: Install from source**
 
@@ -315,7 +314,7 @@ pip install -e .
 ```
 
 > [!TIP]
-> We recommend **vLLM 0.29.0+** for best performance. See [Dockerfiles](./dockerfile/) and [Nvidia-Docker Install Script](./examples/scripts/nvidia_docker_install.sh).
+> We recommend **vLLM 0.34.0+** for best performance. See [Dockerfiles](./dockerfile/) and [Nvidia-Docker Install Script](./examples/scripts/nvidia_docker_install.sh).
 
 ### Prepare Datasets
 
@@ -364,7 +363,7 @@ deepspeed --module openrlhf.cli.train_sft \
    --train.batch_size 256 \
    --train.micro_batch_size 2 \
    --data.max_samples 500000 \
-   --actor.model_name_or_path meta-llama/Meta-Llama-3-8B \
+   --model.model_name_or_path meta-llama/Meta-Llama-3-8B \
    --ckpt.output_dir ./checkpoint/llama3-8b-sft \
    --ckpt.save_steps -1 \
    --logger.logging_steps 1 \
@@ -374,14 +373,14 @@ deepspeed --module openrlhf.cli.train_sft \
    --ds.packing_samples \
    --ds.param_dtype bf16 \
    --adam.lr 5e-6 \
-   --actor.gradient_checkpointing_enable \
+   --model.gradient_checkpointing_enable \
    --logger.wandb.key {wandb_token}
 
 # Additional options:
 # --data.apply_chat_template                # Use HF tokenizer chat template
 # --ds.ring_attn_size 2                      # Enable RingAttention (install ring_flash_attn first)
 # --data.multiturn                          # Multi-turn fine-tuning loss
-# --actor.pretrain_mode_enable                      # Continued pre-training mode
+# --model.pretrain_mode_enable                      # Continued pre-training mode
 ```
 
 </details>
@@ -400,7 +399,7 @@ deepspeed --module openrlhf.cli.train_rm \
    --eval.steps -1 \
    --train.batch_size 256 \
    --train.micro_batch_size 1 \
-   --actor.model_name_or_path OpenRLHF/Llama-3-8b-sft-mixture \
+   --model.model_name_or_path OpenRLHF/Llama-3-8b-sft-mixture \
    --ds.param_dtype bf16 \
    --train.max_epochs 1 \
    --data.max_len 8192 \
@@ -408,17 +407,17 @@ deepspeed --module openrlhf.cli.train_rm \
    --adam.lr 9e-6 \
    --data.dataset OpenRLHF/preference_dataset_mixture2_and_safe_pku \
    --data.apply_chat_template \
-   --chosen_key chosen \
-   --rejected_key rejected \
+   --data.chosen_key chosen \
+   --data.rejected_key rejected \
    --ds.packing_samples \
-   --actor.gradient_checkpointing_enable \
+   --model.gradient_checkpointing_enable \
    --logger.wandb.key {wandb_token}
 
 ```
 
 </details>
 
-It is recommended to set the `--value_prefix_head` option of the Reward Model to `score`, so that we can load the model using `AutoModelForSequenceClassification`:
+It is recommended to set the `--ds.value_head_prefix` option of the Reward Model to `score`, so that we can load the model using `AutoModelForSequenceClassification`:
 
 ```python
 reward_model = AutoModelForSequenceClassification.from_pretrained(
@@ -469,9 +468,8 @@ ray job submit --address="http://127.0.0.1:8265" \
    --train.dynamic_batch_enable \
    --rollout.n_samples_per_prompt 1 \
    --train.max_epochs 1 \
-   --prompt_max_len 1024 \
+   --data.max_len 2048 \
    --data.max_samples 100000 \
-   --generate_max_len 1024 \
    --ds.zero_stage 3 \
    --ds.param_dtype bf16 \
    --actor.adam.lr 5e-7 \
@@ -483,7 +481,6 @@ ray job submit --address="http://127.0.0.1:8265" \
    --reward.normalize_enable \
    --actor.gradient_checkpointing_enable \
    --ds.packing_samples \
-   --vllm.sync_backend nccl \
    --vllm.enforce_eager \
    --vllm.enable_sleep \
    --ds.enable_sleep \
@@ -520,7 +517,7 @@ ray job submit --address="http://127.0.0.1:8265" \
 > [!NOTE]
 > **Troubleshooting GPU index errors**: Set `export RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES=1` if you encounter DeepSpeed GPU device setup issues.
 
-📚 **More Examples**: See [examples/scripts](./examples/scripts/) and [Documentation](https://openrlhf.readthedocs.io/en/latest/usage.html)
+📚 **More Examples**: See [examples/scripts](./examples/scripts/) and [Documentation](https://openrlhf.readthedocs.io/en/latest/)
 
 ---
 
@@ -765,7 +762,6 @@ Pick the execution mode based on your priority — OpenRLHF gives you a clear tr
 
 1. **Generation Phase**: Maximize `--rollout.micro_batch_size`, minimize vLLM TP size
 2. **Training Phase**: Maximize `--train.micro_batch_size`, enable `--ds.packing_samples`
-3. **vLLM**: Always use `--vllm.sync_backend nccl`
 
 > [!TIP]
 > **Quick Start Template**: For 8x A100 (80GB), try Hybrid Engine + `--vllm.gpu_memory_utilization 0.5` + `--train.colocate_all`
